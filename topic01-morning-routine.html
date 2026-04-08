@@ -801,29 +801,56 @@ let dictState = {}; // per day
 //  DAYS NAV & FIRESTORE SYNC
 // ═══════════════════════════════════════════════════════
 
-async function finishDay(i) {
+async function finishDay(i, btnElement) {
+  // Ẩn nút hoàn thành
+  if(btnElement) btnElement.style.display = 'none';
+
   if (!doneDays.includes(i)) {
     doneDays.push(i);
   }
   
+  // Hiện banner
   document.getElementById(`done-${i}`).classList.add('show');
   renderNav();
   document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
 
   if (!currentUser) return;
-  const currentGlobalDay = i + 1; // 1 -> 10
+  
+  const currentGlobalDay = i + 1; 
   const savedProgress = userProgress.progress[0] || 0;
 
+  // 1. Lưu tiến độ nếu là bài mới
   if (currentGlobalDay > savedProgress) {
     userProgress.progress[0] = currentGlobalDay;
-    const today = new Date().toDateString();
-    
-    if (userProgress.lastActive !== today) {
-      userProgress.streak = (userProgress.streak || 0) + 1;
-      userProgress.lastActive = today;
-    }
-    await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
   }
+
+  // 2. LOGIC TÍNH STREAK CHUẨN XÁC
+  const today = new Date();
+  today.setHours(0,0,0,0); // Đưa về 00:00:00 của ngày hôm nay
+  const todayTime = today.getTime();
+  const lastActiveTime = userProgress.lastActiveTime || 0;
+  const oneDay = 24 * 60 * 60 * 1000; // 1 ngày tính bằng miligiây
+
+  if (lastActiveTime === 0) {
+    // Lần đầu tiên học
+    userProgress.streak = 1;
+    userProgress.lastActiveTime = todayTime;
+  } else {
+    const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
+    if (diffDays === 1) {
+      // Học ngày tiếp theo liền kề
+      userProgress.streak = (userProgress.streak || 0) + 1;
+      userProgress.lastActiveTime = todayTime;
+    } else if (diffDays > 1) {
+      // Bỏ lỡ hơn 1 ngày -> Mất streak, đếm lại từ 1
+      userProgress.streak = 1; 
+      userProgress.lastActiveTime = todayTime;
+    }
+    // Nếu diffDays === 0 (Học lại lần 2 trong cùng 1 ngày) thì không cộng thêm
+  }
+
+  // Ghi lên Firebase
+  await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
 }
 
 function renderNav() {
