@@ -534,7 +534,7 @@ function renderDashboardUI(data) {
     else if (daysDone > 0) badgeHtml = `<div class="topic-badge badge-wip">${daysDone}</div>`;
     else badgeHtml = `<div class="topic-badge badge-new">–</div>`;
 
-    const clickAction = index === 0 ? `window.location.href='${t.url}'` : `alert('Topic này đang được Lani hoàn thiện nhé!')`;
+    const clickAction = `window.location.href='${t.url}'`;
     const extraStyle = index === 10 ? `style="grid-column: span 2;"` : '';
 
     grid.innerHTML += `
