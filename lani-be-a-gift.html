@@ -288,15 +288,26 @@ async function loadUserData(user) {
   
   if (doc.exists) {
     userData = doc.data();
-    // Logic Reset Streak nếu nghỉ quá 1 ngày có thể thêm ở đây
+    
+    // TỰ ĐỘNG RESET STREAK NẾU NGHỈ HỌC TRÊN 1 NGÀY
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const todayTime = today.getTime();
+    const lastActiveTime = userData.lastActiveTime || 0;
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    if (lastActiveTime > 0) {
+       const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
+       if (diffDays > 1) {
+           userData.streak = 0; // Đưa về 0
+           // Lưu ngay án phạt này lên Database
+           await userRef.set({ streak: 0 }, { merge: true });
+       }
+    }
   } else {
-    // Tạo data mới cho user
-    await userRef.set({
-      email: user.email,
-      streak: 0,
-      lastActive: new Date().toDateString(),
-      progress: {}
-    });
+    // Tài khoản tinh khôi
+    userData = { email: user.email, streak: 0, lastActiveTime: 0, progress: {} };
+    await userRef.set(userData);
   }
 
   renderDashboardUI(userData);
