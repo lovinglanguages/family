@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lani – Be A Gift · Loving Languages</title>
+<meta name="description" content="Tiếng Anh Gia Đình – Cùng ba mẹ đồng hành học tiếng Anh cùng con mỗi ngày. 11 chủ đề, 110 ngày học, 4 hoạt động mỗi ngày.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FBF7F0;
+    --warm-white: #FFFCF7;
+    --blush: #F5E6D8;
+    --rose: #E8C4A8;
+    --terracotta: #C9764A;
+    --terra-deep: #A0552E;
+    --sage: #7A9E87;
+    --sage-light: #C8DDD0;
+    --sage-deep: #4A7259;
+    --ink: #2C2416;
+    --ink-soft: #5C4E3A;
+    --ink-muted: #8C7E6A;
+    --border: rgba(44,36,22,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'DM Sans',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:40px 24px 60px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Soft background circles */
+  .hero::before {
+    content:'';
+    position:absolute; top:-80px; right:-60px;
+    width:320px; height:320px; border-radius:50%;
+    background:radial-gradient(circle, rgba(201,118,74,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero::after {
+    content:'';
+    position:absolute; bottom:-60px; left:-60px;
+    width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle, rgba(122,158,135,0.14) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  /* Logo */
+  .logo-wrap { margin-bottom:32px; }
+  .logo-text {
+    font-family:'Playfair Display',serif;
+    font-size:36px;
+    color:var(--terracotta);
+    letter-spacing:-0.5px;
+  }
+  .logo-text em { font-style:italic; }
+  .logo-sub {
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin-top:4px;
+  }
+
+  /* Avatar */
+  .avatar-wrap {
+    width:88px; height:88px; border-radius:50%;
+    background:var(--blush);
+    border:3px solid var(--rose);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 20px;
+    font-family:'Playfair Display',serif;
+    font-size:36px;
+    color:var(--terracotta);
+  }
+
+  /* Headline */
+  .headline {
+    font-family:'Playfair Display',serif;
+    font-size:32px;
+    line-height:1.2;
+    color:var(--ink);
+    margin-bottom:10px;
+    max-width:340px;
+  }
+  .headline em { color:var(--terracotta); font-style:italic; }
+
+  .tagline {
+    font-size:14px;
+    color:var(--ink-muted);
+    line-height:1.7;
+    max-width:320px;
+    margin:0 auto 28px;
+  }
+
+  /* Stats row */
+  .stats {
+    display:flex; gap:28px; justify-content:center;
+    margin-bottom:36px; flex-wrap:wrap;
+  }
+  .stat { text-align:center; }
+  .stat-num {
+    font-family:'Playfair Display',serif;
+    font-size:30px;
+    color:var(--terracotta);
+    line-height:1;
+  }
+  .stat-lbl { font-size:12px; color:var(--ink-muted); margin-top:3px; }
+
+  /* CTA button */
+  .cta-btn {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:16px 36px;
+    background:var(--terracotta);
+    color:white;
+    border-radius:99px;
+    font-size:16px;
+    font-weight:500;
+    font-family:'DM Sans',sans-serif;
+    text-decoration:none;
+    transition:all 0.25s;
+    margin-bottom:16px;
+  }
+  .cta-btn:hover { background:var(--terra-deep); transform:translateY(-2px); box-shadow:0 8px 24px rgba(201,118,74,0.25); }
+
+  .cta-hint { font-size:12px; color:var(--ink-muted); margin-bottom:40px; }
+
+  /* Feature pills */
+  .features {
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center;
+    max-width:360px;
+    margin:0 auto 44px;
+  }
+  .feature-pill {
+    padding:6px 14px;
+    border-radius:99px;
+    border:1px solid var(--border);
+    background:var(--warm-white);
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  /* Quote */
+  .quote-block {
+    background:var(--warm-white);
+    border-left:3px solid var(--terracotta);
+    border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+    padding:16px 20px;
+    text-align:left;
+    max-width:360px;
+    width:100%;
+    margin:0 auto 40px;
+  }
+  .quote-en {
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:14px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    margin-bottom:6px;
+  }
+  .quote-vn {
+    font-size:12px;
+    color:var(--ink-muted);
+    line-height:1.5;
+  }
+
+  /* Social links */
+  .socials {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+    max-width:320px;
+    margin:0 auto 16px;
+  }
+  .social-link {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 16px;
+    border-radius:var(--radius-sm);
+    border:1px solid var(--border);
+    background:var(--warm-white);
+    font-size:13px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    transition:all 0.2s;
+  }
+  .social-link:hover { transform:translateX(4px); }
+  .social-link.fb:hover { background:#E8F0FE; border-color:#A8C0F8; color:#1a56db; }
+  .social-link.yt:hover { background:#FEE8E8; border-color:#F8A8A8; color:#cc0000; }
+  .social-link.tt:hover { background:#E8FAF8; border-color:#A8EAE4; color:#00897b; }
+
+  .social-icon {
+    width:30px; height:30px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; flex-shrink:0;
+  }
+  .social-link.fb .social-icon { background:#E8F0FE; color:#1a56db; }
+  .social-link.yt .social-icon { background:#FEE8E8; color:#cc0000; }
+  .social-link.tt .social-icon { background:#E8FAF8; color:#00897b; }
+
+  .footer-note {
+    font-size:11px;
+    color:var(--ink-muted);
+    margin-top:24px;
+    padding-bottom:24px;
+    opacity:0.7;
+  }
+
+  /* Fade-in animation */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .fade-1 { animation:fadeUp 0.6s ease both; }
+  .fade-2 { animation:fadeUp 0.6s 0.1s ease both; }
+  .fade-3 { animation:fadeUp 0.6s 0.2s ease both; }
+  .fade-4 { animation:fadeUp 0.6s 0.3s ease both; }
+  .fade-5 { animation:fadeUp 0.6s 0.4s ease both; }
+  .fade-6 { animation:fadeUp 0.6s 0.5s ease both; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+
+  <!-- Logo -->
+  <div class="logo-wrap fade-1">
+    <div class="logo-text"><em>Lani</em> · Be A Gift</div>
+    <div class="logo-sub">Loving Languages</div>
+  </div>
+
+  <!-- Avatar -->
+  <div class="avatar-wrap fade-2">L</div>
+
+  <!-- Headline -->
+  <h1 class="headline fade-2">
+    Tiếng Anh Gia Đình<br>
+    <em>Cùng nuôi dưỡng tình yêu tiếng Anh!</em>
+  </h1>
+
+  <p class="tagline fade-2">
+    Digital Creator · English Tutor<br>
+    Sharing joyful and inspiring ways to learn English and love languages.
+  </p>
+
+  <!-- Stats -->
+  <div class="stats fade-3">
+    <div class="stat">
+      <div class="stat-num">11</div>
+      <div class="stat-lbl">Chủ đề</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">110</div>
+      <div class="stat-lbl">Ngày học</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-lbl">Hoạt động/ngày</div>
+    </div>
+  </div>
+
+  <!-- Feature pills -->
+  <div class="features fade-3">
+    <span class="feature-pill">📇 Flashcard</span>
+    <span class="feature-pill">📖 Từ vựng</span>
+    <span class="feature-pill">❓ Quiz</span>
+    <span class="feature-pill">✍️ Dictation</span>
+    <span class="feature-pill">🎤 Shadowing</span>
+    <span class="feature-pill">📜 Full Script</span>
+  </div>
+
+  <!-- CTA -->
+  <a class="cta-btn fade-4" href="lani-be-a-gift.html">
+    Bắt đầu hành trình →
+  </a>
+
+  <!-- Quote -->
+  <div class="quote-block fade-5">
+    <div class="quote-en">"The best gift you can give your child is your time, your attention, and your words."</div>
+    <div class="quote-vn">"Món quà tuyệt vời nhất ba mẹ có thể trao cho con chính là thời gian, sự hiện diện và những ngôn từ yêu thương."</div>
+  </div>
+
+  <!-- Social -->
+  <div class="socials fade-6">
+    <a class="social-link fb" href="https://fb.com/beagifttotheworld" target="_blank">
+      <div class="social-icon">f</div>
+      fb.com/beagifttotheworld
+    </a>
+    <a class="social-link yt" href="https://youtube.com/@beagifttotheworld" target="_blank">
+      <div class="social-icon">▶</div>
+      youtube.com/@beagifttotheworld
+    </a>
+    <a class="social-link tt" href="https://tiktok.com/@lanibeagift" target="_blank">
+      <div class="social-icon">♪</div>
+      tiktok.com/@lanibeagift
+    </a>
+  </div>
+
+  <p class="footer-note fade-6">© Lani · Be A Gift · Loving Languages</p>
+
+</div>
+
+</body>
+</html>

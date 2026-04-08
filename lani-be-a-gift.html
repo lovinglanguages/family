@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lani – Be A Gift · Loving Languages</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FBF7F0;
+    --warm-white: #FFFCF7;
+    --blush: #F5E6D8;
+    --rose: #E8C4A8;
+    --terracotta: #C9764A;
+    --terra-deep: #A0552E;
+    --sage: #7A9E87;
+    --sage-light: #C8DDD0;
+    --sage-deep: #4A7259;
+    --sky: #8BB8D4;
+    --sky-light: #D4E8F3;
+    --lavender: #C4B5D4;
+    --lavender-light: #EDE8F5;
+    --sunny: #F2C94C;
+    --sunny-light: #FBF0C4;
+    --coral: #E8856A;
+    --coral-light: #FAD8CF;
+    --mint: #6BBFB0;
+    --mint-light: #C8EDE8;
+    --ink: #2C2416;
+    --ink-soft: #5C4E3A;
+    --ink-muted: #8C7E6A;
+    --border: rgba(44,36,22,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--terracotta);
+    letter-spacing: -0.3px;
+  }
+  .logo span { font-style: italic; }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .back-btn:hover { background: var(--blush); border-color: var(--rose); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--warm-white);
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--blush) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, var(--sage-light) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .hero h1 em { color: var(--terracotta); font-style: italic; }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto 24px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--terracotta);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    padding: 16px 24px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--blush);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--terracotta), var(--coral));
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+
+  /* ── TOPIC GRID ── */
+  .topics-grid {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    flex: 1;
+  }
+
+  .topic-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 16px 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(44,36,22,0.1);
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .tc-morning::before { background: var(--sunny); }
+  .tc-dressed::before { background: var(--lavender); }
+  .tc-meal::before { background: var(--coral); }
+  .tc-chores::before { background: var(--sage); }
+  .tc-play::before { background: var(--sky); }
+  .tc-emotions::before { background: var(--rose); }
+  .tc-supermarket::before { background: var(--mint); }
+  .tc-chef::before { background: var(--terracotta); }
+  .tc-out::before { background: var(--sage-deep); }
+  .tc-bath::before { background: var(--sky); }
+  .tc-bed::before { background: var(--lavender); }
+
+  .topic-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .topic-num {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+
+  .topic-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .topic-vn {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .topic-badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .badge-done { background: var(--sage-light); color: var(--sage-deep); }
+  .badge-wip { background: var(--sunny-light); color: #8A6A00; }
+  .badge-new { background: var(--blush); color: var(--ink-muted); }
+
+  /* ── DAYS SCREEN ── */
+  .days-header {
+    padding: 24px 24px 16px;
+    background: var(--warm-white);
+  }
+  .screen-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .screen-title em { color: var(--terracotta); font-style: italic; }
+  .screen-sub {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .days-grid {
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    flex: 1;
+    align-content: start;
+  }
+
+  .day-card {
+    aspect-ratio: 1;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    gap: 4px;
+  }
+  .day-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(44,36,22,0.12);
+  }
+  .day-card.locked {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .day-card.locked:hover { transform: none; box-shadow: none; }
+  .day-card.done { background: var(--sage-light); border-color: var(--sage); }
+  .day-card.active { background: var(--blush); border-color: var(--rose); }
+
+  .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--ink);
+  }
+  .day-label { font-size: 10px; color: var(--ink-muted); }
+  .day-check { font-size: 14px; }
+
+  /* ── LEARN SCREEN ── */
+  .learn-header {
+    padding: 20px 24px 16px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mode-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 16px 24px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  .mode-tabs::-webkit-scrollbar { display: none; }
+
+  .mode-tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--warm-white);
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .mode-tab:hover { background: var(--blush); }
+  .mode-tab.active {
+    background: var(--terracotta);
+    color: white;
+    border-color: var(--terracotta);
+  }
+
+  .learn-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  /* ── FLASHCARD ── */
+  .flashcard-wrap {
+    perspective: 1000px;
+    height: 260px;
+    margin-bottom: 24px;
+  }
+  .flashcard {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .card-front, .card-back {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: var(--radius);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .card-front {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+  }
+  .card-back {
+    background: var(--terracotta);
+    transform: rotateY(180deg);
+  }
+
+  .card-word {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .card-type {
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .card-hint {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 16px;
+  }
+
+  .card-meaning {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .card-example {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .fc-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .fc-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fc-btn:hover { background: var(--blush); }
+  .fc-count {
+    font-size: 13px;
+    color: var(--ink-muted);
+    min-width: 60px;
+    text-align: center;
+  }
+
+  /* ── VOCABULARY ── */
+  .vocab-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .vocab-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .vocab-card-top {
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .vocab-word {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .vocab-phonetic {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .vocab-type-badge {
+    margin-left: auto;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    background: var(--blush);
+    color: var(--terracotta);
+    font-weight: 500;
+  }
+
+  .vocab-card-body { padding: 16px 20px; }
+  .vocab-meaning {
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .vocab-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .vocab-row-label {
+    color: var(--terracotta);
+    font-weight: 500;
+    min-width: 90px;
+    flex-shrink: 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-top: 1px;
+  }
+  .vocab-row-val { color: var(--ink-soft); }
+
+  .audio-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .audio-btn:hover { background: var(--blush); }
+
+  /* ── QUIZ ── */
+  .quiz-question-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 20px;
+  }
+  .quiz-num { font-size: 12px; color: var(--ink-muted); margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
+  .quiz-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .quiz-instruction { font-size: 13px; color: var(--ink-muted); }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .quiz-option {
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--ink);
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .quiz-option:hover { background: var(--blush); border-color: var(--rose); }
+  .quiz-option.correct { background: var(--sage-light); border-color: var(--sage); color: var(--sage-deep); }
+  .quiz-option.wrong { background: var(--coral-light); border-color: var(--coral); color: #7A2E1A; }
+
+  .quiz-feedback {
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    line-height: 1.5;
+    display: none;
+    margin-bottom: 16px;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: var(--sage-light); color: var(--sage-deep); }
+  .quiz-feedback.nope { background: var(--coral-light); color: #7A2E1A; }
+
+  .quiz-nav-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--terracotta);
+    color: white;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .quiz-nav-btn:hover { background: var(--terra-deep); }
+  .quiz-nav-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── DICTATION ── */
+  .dictation-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .dictation-word-hidden {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    letter-spacing: 8px;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+  }
+  .dictation-hint { font-size: 13px; color: var(--ink-muted); margin-bottom: 24px; }
+  .play-big-btn {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: none;
+    background: var(--terracotta);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .play-big-btn:hover { background: var(--terra-deep); transform: scale(1.05); }
+  .play-big-btn.playing { background: var(--sage); animation: pulse 1s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .dictation-input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    font-size: 18px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+  .dictation-input:focus { border-color: var(--terracotta); }
+  .dictation-input.correct { border-color: var(--sage); background: var(--sage-light); }
+  .dictation-input.wrong { border-color: var(--coral); background: var(--coral-light); }
+
+  /* ── SHADOWING ── */
+  .shadowing-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .shadowing-phrase {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .shadowing-phonetic {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+  .shadowing-vn { font-size: 14px; color: var(--ink-muted); font-style: italic; }
+
+  .shadowing-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .action-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .action-btn:hover { background: var(--blush); }
+  .action-btn.primary { background: var(--terracotta); color: white; border-color: var(--terracotta); }
+  .action-btn.primary:hover { background: var(--terra-deep); }
+
+  /* ── COMPLETION ── */
+  .completion-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+  }
+  .completion-icon { font-size: 64px; margin-bottom: 24px; }
+  .completion-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .completion-sub { font-size: 15px; color: var(--ink-muted); line-height: 1.6; margin-bottom: 32px; }
+  .completion-btn {
+    padding: 14px 32px;
+    border-radius: 99px;
+    border: none;
+    background: var(--terracotta);
+    color: white;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .completion-btn:hover { background: var(--terra-deep); transform: translateY(-2px); }
+
+  /* ── FLOATING QUOTE ── */
+  .daily-quote {
+    margin: 0 24px 24px;
+    padding: 16px 20px;
+    background: var(--warm-white);
+    border-left: 3px solid var(--terracotta);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 15px; color: var(--ink-soft); line-height: 1.6; }
+  .quote-attr { font-size: 12px; color: var(--ink-muted); margin-top: 6px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: 0 24px;
+    margin: 20px 0 12px;
+  }
+
+  /* ── STREAK BANNER ── */
+  .streak-banner {
+    margin: 0 24px;
+    padding: 14px 18px;
+    background: var(--sunny-light);
+    border: 1px solid var(--sunny);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .streak-icon { font-size: 24px; }
+  .streak-text { font-size: 14px; color: #7A5A00; line-height: 1.4; }
+  .streak-num { font-family: 'Playfair Display', serif; font-size: 20px; color: #A07000; }
+
+  /* ── ABOUT US ── */
+  .about-section {
+    margin: 8px 24px 32px;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .about-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--blush);
+    border: 2px solid var(--rose);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--terracotta);
+    margin: 0 auto 14px;
+  }
+  .about-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .about-role {
+    font-size: 13px;
+    color: var(--terracotta);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .about-title {
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .about-bio {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding: 0 8px;
+  }
+  .about-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .about-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+    color: var(--ink-soft);
+    background: var(--cream);
+  }
+  .about-link:hover { transform: translateX(4px); }
+  .about-link.fb:hover { background: #E8F0FE; border-color: #A8C0F8; color: #1a56db; }
+  .about-link.yt:hover { background: #FEE8E8; border-color: #F8A8A8; color: #cc0000; }
+  .about-link.tt:hover { background: #E8FAF8; border-color: #A8EAE4; color: #00897b; }
+  .about-link-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: var(--blush);
+    color: var(--terracotta);
+  }
+  .about-link.fb .about-link-icon { background: #E8F0FE; color: #1a56db; }
+  .about-link.yt .about-link-icon { background: #FEE8E8; color: #cc0000; }
+  .about-link.tt .about-link-icon { background: #E8FAF8; color: #00897b; }
+
+  /* util */
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     SCREEN 1: DASHBOARD
+════════════════════════════════════════════ -->
+<div class="screen active" id="screen-dashboard">
+  <header>
+    <div class="logo"><span>Lani</span> · Be A Gift</div>
+    <div style="font-size:12px;color:var(--ink-muted);">Loving Languages</div>
+  </header>
+
+  <div class="hero">
+    <h1>Tiếng Anh Gia Đình<br><em>Cùng nuôi dưỡng tình yêu tiếng Anh!</em></h1>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">11</div>
+        <div class="stat-label">Chủ đề</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">110</div>
+        <div class="stat-label">Ngày học</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Hoạt động/ngày</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-label">
+      <span>Tiến độ tổng thể</span>
+      <span style="color:var(--terracotta);font-weight:500;">3 / 110 ngày</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width: 3%"></div>
+    </div>
+  </div>
+
+  <div class="streak-banner" style="margin-top:16px;">
+    <div class="streak-icon">🔥</div>
+    <div>
+      <div class="streak-num">3</div>
+      <div class="streak-text">ngày liên tiếp — Tuyệt vời!</div>
+    </div>
+  </div>
+
+  <div class="section-title">11 Chủ đề học</div>
+
+  <div class="topics-grid">
+    <div class="topic-card tc-morning" onclick="window.location.href='topic01-morning-routine.html'">
+      <div class="topic-badge badge-wip">3</div>
+      <span class="topic-icon">☀️</span>
+      <div class="topic-num">Topic 01</div>
+      <div class="topic-name">Morning Routine</div>
+      <div class="topic-vn">Chào ngày mới năng lượng</div>
+    </div>
+    <div class="topic-card tc-dressed" onclick="openTopic(1)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">👗</span>
+      <div class="topic-num">Topic 02</div>
+      <div class="topic-name">Getting Dressed</div>
+      <div class="topic-vn">Cùng con "lên đồ"</div>
+    </div>
+    <div class="topic-card tc-meal" onclick="openTopic(2)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🍚</span>
+      <div class="topic-num">Topic 03</div>
+      <div class="topic-name">Meal Time</div>
+      <div class="topic-vn">Giờ ăn vui vẻ</div>
+    </div>
+    <div class="topic-card tc-chores" onclick="openTopic(3)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🧹</span>
+      <div class="topic-num">Topic 04</div>
+      <div class="topic-name">Chores & Tidy Up</div>
+      <div class="topic-vn">Phụ tá nhỏ dọn dẹp</div>
+    </div>
+    <div class="topic-card tc-play" onclick="openTopic(4)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🎈</span>
+      <div class="topic-num">Topic 05</div>
+      <div class="topic-name">Play Time</div>
+      <div class="topic-vn">Giờ chơi khám phá</div>
+    </div>
+    <div class="topic-card tc-emotions" onclick="openTopic(5)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">💛</span>
+      <div class="topic-num">Topic 06</div>
+      <div class="topic-name">Expressing Emotions</div>
+      <div class="topic-vn">Gọi tên cảm xúc</div>
+    </div>
+    <div class="topic-card tc-supermarket" onclick="openTopic(6)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🛒</span>
+      <div class="topic-num">Topic 07</div>
+      <div class="topic-name">Supermarket Shopping</div>
+      <div class="topic-vn">Đi siêu thị cùng con</div>
+    </div>
+    <div class="topic-card tc-chef" onclick="openTopic(7)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">👨‍🍳</span>
+      <div class="topic-num">Topic 08</div>
+      <div class="topic-name">Little Chef</div>
+      <div class="topic-vn">Đầu bếp nhí vào bếp</div>
+    </div>
+    <div class="topic-card tc-out" onclick="openTopic(8)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🌍</span>
+      <div class="topic-num">Topic 09</div>
+      <div class="topic-name">Going Out</div>
+      <div class="topic-vn">Khám phá thế giới</div>
+    </div>
+    <div class="topic-card tc-bath" onclick="openTopic(9)">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🛁</span>
+      <div class="topic-num">Topic 10</div>
+      <div class="topic-name">Bath Time</div>
+      <div class="topic-vn">Giờ tắm mát mẻ</div>
+    </div>
+    <div class="topic-card tc-bed" onclick="openTopic(10)" style="grid-column: span 2;">
+      <div class="topic-badge badge-new">–</div>
+      <span class="topic-icon">🌙</span>
+      <div class="topic-num">Topic 11</div>
+      <div class="topic-name">Bedtime Routine</div>
+      <div class="topic-vn">Giờ đi ngủ ngọt ngào</div>
+    </div>
+  </div>
+
+  <div class="daily-quote">
+    <div class="quote-text">"The best gift you can give your child is your time, your attention, and your words."</div>
+    <div class="quote-attr">"Món quà tuyệt vời nhất ba mẹ có thể trao cho con chính là thời gian, sự hiện diện và những ngôn từ yêu thương."</div>
+  </div>
+
+  <div class="about-section">
+    <div class="about-avatar">L</div>
+    <div class="about-name">Lani</div>
+    <div class="about-role">Founder Be A Gift · Loving Languages</div>
+    <div class="about-title">Digital Creator | English Tutor</div>
+    <div class="about-bio">Sharing joyful and inspiring ways to learn English and love languages.</div>
+    <div class="about-links">
+      <a class="about-link fb" href="https://fb.com/beagifttotheworld" target="_blank">
+        <span class="about-link-icon">f</span> fb.com/beagifttotheworld
+      </a>
+      <a class="about-link yt" href="https://youtube.com/@beagifttotheworld" target="_blank">
+        <span class="about-link-icon">▶</span> youtube.com/@beagifttotheworld
+      </a>
+      <a class="about-link tt" href="https://tiktok.com/@lanibeagift" target="_blank">
+        <span class="about-link-icon">♪</span> tiktok.com/@lanibeagift
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     SCREEN 2: DAYS
+════════════════════════════════════════════ -->
+<div class="screen" id="screen-days">
+  <header>
+    <button class="back-btn" onclick="goBack('screen-dashboard')">← Về trang chủ</button>
+    <div class="logo"><span>Lani</span></div>
+  </header>
+
+  <div class="days-header">
+    <div id="days-topic-label" class="hero-eyebrow">Topic 01</div>
+    <div class="screen-title" id="days-topic-title">Morning <em>Routine</em></div>
+    <div class="screen-sub" id="days-topic-vn">Chào ngày mới năng lượng · 10 ngày học</div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-label">
+      <span>Tiến độ topic</span>
+      <span id="days-progress-label" style="color:var(--terracotta);font-weight:500;">3 / 10 ngày</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="days-progress-bar" style="width:30%"></div>
+    </div>
+  </div>
+
+  <div class="days-grid" id="days-grid">
+    <!-- generated by JS -->
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     SCREEN 3: LEARN
+════════════════════════════════════════════ -->
+<div class="screen" id="screen-learn">
+  <header>
+    <button class="back-btn" onclick="goBack('screen-days')">← Các ngày</button>
+    <div class="logo"><span>Lani</span></div>
+  </header>
+
+  <div class="learn-header">
+    <div id="learn-day-label" class="hero-eyebrow">Day 1 · Topic 01</div>
+    <div class="screen-title" id="learn-day-title">Morning <em>Routine</em></div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="switchMode('flashcard', this)">📇 Flashcard</button>
+    <button class="mode-tab" onclick="switchMode('vocab', this)">📖 Từ vựng</button>
+    <button class="mode-tab" onclick="switchMode('quiz', this)">❓ Quiz</button>
+    <button class="mode-tab" onclick="switchMode('dictation', this)">✍️ Dictation</button>
+    <button class="mode-tab" onclick="switchMode('shadowing', this)">🎤 Shadowing</button>
+  </div>
+
+  <!-- FLASHCARD MODE -->
+  <div class="learn-content" id="mode-flashcard">
+    <div style="font-size:13px;color:var(--ink-muted);text-align:center;margin-bottom:16px;">Bấm vào thẻ để xem nghĩa ✨</div>
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="card-front">
+          <div class="card-word" id="fc-word">wake up</div>
+          <div class="card-type" id="fc-type">phrasal verb</div>
+          <div class="card-hint">👆 Bấm để xem nghĩa</div>
+        </div>
+        <div class="card-back">
+          <div class="card-meaning" id="fc-meaning">thức dậy</div>
+          <div class="card-example" id="fc-example">"Wake up, it's time for school!"</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="fc-btn" onclick="prevCard()">←</button>
+      <div class="fc-count" id="fc-count">1 / 5</div>
+      <button class="fc-btn" onclick="nextCard()">→</button>
+    </div>
+    <div style="text-align:center;margin-top:24px;">
+      <button class="action-btn primary" style="max-width:200px;margin:0 auto;" onclick="switchMode('vocab', document.querySelector('.mode-tab:nth-child(2)'))">Xem từ vựng chi tiết →</button>
+    </div>
+  </div>
+
+  <!-- VOCAB MODE -->
+  <div class="learn-content" id="mode-vocab" style="display:none;">
+    <div class="vocab-list" id="vocab-list">
+      <!-- sample vocab card – real data goes here -->
+      <div class="vocab-card">
+        <div class="vocab-card-top">
+          <div class="vocab-word">wake up</div>
+          <div class="vocab-phonetic">/weɪk ʌp/</div>
+          <div class="vocab-type-badge">phr. v</div>
+        </div>
+        <div class="vocab-card-body">
+          <div class="vocab-meaning">thức dậy</div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Synonym</div>
+            <div class="vocab-row-val">get up, rise</div>
+          </div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Collocation</div>
+            <div class="vocab-row-val">wake up early · wake up refreshed · wake up late</div>
+          </div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Example</div>
+            <div class="vocab-row-val" style="font-style:italic;">"I wake up at 6 every morning to make breakfast for my family."</div>
+          </div>
+          <button class="audio-btn">🔊 Nghe phát âm</button>
+        </div>
+      </div>
+
+      <div class="vocab-card">
+        <div class="vocab-card-top">
+          <div class="vocab-word">stretch</div>
+          <div class="vocab-phonetic">/strɛtʃ/</div>
+          <div class="vocab-type-badge">verb</div>
+        </div>
+        <div class="vocab-card-body">
+          <div class="vocab-meaning">vươn vai, kéo giãn cơ thể</div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Synonym</div>
+            <div class="vocab-row-val">extend, reach out</div>
+          </div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Collocation</div>
+            <div class="vocab-row-val">stretch arms · stretch and yawn · morning stretch</div>
+          </div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Example</div>
+            <div class="vocab-row-val" style="font-style:italic;">"Let's stretch together before we start our day!"</div>
+          </div>
+          <button class="audio-btn">🔊 Nghe phát âm</button>
+        </div>
+      </div>
+
+      <div class="vocab-card">
+        <div class="vocab-card-top">
+          <div class="vocab-word">brush teeth</div>
+          <div class="vocab-phonetic">/brʌʃ tiːθ/</div>
+          <div class="vocab-type-badge">phrase</div>
+        </div>
+        <div class="vocab-card-body">
+          <div class="vocab-meaning">đánh răng</div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Collocation</div>
+            <div class="vocab-row-val">brush teeth twice a day · brush gently</div>
+          </div>
+          <div class="vocab-row">
+            <div class="vocab-row-label">Example</div>
+            <div class="vocab-row-val" style="font-style:italic;">"Don't forget to brush your teeth before bed, little one."</div>
+          </div>
+          <button class="audio-btn">🔊 Nghe phát âm</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:8px 0 4px;">
+        <div style="font-size:13px;color:var(--ink-muted);margin-bottom:12px;">Sẵn sàng kiểm tra chưa?</div>
+        <button class="action-btn primary" style="max-width:200px;margin:0 auto;" onclick="switchMode('quiz', document.querySelector('.mode-tab:nth-child(3)'))">Làm Quiz ngay →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODE -->
+  <div class="learn-content" id="mode-quiz" style="display:none;">
+    <div class="quiz-question-card">
+      <div class="quiz-num" id="quiz-num">Câu 1 / 3</div>
+      <div class="quiz-question" id="quiz-word">wake up</div>
+      <div class="quiz-instruction">Chọn nghĩa đúng của từ trên</div>
+    </div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <button class="quiz-nav-btn" id="quiz-next-btn" onclick="nextQuiz()" disabled>Câu tiếp theo →</button>
+  </div>
+
+  <!-- DICTATION MODE -->
+  <div class="learn-content" id="mode-dictation" style="display:none;">
+    <div style="font-size:13px;color:var(--ink-muted);text-align:center;margin-bottom:16px;">Nghe và gõ lại từ bạn nghe được 👂</div>
+    <div class="dictation-card">
+      <div class="dictation-word-hidden" id="dict-blanks">_ _ _ _   _ _</div>
+      <div class="dictation-hint" id="dict-hint">Từ có <strong>2</strong> từ · Gợi ý: hoạt động buổi sáng</div>
+      <button class="play-big-btn" id="dict-play-btn" onclick="playDictation()">▶</button>
+      <input class="dictation-input" id="dict-input" type="text" placeholder="Gõ từ bạn nghe..." oninput="checkDictation()" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="quiz-feedback" id="dict-feedback"></div>
+    <button class="quiz-nav-btn" id="dict-next-btn" onclick="nextDictation()" disabled>Từ tiếp theo →</button>
+  </div>
+
+  <!-- SHADOWING MODE -->
+  <div class="learn-content" id="mode-shadowing" style="display:none;">
+    <div style="font-size:13px;color:var(--ink-muted);text-align:center;margin-bottom:16px;">Nghe – bắt chước – tự tin nói cùng con 🎤</div>
+
+    <div class="shadowing-card">
+      <div class="shadowing-phrase">Good morning, sunshine!</div>
+      <div class="shadowing-phonetic">/ɡʊd ˈmɔːrnɪŋ ˈsʌnʃaɪn/</div>
+      <div class="shadowing-vn">Chào buổi sáng, ánh nắng nhỏ của mẹ!</div>
+      <div class="shadowing-actions">
+        <button class="action-btn" onclick="playShadow(this)">▶ Nghe chậm</button>
+        <button class="action-btn primary" onclick="playShadow(this)">▶▶ Nghe bình thường</button>
+      </div>
+    </div>
+
+    <div class="shadowing-card">
+      <div class="shadowing-phrase">Time to wake up, sleepyhead!</div>
+      <div class="shadowing-phonetic">/taɪm tə weɪk ʌp ˈsliːpiˌhɛd/</div>
+      <div class="shadowing-vn">Dậy đi nào, bé lười ngủ ơi!</div>
+      <div class="shadowing-actions">
+        <button class="action-btn" onclick="playShadow(this)">▶ Nghe chậm</button>
+        <button class="action-btn primary" onclick="playShadow(this)">▶▶ Nghe bình thường</button>
+      </div>
+    </div>
+
+    <div class="shadowing-card">
+      <div class="shadowing-phrase">Let's brush our teeth together!</div>
+      <div class="shadowing-phonetic">/lɛts brʌʃ ɔːr tiːθ təˈɡɛðər/</div>
+      <div class="shadowing-vn">Mình cùng đánh răng nào!</div>
+      <div class="shadowing-actions">
+        <button class="action-btn" onclick="playShadow(this)">▶ Nghe chậm</button>
+        <button class="action-btn primary" onclick="playShadow(this)">▶▶ Nghe bình thường</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:8px;">
+      <button class="action-btn primary" style="max-width:240px;margin:0 auto;" onclick="finishDay()">✅ Hoàn thành ngày học!</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     SCREEN 4: COMPLETION
+════════════════════════════════════════════ -->
+<div class="screen" id="screen-done">
+  <header>
+    <button class="back-btn" onclick="goBack('screen-dashboard')">← Về trang chủ</button>
+    <div class="logo"><span>Lani</span></div>
+  </header>
+  <div class="completion-screen">
+    <div class="completion-icon">🌟</div>
+    <div class="completion-title">Tuyệt vời lắm!</div>
+    <p class="completion-sub">Bạn đã hoàn thành <strong>Day 1 – Morning Routine</strong>.<br>Cùng con thực hành những từ này nhé!</p>
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;width:100%;max-width:320px;margin-bottom:28px;text-align:left;">
+      <div style="font-size:12px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Kết quả hôm nay</div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:14px;color:var(--ink-muted);">📇 Flashcard</span>
+        <span style="font-size:14px;color:var(--sage-deep);font-weight:500;">✓ Hoàn thành</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:14px;color:var(--ink-muted);">❓ Quiz</span>
+        <span style="font-size:14px;color:var(--sage-deep);font-weight:500;">3/3 đúng</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:14px;color:var(--ink-muted);">✍️ Dictation</span>
+        <span style="font-size:14px;color:var(--sage-deep);font-weight:500;">✓ Hoàn thành</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;">
+        <span style="font-size:14px;color:var(--ink-muted);">🎤 Shadowing</span>
+        <span style="font-size:14px;color:var(--sage-deep);font-weight:500;">✓ Hoàn thành</span>
+      </div>
+    </div>
+    <button class="completion-btn" onclick="goBack('screen-days')">Tiếp tục hành trình →</button>
+  </div>
+</div>
+
+
+<script>
+// ── DATA (placeholder – bố mẹ sẽ điền nội dung sau) ──
+const TOPICS = [
+  { id: 0, num: '01', name: 'Morning Routine', vn: 'Chào ngày mới năng lượng', icon: '☀️', donedays: 3 },
+  { id: 1, num: '02', name: 'Getting Dressed', vn: 'Cùng con "lên đồ"', icon: '👗', donedays: 0 },
+  { id: 2, num: '03', name: 'Meal Time', vn: 'Giờ ăn vui vẻ', icon: '🍚', donedays: 0 },
+  { id: 3, num: '04', name: 'Chores & Tidy Up', vn: 'Phụ tá nhỏ dọn dẹp', icon: '🧹', donedays: 0 },
+  { id: 4, num: '05', name: 'Play Time', vn: 'Giờ chơi khám phá', icon: '🎈', donedays: 0 },
+  { id: 5, num: '06', name: 'Expressing Emotions', vn: 'Gọi tên cảm xúc', icon: '💛', donedays: 0 },
+  { id: 6, num: '07', name: 'Supermarket Shopping', vn: 'Đi siêu thị cùng con', icon: '🛒', donedays: 0 },
+  { id: 7, num: '08', name: 'Little Chef', vn: 'Đầu bếp nhí vào bếp', icon: '👨‍🍳', donedays: 0 },
+  { id: 8, num: '09', name: 'Going Out', vn: 'Khám phá thế giới', icon: '🌍', donedays: 0 },
+  { id: 9, num: '10', name: 'Bath Time', vn: 'Giờ tắm mát mẻ', icon: '🛁', donedays: 0 },
+  { id: 10, num: '11', name: 'Bedtime Routine', vn: 'Giờ đi ngủ ngọt ngào', icon: '🌙', donedays: 0 },
+];
+
+// Sample vocab for Day 1 – Morning Routine (placeholder)
+const DAY_VOCAB = [
+  { word: 'wake up', type: 'phr. v', phonetic: '/weɪk ʌp/', meaning: 'thức dậy', example: '"Wake up, it\'s time for school!"' },
+  { word: 'stretch', type: 'verb', phonetic: '/strɛtʃ/', meaning: 'vươn vai', example: '"Let\'s stretch together before we start our day!"' },
+  { word: 'brush teeth', type: 'phrase', phonetic: '/brʌʃ tiːθ/', meaning: 'đánh răng', example: '"Don\'t forget to brush your teeth, little one."' },
+  { word: 'get dressed', type: 'phr. v', phonetic: '/ɡɛt drɛst/', meaning: 'mặc quần áo', example: '"Time to get dressed for a new day!"' },
+  { word: 'have breakfast', type: 'phrase', phonetic: '/hæv ˈbrɛkfəst/', meaning: 'ăn sáng', example: '"We always have breakfast together as a family."' },
+];
+
+let currentTopic = 0;
+let currentDay = 1;
+
+// ── NAVIGATION ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goBack(to) { showScreen(to); }
+
+// ── TOPIC ──
+function openTopic(idx) {
+  currentTopic = idx;
+  const t = TOPICS[idx];
+  document.getElementById('days-topic-label').textContent = `Topic ${t.num}`;
+  document.getElementById('days-topic-title').innerHTML = `${t.icon} <em>${t.name}</em>`;
+  document.getElementById('days-topic-vn').textContent = `${t.vn} · 10 ngày học`;
+  const pct = t.donedays * 10;
+  document.getElementById('days-progress-label').textContent = `${t.donedays} / 10 ngày`;
+  document.getElementById('days-progress-bar').style.width = pct + '%';
+  renderDaysGrid(t.donedays);
+  showScreen('screen-days');
+}
+
+function renderDaysGrid(done) {
+  const grid = document.getElementById('days-grid');
+  grid.innerHTML = '';
+  const startDay = currentTopic * 10 + 1;
+  for (let i = 1; i <= 10; i++) {
+    const globalDay = startDay + i - 1;
+    const cls = i <= done ? 'done' : (i === done + 1 ? 'active' : 'locked');
+    const locked = i > done + 1;
+    grid.innerHTML += `
+      <div class="day-card ${cls}" onclick="${locked ? '' : `openDay(${globalDay})`}">
+        <div class="day-num">${globalDay}</div>
+        <div class="day-label">Day ${globalDay}</div>
+        ${i <= done ? '<div class="day-check">✓</div>' : ''}
+      </div>`;
+  }
+}
+
+// ── LEARN DAY ──
+function openDay(day) {
+  currentDay = day;
+  const t = TOPICS[currentTopic];
+  document.getElementById('learn-day-label').textContent = `Day ${day} · Topic ${t.num}`;
+  document.getElementById('learn-day-title').innerHTML = `${t.icon} <em>${t.name}</em>`;
+  fcIdx = 0; updateFlashcard();
+  quizIdx = 0; renderQuiz();
+  dictIdx = 0; renderDictation();
+  switchMode('flashcard', document.querySelector('.mode-tab'));
+  showScreen('screen-learn');
+}
+
+// ── MODES ──
+function switchMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  ['flashcard','vocab','quiz','dictation','shadowing'].forEach(m => {
+    const el = document.getElementById('mode-'+m);
+    if(el) el.style.display = m===mode ? 'block' : 'none';
+  });
+}
+
+// ── FLASHCARD ──
+let fcIdx = 0;
+let fcFlipped = false;
+function updateFlashcard() {
+  fcFlipped = false;
+  document.getElementById('flashcard').classList.remove('flipped');
+  const v = DAY_VOCAB[fcIdx];
+  document.getElementById('fc-word').textContent = v.word;
+  document.getElementById('fc-type').textContent = v.type;
+  document.getElementById('fc-meaning').textContent = v.meaning;
+  document.getElementById('fc-example').textContent = v.example;
+  document.getElementById('fc-count').textContent = `${fcIdx+1} / ${DAY_VOCAB.length}`;
+}
+function flipCard() { fcFlipped=!fcFlipped; document.getElementById('flashcard').classList.toggle('flipped',fcFlipped); }
+function nextCard() { if(fcIdx<DAY_VOCAB.length-1){fcIdx++;updateFlashcard();} }
+function prevCard() { if(fcIdx>0){fcIdx--;updateFlashcard();} }
+
+// ── QUIZ ──
+let quizIdx = 0;
+let quizAnswered = false;
+const QUIZ_Q = [
+  { word: 'wake up', options: ['thức dậy','đánh răng','ăn sáng','vươn vai'], answer: 0 },
+  { word: 'stretch', options: ['mặc đồ','vươn vai','tắm rửa','chạy bộ'], answer: 1 },
+  { word: 'brush teeth', options: ['rửa mặt','chải tóc','đánh răng','ăn sáng'], answer: 2 },
+];
+function renderQuiz() {
+  quizAnswered = false;
+  const q = QUIZ_Q[quizIdx % QUIZ_Q.length];
+  document.getElementById('quiz-num').textContent = `Câu ${quizIdx+1} / ${QUIZ_Q.length}`;
+  document.getElementById('quiz-word').textContent = q.word;
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  q.options.forEach((o,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = o;
+    btn.onclick = () => selectQuiz(i, q.answer, btn);
+    opts.appendChild(btn);
+  });
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'quiz-feedback'; fb.textContent = '';
+  document.getElementById('quiz-next-btn').disabled = true;
+}
+function selectQuiz(chosen, correct, btn) {
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((o,i) => { if(i===correct) o.classList.add('correct'); });
+  const fb = document.getElementById('quiz-feedback');
+  if(chosen===correct) {
+    btn.classList.add('correct');
+    fb.textContent = '🎉 Chính xác! Tuyệt vời!';
+    fb.className = 'quiz-feedback ok show';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = `❌ Chưa đúng. Đáp án là: "${QUIZ_Q[quizIdx%QUIZ_Q.length].options[correct]}"`;
+    fb.className = 'quiz-feedback nope show';
+  }
+  document.getElementById('quiz-next-btn').disabled = false;
+}
+function nextQuiz() {
+  quizIdx++;
+  if(quizIdx >= QUIZ_Q.length) {
+    document.getElementById('quiz-next-btn').textContent = '✅ Hoàn thành Quiz!';
+    document.getElementById('quiz-next-btn').onclick = () => switchMode('dictation', document.querySelector('.mode-tab:nth-child(4)'));
+  } else { renderQuiz(); }
+}
+
+// ── DICTATION ──
+let dictIdx = 0;
+const DICT_WORDS = ['wake up','stretch','brush teeth'];
+let dictPlaying = false;
+function renderDictation() {
+  const w = DICT_WORDS[dictIdx % DICT_WORDS.length];
+  const blanks = w.replace(/[a-z]/gi,'_');
+  document.getElementById('dict-blanks').textContent = blanks;
+  document.getElementById('dict-input').value = '';
+  document.getElementById('dict-input').className = 'dictation-input';
+  document.getElementById('dict-feedback').className = 'quiz-feedback';
+  document.getElementById('dict-next-btn').disabled = true;
+  document.getElementById('dict-play-btn').className = 'play-big-btn';
+  dictPlaying = false;
+}
+function playDictation() {
+  const btn = document.getElementById('dict-play-btn');
+  btn.classList.toggle('playing');
+  dictPlaying = !dictPlaying;
+  // In production: use Web Speech API or audio files
+  if(dictPlaying && 'speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(DICT_WORDS[dictIdx % DICT_WORDS.length]);
+    u.lang = 'en-US'; u.rate = 0.8;
+    speechSynthesis.speak(u);
+    u.onend = () => { btn.classList.remove('playing'); dictPlaying = false; };
+  }
+}
+function checkDictation() {
+  const inp = document.getElementById('dict-input');
+  const ans = DICT_WORDS[dictIdx % DICT_WORDS.length].toLowerCase();
+  const val = inp.value.toLowerCase().trim();
+  if(!val) return;
+  if(val === ans) {
+    inp.className = 'dictation-input correct';
+    const fb = document.getElementById('dict-feedback');
+    fb.textContent = '🎉 Chính xác!'; fb.className = 'quiz-feedback ok show';
+    document.getElementById('dict-next-btn').disabled = false;
+  }
+}
+function nextDictation() {
+  dictIdx++;
+  if(dictIdx >= DICT_WORDS.length) {
+    switchMode('shadowing', document.querySelector('.mode-tab:nth-child(5)'));
+  } else { renderDictation(); }
+}
+
+// ── SHADOWING ──
+function playShadow(btn) {
+  const phrase = btn.closest('.shadowing-card').querySelector('.shadowing-phrase').textContent;
+  if('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(phrase);
+    u.lang = 'en-US';
+    u.rate = btn.textContent.includes('chậm') ? 0.6 : 0.9;
+    speechSynthesis.speak(u);
+  }
+}
+
+// ── FINISH DAY ──
+function finishDay() { showScreen('screen-done'); }
+
+// ── INIT ──
+renderDaysGrid(3);
+</script>
+</body>
+</html>
