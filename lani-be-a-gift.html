@@ -24,12 +24,10 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
 
-  /* ── SCREENS ── */
+  /* ── SCREENS & LOADING ── */
   .screen { display: none; min-height: 100vh; flex-direction: column; }
   .screen.active { display: flex; }
-
-  /* ── LOADING ── */
-  #loading-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+  #loading-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
   .spinner { width: 40px; height: 40px; border: 3px solid var(--blush); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -52,7 +50,7 @@
   .logout-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink-soft); cursor: pointer; transition: all 0.2s; }
   .logout-btn:hover { background: var(--blush); border-color: var(--rose); }
 
-  /* ── HERO & DASHBOARD CSS (Giữ nguyên của Lani) ── */
+  /* ── HERO & DASHBOARD ── */
   .hero { background: var(--warm-white); padding: 48px 24px 40px; text-align: center; position: relative; overflow: hidden; }
   .hero h1 { font-family: 'Playfair Display', serif; font-size: 38px; line-height: 1.15; color: var(--ink); margin-bottom: 8px; }
   .hero h1 em { color: var(--terracotta); font-style: italic; }
@@ -70,7 +68,7 @@
   .streak-text { font-size: 14px; color: #7A5A00; line-height: 1.4; }
   .streak-num { font-family: 'Playfair Display', serif; font-size: 20px; color: #A07000; }
   
-  .section-title { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-muted); padding: 0 24px; margin: 20px 0 12px; }
+  .section-title { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-muted); padding: 0 24px; margin: 24px 0 12px; font-weight: 600;}
   .topics-grid { padding: 0 24px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .topic-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 16px 16px; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
   .topic-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(44,36,22,0.1); }
@@ -96,6 +94,23 @@
   .badge-done { background: var(--sage-light); color: var(--sage-deep); }
   .badge-wip { background: var(--sunny-light); color: #8A6A00; }
   .badge-new { background: var(--blush); color: var(--ink-muted); }
+
+  /* ── LEADERBOARD (KẾT NỐI CỘNG ĐỒNG) ── */
+  .leaderboard-section { margin: 0 24px 32px; }
+  .lb-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 16px; box-shadow: 0 4px 12px rgba(44,36,22,0.03); }
+  .lb-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .lb-item:last-child { border-bottom: none; }
+  .lb-rank { width: 32px; font-weight: 600; color: var(--ink-muted); font-size: 15px; text-align: center; margin-right: 8px; }
+  .lb-rank.top1 { font-size: 22px; }
+  .lb-rank.top2 { font-size: 22px; }
+  .lb-rank.top3 { font-size: 22px; }
+  .lb-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--blush); color: var(--terracotta); display: flex; align-items: center; justify-content: center; font-weight: 600; font-family: 'Playfair Display', serif; font-size: 18px; text-transform: uppercase; margin-right: 14px; border: 2px solid var(--rose); flex-shrink: 0; }
+  .lb-info { flex: 1; min-width: 0; }
+  .lb-name { font-size: 15px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .lb-stat { font-size: 12px; color: var(--ink-muted); }
+  .lb-streak { background: var(--sunny-light); color: #7A5A00; padding: 6px 12px; border-radius: 99px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px; border: 1px solid var(--sunny); }
+  .lb-me { background: var(--sage-light); border-radius: var(--radius-sm); padding: 14px 12px; margin: 0 -12px; border-bottom: none; border: 1px solid var(--sage); }
+  .lb-me .lb-avatar { background: var(--sage); color: white; border-color: var(--sage-deep); }
 
   /* ── QUOTE & ABOUT US ── */
   .daily-quote { margin: 0 24px 24px; padding: 16px 20px; background: var(--warm-white); border-left: 3px solid var(--terracotta); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
@@ -168,6 +183,13 @@
   <div class="topics-grid" id="main-topics-grid">
     </div>
 
+  <div class="section-title">Kết nối cộng đồng 🏆</div>
+  <div class="leaderboard-section">
+    <div class="lb-card" id="leaderboard-container">
+      <div style="text-align:center; padding: 20px; color: var(--ink-muted);">Đang tải danh sách...</div>
+    </div>
+  </div>
+
   <div class="daily-quote">
     <div class="quote-text">"The best gift you can give your child is your time, your attention, and your words."</div>
     <div class="quote-attr">"Món quà tuyệt vời nhất ba mẹ có thể trao cho con chính là thời gian, sự hiện diện và những ngôn từ yêu thương."</div>
@@ -190,8 +212,7 @@ const firebaseConfig = {
   projectId: "dailyenglish-aca50",
   storageBucket: "dailyenglish-aca50.firebasestorage.app",
   messagingSenderId: "876041668209",
-  appId: "1:876041668209:web:4ee8019d0605650a90bdd0",
-  measurementId: "G-6Z5QP960FP"
+  appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -216,6 +237,7 @@ const TOPICS_INFO = [
 ];
 
 let isLoginMode = true;
+let currentUserObj = null;
 
 // ==========================================
 // 3. QUẢN LÝ ĐĂNG NHẬP & TẢI DỮ LIỆU
@@ -223,8 +245,10 @@ let isLoginMode = true;
 auth.onAuthStateChanged((user) => {
   const loading = document.getElementById('loading-overlay');
   if (user) {
+    currentUserObj = user;
     loadUserData(user);
   } else {
+    currentUserObj = null;
     loading.style.display = 'none';
     showScreen('screen-auth');
   }
@@ -252,7 +276,6 @@ async function handleAuth() {
     errorDiv.style.color = "var(--ink-muted)";
     errorDiv.textContent = "Đang kiểm tra quyền truy cập...";
 
-    // Kiểm tra Whitelist
     const whitelistDoc = await db.collection("whitelist").doc(email).get();
 
     if (!whitelistDoc.exists) {
@@ -300,23 +323,98 @@ async function loadUserData(user) {
        const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
        if (diffDays > 1) {
            userData.streak = 0; // Đưa về 0
-           // Lưu ngay án phạt này lên Database
            await userRef.set({ streak: 0 }, { merge: true });
        }
     }
   } else {
-    // Tài khoản tinh khôi
+    // Tài khoản mới
     userData = { email: user.email, streak: 0, lastActiveTime: 0, progress: {} };
     await userRef.set(userData);
   }
 
   renderDashboardUI(userData);
+  await renderLeaderboard(); // Tải bảng xếp hạng
+  
   document.getElementById('loading-overlay').style.display = 'none';
   showScreen('screen-dashboard');
 }
 
 // ==========================================
-// 4. HIỂN THỊ GIAO DIỆN DASHBOARD
+// 4. HIỂN THỊ BẢNG XẾP HẠNG CỘNG ĐỒNG
+// ==========================================
+async function renderLeaderboard() {
+  const lbContainer = document.getElementById('leaderboard-container');
+  try {
+    // Lấy top 10 học viên có streak cao nhất (lọc những ai lớn hơn 0 cho đẹp)
+    const snapshot = await db.collection("users").orderBy("streak", "desc").limit(10).get();
+    
+    if (snapshot.empty) {
+      lbContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--ink-muted);">Chưa có dữ liệu học viên.</div>';
+      return;
+    }
+
+    let html = '';
+    let rank = 1;
+    let foundMe = false;
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const streak = data.streak || 0;
+      
+      // Bỏ qua những tài khoản có streak = 0 trên bảng vàng
+      if (streak === 0) return; 
+
+      // Xử lý tên hiển thị (bảo mật email)
+      const fullEmail = data.email || 'Học viên';
+      const name = fullEmail.split('@')[0]; // Chỉ lấy phần trước @
+      const initial = name.charAt(0).toUpperCase();
+
+      // Xử lý UI Huy chương
+      let rankClass = '';
+      let rankDisplay = rank;
+      if (rank === 1) { rankClass = 'top1'; rankDisplay = '🥇'; }
+      else if (rank === 2) { rankClass = 'top2'; rankDisplay = '🥈'; }
+      else if (rank === 3) { rankClass = 'top3'; rankDisplay = '🥉'; }
+
+      // Tính tổng số ngày đã học của người này
+      let totalDays = 0;
+      if (data.progress) {
+        Object.values(data.progress).forEach(val => totalDays += val);
+      }
+
+      // Đánh dấu nếu là chính bản thân mình
+      const isMe = currentUserObj && doc.id === currentUserObj.uid;
+      if (isMe) foundMe = true;
+      const meClass = isMe ? 'lb-me' : '';
+      const meText = isMe ? ' (Bạn)' : '';
+
+      html += `
+        <div class="lb-item ${meClass}">
+          <div class="lb-rank ${rankClass}">${rankDisplay}</div>
+          <div class="lb-avatar">${initial}</div>
+          <div class="lb-info">
+            <div class="lb-name">${name}${meText}</div>
+            <div class="lb-stat">Đã học: ${totalDays} ngày</div>
+          </div>
+          <div class="lb-streak">🔥 ${streak}</div>
+        </div>
+      `;
+      rank++;
+    });
+
+    if (html === '') {
+      lbContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--ink-muted);">Hãy là người đầu tiên tạo Streak để lên Bảng vàng nhé!</div>';
+    } else {
+      lbContainer.innerHTML = html;
+    }
+  } catch (error) {
+    console.error("Lỗi tải bảng xếp hạng:", error);
+    lbContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--coral);">Đang kết nối dữ liệu cộng đồng...</div>';
+  }
+}
+
+// ==========================================
+// 5. HIỂN THỊ GIAO DIỆN DASHBOARD
 // ==========================================
 function renderDashboardUI(data) {
   // 1. Render Streak
@@ -338,10 +436,7 @@ function renderDashboardUI(data) {
     else if (daysDone > 0) badgeHtml = `<div class="topic-badge badge-wip">${daysDone}</div>`;
     else badgeHtml = `<div class="topic-badge badge-new">–</div>`;
 
-    // Nếu không phải Topic 01, hiện thông báo chưa cập nhật
     const clickAction = index === 0 ? `window.location.href='${t.url}'` : `alert('Topic này đang được Lani hoàn thiện nhé!')`;
-    
-    // Xử lý giao diện cho box số 11 (trải dài)
     const extraStyle = index === 10 ? `style="grid-column: span 2;"` : '';
 
     grid.innerHTML += `
