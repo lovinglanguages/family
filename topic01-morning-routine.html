@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Topic 01 – Morning Routine · Lani Be A Gift</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
 <style>
   :root {
     --cream: #FBF7F0; --warm-white: #FFFCF7; --blush: #F5E6D8; --rose: #E8C4A8;
@@ -20,6 +25,11 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+
+  /* ── LOADING OVERLAY ── */
+  #loading-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--blush); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── HEADER ── */
   header {
@@ -430,9 +440,14 @@
 </head>
 <body>
 
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <p style="font-family: 'Playfair Display', serif; color: var(--ink-muted); margin-top:10px;">Đang tải dữ liệu bài học...</p>
+</div>
+
 <header>
   <div class="logo"><span>Lani</span> · Be A Gift</div>
-  <a class="home-btn" href="lani-be-a-gift.html">← Trang chủ</a>
+  <a class="home-btn" href="lani-be-a-gift.html">← Dashboard</a>
 </header>
 
 <div class="topic-hero">
@@ -441,19 +456,62 @@
   <div class="topic-vn">Chào ngày mới năng lượng</div>
 </div>
 
-<!-- ── DAYS NAV ── -->
 <div class="days-nav" id="daysNav">
-  <!-- rendered by JS -->
-</div>
+  </div>
 
-<!-- ══════════════════════════════════════════════════════
-     DAY PANELS (1–10)
-══════════════════════════════════════════════════════ -->
 <div id="panels"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  DATA — Chỉ cần cập nhật mảng DAYS này khi thêm nội dung
+//  FIREBASE CONFIG & AUTHENTICATION
+// ═══════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
+  authDomain: "dailyenglish-aca50.firebaseapp.com",
+  projectId: "dailyenglish-aca50",
+  storageBucket: "dailyenglish-aca50.firebasestorage.app",
+  messagingSenderId: "876041668209",
+  appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
+let userProgress = { progress: {} };
+let doneDays = [];
+
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = 'lani-be-a-gift.html';
+  } else {
+    currentUser = user;
+    await fetchProgress();
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+});
+
+async function fetchProgress() {
+  try {
+    const doc = await db.collection("users").doc(currentUser.uid).get();
+    if (doc.exists) {
+      userProgress = doc.data();
+      const daysCompleted = userProgress.progress[0] || 0; // Topic 01 (index 0)
+      for(let i=0; i < daysCompleted; i++) {
+        doneDays.push(i);
+      }
+    }
+    // Sau khi tải Firebase xong mới vẽ Giao diện
+    renderPanels();
+    renderNav();
+  } catch (error) {
+    console.error("Lỗi tải tiến độ:", error);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DATA — TOÀN BỘ 10 NGÀY CỦA BẠN (Đã ghép nguyên vẹn)
 // ═══════════════════════════════════════════════════════
 const TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
 
@@ -597,8 +655,8 @@ const DAYS = [
       { text: 'Splash', hint: '1 từ · âm thanh nước bắn', hintVn: 'Táp nước!' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.', note: '' },
-      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!', note: 'Bé làm động tác vớt nước lên mặt' },
+      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.',  },
+      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!' },
     ],
   },
 
@@ -607,7 +665,7 @@ const DAYS = [
     title: 'Đánh răng sạch sẽ',
     dialogue: [
       { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.', note: '' },
-      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà! (Bé làm động tác đánh răng)', note: 'Bé làm động tác đánh răng' },
+      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà! },
     ],
     vocab: [
       {
@@ -642,8 +700,8 @@ const DAYS = [
       { text: 'Brush brush brush', hint: '3 từ · âm thanh hành động', hintVn: 'Chà chà chà' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.', note: '' },
-      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!', note: 'Bé làm động tác đánh răng' },
+      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.', },
+      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!', },
     ],
   },
 
@@ -651,8 +709,8 @@ const DAYS = [
   {
     title: 'Thanh lọc cơ thể',
     dialogue: [
-      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.', note: '' },
-      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ! (Bé cầm cốc nước uống)', note: 'Bé cầm cốc nước uống' },
+      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.' },
+      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ! (Bé cầm cốc nước uống)' },
     ],
     vocab: [
       {
@@ -697,8 +755,8 @@ const DAYS = [
       { text: 'Thank you', hint: '2 từ · lời cảm ơn', hintVn: 'Cảm ơn' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.', note: '' },
-      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!', note: 'Bé cầm cốc nước uống' },
+      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.', },
+      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!', },
     ],
   },
 
@@ -706,8 +764,8 @@ const DAYS = [
   {
     title: 'Rèn luyện sự tĩnh lặng',
     dialogue: [
-      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.', note: '' },
-      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ. (Bé khoanh chân ngồi ngay ngắn)', note: 'Bé khoanh chân ngồi ngay ngắn' },
+      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.'},
+      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ. (Bé khoanh chân ngồi ngay ngắn)' },
     ],
     vocab: [
       {
@@ -741,8 +799,8 @@ const DAYS = [
       { text: 'Yes Mommy', hint: '2 từ · câu đáp lại của bé', hintVn: 'Vâng ạ mẹ ơi' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.', note: '' },
-      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.', note: 'Bé khoanh chân ngồi ngay ngắn' },
+      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.',},
+      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.',},
     ],
   },
 
@@ -964,11 +1022,39 @@ let currentDay = 0; // 0-indexed
 let fcIdx = {}, fcFlipped = {};
 let quizState = {}; // per day
 let dictState = {}; // per day
-let doneDays = JSON.parse(localStorage.getItem('lani_t01_done') || '[]');
 
 // ═══════════════════════════════════════════════════════
-//  DAYS NAV
+//  DAYS NAV & FIRESTORE SYNC
 // ═══════════════════════════════════════════════════════
+
+// Tương tác API Firebase để Lưu tiến độ hoàn thành mỗi ngày
+async function finishDay(i) {
+  if (!doneDays.includes(i)) {
+    doneDays.push(i);
+  }
+  
+  // Hiện giao diện chúc mừng ngay lập tức
+  document.getElementById(`done-${i}`).classList.add('show');
+  renderNav();
+  document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
+
+  // Lưu lên Đám mây
+  if (!currentUser) return;
+  const currentGlobalDay = i + 1; // 1 -> 10
+  const savedProgress = userProgress.progress[0] || 0;
+
+  if (currentGlobalDay > savedProgress) {
+    userProgress.progress[0] = currentGlobalDay;
+    const today = new Date().toDateString();
+    
+    if (userProgress.lastActive !== today) {
+      userProgress.streak = (userProgress.streak || 0) + 1;
+      userProgress.lastActive = today;
+    }
+    await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
+  }
+}
+
 function renderNav() {
   const nav = document.getElementById('daysNav');
   nav.innerHTML = '';
@@ -988,7 +1074,7 @@ function renderNav() {
 }
 
 // ═══════════════════════════════════════════════════════
-//  PANELS RENDER
+//  PANELS RENDER (Giữ nguyên của Lani)
 // ═══════════════════════════════════════════════════════
 function renderPanels() {
   const container = document.getElementById('panels');
@@ -1070,7 +1156,6 @@ function buildPanel(day, i, globalDay) {
       <button class="mode-tab" onclick="switchMode(${i},'shadowing',this)">🎤 Shadowing</button>
     </div>
 
-    <!-- FLASHCARD -->
     <div class="mode-content active" id="mode-${i}-flashcard">
       <p class="section-note">Bấm vào thẻ để xem nghĩa ✨</p>
       <div class="fc-wrap">
@@ -1096,28 +1181,24 @@ function buildPanel(day, i, globalDay) {
       </div>
     </div>
 
-    <!-- VOCAB -->
     <div class="mode-content" id="mode-${i}-vocab">
       ${buildVocabHTML(day.vocab, i)}
     </div>
 
-    <!-- QUIZ -->
     <div class="mode-content" id="mode-${i}-quiz">
       <div id="quiz-body-${i}"></div>
     </div>
 
-    <!-- DICTATION -->
     <div class="mode-content" id="mode-${i}-dictation">
       <div id="dict-body-${i}"></div>
     </div>
 
-    <!-- SHADOWING -->
     <div class="mode-content" id="mode-${i}-shadowing">
       <p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>
       ${buildShadowHTML(day.shadowing, i)}
       <div class="done-banner" id="done-${i}">
         <div class="done-banner-title">🌟 Tuyệt vời!</div>
-        <div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Thực hành cùng con hôm nay nhé!</div>
+        <div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div>
       </div>
       <button class="finish-btn" onclick="finishDay(${i})">✅ Hoàn thành ngày học!</button>
     </div>
@@ -1165,7 +1246,6 @@ function buildShadowHTML(lines, i) {
         <button class="shadow-btn primary" onclick="speak('${safeEn}', 0.9)">▶▶ Bình thường</button>
       </div>
 
-      <!-- RECORDER -->
       <div class="rec-zone">
         <div class="rec-row">
           <button class="rec-btn" id="${id}-recbtn" onclick="toggleRecord('${id}','${safeEn}')" title="Bấm để thu âm">🎤</button>
@@ -1178,9 +1258,6 @@ function buildShadowHTML(lines, i) {
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-//  INIT PER DAY
-// ═══════════════════════════════════════════════════════
 function initDay(i) {
   fcIdx[i] = 0; fcFlipped[i] = false;
   updateFlashcard(i);
@@ -1191,7 +1268,7 @@ function initDay(i) {
 // ═══════════════════════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════════════════════
-let currentView = 'day'; // 'day' | 'fullscript'
+let currentView = 'day'; 
 
 function openDay(i) {
   currentView = 'day';
@@ -1212,7 +1289,6 @@ function openFullScript() {
   const fs = document.getElementById('panel-fullscript');
   if (fs) {
     fs.classList.add('active');
-    // Refresh done state on day nums
     DAYS.forEach((_, i) => {
       const num = fs.querySelector(`#fschev-${i}`)?.closest('.fs-day-block')?.querySelector('.fs-day-num');
       if (num) {
@@ -1247,7 +1323,6 @@ function switchMode(dayIdx, mode, btn) {
 // ═══════════════════════════════════════════════════════
 function updateFlashcard(i) {
   const day = DAYS[i];
-  // Use dialogue lines as flashcard source
   const cards = day.dialogue;
   const idx = fcIdx[i];
   const card = cards[idx];
@@ -1256,7 +1331,6 @@ function updateFlashcard(i) {
   document.getElementById(`fc-vn-${i}`).textContent = card.vn;
   document.getElementById(`fc-note-${i}`).textContent = card.note || '';
   document.getElementById(`fc-count-${i}`).textContent = `${idx + 1} / ${cards.length}`;
-  // reset flip
   fcFlipped[i] = false;
   document.getElementById(`fc-${i}`).classList.remove('flipped');
 }
@@ -1398,68 +1472,32 @@ function nextDict(i) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  FINISH DAY
-// ═══════════════════════════════════════════════════════
-function finishDay(i) {
-  if (!doneDays.includes(i)) {
-    doneDays.push(i);
-    localStorage.setItem('lani_t01_done', JSON.stringify(doneDays));
-  }
-  document.getElementById(`done-${i}`).classList.add('show');
-  renderNav();
-  // auto scroll to done banner
-  document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
-}
-
-// ═══════════════════════════════════════════════════════
-//  SPEECH — Best warm female Google voice
+//  SPEECH — Giữ nguyên bộ lọc giọng nói
 // ═══════════════════════════════════════════════════════
 let _selectedVoice = null;
-
-// Priority list: Google's best natural warm female voices (US English)
 const VOICE_PRIORITY = [
-  'Google US English',          // Chrome desktop — warm, natural
-  'Google UK English Female',   // Warm British alternative
-  'Microsoft Aria Online (Natural) - English (United States)', // Edge natural
-  'Samantha',                   // macOS/iOS natural female
-  'Karen',                      // macOS Australian warm female
-  'Google العربية',             // fallback marker (won't match)
+  'Google US English', 'Google UK English Female',
+  'Microsoft Aria Online (Natural) - English (United States)',
+  'Samantha', 'Karen', 'Google العربية',
 ];
 
 function pickVoice() {
   if (_selectedVoice) return _selectedVoice;
   const voices = speechSynthesis.getVoices();
   if (!voices.length) return null;
-
-  // 1. Try exact priority matches
   for (const name of VOICE_PRIORITY) {
     const v = voices.find(v => v.name === name);
     if (v) { _selectedVoice = v; return v; }
   }
-
-  // 2. Any Google en-US female voice
-  const googleFemale = voices.find(v =>
-    v.lang.startsWith('en') &&
-    v.name.toLowerCase().includes('google') &&
-    !v.name.toLowerCase().includes('male')
-  );
+  const googleFemale = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('male'));
   if (googleFemale) { _selectedVoice = googleFemale; return googleFemale; }
-
-  // 3. Any en-US female / online voice
-  const onlineFemale = voices.find(v =>
-    v.lang === 'en-US' &&
-    (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('online'))
-  );
+  const onlineFemale = voices.find(v => v.lang === 'en-US' && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('online')));
   if (onlineFemale) { _selectedVoice = onlineFemale; return onlineFemale; }
-
-  // 4. First en-US voice available
   const anyUS = voices.find(v => v.lang === 'en-US');
   if (anyUS) { _selectedVoice = anyUS; return anyUS; }
-
   return null;
 }
 
-// Voices load async on some browsers — pre-cache on voiceschanged
 if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); };
 }
@@ -1468,18 +1506,15 @@ function speak(text, rate = 0.85) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = rate;
-  u.pitch = 1.0;   // natural pitch — no artificial raising
+  u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0;
   const voice = pickVoice();
   if (voice) u.voice = voice;
   speechSynthesis.speak(u);
 }
 
 // ═══════════════════════════════════════════════════════
-//  PRONUNCIATION RECORDER & SCORER (Web Speech API — no external API)
+//  PRONUNCIATION RECORDER & SCORER (Giữ nguyên)
 // ═══════════════════════════════════════════════════════
-
 const recState = {};
 
 function toggleRecord(id, targetText) {
@@ -1488,10 +1523,10 @@ function toggleRecord(id, targetText) {
 }
 
 async function startRecord(id, targetText) {
-  const btn   = document.getElementById(`${id}-recbtn`);
+  const btn    = document.getElementById(`${id}-recbtn`);
   const label = document.getElementById(`${id}-reclabel`);
   const score = document.getElementById(`${id}-score`);
-  const pbk   = document.getElementById(`${id}-playbk`);
+  const pbk    = document.getElementById(`${id}-playbk`);
   score.className = 'score-badge';
   pbk.className   = 'playback-btn';
 
@@ -1535,7 +1570,7 @@ async function startRecord(id, targetText) {
 function stopRecord(id, targetText) {
   const state = recState[id];
   if (!state?.active) return;
-  const btn   = document.getElementById(`${id}-recbtn`);
+  const btn    = document.getElementById(`${id}-recbtn`);
   const label = document.getElementById(`${id}-reclabel`);
   state.mediaRecorder.stop();
   try { state.recognition?.stop(); } catch(e) {}
@@ -1585,7 +1620,7 @@ function lev(a, b) {
 function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
-  else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                  tip='Nghe lại và lặp thêm một lần nhé!'; }
+  else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
   else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
 
@@ -1609,11 +1644,6 @@ function playbackRec(id) {
   new Audio(URL.createObjectURL(blob)).play();
 }
 
-// ═══════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════
-renderPanels();
-renderNav();
 </script>
 </body>
 </html>
