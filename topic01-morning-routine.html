@@ -26,406 +26,213 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
 
+  /* ── HEADER ── */
+  header {
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+    padding:0 20px; height:56px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+  }
+  .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta); }
+  .logo span { font-style:italic; }
+  .home-btn {
+    padding:6px 14px; border-radius:8px; border:1px solid var(--border);
+    font-size:12px; color:var(--ink-muted); background:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; text-decoration:none;
+    display:flex; align-items:center; gap:5px;
+  }
+  .home-btn:hover { background:var(--blush); }
+
+  /* ── LOADING OVERLAY ── */
   #loading-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
   .spinner { width: 40px; height: 40px; border: 3px solid var(--blush); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  header { background:var(--warm-white); border-bottom:1px solid var(--border); padding:0 20px; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta); }
-  .home-btn { padding:6px 14px; border-radius:8px; border:1px solid var(--border); font-size:12px; color:var(--ink-muted); background:none; cursor:pointer; text-decoration:none; display:flex; align-items:center; gap:5px; }
-
-  .topic-hero { background:var(--warm-white); padding:28px 20px 20px; border-bottom:1px solid var(--border); }
+  /* ── TOPIC HERO ── */
+  .topic-hero {
+    background:var(--warm-white); padding:28px 20px 20px;
+    border-bottom:1px solid var(--border);
+  }
   .topic-eyebrow { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; }
   .topic-title { font-family:'Playfair Display',serif; font-size:26px; color:var(--ink); margin-bottom:4px; }
   .topic-title em { color:var(--terracotta); font-style:italic; }
   .topic-vn { font-size:13px; color:var(--ink-muted); }
 
-  .days-nav { display:flex; gap:8px; padding:16px 20px; overflow-x:auto; background:var(--warm-white); border-bottom:1px solid var(--border); scrollbar-width:none; }
+  /* ── DAYS NAV ── */
+  .days-nav {
+    display:flex; gap:8px; padding:16px 20px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+    scrollbar-width:none;
+  }
   .days-nav::-webkit-scrollbar { display:none; }
-  .day-pill { flex-shrink:0; width:44px; height:44px; border-radius:50%; border:1px solid var(--border); background:var(--warm-white); font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--ink-muted); }
+  .day-pill {
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--border); background:var(--warm-white);
+    font-size:13px; font-weight:500; cursor:pointer;
+    transition:all 0.2s; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1px;
+    font-family:'DM Sans',sans-serif; color:var(--ink-muted);
+  }
+  .day-pill:hover { background:var(--blush); border-color:var(--rose); }
   .day-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
   .day-pill.done { background:var(--sage-light); color:var(--sage-deep); border-color:var(--sage); }
+  .day-pill-num { font-size:14px; font-weight:500; line-height:1; }
+  .day-pill-check { font-size:9px; line-height:1; }
 
+  /* ── DAY PANEL ── */
   .day-panel { display:none; }
   .day-panel.active { display:block; }
-  .day-header { padding:20px 20px 16px; background:var(--warm-white); border-bottom:1px solid var(--border); }
+
+  /* ── DAY HEADER ── */
+  .day-header {
+    padding:20px 20px 16px;
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+  }
+  .day-num-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-muted); margin-bottom:4px; }
   .day-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); margin-bottom:6px; }
-  .day-dialogue-preview { display:flex; flex-direction:column; gap:6px; padding:14px 16px; background:var(--blush); border-radius:var(--radius-sm); margin-top:10px; }
+  .day-dialogue-preview {
+    display:flex; flex-direction:column; gap:6px;
+    padding:14px 16px; background:var(--blush);
+    border-radius:var(--radius-sm); margin-top:10px;
+  }
   .dialogue-line { font-size:13px; line-height:1.5; }
   .dialogue-line strong { color:var(--terracotta); }
   .dialogue-line .vn { color:var(--ink-muted); font-style:italic; font-size:12px; }
 
-  .mode-tabs { display:flex; gap:6px; padding:14px 20px; overflow-x:auto; background:var(--warm-white); border-bottom:1px solid var(--border); scrollbar-width:none; }
-  .mode-tab { flex-shrink:0; padding:7px 14px; border-radius:99px; border:1px solid var(--border); font-size:12px; cursor:pointer; background:var(--warm-white); color:var(--ink-soft); }
+  /* ── MODE TABS ── */
+  .mode-tabs {
+    display:flex; gap:6px; padding:14px 20px;
+    overflow-x:auto; background:var(--warm-white);
+    border-bottom:1px solid var(--border); scrollbar-width:none;
+  }
+  .mode-tabs::-webkit-scrollbar { display:none; }
+  .mode-tab {
+    flex-shrink:0; padding:7px 14px; border-radius:99px;
+    border:1px solid var(--border); font-size:12px;
+    font-family:'DM Sans',sans-serif; cursor:pointer;
+    transition:all 0.2s; background:var(--warm-white);
+    color:var(--ink-soft); white-space:nowrap;
+  }
+  .mode-tab:hover { background:var(--blush); }
   .mode-tab.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
 
+  /* ── MODE CONTENT ── */
   .mode-content { padding:20px; display:none; }
   .mode-content.active { display:block; }
 
+  /* ── FLASHCARD ── */
   .fc-wrap { perspective:1000px; height:240px; margin-bottom:20px; }
-  .fc { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.5s; cursor:pointer; }
+  .fc {
+    width:100%; height:100%; position:relative;
+    transform-style:preserve-3d; transition:transform 0.5s; cursor:pointer;
+  }
   .fc.flipped { transform:rotateY(180deg); }
-  .fc-front, .fc-back { position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center; }
+  .fc-front, .fc-back {
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:var(--radius); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:24px; text-align:center;
+  }
   .fc-front { background:var(--warm-white); border:1px solid var(--border); }
   .fc-back { background:var(--terracotta); transform:rotateY(180deg); }
   .fc-en { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:6px; }
+  .fc-speaker { font-size:12px; color:var(--ink-muted); letter-spacing:1px; text-transform:uppercase; }
+  .fc-hint { font-size:12px; color:var(--ink-muted); margin-top:14px; }
   .fc-vn { font-family:'Playfair Display',serif; font-size:20px; color:white; margin-bottom:8px; }
+  .fc-note { font-size:13px; color:rgba(255,255,255,0.82); font-style:italic; line-height:1.5; }
+  .fc-nav { display:flex; align-items:center; justify-content:center; gap:16px; }
+  .fc-btn {
+    width:42px; height:42px; border-radius:50%; border:1px solid var(--border);
+    background:var(--warm-white); font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+  }
+  .fc-btn:hover { background:var(--blush); }
+  .fc-count { font-size:13px; color:var(--ink-muted); min-width:60px; text-align:center; }
 
-  .vocab-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:14px; }
-  .vocab-top { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:baseline; gap:10px; }
+  /* ── VOCAB ── */
+  .vocab-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden; margin-bottom:14px;
+  }
+  .vocab-top {
+    padding:14px 18px 12px; border-bottom:1px solid var(--border);
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+  }
   .vocab-word { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); }
+  .vocab-phonetic { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink-muted); }
+  .vocab-speaker-badge {
+    margin-left:auto; padding:3px 10px; border-radius:99px;
+    font-size:11px; background:var(--blush); color:var(--terracotta); font-weight:500;
+  }
   .vocab-body { padding:14px 18px; }
   .vocab-meaning { font-size:15px; color:var(--ink); font-weight:500; margin-bottom:10px; }
   .vocab-row { display:flex; gap:8px; margin-bottom:7px; font-size:13px; line-height:1.5; }
-  .vr-label { color:var(--terracotta); font-weight:500; min-width:80px; flex-shrink:0; font-size:11px; text-transform:uppercase; }
+  .vr-label {
+    color:var(--terracotta); font-weight:500; min-width:80px; flex-shrink:0;
+    font-size:11px; text-transform:uppercase; letter-spacing:0.5px; padding-top:1px;
+  }
+  .vr-val { color:var(--ink-soft); }
+  .vr-vn { color:var(--ink-muted); font-size:12px; font-style:italic; margin-top:2px; }
+  .speak-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 12px; border-radius:99px; border:1px solid var(--border);
+    background:var(--warm-white); font-size:12px; color:var(--ink-muted);
+    cursor:pointer; margin-top:10px; font-family:'DM Sans',sans-serif; transition:all 0.2s;
+  }
+  .speak-btn:hover { background:var(--blush); }
 
-  .quiz-q-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:22px 20px; margin-bottom:16px; }
-  .quiz-opt { width:100%; padding:13px 16px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--warm-white); cursor:pointer; font-size:14px; text-align:left; margin-bottom:8px; }
-  .quiz-opt.correct { background:var(--sage-light); color:var(--sage-deep); }
-  .quiz-opt.wrong { background:var(--coral-light); color:#7A2E1A; }
+  /* ── QUIZ ── */
+  .quiz-q-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:22px 20px; margin-bottom:16px;
+  }
+  .quiz-q-num { font-size:11px; color:var(--ink-muted); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; }
+  .quiz-q-text { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:4px; }
+  .quiz-q-inst { font-size:12px; color:var(--ink-muted); }
+  .quiz-opts { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+  .quiz-opt {
+    padding:13px 16px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--warm-white);
+    cursor:pointer; font-size:14px; color:var(--ink); transition:all 0.2s;
+    text-align:left; font-family:'DM Sans',sans-serif;
+  }
+  .quiz-opt:hover { background:var(--blush); border-color:var(--rose); }
+  .quiz-opt.correct { background:var(--sage-light); border-color:var(--sage); color:var(--sage-deep); }
+  .quiz-opt.wrong { background:var(--coral-light); border-color:var(--coral); color:#7A2E1A; }
+  .quiz-fb {
+    padding:13px 16px; border-radius:var(--radius-sm);
+    font-size:13px; line-height:1.5; display:none; margin-bottom:12px;
+  }
+  .quiz-fb.show { display:block; }
+  .quiz-fb.ok { background:var(--sage-light); color:var(--sage-deep); }
+  .quiz-fb.nope { background:var(--coral-light); color:#7A2E1A; }
+  .quiz-next {
+    width:100%; padding:13px; border-radius:var(--radius-sm);
+    border:none; background:var(--terracotta); color:white;
+    font-size:14px; font-family:'DM Sans',sans-serif; font-weight:500;
+    cursor:pointer; transition:all 0.2s;
+  }
+  .quiz-next:hover { background:var(--terra-deep); }
+  .quiz-next:disabled { opacity:0.35; cursor:default; }
 
-  .dict-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 20px; text-align:center; margin-bottom:16px; }
+  /* ── DICTATION ── */
+  .dict-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:24px 20px; text-align:center; margin-bottom:16px;
+  }
   .dict-blanks { font-family:'DM Mono',monospace; font-size:24px; letter-spacing:6px; color:var(--ink-muted); margin-bottom:8px; }
-  .dict-input { width:100%; padding:13px 16px; border-radius:var(--radius-sm); border:1.5px solid var(--border); font-size:16px; text-align:center; outline:none; }
-  .dict-input.correct { border-color:var(--sage); background:var(--sage-light); }
-
-  .shadow-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; margin-bottom:12px; }
-  .shadow-en { font-family:'Playfair Display',serif; font-size:18px; color:var(--ink); margin-bottom:4px; }
-  .shadow-vn { font-size:13px; color:var(--ink-muted); font-style:italic; }
-
-  .finish-btn { width:100%; padding:14px; border-radius:99px; border:none; background:var(--terracotta); color:white; font-size:15px; font-weight:500; cursor:pointer; margin-top:8px; }
-  .done-banner { background:var(--sage-light); border:1px solid var(--sage); border-radius:var(--radius); padding:20px; text-align:center; margin-bottom:16px; display:none; }
-  .done-banner.show { display:block; }
-</style>
-</head>
-<body>
-
-<div id="loading-overlay">
-  <div class="spinner"></div>
-  <p style="font-family: 'Playfair Display', serif; color: var(--ink-muted); margin-top:10px;">Đang tải dữ liệu bài học...</p>
-</div>
-
-<header>
-  <div class="logo"><span>Lani</span> · Be A Gift</div>
-  <a class="home-btn" href="lani-be-a-gift.html">← Dashboard</a>
-</header>
-
-<div class="topic-hero">
-  <div class="topic-eyebrow">Topic 01 · 10 ngày</div>
-  <div class="topic-title">☀️ Morning <em>Routine</em></div>
-  <div class="topic-vn">Chào ngày mới năng lượng</div>
-</div>
-
-<div class="days-nav" id="daysNav"></div>
-<div id="panels"></div>
-
-<script>
-// ═══════════════════════════════════════════════════════
-//  FIREBASE CONFIG & AUTH
-// ═══════════════════════════════════════════════════════
-const firebaseConfig = {
-  apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
-  authDomain: "dailyenglish-aca50.firebaseapp.com",
-  projectId: "dailyenglish-aca50",
-  storageBucket: "dailyenglish-aca50.firebasestorage.app",
-  messagingSenderId: "876041668209",
-  appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-let currentUser = null;
-let userProgress = { progress: {} };
-let doneDays = [];
-
-auth.onAuthStateChanged(async (user) => {
-  if (!user) {
-    window.location.href = 'lani-be-a-gift.html';
-  } else {
-    currentUser = user;
-    await fetchProgress();
-    document.getElementById('loading-overlay').style.display = 'none';
+  .dict-hint { font-size:12px; color:var(--ink-muted); margin-bottom:20px; }
+  .play-btn {
+    width:60px; height:60px; border-radius:50%; border:none;
+    background:var(--terracotta); color:white; font-size:22px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin:0 auto 20px; transition:all 0.2s;
   }
-});
-
-async function fetchProgress() {
-  try {
-    const doc = await db.collection("users").doc(currentUser.uid).get();
-    if (doc.exists) {
-      userProgress = doc.data();
-      const daysCompleted = userProgress.progress[0] || 0;
-      doneDays = [];
-      for(let i=0; i < daysCompleted; i++) { doneDays.push(i); }
-    }
-    renderPanels();
-    renderNav();
-  } catch (error) { console.error(error); }
-}
-
-// ═══════════════════════════════════════════════════════
-//  DATA — ĐÃ XÓA CHÚ THÍCH TRONG NGOẶC (NOTE)
-// ═══════════════════════════════════════════════════════
-const TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
-const DAYS = [
-  {
-    title: 'Đánh thức dịu dàng',
-    dialogue: [
-      { speaker: 'Mom', en: 'Wakey wakey, baby!', vn: 'Dậy thôi cưng ơi!', note: '' },
-      { speaker: 'Child', en: 'Good morning, mommy!', vn: 'Chào buổi sáng mẹ ạ!', note: '' },
-    ],
-    vocab: [
-      { en: 'Wakey wakey', phonetic: '/ˈweɪki ˈweɪki/', speaker: 'Mom', meaning: 'Dậy thôi nào! (cách nói dễ thương)', synonym: 'Wake up!', synonymVn: 'Dậy đi!', collocation: 'Wakey wakey, sleepyhead', collocationVn: 'Dậy thôi nào, bé lười ngủ', example: '"Wakey wakey, baby!"', exampleVn: '"Dậy thôi cưng!"' },
-      { en: 'Good morning', phonetic: '/ɡʊd ˈmɔːrnɪŋ/', speaker: 'Child', meaning: 'Chào buổi sáng', synonym: 'Morning!', synonymVn: 'Chào buổi sáng!', collocation: 'Good morning, mommy', collocationVn: 'Chào buổi sáng mẹ', example: '"Good morning, mommy!"', exampleVn: '"Chào buổi sáng mẹ!"' },
-    ],
-    quiz: [{ q: '"Wakey wakey" có nghĩa là gì?', opts: ['Dậy thôi nào!','Ngủ ngon nhé!','Ăn sáng thôi!','Đi tắm nào!'], ans: 0, exp: '"Wakey wakey" là cách nói dễ thương để đánh thức bé.' }],
-    dictation: [{ text: 'Wakey wakey', hint: 'Dậy thôi nào!', hintVn: 'Dậy thôi nào!' }],
-    shadowing: [{ speaker: 'Mom', en: 'Wakey wakey, baby!', vn: 'Dậy thôi cưng ơi!' }, { speaker: 'Child', en: 'Good morning, mommy!', vn: 'Chào buổi sáng mẹ ạ!' }],
-  },
-  {
-    title: 'Chào đón ánh dương',
-    dialogue: [
-      { speaker: 'Mom', en: 'Good morning, sweetie. Rise and shine!', vn: 'Chào buổi sáng con yêu, dậy thôi nào!', note: '' },
-      { speaker: 'Child', en: "I'm awake!", vn: 'Con thức dậy rồi đây!', note: '' },
-    ],
-    vocab: [
-      { en: 'Rise and shine', phonetic: '/raɪz ənd ʃaɪn/', speaker: 'Mom', meaning: 'Dậy thôi nào!', example: '"Rise and shine, sweetie!"', exampleVn: '"Dậy tỏa sáng nào con yêu!"' },
-    ],
-    quiz: [{ q: '"Rise and shine" có nghĩa là?', opts: ['Ngủ thêm','Dậy thôi nào!','Ăn tối','Đi ngủ'], ans: 1, exp: 'Câu này nghĩa là dậy và tỏa sáng như mặt trời.' }],
-    dictation: [{ text: 'Rise and shine', hint: 'Dậy thôi!', hintVn: 'Dậy thôi!' }],
-    shadowing: [{ speaker: 'Mom', en: 'Good morning, sweetie. Rise and shine!', vn: 'Chào buổi sáng con yêu, dậy thôi nào!' }, { speaker: 'Child', en: "I'm awake!", vn: 'Con thức dậy rồi đây!' }],
-  },
-  {
-    title: 'Rửa mặt mát mẻ',
-    dialogue: [
-      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.', note: '' },
-      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!', note: '' },
-    ],
-    vocab: [
-      { en: 'Wash your face', phonetic: '/wɒʃ jɔːr feɪs/', speaker: 'Mom', meaning: 'Rửa mặt', example: '"Go wash your face."', exampleVn: '"Đi rửa mặt đi con."' },
-    ],
-    quiz: [{ q: '"Wash your face" nghĩa là?', opts: ['Chải tóc','Rửa mặt','Đánh răng','Tắm'], ans: 1, exp: 'Wash là rửa, face là mặt.' }],
-    dictation: [{ text: 'wash your face', hint: 'Rửa mặt', hintVn: 'Rửa mặt' }],
-    shadowing: [{ speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.' }, { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!' }],
-  },
-  {
-    title: 'Đánh răng sạch sẽ',
-    dialogue: [
-      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.', note: '' },
-      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!', note: '' },
-    ],
-    vocab: [
-      { en: 'Brush your teeth', phonetic: '/brʌʃ tiːθ/', speaker: 'Mom', meaning: 'Đánh răng', example: '"Let\'s brush your teeth."', exampleVn: '"Cùng đánh răng nào."' },
-    ],
-    quiz: [{ q: 'Bé bắt chước âm thanh đánh răng bằng câu nào?', opts: ['Splash splash','Glug glug','Brush brush brush','Scrub scrub'], ans: 2, exp: 'Brush brush brush là tiếng chà răng.' }],
-    dictation: [{ text: 'Brush brush brush', hint: 'Chà chà chà', hintVn: 'Chà chà chà' }],
-    shadowing: [{ speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.' }, { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!' }],
-  },
-  {
-    title: 'Thanh lọc cơ thể',
-    dialogue: [
-      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.', note: '' },
-      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!', note: '' },
-    ],
-    vocab: [
-      { en: 'Warm water', phonetic: '/wɔːrm ˈwɔːtər/', speaker: 'Mom', meaning: 'Nước ấm', example: '"Drink some warm water."', exampleVn: '"Uống nước ấm nhé con."' },
-    ],
-    quiz: [{ q: '"Warm water" nghĩa là?', opts: ['Nước lạnh','Nước ấm','Nước đá','Nước sôi'], ans: 1, exp: 'Warm là ấm.' }],
-    dictation: [{ text: 'warm water', hint: 'Nước ấm', hintVn: 'Nước ấm' }],
-    shadowing: [{ speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.' }, { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!' }],
-  },
-  {
-    title: 'Rèn luyện sự tĩnh lặng',
-    dialogue: [
-      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.', note: '' },
-      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.', note: '' },
-    ],
-    vocab: [
-      { en: 'Sit down quietly', phonetic: '/sɪt daʊn ˈkwaɪətli/', speaker: 'Mom', meaning: 'Ngồi xuống yên lặng', example: '"Now sit down quietly."', exampleVn: '"Bây giờ ngồi xuống yên lặng nhé."' },
-    ],
-    quiz: [{ q: '"Quietly" có nghĩa là?', opts: ['Nhanh','Im lặng','Vui','Mạnh'], ans: 1, exp: 'Quietly là một cách yên tĩnh.' }],
-    dictation: [{ text: 'sit down quietly', hint: 'Ngồi yên', hintVn: 'Ngồi yên' }],
-    shadowing: [{ speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.' }, { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.' }],
-  },
-  {
-    title: 'Lắng nghe cơ thể',
-    dialogue: [
-      { speaker: 'Mom', en: 'Observe your natural breath.', vn: 'Hãy quan sát hơi thở tự nhiên của con nhé.', note: '' },
-      { speaker: 'Child', en: 'Like this?', vn: 'Như thế này phải không mẹ?', note: '' },
-    ],
-    vocab: [
-      { en: 'Observe', phonetic: '/əbˈzɜːrv/', speaker: 'Mom', meaning: 'Quan sát', example: '"Observe your breath."', exampleVn: '"Quan sát hơi thở của con."' },
-    ],
-    quiz: [{ q: '"Observe" có nghĩa là?', opts: ['Bỏ qua','Quan sát','Chạy','Ăn'], ans: 1, exp: 'Observe là quan sát chú ý.' }],
-    dictation: [{ text: 'Observe', hint: 'Quan sát', hintVn: 'Quan sát' }],
-    shadowing: [{ speaker: 'Mom', en: 'Observe your natural breath.', vn: 'Hãy quan sát hơi thở tự nhiên của con nhé.' }, { speaker: 'Child', en: 'Like this?', vn: 'Như thế này phải không mẹ?' }],
-  },
-  {
-    title: 'Quan sát hơi thở',
-    dialogue: [
-      { speaker: 'Mom', en: 'Breathe in... and breathe out...', vn: 'Hít vào... và thở ra...', note: '' },
-      { speaker: 'Child', en: 'In... and out...', vn: 'Hít vào... và thở ra...', note: '' },
-    ],
-    vocab: [
-      { en: 'Breathe in', phonetic: '/briːð ɪn/', speaker: 'Mom', meaning: 'Hít vào' },
-      { en: 'Breathe out', phonetic: '/briːð aʊt/', speaker: 'Mom', meaning: 'Thở ra' },
-    ],
-    quiz: [{ q: '"Breathe in" có nghĩa là?', opts: ['Thở ra','Nín thở','Hít vào','Thở mạnh'], ans: 2, exp: 'In là vào, breathe in là hít vào.' }],
-    dictation: [{ text: 'Breathe in', hint: 'Hít vào', hintVn: 'Hít vào' }],
-    shadowing: [{ speaker: 'Mom', en: 'Breathe in... and breathe out...', vn: 'Hít vào... và thở ra...' }, { speaker: 'Child', en: 'In... and out...', vn: 'Hít vào... và thở ra...' }],
-  },
-  {
-    title: 'Khởi động tinh thần',
-    dialogue: [
-      { speaker: 'Mom', en: 'Are you ready to start a new day?', vn: 'Con đã sẵn sàng bắt đầu một ngày mới chưa?', note: '' },
-      { speaker: 'Child', en: "Yes, I'm ready!", vn: 'Vâng, con sẵn sàng rồi!', note: '' },
-    ],
-    vocab: [
-      { en: 'Are you ready?', phonetic: '/ɑːr juː ˈrɛdi/', speaker: 'Mom', meaning: 'Sẵn sàng chưa?' },
-    ],
-    quiz: [{ q: 'Bé trả lời "Yes, I\'m ready!" nghĩa là?', opts: ['Chưa','Sẵn sàng rồi!','Muốn ngủ','Đói'], ans: 1, exp: 'Ready là sẵn sàng.' }],
-    dictation: [{ text: 'Are you ready', hint: 'Sẵn sàng chưa?', hintVn: 'Sẵn sàng chưa?' }],
-    shadowing: [{ speaker: 'Mom', en: 'Are you ready to start a new day?', vn: 'Con đã sẵn sàng bắt đầu một ngày mới chưa?' }, { speaker: 'Child', en: "Yes, I'm ready!", vn: 'Vâng, con sẵn sàng rồi!' }],
-  },
-  {
-    title: 'Khẳng định tích cực',
-    dialogue: [
-      { speaker: 'Mom', en: 'Today is a happy day!', vn: 'Hôm nay là một ngày vui vẻ!', note: '' },
-      { speaker: 'Child', en: 'A very happy day!', vn: 'Một ngày rất vui vẻ!', note: '' },
-    ],
-    vocab: [
-      { en: 'Happy day', phonetic: '/ˈhæpi deɪ/', speaker: 'Mom', meaning: 'Ngày vui vẻ' },
-    ],
-    quiz: [{ q: '"Happy" có nghĩa là?', opts: ['Buồn','Tức giận','Vui vẻ','Mệt'], ans: 2, exp: 'Happy là vui vẻ.' }],
-    dictation: [{ text: 'Today', hint: 'Hôm nay', hintVn: 'Hôm nay' }],
-    shadowing: [{ speaker: 'Mom', en: 'Today is a happy day!', vn: 'Hôm nay là một ngày vui vẻ!' }, { speaker: 'Child', en: 'A very happy day!', vn: 'Một ngày rất vui vẻ!' }],
-  },
-];
-
-let currentDay = 0;
-let fcIdx = {}, fcFlipped = {};
-let quizState = {};
-let dictState = {};
-
-async function finishDay(i) {
-  if (!doneDays.includes(i)) { doneDays.push(i); }
-  document.getElementById(`done-${i}`).classList.add('show');
-  renderNav();
-  if (!currentUser) return;
-  const currentGlobalDay = i + 1;
-  const savedProgress = userProgress.progress[0] || 0;
-  if (currentGlobalDay > savedProgress) {
-    userProgress.progress[0] = currentGlobalDay;
-    const today = new Date().toDateString();
-    if (userProgress.lastActive !== today) {
-      userProgress.streak = (userProgress.streak || 0) + 1;
-      userProgress.lastActive = today;
-    }
-    await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
-  }
-}
-
-function renderNav() {
-  const nav = document.getElementById('daysNav');
-  nav.innerHTML = '';
-  DAYS.forEach((d, i) => {
-    const isDone = doneDays.includes(i);
-    const isActive = i === currentDay;
-    const cls = isActive ? 'day-pill active' : isDone ? 'day-pill done' : 'day-pill';
-    nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})">
-      <span class="day-pill-num">${TOPIC.startDay + i}</span>
-      ${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}
-    </button>`;
-  });
-}
-
-function openDay(i) {
-  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(`panel-${i}`).classList.add('active');
-  currentDay = i;
-  renderNav();
-}
-
-function renderPanels() {
-  const container = document.getElementById('panels');
-  container.innerHTML = '';
-  DAYS.forEach((day, i) => {
-    const dlHTML = day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('');
-    container.innerHTML += `
-    <div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
-      <div class="day-header">
-        <div class="day-title">${day.title}</div>
-        <div class="day-dialogue-preview">${dlHTML}</div>
-      </div>
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="switchMode(${i},'flashcard',this)">📇 Flashcard</button>
-        <button class="mode-tab" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
-        <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">❓ Quiz</button>
-        <button class="mode-tab" onclick="switchMode(${i},'dictation',this)">✍️ Dictation</button>
-        <button class="mode-tab" onclick="switchMode(${i},'shadowing',this)">🎤 Shadowing</button>
-      </div>
-      <div class="mode-content active" id="mode-${i}-flashcard">
-        <div class="fc-wrap"><div class="fc" id="fc-${i}" onclick="flipCard(${i})"><div class="fc-front"><div class="fc-en" id="fc-en-${i}"></div><div class="fc-speaker" id="fc-spk-${i}"></div></div><div class="fc-back"><div class="fc-vn" id="fc-vn-${i}"></div></div></div></div>
-        <div class="fc-nav"><button class="fc-btn" onclick="fcPrev(${i})">←</button><div class="fc-count" id="fc-count-${i}"></div><button class="fc-btn" onclick="fcNext(${i})">→</button></div>
-      </div>
-      <div class="mode-content" id="mode-${i}-vocab">${buildVocabHTML(day.vocab)}</div>
-      <div class="mode-content" id="mode-${i}-quiz"><div id="quiz-body-${i}"></div></div>
-      <div class="mode-content" id="mode-${i}-dictation"><div id="dict-body-${i}"></div></div>
-      <div class="mode-content" id="mode-${i}-shadowing">
-        ${buildShadowHTML(day.shadowing, i)}
-        <div class="done-banner" id="done-${i}"><div class="done-banner-title">🌟 Tuyệt vời!</div><div class="done-banner-sub">Tiến độ đã được lưu lại!</div></div>
-        <button class="finish-btn" onclick="finishDay(${i})">✅ Hoàn thành ngày học!</button>
-      </div>
-    </div>`;
-  });
-  DAYS.forEach((_, i) => initDay(i));
-}
-
-function buildVocabHTML(vocab) {
-  return vocab.map(v => `<div class="vocab-card"><div class="vocab-top"><div class="vocab-word">${v.en}</div></div><div class="vocab-body"><div class="vocab-meaning">${v.meaning}</div></div></div>`).join('');
-}
-
-function buildShadowHTML(lines, i) {
-  return lines.map((l, li) => `<div class="shadow-card"><div class="shadow-en">${l.en}</div><div class="shadow-vn">${l.vn}</div></div>`).join('');
-}
-
-function switchMode(dayIdx, mode, btn) {
-  const panel = document.getElementById(`panel-${dayIdx}`);
-  panel.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  panel.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
-  document.getElementById(`mode-${dayIdx}-${mode}`).classList.add('active');
-}
-
-function updateFlashcard(i) {
-  const card = DAYS[i].dialogue[fcIdx[i]];
-  document.getElementById(`fc-en-${i}`).textContent = card.en;
-  document.getElementById(`fc-spk-${i}`).textContent = card.speaker;
-  document.getElementById(`fc-vn-${i}`).textContent = card.vn;
-  document.getElementById(`fc-count-${i}`).textContent = `${fcIdx[i] + 1} / ${DAYS[i].dialogue.length}`;
-}
-
-function flipCard(i) { document.getElementById(`fc-${i}`).classList.toggle('flipped'); }
-function fcNext(i) { if (fcIdx[i] < DAYS[i].dialogue.length - 1) { fcIdx[i]++; updateFlashcard(i); } }
-function fcPrev(i) { if (fcIdx[i] > 0) { fcIdx[i]--; updateFlashcard(i); } }
-
-function initDay(i) { fcIdx[i] = 0; updateFlashcard(i); renderQuiz(i); renderDict(i); }
-
-function renderQuiz(i) {
-  quizState[i] = { idx: 0 };
-  const q = DAYS[i].quiz[0];
-  document.getElementById(`quiz-body-${i}`).innerHTML = `
-    <div class="quiz-q-card"><div class="quiz-q-text">${q.q}</div></div>
-    <div class="quiz-opts">${q.opts.map((o, oi) => `<button class="quiz-opt" onclick="this.classList.add('${oi===q.ans?'correct':'wrong'}')">${o}</button>`).join('')}</div>`;
-}
-
-function renderDict(i) {
-  const item = DAYS[i].dictation[0];
-  document.getElementById(`dict-body-${i}`).innerHTML = `
-    <div class="dict-card"><div class="dict-blanks">${item.text.replace(/[^\s]/g, '_')}</div><input class="dict-input" type="text" oninput="if(this.value.toLowerCase()==='${item.text.toLowerCase()}')this.classList.add('correct')" placeholder="Gõ từ..."></div>`;
-}
-
-</script>
-</body>
-</html>
+  .play-btn:hover { background:var(--terra-deep); transform:scale(1.05); }
+  .play-btn.playing { background:var(--sage); animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .dict-input {
+    width:100%; padding:13px 16px; border-radius:var(--radius-sm);
+    border:1.5px solid var(--border); font-size:16px;
+    font-family:'DM Sans',sans-serif; color:var(--ink);
+    background:
