@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -24,12 +23,7 @@
     --radius: 16px; --radius-sm: 10px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; -webkit-tap-highlight-color:transparent; }
-
-  /* ── LOADING OVERLAY ── */
-  #loading-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
-  .spinner { width: 40px; height: 40px; border: 3px solid var(--blush); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
 
   /* ── HEADER ── */
   header {
@@ -38,245 +32,437 @@
     display:flex; align-items:center; justify-content:space-between;
     position:sticky; top:0; z-index:100;
   }
-  .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta); font-weight:600; }
-  .logo span { font-style:italic; font-weight:400; }
+  .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta); }
+  .logo span { font-style:italic; }
   .home-btn {
     padding:6px 14px; border-radius:8px; border:1px solid var(--border);
     font-size:12px; color:var(--ink-muted); background:none; cursor:pointer;
     font-family:'DM Sans',sans-serif; text-decoration:none;
-    display:flex; align-items:center; gap:5px; transition: 0.2s;
+    display:flex; align-items:center; gap:5px;
   }
-  .home-btn:hover { background:var(--blush); color:var(--terracotta); }
+  .home-btn:hover { background:var(--blush); }
+
+  /* ── LOADING OVERLAY ── */
+  #loading-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--blush); border-top-color: var(--terracotta); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── TOPIC HERO ── */
-  .topic-hero { background:var(--warm-white); padding:28px 20px 20px; border-bottom:1px solid var(--border); }
-  .topic-eyebrow { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; font-weight:500; }
+  .topic-hero {
+    background:var(--warm-white); padding:28px 20px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .topic-eyebrow { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; }
   .topic-title { font-family:'Playfair Display',serif; font-size:26px; color:var(--ink); margin-bottom:4px; }
   .topic-title em { color:var(--terracotta); font-style:italic; }
   .topic-vn { font-size:13px; color:var(--ink-muted); }
 
-  /* ── VIDEO SECTION ── */
-  .video-section {
-    padding: 24px 20px;
-    background: var(--warm-white);
-    border-bottom: 1px solid var(--border);
-  }
-  .video-section-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--terracotta);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%; /* Tỷ lệ 16:9 chuẩn của YouTube */
-    height: 0;
-    overflow: hidden;
-    border-radius: var(--radius);
-    box-shadow: 0 4px 15px rgba(44, 36, 22, 0.1);
-    border: 1px solid var(--border);
-    background: #000;
-  }
-  .video-wrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
   /* ── DAYS NAV ── */
   .days-nav {
-    display:flex; gap:8px; padding:16px 20px; overflow-x:auto; -webkit-overflow-scrolling:touch;
-    background:var(--warm-white); border-bottom:1px solid var(--border); scrollbar-width:none;
+    display:flex; gap:8px; padding:16px 20px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+    scrollbar-width:none;
   }
   .days-nav::-webkit-scrollbar { display:none; }
   .day-pill {
-    flex-shrink:0; width:44px; height:44px; border-radius:50%; border:1px solid var(--border);
-    background:var(--warm-white); font-size:13px; font-weight:500; cursor:pointer;
-    transition:all 0.2s; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:1px; font-family:'DM Sans',sans-serif; color:var(--ink-muted);
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--border); background:var(--warm-white);
+    font-size:13px; font-weight:500; cursor:pointer;
+    transition:all 0.2s; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1px;
+    font-family:'DM Sans',sans-serif; color:var(--ink-muted);
   }
   .day-pill:hover { background:var(--blush); border-color:var(--rose); }
-  .day-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); box-shadow: 0 4px 12px rgba(201, 118, 74, 0.25); }
+  .day-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
   .day-pill.done { background:var(--sage-light); color:var(--sage-deep); border-color:var(--sage); }
   .day-pill-num { font-size:14px; font-weight:500; line-height:1; }
   .day-pill-check { font-size:9px; line-height:1; }
 
+  /* ── DAY PANEL ── */
+  .day-panel { display:none; }
+  .day-panel.active { display:block; }
+
+  /* ── DAY HEADER ── */
+  .day-header {
+    padding:20px 20px 16px;
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+  }
+  .day-num-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-muted); margin-bottom:4px; }
+  .day-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); margin-bottom:6px; }
+  .day-dialogue-preview {
+    display:flex; flex-direction:column; gap:6px;
+    padding:14px 16px; background:var(--blush);
+    border-radius:var(--radius-sm); margin-top:10px;
+  }
+  .dialogue-line { font-size:13px; line-height:1.5; }
+  .dialogue-line strong { color:var(--terracotta); }
+  .dialogue-line .vn { color:var(--ink-muted); font-style:italic; font-size:12px; }
+
+  /* ── MODE TABS ── */
+  .mode-tabs {
+    display:flex; gap:6px; padding:14px 20px;
+    overflow-x:auto; background:var(--warm-white);
+    border-bottom:1px solid var(--border); scrollbar-width:none;
+  }
+  .mode-tabs::-webkit-scrollbar { display:none; }
+  .mode-tab {
+    flex-shrink:0; padding:7px 14px; border-radius:99px;
+    border:1px solid var(--border); font-size:12px;
+    font-family:'DM Sans',sans-serif; cursor:pointer;
+    transition:all 0.2s; background:var(--warm-white);
+    color:var(--ink-soft); white-space:nowrap;
+  }
+  .mode-tab:hover { background:var(--blush); }
+  .mode-tab.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
+
+  /* ── MODE CONTENT ── */
+  .mode-content { padding:20px; display:none; }
+  .mode-content.active { display:block; }
+
+  /* ── FLASHCARD ── */
+  .fc-wrap { perspective:1000px; height:240px; margin-bottom:20px; }
+  .fc {
+    width:100%; height:100%; position:relative;
+    transform-style:preserve-3d; transition:transform 0.5s; cursor:pointer;
+  }
+  .fc.flipped { transform:rotateY(180deg); }
+  .fc-front, .fc-back {
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:var(--radius); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:24px; text-align:center;
+  }
+  .fc-front { background:var(--warm-white); border:1px solid var(--border); }
+  .fc-back { background:var(--terracotta); transform:rotateY(180deg); }
+  .fc-en { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:6px; }
+  .fc-speaker { font-size:12px; color:var(--ink-muted); letter-spacing:1px; text-transform:uppercase; }
+  .fc-hint { font-size:12px; color:var(--ink-muted); margin-top:14px; }
+  .fc-vn { font-family:'Playfair Display',serif; font-size:20px; color:white; margin-bottom:8px; }
+  .fc-note { font-size:13px; color:rgba(255,255,255,0.82); font-style:italic; line-height:1.5; }
+  .fc-nav { display:flex; align-items:center; justify-content:center; gap:16px; }
+  .fc-btn {
+    width:42px; height:42px; border-radius:50%; border:1px solid var(--border);
+    background:var(--warm-white); font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+  }
+  .fc-btn:hover { background:var(--blush); }
+  .fc-count { font-size:13px; color:var(--ink-muted); min-width:60px; text-align:center; }
+
+  /* ── VOCAB ── */
+  .vocab-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden; margin-bottom:14px;
+  }
+  .vocab-top {
+    padding:14px 18px 12px; border-bottom:1px solid var(--border);
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+  }
+  .vocab-word { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); }
+  .vocab-phonetic { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink-muted); }
+  .vocab-speaker-badge {
+    margin-left:auto; padding:3px 10px; border-radius:99px;
+    font-size:11px; background:var(--blush); color:var(--terracotta); font-weight:500;
+  }
+  .vocab-body { padding:14px 18px; }
+  .vocab-meaning { font-size:15px; color:var(--ink); font-weight:500; margin-bottom:10px; }
+  .vocab-row { display:flex; gap:8px; margin-bottom:7px; font-size:13px; line-height:1.5; }
+  .vr-label {
+    color:var(--terracotta); font-weight:500; min-width:80px; flex-shrink:0;
+    font-size:11px; text-transform:uppercase; letter-spacing:0.5px; padding-top:1px;
+  }
+  .vr-val { color:var(--ink-soft); }
+  .vr-vn { color:var(--ink-muted); font-size:12px; font-style:italic; margin-top:2px; }
+  .speak-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 12px; border-radius:99px; border:1px solid var(--border);
+    background:var(--warm-white); font-size:12px; color:var(--ink-muted);
+    cursor:pointer; margin-top:10px; font-family:'DM Sans',sans-serif; transition:all 0.2s;
+  }
+  .speak-btn:hover { background:var(--blush); }
+
+  /* ── QUIZ ── */
+  .quiz-q-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:22px 20px; margin-bottom:16px;
+  }
+  .quiz-q-num { font-size:11px; color:var(--ink-muted); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; }
+  .quiz-q-text { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:4px; }
+  .quiz-q-inst { font-size:12px; color:var(--ink-muted); }
+  .quiz-opts { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+  .quiz-opt {
+    padding:13px 16px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--warm-white);
+    cursor:pointer; font-size:14px; color:var(--ink); transition:all 0.2s;
+    text-align:left; font-family:'DM Sans',sans-serif;
+  }
+  .quiz-opt:hover { background:var(--blush); border-color:var(--rose); }
+  .quiz-opt.correct { background:var(--sage-light); border-color:var(--sage); color:var(--sage-deep); }
+  .quiz-opt.wrong { background:var(--coral-light); border-color:var(--coral); color:#7A2E1A; }
+  .quiz-fb {
+    padding:13px 16px; border-radius:var(--radius-sm);
+    font-size:13px; line-height:1.5; display:none; margin-bottom:12px;
+  }
+  .quiz-fb.show { display:block; }
+  .quiz-fb.ok { background:var(--sage-light); color:var(--sage-deep); }
+  .quiz-fb.nope { background:var(--coral-light); color:#7A2E1A; }
+  .quiz-next {
+    width:100%; padding:13px; border-radius:var(--radius-sm);
+    border:none; background:var(--terracotta); color:white;
+    font-size:14px; font-family:'DM Sans',sans-serif; font-weight:500;
+    cursor:pointer; transition:all 0.2s;
+  }
+  .quiz-next:hover { background:var(--terra-deep); }
+  .quiz-next:disabled { opacity:0.35; cursor:default; }
+
+  /* ── DICTATION ── */
+  .dict-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:24px 20px; text-align:center; margin-bottom:16px;
+  }
+  .dict-blanks { font-family:'DM Mono',monospace; font-size:24px; letter-spacing:6px; color:var(--ink-muted); margin-bottom:8px; }
+  .dict-hint { font-size:12px; color:var(--ink-muted); margin-bottom:20px; }
+  .play-btn {
+    width:60px; height:60px; border-radius:50%; border:none;
+    background:var(--terracotta); color:white; font-size:22px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin:0 auto 20px; transition:all 0.2s;
+  }
+  .play-btn:hover { background:var(--terra-deep); transform:scale(1.05); }
+  .play-btn.playing { background:var(--sage); animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .dict-input {
+    width:100%; padding:13px 16px; border-radius:var(--radius-sm);
+    border:1.5px solid var(--border); font-size:16px;
+    font-family:'DM Sans',sans-serif; color:var(--ink);
+    background:var(--cream); text-align:center; outline:none; transition:border-color 0.2s;
+  }
+  .dict-input:focus { border-color:var(--terracotta); }
+  .dict-input.correct { border-color:var(--sage); background:var(--sage-light); }
+  .dict-input.wrong { border-color:var(--coral); background:var(--coral-light); }
+
+  /* ── SHADOWING ── */
+  .shadow-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:18px 20px; margin-bottom:12px;
+  }
+  .shadow-speaker { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; font-weight:500; }
+  .shadow-en { font-family:'Playfair Display',serif; font-size:18px; color:var(--ink); margin-bottom:4px; line-height:1.4; }
+  .shadow-vn { font-size:13px; color:var(--ink-muted); font-style:italic; margin-bottom:12px; }
+  .shadow-note { font-size:12px; color:var(--sage-deep); background:var(--sage-light); padding:5px 10px; border-radius:6px; margin-bottom:12px; display:inline-block; }
+  .shadow-btns { display:flex; gap:8px; }
+  .shadow-btn {
+    flex:1; padding:9px 12px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--warm-white);
+    font-size:12px; font-family:'DM Sans',sans-serif;
+    cursor:pointer; transition:all 0.2s; color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center; gap:5px;
+  }
+  .shadow-btn:hover { background:var(--blush); }
+  .shadow-btn.primary { background:var(--terracotta); color:white; border-color:var(--terracotta); }
+  .shadow-btn.primary:hover { background:var(--terra-deep); }
+
+  /* ── PRONUNCIATION RECORDER ── */
+  .rec-zone {
+    margin-top:12px; border-top:1px solid var(--border); padding-top:12px;
+  }
+  .rec-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .rec-btn {
+    width:44px; height:44px; border-radius:50%; border:none;
+    background:var(--blush); color:var(--terracotta);
+    font-size:18px; cursor:pointer; transition:all 0.25s;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .rec-btn:hover { background:var(--rose); }
+  .rec-btn.recording {
+    background:var(--coral); color:white;
+    animation:rec-pulse 1s infinite;
+  }
+  @keyframes rec-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,133,106,0.5)} 50%{box-shadow:0 0 0 8px rgba(232,133,106,0)} }
+  .rec-label { font-size:12px; color:var(--ink-muted); }
+  .rec-label strong { color:var(--ink-soft); }
+
+  .playback-btn {
+    padding:6px 14px; border-radius:99px; border:1px solid var(--border);
+    background:var(--warm-white); font-size:12px; color:var(--ink-muted);
+    cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s;
+    display:none;
+  }
+  .playback-btn.show { display:inline-flex; align-items:center; gap:5px; }
+  .playback-btn:hover { background:var(--blush); }
+
+  /* Score badge */
+  .score-badge {
+    display:none; margin-top:10px; padding:12px 16px;
+    border-radius:var(--radius-sm); font-size:13px; line-height:1.6;
+  }
+  .score-badge.show { display:block; }
+  .score-badge.excellent { background:#EAF3DE; border:1px solid #7A9E87; color:#27500A; }
+  .score-badge.good      { background:var(--sunny-light); border:1px solid var(--sunny); color:#7A5A00; }
+  .score-badge.ok        { background:var(--sky-light); border:1px solid var(--sky); color:#185FA5; }
+  .score-badge.retry     { background:var(--coral-light); border:1px solid var(--coral); color:#7A2E1A; }
+
+  .score-bar-wrap { height:6px; background:rgba(44,36,22,0.1); border-radius:99px; margin:8px 0 4px; overflow:hidden; }
+  .score-bar { height:100%; border-radius:99px; transition:width 0.6s ease; }
+  .score-bar.excellent { background:#639922; }
+  .score-bar.good      { background:var(--sunny); }
+  .score-bar.ok        { background:var(--sky); }
+  .score-bar.retry     { background:var(--coral); }
+
+  .score-words { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+  .score-word {
+    padding:2px 8px; border-radius:99px; font-size:12px;
+    font-family:'DM Mono',monospace;
+  }
+  .score-word.hit  { background:var(--sage-light); color:var(--sage-deep); }
+  .score-word.miss { background:var(--coral-light); color:#7A2E1A; }
+
+  /* ── DONE BANNER ── */
+  .done-banner {
+    background:var(--sage-light); border:1px solid var(--sage);
+    border-radius:var(--radius); padding:20px; text-align:center; margin-bottom:16px;
+    display:none;
+  }
+  .done-banner.show { display:block; }
+  .done-banner-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--sage-deep); margin-bottom:6px; }
+  .done-banner-sub { font-size:13px; color:var(--sage-deep); }
+
+  /* ── NEXT/FINISH BTN ── */
+  .finish-btn {
+    width:100%; padding:14px; border-radius:99px; border:none;
+    background:var(--terracotta); color:white;
+    font-size:15px; font-family:'DM Sans',sans-serif; font-weight:500;
+    cursor:pointer; transition:all 0.2s; margin-top:8px;
+  }
+  .finish-btn:hover { background:var(--terra-deep); transform:translateY(-2px); }
+
+  .section-note {
+    font-size:12px; color:var(--ink-muted); text-align:center;
+    margin-bottom:14px; font-style:italic;
+  }
+
+  /* ── FULL SCRIPT ── */
+  #panel-fullscript { display:none; }
+  #panel-fullscript.active { display:block; }
+
+  .fullscript-hero {
+    background:var(--warm-white); padding:24px 20px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .fullscript-hero-eyebrow {
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--terracotta); margin-bottom:6px;
+  }
+  .fullscript-hero-title {
+    font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:4px;
+  }
+  .fullscript-hero-sub { font-size:13px; color:var(--ink-muted); }
+
+  .fullscript-content { padding:20px; }
+
+  .fs-day-block {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden; margin-bottom:16px;
+  }
+  .fs-day-header {
+    padding:14px 18px 12px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:12px; cursor:pointer;
+    transition:background 0.2s; user-select:none;
+  }
+  .fs-day-header:hover { background:var(--blush); }
+  .fs-day-num {
+    width:36px; height:36px; border-radius:50%; flex-shrink:0;
+    background:var(--blush); border:1px solid var(--rose);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display',serif; font-size:15px; color:var(--terracotta);
+  }
+  .fs-day-num.done-num { background:var(--sage-light); border-color:var(--sage); color:var(--sage-deep); }
+  .fs-day-info { flex:1; }
+  .fs-day-label { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--ink-muted); }
+  .fs-day-title { font-size:15px; font-weight:500; color:var(--ink); margin-top:2px; }
+  .fs-chevron { font-size:12px; color:var(--ink-muted); transition:transform 0.2s; }
+  .fs-chevron.open { transform:rotate(90deg); }
+
+  .fs-dialogue { padding:0 18px; max-height:0; overflow:hidden; transition:max-height 0.35s ease, padding 0.2s; }
+  .fs-dialogue.open { max-height:600px; padding:14px 18px 16px; }
+
+  .fs-line { margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+  .fs-line:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .fs-speaker {
+    font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--terracotta); font-weight:500; margin-bottom:4px;
+  }
+  .fs-en {
+    font-family:'Playfair Display',serif; font-size:17px; color:var(--ink);
+    line-height:1.4; margin-bottom:3px;
+  }
+  .fs-vn { font-size:13px; color:var(--ink-muted); font-style:italic; margin-bottom:6px; }
+  .fs-note {
+    font-size:11px; color:var(--sage-deep); background:var(--sage-light);
+    padding:3px 8px; border-radius:5px; display:inline-block; margin-bottom:6px;
+  }
+  .fs-line-btns { display:flex; gap:6px; flex-wrap:wrap; }
+  .fs-speak-btn {
+    padding:4px 12px; border-radius:99px; border:1px solid var(--border);
+    background:var(--warm-white); font-size:11px; color:var(--ink-muted);
+    cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s;
+  }
+  .fs-speak-btn:hover { background:var(--blush); }
+  .fs-speak-btn.slow { color:var(--sage-deep); border-color:var(--sage); }
+
+  .fullscript-print-btn {
+    width:100%; padding:13px; border-radius:99px; border:1.5px solid var(--terracotta);
+    background:transparent; color:var(--terracotta);
+    font-size:14px; font-family:'DM Sans',sans-serif; font-weight:500;
+    cursor:pointer; transition:all 0.2s; margin-top:4px;
+  }
+  .fullscript-print-btn:hover { background:var(--blush); }
+
   .fs-pill {
-    flex-shrink:0; padding:0 16px; height:44px; border-radius:22px;
+    flex-shrink:0; padding:0 14px; height:44px; border-radius:22px;
     border:1px solid var(--border); background:var(--warm-white);
     font-size:12px; font-weight:500; cursor:pointer;
     transition:all 0.2s; display:flex; align-items:center; gap:5px;
     font-family:'DM Sans',sans-serif; color:var(--ink-muted); white-space:nowrap;
   }
+  .fs-pill:hover { background:var(--blush); border-color:var(--rose); }
   .fs-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
 
-  /* ── DAY PANEL ── */
-  .day-panel { display:none; animation: fadeIn 0.4s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .day-panel.active { display:block; }
-  .day-header { padding:20px 20px 16px; background:var(--warm-white); border-bottom:1px solid var(--border); }
-  .day-num-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-muted); margin-bottom:4px; }
-  .day-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); margin-bottom:6px; }
-  .day-dialogue-preview { display:flex; flex-direction:column; gap:8px; padding:14px 16px; background:var(--blush); border-radius:var(--radius-sm); margin-top:10px; border: 1px dashed var(--rose); }
-  .dialogue-line { font-size:13px; line-height:1.5; color: var(--ink-soft); }
-  .dialogue-line strong { color:var(--terracotta); font-weight: 500; }
-  .dialogue-line .vn { color:var(--ink-muted); font-style:italic; font-size:12px; margin-top: 2px; }
-
-  /* ── MODE TABS ── */
-  .mode-tabs { display:flex; gap:6px; padding:14px 20px; overflow-x:auto; background:var(--warm-white); border-bottom:1px solid var(--border); scrollbar-width:none; position: sticky; top: 56px; z-index: 90; }
-  .mode-tabs::-webkit-scrollbar { display:none; }
-  .mode-tab { flex-shrink:0; padding:8px 16px; border-radius:99px; border:1px solid var(--border); font-size:12px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s; background:var(--warm-white); color:var(--ink-soft); white-space:nowrap; }
-  .mode-tab.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
-
-  /* ── MODE CONTENT ── */
-  .mode-content { padding:20px; display:none; min-height: 400px; }
-  .mode-content.active { display:block; }
-
-  /* ── FLASHCARD ── */
-  .fc-wrap { perspective:1000px; height:260px; margin-bottom:20px; }
-  .fc { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor:pointer; }
-  .fc.flipped { transform:rotateY(180deg); }
-  .fc-front, .fc-back { position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center; box-shadow: 0 4px 15px rgba(44, 36, 22, 0.05); }
-  .fc-front { background:var(--warm-white); border:1px solid var(--border); }
-  .fc-back { background:var(--terracotta); transform:rotateY(180deg); color: white; }
-  .fc-en { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:8px; line-height: 1.3; }
-  .fc-speaker { font-size:11px; color:var(--ink-muted); letter-spacing:1.5px; text-transform:uppercase; font-weight: 500; }
-  .fc-vn { font-family:'Playfair Display',serif; font-size:20px; color:white; margin-bottom:10px; line-height: 1.3; }
-  .fc-note { font-size:13px; color:rgba(255,255,255,0.85); font-style:italic; line-height:1.5; }
-  .fc-nav { display:flex; align-items:center; justify-content:center; gap:20px; }
-  .fc-btn { width:48px; height:48px; border-radius:50%; border:1px solid var(--border); background:var(--warm-white); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
-  .fc-btn:hover { background:var(--blush); border-color: var(--rose); }
-  .fc-count { font-size:13px; color:var(--ink-muted); min-width:70px; text-align:center; font-weight: 500; }
-
-  /* ── VOCAB ── */
-  .vocab-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-  .vocab-top { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; background: rgba(201, 118, 74, 0.03); }
-  .vocab-word { font-family:'Playfair Display',serif; font-size:20px; color:var(--terracotta); font-weight: 600; }
-  .vocab-phonetic { font-family:'DM Mono',monospace; font-size:13px; color:var(--ink-muted); }
-  .vocab-body { padding:18px 20px; }
-  .vocab-meaning { font-size:15px; color:var(--ink); font-weight:500; margin-bottom:12px; }
-  .vocab-row { display:flex; gap:10px; margin-bottom:8px; font-size:13px; line-height:1.5; }
-  .vr-label { color:var(--terracotta); font-weight:600; min-width:85px; flex-shrink:0; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding-top:2px; }
-  .vr-val { color:var(--ink-soft); flex: 1; }
-  .vr-vn { color:var(--ink-muted); font-size:12px; font-style:italic; margin-top:2px; }
-  .speak-btn { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:99px; border:1px solid var(--border); background:var(--warm-white); font-size:12px; color:var(--ink-muted); cursor:pointer; margin-top:12px; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
-  .speak-btn:hover { background:var(--blush); border-color: var(--rose); color: var(--terracotta); }
-
-  /* ── QUIZ ── */
-  .quiz-q-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 20px; margin-bottom:18px; text-align: center; }
-  .quiz-q-num { font-size:11px; color:var(--ink-muted); margin-bottom:8px; letter-spacing:1px; text-transform:uppercase; }
-  .quiz-q-text { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); line-height: 1.3; }
-  .quiz-opts { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
-  .quiz-opt { padding:14px 18px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--warm-white); cursor:pointer; font-size:14px; color:var(--ink-soft); transition:all 0.2s; text-align:left; font-family:'DM Sans',sans-serif; }
-  .quiz-opt:hover { background:var(--blush); border-color:var(--rose); }
-  .quiz-opt.correct { background:var(--sage-light); border-color:var(--sage); color:var(--sage-deep); font-weight: 500; }
-  .quiz-opt.wrong { background:var(--coral-light); border-color:var(--coral); color:#7A2E1A; }
-  .quiz-fb { padding:14px 18px; border-radius:var(--radius-sm); font-size:13px; line-height:1.6; display:none; margin-bottom:16px; }
-  .quiz-fb.show { display:block; animation: slideIn 0.3s ease; }
-  @keyframes slideIn { from { transform: translateY(-5px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .quiz-fb.ok { background:var(--sage-light); color:var(--sage-deep); border-left: 4px solid var(--sage); }
-  .quiz-fb.nope { background:var(--coral-light); color:#7A2E1A; border-left: 4px solid var(--coral); }
-  .quiz-next { width:100%; padding:15px; border-radius:var(--radius-sm); border:none; background:var(--terracotta); color:white; font-size:14px; font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer; transition:all 0.2s; }
-  .quiz-next:disabled { opacity:0.3; cursor:not-allowed; }
-
-  /* ── DICTATION ── */
-  .dict-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:30px 20px; text-align:center; margin-bottom:20px; }
-  .dict-blanks { font-family:'DM Mono',monospace; font-size:26px; letter-spacing:4px; color:var(--terracotta); margin-bottom:12px; font-weight: 600; }
-  .dict-hint { font-size:12px; color:var(--ink-muted); margin-bottom:24px; line-height: 1.5; }
-  .play-btn { width:64px; height:64px; border-radius:50%; border:none; background:var(--terracotta); color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; transition:all 0.3s; box-shadow: 0 4px 12px rgba(201, 118, 74, 0.3); }
-  .play-btn:hover { transform: scale(1.08); background: var(--terra-deep); }
-  .play-btn.playing { background:var(--sage); animation: pulseDict 1.2s infinite; }
-  @keyframes pulseDict { 0% { box-shadow: 0 0 0 0 rgba(122, 158, 135, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(122, 158, 135, 0); } 100% { box-shadow: 0 0 0 0 rgba(122, 158, 135, 0); } }
-  .dict-input { width:100%; padding:15px; border-radius:var(--radius-sm); border:2px solid var(--border); font-size:16px; font-family:'DM Sans',sans-serif; color:var(--ink); background:var(--cream); text-align:center; outline:none; transition: all 0.2s; }
-  .dict-input:focus { border-color:var(--terracotta); background: white; }
-  .dict-input.correct { border-color:var(--sage); background:var(--sage-light); color: var(--sage-deep); }
-
-  /* ── SHADOWING & RECORDER ── */
-  .shadow-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; }
-  .shadow-speaker { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--terracotta); margin-bottom:8px; font-weight:600; }
-  .shadow-en { font-family:'Playfair Display',serif; font-size:19px; color:var(--ink); margin-bottom:6px; line-height:1.4; }
-  .shadow-vn { font-size:13px; color:var(--ink-muted); font-style:italic; margin-bottom:15px; }
-  .shadow-btns { display:flex; gap:10px; }
-  .shadow-btn { flex:1; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--warm-white); font-size:12px; font-family:'DM Sans',sans-serif; font-weight: 500; cursor:pointer; transition:all 0.2s; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; gap:6px; }
-  .shadow-btn.primary { background:var(--terracotta); color:white; border-color:var(--terracotta); }
-
-  .rec-zone { margin-top:16px; border-top:1px solid var(--border); padding-top:16px; }
-  .rec-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-  .rec-btn { width:46px; height:46px; border-radius:50%; border:none; background:var(--blush); color:var(--terracotta); font-size:20px; cursor:pointer; transition:all 0.25s; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .rec-btn.recording { background:var(--coral); color:white; animation: recPulse 1.5s infinite; }
-  @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(232, 133, 106, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(232, 133, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(232, 133, 106, 0); } }
-  .rec-label { font-size:12px; color:var(--ink-muted); }
-  .playback-btn { padding:6px 14px; border-radius:99px; border:1px solid var(--border); background:var(--warm-white); font-size:11px; color:var(--ink-muted); cursor:pointer; font-family:'DM Sans',sans-serif; display:none; }
-  .playback-btn.show { display:inline-flex; align-items:center; gap:5px; }
-
-  .score-badge { display:none; margin-top:10px; padding:15px; border-radius:var(--radius-sm); font-size:13px; }
-  .score-badge.show { display:block; animation: fadeIn 0.4s; }
-  .score-badge.excellent { background:#EAF3DE; border:1px solid #7A9E87; color:#27500A; }
-  .score-badge.good { background:var(--sunny-light); border:1px solid var(--sunny); color:#7A5A00; }
-  .score-badge.retry { background:var(--coral-light); border:1px solid var(--coral); color:#7A2E1A; }
-  .score-bar-wrap { height:6px; background:rgba(0,0,0,0.05); border-radius:99px; margin:10px 0 6px; overflow:hidden; }
-  .score-bar { height:100%; border-radius:99px; transition:width 0.8s ease-out; }
-
-  .done-banner { background:var(--sage-light); border:1px solid var(--sage); border-radius:var(--radius); padding:24px; text-align:center; margin-bottom:20px; display:none; box-shadow: 0 4px 12px rgba(122, 158, 135, 0.15); }
-  .done-banner.show { display:block; }
-  .done-banner-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--sage-deep); margin-bottom:8px; }
-  .done-banner-sub { font-size:14px; color:var(--sage-deep); opacity: 0.9; }
-
-  .finish-btn { width:100%; padding:16px; border-radius:99px; border:none; background:var(--terracotta); color:white; font-size:15px; font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer; transition:all 0.2s; margin-top:10px; }
-  .finish-btn:hover { background:var(--terra-deep); transform: translateY(-2px); }
-
-  /* ── FULL SCRIPT ── */
-  #panel-fullscript { display:none; }
-  #panel-fullscript.active { display:block; }
-  .fs-day-block { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
-  .fs-day-header { padding:16px 20px; display:flex; align-items:center; gap:15px; cursor:pointer; }
-  .fs-day-num { width:36px; height:36px; border-radius:50%; background:var(--blush); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; color:var(--terracotta); font-weight: 600; }
-  .fs-day-num.done { background:var(--sage-light); color:var(--sage-deep); }
-  .fs-day-title { flex:1; font-weight:500; font-size:15px; }
-  .fs-dialogue { padding:0 20px; max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
-  .fs-dialogue.open { max-height:1200px; padding:15px 20px 20px; border-top: 1px solid var(--border); }
-  .fs-line { margin-bottom:15px; }
-  .fs-en { font-family:'Playfair Display',serif; font-size:17px; margin-bottom:4px; color: var(--ink); }
-  .fs-vn { font-size:13px; color:var(--ink-muted); font-style:italic; }
-
+  @media print {
+    header, .days-nav, .topic-hero, .day-panel, .mode-tabs,
+    .fullscript-print-btn, .fs-speak-btn, .fs-day-header .fs-chevron { display:none !important; }
+    #panel-fullscript { display:block !important; }
+    .fs-dialogue { max-height:none !important; padding:14px 18px 16px !important; }
+    .fs-day-block { break-inside:avoid; }
+    body { background:white; }
+  }
 </style>
 </head>
 <body>
 
 <div id="loading-overlay">
   <div class="spinner"></div>
-  <p style="font-family: 'Playfair Display', serif; color: var(--ink-muted); margin-top:10px;">Đang chuẩn bị không gian học...</p>
+  <p style="font-family: 'Playfair Display', serif; color: var(--ink-muted); margin-top:10px;">Đang tải dữ liệu bài học...</p>
 </div>
 
 <header>
   <div class="logo"><span>Lani</span> · Be A Gift</div>
-  <a class="home-btn" href="lani-be-a-gift.html">← Trang chủ</a>
+  <a class="home-btn" href="lani-be-a-gift.html">← Dashboard</a>
 </header>
 
 <div class="topic-hero">
   <div class="topic-eyebrow">Topic 01 · 10 ngày</div>
   <div class="topic-title">☀️ Morning <em>Routine</em></div>
-  <div class="topic-vn">Chào ngày mới năng lượng & Tỉnh thức</div>
+  <div class="topic-vn">Chào ngày mới năng lượng</div>
 </div>
 
-<div class="video-section">
-  <div class="video-section-title">🎥 Video Hướng Dẫn Khởi Động</div>
-  <div class="video-wrapper">
-    <iframe src="https://www.youtube.com/embed/GovagiDtzSQ?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<div class="days-nav" id="daysNav">
   </div>
-</div>
-<div class="days-nav" id="daysNav"></div>
+
 <div id="panels"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  FIREBASE CONFIG & FETCH DATA
+//  FIREBASE CONFIG & AUTHENTICATION
 // ═══════════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
@@ -295,77 +481,815 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
-// Các biến chờ dữ liệu từ Firebase
-let TOPIC = {};
-let DAYS = [];
-
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     window.location.href = 'lani-be-a-gift.html';
   } else {
     currentUser = user;
-    await fetchProgress(); 
+    await fetchProgress();
+    document.getElementById('loading-overlay').style.display = 'none';
   }
 });
 
 async function fetchProgress() {
   try {
-    // 1. Kéo dữ liệu bài học Topic 01 từ Firestore
-    const topicDoc = await db.collection("topics").doc("topic01").get();
-    if (topicDoc.exists) {
-      const data = topicDoc.data();
-      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
-      DAYS = data.days;
-    } else {
-      console.error("Không tìm thấy dữ liệu Topic 01!");
-      document.getElementById('loading-overlay').innerHTML = '<p style="color:var(--coral);">Lỗi: Không tìm thấy bài học.</p>';
-      return; 
-    }
-
-    // 2. Kéo tiến độ học viên
     const doc = await db.collection("users").doc(currentUser.uid).get();
     if (doc.exists) {
       userProgress = doc.data();
-      const daysCompleted = userProgress.progress[0] || 0; 
-      doneDays = [];
+      const daysCompleted = userProgress.progress[0] || 0; // Topic 01 (index 0)
       for(let i=0; i < daysCompleted; i++) {
         doneDays.push(i);
       }
     }
-
-    // 3. Tắt màn hình chờ và render giao diện
-    document.getElementById('loading-overlay').style.display = 'none';
     renderPanels();
     renderNav();
   } catch (error) {
     console.error("Lỗi tải tiến độ:", error);
-    document.getElementById('loading-overlay').innerHTML = '<p style="color:var(--coral);">Đã có lỗi xảy ra. Vui lòng tải lại trang.</p>';
   }
 }
 
 // ═══════════════════════════════════════════════════════
-//  CORE LOGIC (Hệ thống xử lý)
+//  DATA — TOÀN BỘ 10 NGÀY CỦA BẠN (Đã làm sạch sẽ chú thích)
 // ═══════════════════════════════════════════════════════
-let currentDay = 0; 
-let fcIdx = {}, fcFlipped = {};
-let quizState = {}; 
-let dictState = {}; 
-let currentView = 'day';
+const TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
 
-// Logic chọn giọng đọc
+const DAYS = [
+  // Day 1
+  {
+    title: 'Đánh thức dịu dàng',
+    dialogue: [
+      { speaker: 'Mom', en: 'Wakey wakey, baby!', vn: 'Dậy thôi cưng ơi!' },
+      { speaker: 'Child', en: 'Good morning, mommy!', vn: 'Chào buổi sáng mẹ ạ!' },
+    ],
+    vocab: [
+      { en: 'Wakey wakey', phonetic: '/ˈweɪki ˈweɪki/', speaker: 'Mom', meaning: 'Dậy thôi nào! (cách nói dễ thương để đánh thức trẻ)', synonym: 'Wake up!, Rise and shine!', synonymVn: 'Dậy đi!, Dậy thôi nào!', collocation: 'Wakey wakey, sleepyhead', collocationVn: 'Dậy thôi nào, đồ sâu ngủ', example: '"Wakey wakey, baby! Time to start a new day!"', exampleVn: '"Dậy thôi cưng! Đã đến giờ bắt đầu một ngày mới rồi!"' },
+      { en: 'Good morning', phonetic: '/ɡʊd ˈmɔːrnɪŋ/', speaker: 'Child', meaning: 'Chào buổi sáng', synonym: 'Morning!, Good day!', synonymVn: 'Chào buổi sáng!, Chào ngày mới!', collocation: 'Good morning, everyone', collocationVn: 'Chào buổi sáng mọi người', example: '"Good morning, mommy! I slept so well."', exampleVn: '"Chào buổi sáng mẹ! Con ngủ ngon lắm."' },
+    ],
+    quiz: [
+      { q: '"Wakey wakey" có nghĩa là gì?', opts: ['Dậy thôi nào!','Ngủ ngon nhé!','Ăn sáng thôi!','Đi tắm nào!'], ans: 0, exp: '"Wakey wakey" là cách nói dễ thương, dùng để đánh thức trẻ nhỏ dịu dàng.' },
+      { q: 'Con nói gì khi thức dậy?', opts: ['Good night!','Good morning, mommy!','Goodbye!','See you later!'], ans: 1, exp: '"Good morning" là lời chào buổi sáng. Con trả lời lại mẹ bằng "Good morning, mommy!"' },
+      { q: 'Từ nào đồng nghĩa với "Wakey wakey"?', opts: ['Good night','Sleep tight','Wake up!','Be quiet'], ans: 2, exp: '"Wake up!" có nghĩa tương đương – đều là "dậy thôi", nhưng "Wakey wakey" nghe dễ thương hơn!' },
+    ],
+    dictation: [
+      { text: 'Wakey wakey', hint: '2 từ · cách đánh thức trẻ dễ thương', hintVn: 'Dậy thôi nào!' },
+      { text: 'Good morning', hint: '2 từ · lời chào buổi sáng', hintVn: 'Chào buổi sáng' },
+      { text: 'mommy', hint: '1 từ · cách con gọi mẹ', hintVn: 'mẹ ơi' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Wakey wakey, baby!', vn: 'Dậy thôi cưng ơi!' },
+      { speaker: 'Child', en: 'Good morning, mommy!', vn: 'Chào buổi sáng mẹ ạ!' },
+    ],
+  },
+
+  // Day 2
+  {
+    title: 'Chào đón ánh dương',
+    dialogue: [
+      { speaker: 'Mom', en: 'Good morning, sweetie. Rise and shine!', vn: 'Chào buổi sáng con yêu, dậy thôi nào!' },
+      { speaker: 'Child', en: "I'm awake!", vn: 'Con thức dậy rồi đây!' },
+    ],
+    vocab: [
+      { en: 'Rise and shine', phonetic: '/raɪz ənd ʃaɪn/', speaker: 'Mom', meaning: 'Dậy thôi nào! (như mặt trời mọc và tỏa sáng)', synonym: 'Wake up!, Get up!', synonymVn: 'Dậy đi!, Thức dậy nào!', collocation: 'Rise and shine, sleepyhead', collocationVn: 'Dậy tỏa sáng nào, bé lười ngủ', example: '"Rise and shine, sweetie! The sun is already up!"', exampleVn: '"Dậy tỏa sáng nào con yêu! Mặt trời đã lên rồi kìa!"' },
+      { en: 'Sweetie', phonetic: '/ˈswiːti/', speaker: 'Mom', meaning: 'Con yêu, cưng (cách gọi thân mật)', synonym: 'Honey, darling, baby', synonymVn: 'Cưng, yêu, bé', collocation: 'Good morning sweetie', collocationVn: 'Chào buổi sáng con yêu', example: '"Good morning, sweetie. Did you sleep well?"', exampleVn: '"Chào buổi sáng con yêu. Con ngủ có ngon không?"' },
+      { en: "I'm awake", phonetic: '/aɪm əˈweɪk/', speaker: 'Child', meaning: 'Con thức dậy rồi / Con đang thức', synonym: "I'm up!, I'm awake now!", synonymVn: 'Con dậy rồi!, Con thức rồi đây!', collocation: "I'm wide awake", collocationVn: 'Con thức hoàn toàn rồi', example: '"I\'m awake, Mommy! I\'m ready for breakfast!"', exampleVn: '"Con thức rồi mẹ ơi! Con sẵn sàng ăn sáng rồi!"' },
+    ],
+    quiz: [
+      { q: '"Rise and shine" có nghĩa là?', opts: ['Ngủ thêm một chút','Dậy thôi nào!','Ăn tối thôi','Đi ngủ đi'], ans: 1, exp: '"Rise" = mọc/dậy, "shine" = tỏa sáng. Cụm từ này nghĩa là "dậy và tỏa sáng như mặt trời nhé!"' },
+      { q: '"Sweetie" dùng để gọi ai?', opts: ['Người lạ','Thú cưng','Con yêu / người thân thương','Giáo viên'], ans: 2, exp: '"Sweetie" là cách gọi thân mật, yêu thương, dùng với người thân, bạn bè hoặc con cái.' },
+      { q: 'Con bé nói "___" để báo mẹ biết mình đã thức.', opts: ["I'm sleeping","I'm hungry","I'm awake!","I'm tired"], ans: 2, exp: '"I\'m awake!" = Con đã thức rồi. Bé dùng câu này để báo mẹ biết mình nghe thấy.' },
+    ],
+    dictation: [
+      { text: 'Rise and shine', hint: '3 từ · khuyến khích dậy dạng thơ mộng', hintVn: 'Dậy và tỏa sáng nào!' },
+      { text: 'sweetie', hint: '1 từ · cách gọi yêu thương', hintVn: 'Con yêu' },
+      { text: "I'm awake", hint: '2 từ · thông báo đã thức', hintVn: 'Con thức rồi' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Good morning, sweetie. Rise and shine!', vn: 'Chào buổi sáng con yêu, dậy thôi nào!' },
+      { speaker: 'Child', en: "I'm awake!", vn: 'Con thức dậy rồi đây!' },
+    ],
+  },
+
+  // Day 3
+  {
+    title: 'Rửa mặt mát mẻ',
+    dialogue: [
+      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.' },
+      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!' },
+    ],
+    vocab: [
+      { en: 'Wash your face', phonetic: '/wɒʃ jɔːr feɪs/', speaker: 'Mom', meaning: 'Rửa mặt', synonym: 'Clean your face', synonymVn: 'Làm sạch mặt', collocation: 'wash your face and hands', collocationVn: 'rửa mặt và tay', example: '"Go wash your face, then come have breakfast."', exampleVn: '"Đi rửa mặt rồi ra ăn sáng nhé con."' },
+      { en: 'Splash', phonetic: '/splæʃ/', speaker: 'Child', meaning: 'Táp / vẩy nước; tiếng nước bắn tung tóe', synonym: 'sprinkle, splatter', synonymVn: 'vảy nước, bắn tung tóe', collocation: 'splash water', collocationVn: 'vẩy nước', example: '"Splash, splash! The water is cold and refreshing!"', exampleVn: '"Táp táp! Nước lạnh và mát mẻ quá!"' },
+    ],
+    quiz: [
+      { q: '"Wash your face" nghĩa là?', opts: ['Chải tóc','Rửa mặt','Đánh răng','Tắm'], ans: 1, exp: '"Wash" = rửa, "face" = mặt. Đây là việc làm đầu tiên sau khi thức dậy.' },
+      { q: '"Splash" diễn tả điều gì?', opts: ['Tiếng cửa đóng','Tiếng nước bắn tung tóe','Tiếng còi xe','Tiếng cười'], ans: 1, exp: '"Splash" là âm thanh và hành động khi nước bắn, vẩy hoặc táp lên mặt.' },
+      { q: 'Mẹ dùng câu nào để nhắc con rửa mặt?', opts: ['Go brush your teeth','Go eat breakfast','Go wash your face','Go take a bath'], ans: 2, exp: '"Go wash your face" = Đi rửa mặt đi. "Go + verb" là cách ra lệnh nhẹ nhàng bằng tiếng Anh.' },
+    ],
+    dictation: [
+      { text: 'wash your face', hint: '3 từ · việc làm buổi sáng', hintVn: 'Rửa mặt' },
+      { text: 'Splash', hint: '1 từ · âm thanh nước bắn', hintVn: 'Táp nước!' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.' },
+      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!' },
+    ],
+  },
+
+  // Day 4
+  {
+    title: 'Đánh răng sạch sẽ',
+    dialogue: [
+      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.' },
+      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!' },
+    ],
+    vocab: [
+      { en: 'Brush your teeth', phonetic: '/brʌʃ jɔːr tiːθ/', speaker: 'Mom', meaning: 'Đánh răng', synonym: 'clean your teeth', synonymVn: 'làm sạch răng', collocation: "brush teeth twice a day", collocationVn: 'đánh răng hai lần mỗi ngày', example: '"Let\'s brush your teeth before bed, sweetheart."', exampleVn: '"Cùng đánh răng trước khi ngủ nhé con yêu."' },
+      { en: "Let's", phonetic: '/lɛts/', speaker: 'Mom', meaning: 'Cùng nhau... (đề xuất làm gì đó cùng nhau)', synonym: "Shall we", synonymVn: 'Mình cùng nhé', collocation: "Let's go", collocationVn: 'Cùng đi nào', example: '"Let\'s do it together! It\'s more fun that way."', exampleVn: '"Cùng làm cùng nhau nào! Vui hơn nhiều đấy."' },
+    ],
+    quiz: [
+      { q: '"Let\'s brush your teeth" nghĩa là?', opts: ['Con hãy tự đánh răng','Cùng đánh răng nào','Mẹ đánh răng cho con','Đừng đánh răng'], ans: 1, exp: '"Let\'s" = "Cùng nhau nào" – thể hiện mẹ muốn làm cùng con, tạo sự gắn kết.' },
+      { q: '"Teeth" là số nhiều của từ nào?', opts: ['Teeths','Tooth','Tooths','Teethes'], ans: 1, exp: '"Tooth" (một cái răng) → số nhiều bất quy tắc là "teeth". Không thêm "s"!' },
+      { q: 'Bé bắt chước âm thanh đánh răng bằng câu nào?', opts: ['Splash splash','Glug glug','Brush brush brush','Scrub scrub'], ans: 2, exp: '"Brush brush brush!" – bé vừa nói vừa làm động tác, giúp ghi nhớ từ qua hành động.' },
+    ],
+    dictation: [
+      { text: "Let's brush", hint: '2 từ · mời gọi cùng làm', hintVn: 'Cùng... nào' },
+      { text: 'teeth', hint: '1 từ · số nhiều bất quy tắc của tooth', hintVn: 'Răng (nhiều chiếc)' },
+      { text: 'Brush brush brush', hint: '3 từ · âm thanh hành động', hintVn: 'Chà chà chà' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.' },
+      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!' },
+    ],
+  },
+
+  // Day 5
+  {
+    title: 'Thanh lọc cơ thể',
+    dialogue: [
+      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.' },
+      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!' },
+    ],
+    vocab: [
+      { en: 'Warm water', phonetic: '/wɔːrm ˈwɔːtər/', speaker: 'Mom', meaning: 'Nước ấm', synonym: 'hot water', synonymVn: 'nước nóng', collocation: 'drink warm water', collocationVn: 'uống nước ấm', example: '"Drinking warm water in the morning is good for your health."', exampleVn: '"Uống nước ấm mỗi sáng rất tốt cho sức khoẻ con nhé."' },
+      { en: 'Glug glug', phonetic: '/ɡlʌɡ ɡlʌɡ/', speaker: 'Child', meaning: 'Ừng ực (âm thanh khi uống nước)', synonym: 'gulp gulp', synonymVn: 'ực ực', collocation: 'glug glug down', collocationVn: 'tu một hơi', example: '"Glug, glug! This water tastes so good, Mom!"', exampleVn: '"Ừng ực! Nước ngon quá mẹ ơi!"' },
+      { en: 'Thank you', phonetic: '/θæŋk juː/', speaker: 'Child', meaning: 'Cảm ơn', synonym: 'Thanks', synonymVn: 'Cảm ơn nha', collocation: 'Thank you so much', collocationVn: 'Cảm ơn rất nhiều', example: '"Thank you, Mom! You always take such good care of me."', exampleVn: '"Cảm ơn mẹ! Mẹ lúc nào cũng chăm sóc con thật tốt."' },
+    ],
+    quiz: [
+      { q: '"Warm water" nghĩa là?', opts: ['Nước lạnh','Nước ấm','Nước đá','Nước sôi'], ans: 1, exp: '"Warm" = ấm (không nóng, không lạnh). "Cold" = lạnh, "hot" = nóng, "iced" = có đá.' },
+      { q: '"Glug glug" diễn tả âm thanh gì?', opts: ['Tiếng nhai','Tiếng uống nước','Tiếng nấu ăn','Tiếng cười'], ans: 1, exp: '"Glug glug" là âm thanh khi nuốt nước – giúp bé nhớ từ qua âm thanh vui nhộn!' },
+      { q: 'Sau khi uống nước, bé nói gì?', opts: ['Good morning!','I\'m hungry!','Thank you, Mom!','Let\'s go!'], ans: 2, exp: '"Thank you, Mom!" – bé biết cảm ơn khi được mẹ chăm sóc, thể hiện phép lịch sự đẹp.' },
+    ],
+    dictation: [
+      { text: 'warm water', hint: '2 từ · loại nước uống buổi sáng', hintVn: 'Nước ấm' },
+      { text: 'Glug glug', hint: '2 từ · âm thanh uống nước', hintVn: 'Ừng ực' },
+      { text: 'Thank you', hint: '2 từ · lời cảm ơn', hintVn: 'Cảm ơn' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.' },
+      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!' },
+    ],
+  },
+
+  // Day 6
+  {
+    title: 'Rèn luyện sự tĩnh lặng',
+    dialogue: [
+      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.' },
+      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.' },
+    ],
+    vocab: [
+      { en: 'Sit down quietly', phonetic: '/sɪt daʊn ˈkwaɪətli/', speaker: 'Mom', meaning: 'Ngồi xuống yên lặng', synonym: 'sit still', synonymVn: 'ngồi im', collocation: 'sit quietly', collocationVn: 'ngồi yên', example: '"Now sit down quietly and take a deep breath."', exampleVn: '"Bây giờ hãy ngồi yên và hít một hơi thật sâu nhé."' },
+      { en: 'Yes, Mommy', phonetic: '/jɛs ˈmɒmi/', speaker: 'Child', meaning: 'Vâng ạ, mẹ ơi', synonym: 'Yes Mom', synonymVn: 'Vâng mẹ', collocation: 'Yes Mommy', collocationVn: 'Vâng mẹ ơi', example: '"Yes, Mommy. I will sit quietly."', exampleVn: '"Vâng mẹ. Con sẽ ngồi yên ạ."' },
+    ],
+    quiz: [
+      { q: '"Quietly" có nghĩa là?', opts: ['Nhanh chóng','Im lặng / yên tĩnh','Vui vẻ','Mạnh mẽ'], ans: 1, exp: '"Quietly" = một cách yên tĩnh, không gây ồn ào. Trái nghĩa: "loudly" = ồn ào.' },
+      { q: 'Mẹ dùng câu nào để nhắc bé ngồi yên?', opts: ['Go wash your face','Now sit down quietly','Drink warm water','Rise and shine'], ans: 1, exp: '"Now sit down quietly" – "now" nhấn mạnh đây là thời điểm thực hiện ngay.' },
+      { q: 'Bé đáp lại mẹ bằng câu nào?', opts: ['No Mommy!','I\'m hungry!','Yes, Mommy.','Let\'s play!'], ans: 2, exp: '"Yes, Mommy." – ngắn gọn, lịch sự, thể hiện bé nghe lời và tôn trọng mẹ.' },
+    ],
+    dictation: [
+      { text: 'sit down quietly', hint: '3 từ · hành động cần làm', hintVn: 'Ngồi xuống yên lặng' },
+      { text: 'Yes Mommy', hint: '2 từ · câu đáp lại của bé', hintVn: 'Vâng ạ mẹ ơi' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.' },
+      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.' },
+    ],
+  },
+
+  // Day 7
+  {
+    title: 'Lắng nghe cơ thể',
+    dialogue: [
+      { speaker: 'Mom', en: 'Observe your natural breath.', vn: 'Hãy quan sát hơi thở tự nhiên của con nhé.' },
+      { speaker: 'Child', en: 'Like this?', vn: 'Như thế này phải không mẹ?' },
+    ],
+    vocab: [
+      { en: 'Observe', phonetic: '/əbˈzɜːrv/', speaker: 'Mom', meaning: 'Quan sát, chú ý đến', synonym: 'watch, notice', synonymVn: 'nhìn, để ý', collocation: 'observe your breath', collocationVn: 'quan sát hơi thở', example: '"Observe your breath coming in and going out."', exampleVn: '"Hãy quan sát hơi thở đi vào và đi ra nhé."' },
+      { en: 'Natural breath', phonetic: '/ˈnætʃərəl brɛθ/', speaker: 'Mom', meaning: 'Hơi thở tự nhiên', synonym: 'normal breathing', synonymVn: 'thở bình thường', collocation: 'natural breath', collocationVn: 'hơi thở tự nhiên', example: '"Just observe your natural breath. Don\'t try to change it."', exampleVn: '"Chỉ cần quan sát hơi thở tự nhiên thôi. Đừng cố thay đổi nó nhé."' },
+      { en: 'Like this?', phonetic: '/laɪk ðɪs/', speaker: 'Child', meaning: 'Như thế này phải không? (hỏi xác nhận)', synonym: 'Is this right?', synonymVn: 'Đúng rồi không?', collocation: 'like this?', collocationVn: 'như thế này?', example: '"Like this, Mommy? Am I doing it right?"', exampleVn: '"Như thế này phải không mẹ? Con làm đúng chưa?"' },
+    ],
+    quiz: [
+      { q: '"Observe" có nghĩa là?', opts: ['Bỏ qua','Quan sát / chú ý','Chạy nhảy','Ăn uống'], ans: 1, exp: '"Observe" = quan sát một cách chú ý. Khác với "look" (nhìn) – observe có chiều sâu hơn.' },
+      { q: '"Natural breath" nghĩa là?', opts: ['Hơi thở mạnh','Hơi thở nhanh','Hơi thở tự nhiên','Hơi thở chậm'], ans: 2, exp: '"Natural" = tự nhiên. Mẹ dạy bé thiền bằng cách quan sát hơi thở mà không can thiệp.' },
+      { q: 'Bé hỏi "Like this?" để làm gì?', opts: ['Phàn nàn','Xác nhận xem mình làm đúng chưa','Từ chối','Đùa giỡn'], ans: 1, exp: '"Like this?" = Như thế này phải không? Bé muốn mẹ xác nhận để biết mình đang làm đúng.' },
+    ],
+    dictation: [
+      { text: 'Observe', hint: '1 từ · động từ quan sát', hintVn: 'Quan sát' },
+      { text: 'natural breath', hint: '2 từ · hơi thở không cố ý', hintVn: 'Hơi thở tự nhiên' },
+      { text: 'Like this', hint: '2 từ · câu hỏi xác nhận', hintVn: 'Như thế này?' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Observe your natural breath.', vn: 'Hãy quan sát hơi thở tự nhiên của con nhé.' },
+      { speaker: 'Child', en: 'Like this?', vn: 'Như thế này phải không mẹ?' },
+    ],
+  },
+
+  // Day 8
+  {
+    title: 'Quan sát hơi thở',
+    dialogue: [
+      { speaker: 'Mom', en: 'Breathe in... and breathe out...', vn: 'Hít vào... và thở ra...' },
+      { speaker: 'Child', en: 'In... and out...', vn: 'Hít vào... và thở ra...' },
+    ],
+    vocab: [
+      { en: 'Breathe in', phonetic: '/briːð ɪn/', speaker: 'Mom', meaning: 'Hít vào', synonym: 'inhale', synonymVn: 'hít vào', collocation: 'breathe in slowly', collocationVn: 'hít vào chậm', example: '"Breathe in slowly through your nose..."', exampleVn: '"Hít vào chậm qua mũi..."' },
+      { en: 'Breathe out', phonetic: '/briːð aʊt/', speaker: 'Mom', meaning: 'Thở ra', synonym: 'exhale', synonymVn: 'thở ra', collocation: 'breathe out slowly', collocationVn: 'thở ra chậm', example: '"Breathe out gently and feel your body relax."', exampleVn: '"Thở ra thật nhẹ nhàng và cảm nhận cơ thể thư giãn nhé."' },
+    ],
+    quiz: [
+      { q: '"Breathe in" có nghĩa là?', opts: ['Thở ra','Nín thở','Hít vào','Thở mạnh'], ans: 2, exp: '"Breathe in" = hít vào. "In" chỉ hướng vào trong. Trái nghĩa: "breathe out" = thở ra.' },
+      { q: 'Từ đồng nghĩa với "breathe in" là?', opts: ['Exhale','Inhale','Sigh','Yawn'], ans: 1, exp: '"Inhale" = hít vào. "Exhale" = thở ra. Đây là từ vựng y học/khoa học.' },
+      { q: 'Bé lặp lại theo mẹ câu nào?', opts: ['Yes Mommy','Like this?','In... and out...','Thank you Mom'], ans: 2, exp: '"In... and out..." – bé lặp lại ngắn gọn, phản chiếu lời mẹ, rất hay dùng trong thiền.' },
+    ],
+    dictation: [
+      { text: 'Breathe in', hint: '2 từ · hít không khí vào', hintVn: 'Hít vào' },
+      { text: 'breathe out', hint: '2 từ · đẩy không khí ra', hintVn: 'Thở ra' },
+      { text: 'In and out', hint: '3 từ · chu kỳ hít thở', hintVn: 'Vào và ra' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Breathe in... and breathe out...', vn: 'Hít vào... và thở ra...' },
+      { speaker: 'Child', en: 'In... and out...', vn: 'Hít vào... và thở ra...' },
+    ],
+  },
+
+  // Day 9
+  {
+    title: 'Khởi động tinh thần',
+    dialogue: [
+      { speaker: 'Mom', en: 'Are you ready to start a new day?', vn: 'Con đã sẵn sàng bắt đầu một ngày mới chưa?' },
+      { speaker: 'Child', en: "Yes, I'm ready!", vn: 'Vâng, con sẵn sàng rồi!' },
+    ],
+    vocab: [
+      { en: 'Are you ready?', phonetic: '/ɑːr juː ˈrɛdi/', speaker: 'Mom', meaning: 'Con đã sẵn sàng chưa?', synonym: "Are you set?", synonymVn: 'Con chuẩn bị xong chưa?', collocation: "Are you ready to go?", collocationVn: 'Con sẵn sàng đi chưa?', example: '"Are you ready to start a new day, my love?"', exampleVn: '"Con đã sẵn sàng bắt đầu ngày mới chưa, con yêu của mẹ?"' },
+      { en: "I'm ready!", phonetic: '/aɪm ˈrɛdi/', speaker: 'Child', meaning: 'Con sẵn sàng rồi!', synonym: "I'm all set!", synonymVn: 'Con chuẩn bị xong rồi!', collocation: "I'm ready to go", collocationVn: 'Con sẵn sàng đi rồi', example: '"Yes, I\'m ready! Let\'s have a great day!"', exampleVn: '"Vâng con sẵn sàng rồi! Cùng có một ngày thật tuyệt nhé!"' },
+      { en: 'New day', phonetic: '/njuː deɪ/', speaker: 'Mom', meaning: 'Ngày mới', synonym: 'fresh day', synonymVn: 'ngày tươi mới', collocation: 'start a new day', collocationVn: 'bắt đầu ngày mới', example: '"Every morning brings a beautiful new day full of possibilities."', exampleVn: '"Mỗi buổi sáng mang đến một ngày mới tươi đẹp đầy cơ hội."' },
+    ],
+    quiz: [
+      { q: '"Are you ready?" dùng để hỏi điều gì?', opts: ['Hỏi tên','Hỏi tuổi','Hỏi xem đã sẵn sàng chưa','Hỏi địa chỉ'], ans: 2, exp: '"Are you ready?" = Con/Bạn đã sẵn sàng chưa? Câu hỏi Yes/No thường dùng trước khi bắt đầu việc gì đó.' },
+      { q: 'Bé trả lời "Yes, I\'m ready!" nghĩa là?', opts: ['Con chưa sẵn sàng','Con sẵn sàng rồi!','Con muốn ngủ thêm','Con đói rồi'], ans: 1, exp: '"Yes, I\'m ready!" = Vâng, con sẵn sàng rồi! Câu trả lời khẳng định tích cực.' },
+      { q: '"New day" có nghĩa là?', opts: ['Ngày hôm qua','Ngày cũ','Ngày mới','Ngày nghỉ'], ans: 2, exp: '"New" = mới, "day" = ngày. "New day" gợi lên sự tươi mới, tích cực khi bắt đầu mỗi sáng.' },
+    ],
+    dictation: [
+      { text: 'Are you ready', hint: '3 từ · câu hỏi về sự sẵn sàng', hintVn: 'Con đã sẵn sàng chưa?' },
+      { text: "I'm ready", hint: '2 từ · câu trả lời khẳng định', hintVn: 'Con sẵn sàng rồi' },
+      { text: 'new day', hint: '2 từ · ngày bắt đầu', hintVn: 'Ngày mới' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Are you ready to start a new day?', vn: 'Con đã sẵn sàng bắt đầu một ngày mới chưa?' },
+      { speaker: 'Child', en: "Yes, I'm ready!", vn: 'Vâng, con sẵn sàng rồi!' },
+    ],
+  },
+
+  // Day 10
+  {
+    title: 'Khẳng định tích cực',
+    dialogue: [
+      { speaker: 'Mom', en: 'Today is a happy day!', vn: 'Hôm nay là một ngày vui vẻ!' },
+      { speaker: 'Child', en: 'A very happy day!', vn: 'Một ngày rất vui vẻ!' },
+    ],
+    vocab: [
+      { en: 'Happy day', phonetic: '/ˈhæpi deɪ/', speaker: 'Mom', meaning: 'Ngày vui vẻ / ngày hạnh phúc', synonym: 'joyful day', synonymVn: 'ngày đầy niềm vui', collocation: 'happy day', collocationVn: 'ngày vui vẻ', example: '"Today is a happy day because we are together!"', exampleVn: '"Hôm nay là một ngày vui vì chúng ta bên nhau!"' },
+      { en: 'Very', phonetic: '/ˈvɛri/', speaker: 'Child', meaning: 'Rất, vô cùng (nhấn mạnh)', synonym: 'so, really', synonymVn: 'thật sự, thực sự', collocation: 'very happy', collocationVn: 'rất vui', example: '"A very happy day! I love spending time with you, Mom."', exampleVn: '"Một ngày rất vui! Con thích ở bên mẹ lắm."' },
+      { en: 'Today', phonetic: '/təˈdeɪ/', speaker: 'Mom', meaning: 'Hôm nay', synonym: 'this day', synonymVn: 'ngày hôm nay', collocation: 'today is', collocationVn: 'hôm nay là', example: '"Today is going to be a wonderful day. I just know it!"', exampleVn: '"Hôm nay sẽ là một ngày tuyệt vời. Mẹ biết chắc mà!"' },
+    ],
+    quiz: [
+      { q: '"Happy" có nghĩa là?', opts: ['Buồn','Tức giận','Vui vẻ / hạnh phúc','Mệt mỏi'], ans: 2, exp: '"Happy" = vui vẻ, hạnh phúc. Trái nghĩa: "sad" = buồn, "angry" = tức giận.' },
+      { q: 'Bé dùng từ nào để nhấn mạnh "rất"?', opts: ['So','Really','Very','Extremely'], ans: 2, exp: '"Very" = rất. "A very happy day!" – bé lặp lại ý mẹ và thêm "very" để nhấn mạnh sự vui vẻ.' },
+      { q: '"Today" nghĩa là?', opts: ['Hôm qua','Ngày mai','Hôm nay','Mỗi ngày'], ans: 2, exp: '"Today" = hôm nay. "Yesterday" = hôm qua, "tomorrow" = ngày mai.' },
+    ],
+    dictation: [
+      { text: 'Today', hint: '1 từ · thời gian hiện tại', hintVn: 'Hôm nay' },
+      { text: 'happy day', hint: '2 từ · ngày tràn đầy niềm vui', hintVn: 'Ngày vui vẻ' },
+      { text: 'A very happy day', hint: '4 từ · câu khẳng định của bé', hintVn: 'Một ngày rất vui vẻ' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Today is a happy day!', vn: 'Hôm nay là một ngày vui vẻ!' },
+      { speaker: 'Child', en: 'A very happy day!', vn: 'Một ngày rất vui vẻ!' },
+    ],
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentDay = 0; // 0-indexed
+let fcIdx = {}, fcFlipped = {};
+let quizState = {}; // per day
+let dictState = {}; // per day
+
+// ═══════════════════════════════════════════════════════
+//  DAYS NAV & FIRESTORE SYNC
+// ═══════════════════════════════════════════════════════
+
+async function finishDay(i, btnElement) {
+  // Ẩn nút hoàn thành
+  if(btnElement) btnElement.style.display = 'none';
+
+  if (!doneDays.includes(i)) {
+    doneDays.push(i);
+  }
+  
+  // Hiện banner
+  document.getElementById(`done-${i}`).classList.add('show');
+  renderNav();
+  document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
+
+  if (!currentUser) return;
+  
+  const currentGlobalDay = i + 1; 
+  const savedProgress = userProgress.progress[0] || 0;
+
+  // 1. Lưu tiến độ nếu là bài mới
+  if (currentGlobalDay > savedProgress) {
+    userProgress.progress[0] = currentGlobalDay;
+  }
+
+  // 2. LOGIC TÍNH STREAK CHUẨN XÁC
+  const today = new Date();
+  today.setHours(0,0,0,0); // Đưa về 00:00:00 của ngày hôm nay
+  const todayTime = today.getTime();
+  const lastActiveTime = userProgress.lastActiveTime || 0;
+  const oneDay = 24 * 60 * 60 * 1000; // 1 ngày tính bằng miligiây
+
+  if (lastActiveTime === 0) {
+    // Lần đầu tiên học
+    userProgress.streak = 1;
+    userProgress.lastActiveTime = todayTime;
+  } else {
+    const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
+    if (diffDays === 1) {
+      // Học ngày tiếp theo liền kề
+      userProgress.streak = (userProgress.streak || 0) + 1;
+      userProgress.lastActiveTime = todayTime;
+    } else if (diffDays > 1) {
+      // Bỏ lỡ hơn 1 ngày -> Mất streak, đếm lại từ 1
+      userProgress.streak = 1; 
+      userProgress.lastActiveTime = todayTime;
+    }
+    // Nếu diffDays === 0 (Học lại lần 2 trong cùng 1 ngày) thì không cộng thêm
+  }
+
+  // Ghi lên Firebase
+  await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
+}
+
+function renderNav() {
+  const nav = document.getElementById('daysNav');
+  nav.innerHTML = '';
+  DAYS.forEach((d, i) => {
+    const globalDay = TOPIC.startDay + i;
+    const isDone = doneDays.includes(i);
+    const isActive = i === currentDay && currentView === 'day';
+    const cls = isActive ? 'day-pill active' : isDone ? 'day-pill done' : 'day-pill';
+    nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})">
+      <span class="day-pill-num">${globalDay}</span>
+      ${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}
+    </button>`;
+  });
+  const fsActive = currentView === 'fullscript';
+  nav.innerHTML += `<button class="fs-pill${fsActive ? ' active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANELS RENDER
+// ═══════════════════════════════════════════════════════
+function renderPanels() {
+  const container = document.getElementById('panels');
+  container.innerHTML = '';
+  DAYS.forEach((day, i) => {
+    const globalDay = TOPIC.startDay + i;
+    container.innerHTML += buildPanel(day, i, globalDay);
+  });
+  container.innerHTML += buildFullScriptPanel();
+  DAYS.forEach((_, i) => initDay(i));
+}
+
+function buildFullScriptPanel() {
+  const lines = DAYS.map((day, i) => {
+    const globalDay = TOPIC.startDay + i;
+    const isDone = doneDays.includes(i);
+    const dlHTML = day.dialogue.map((l, li) => {
+      const safeEn = l.en.replace(/'/g, "\\'");
+      return `
+      <div class="fs-line">
+        <div class="fs-speaker">${l.speaker}</div>
+        <div class="fs-en">${l.en}</div>
+        <div class="fs-vn">${l.vn}</div>
+        <div class="fs-line-btns">
+          <button class="fs-speak-btn" onclick="speak('${safeEn}',0.9)">🔊 Nghe</button>
+          <button class="fs-speak-btn slow" onclick="speak('${safeEn}',0.6)">🐢 Chậm</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="fs-day-block">
+      <div class="fs-day-header" onclick="toggleFsDay(${i})">
+        <div class="fs-day-num${isDone ? ' done-num' : ''}">${globalDay}</div>
+        <div class="fs-day-info">
+          <div class="fs-day-label">Day ${globalDay} · Topic ${TOPIC.num}</div>
+          <div class="fs-day-title">${day.title}</div>
+        </div>
+        <div class="fs-chevron" id="fschev-${i}">›</div>
+      </div>
+      <div class="fs-dialogue" id="fsdlg-${i}">${dlHTML}</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div id="panel-fullscript">
+    <div class="fullscript-hero">
+      <div class="fullscript-hero-eyebrow">📜 Full Script · Topic ${TOPIC.num}</div>
+      <div class="fullscript-hero-title">Morning Routine — Toàn bộ kịch bản</div>
+      <div class="fullscript-hero-sub">10 ngày · ${DAYS.reduce((s,d)=>s+d.dialogue.length,0)} câu hội thoại · Bấm từng ngày để mở rộng</div>
+    </div>
+    <div class="fullscript-content">
+      ${lines}
+      <button class="fullscript-print-btn" onclick="window.print()">🖨️ In toàn bộ kịch bản</button>
+    </div>
+  </div>`;
+}
+
+function buildPanel(day, i, globalDay) {
+  const dlHTML = day.dialogue.map(l => `
+    <div class="dialogue-line">
+      <strong>${l.speaker}:</strong> ${l.en}
+      <div class="vn">${l.vn}</div>
+    </div>`).join('');
+
+  return `
+  <div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
+    <div class="day-header">
+      <div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div>
+      <div class="day-title">${day.title}</div>
+      <div class="day-dialogue-preview">${dlHTML}</div>
+    </div>
+
+    <div class="mode-tabs" id="tabs-${i}">
+      <button class="mode-tab active" onclick="switchMode(${i},'flashcard',this)">📇 Flashcard</button>
+      <button class="mode-tab" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
+      <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">❓ Quiz</button>
+      <button class="mode-tab" onclick="switchMode(${i},'dictation',this)">✍️ Dictation</button>
+      <button class="mode-tab" onclick="switchMode(${i},'shadowing',this)">🎤 Shadowing</button>
+    </div>
+
+    <div class="mode-content active" id="mode-${i}-flashcard">
+      <p class="section-note">Bấm vào thẻ để xem nghĩa ✨</p>
+      <div class="fc-wrap">
+        <div class="fc" id="fc-${i}" onclick="flipCard(${i})">
+          <div class="fc-front">
+            <div class="fc-en" id="fc-en-${i}"></div>
+            <div class="fc-speaker" id="fc-spk-${i}"></div>
+            <div class="fc-hint">👆 Bấm để xem nghĩa</div>
+          </div>
+          <div class="fc-back">
+            <div class="fc-vn" id="fc-vn-${i}"></div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-nav">
+        <button class="fc-btn" onclick="fcPrev(${i})">←</button>
+        <div class="fc-count" id="fc-count-${i}"></div>
+        <button class="fc-btn" onclick="fcNext(${i})">→</button>
+      </div>
+      <div style="text-align:center;margin-top:18px;">
+        <button class="speak-btn" onclick="speak(document.getElementById('fc-en-${i}').textContent)">🔊 Nghe</button>
+      </div>
+    </div>
+
+    <div class="mode-content" id="mode-${i}-vocab">
+      ${buildVocabHTML(day.vocab, i)}
+    </div>
+
+    <div class="mode-content" id="mode-${i}-quiz">
+      <div id="quiz-body-${i}"></div>
+    </div>
+
+    <div class="mode-content" id="mode-${i}-dictation">
+      <div id="dict-body-${i}"></div>
+    </div>
+
+    <div class="mode-content" id="mode-${i}-shadowing">
+      <p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>
+      ${buildShadowHTML(day.shadowing, i)}
+      <div class="done-banner" id="done-${i}">
+        <div class="done-banner-title">🌟 Tuyệt vời!</div>
+        <div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div>
+      </div>
+      <button class="finish-btn" onclick="finishDay(${i})">✅ Hoàn thành ngày học!</button>
+    </div>
+  </div>`;
+}
+
+function buildVocabHTML(vocab, i) {
+  return vocab.map(v => `
+    <div class="vocab-card">
+      <div class="vocab-top">
+        <div class="vocab-word">${v.en}</div>
+        <div class="vocab-phonetic">${v.phonetic}</div>
+        <div class="vocab-speaker-badge">${v.speaker}</div>
+      </div>
+      <div class="vocab-body">
+        <div class="vocab-meaning">${v.meaning}</div>
+        ${v.synonym ? `<div class="vocab-row">
+          <div class="vr-label">Synonym</div>
+          <div class="vr-val">${v.synonym}${v.synonymVn ? `<div class="vr-vn">${v.synonymVn}</div>` : ''}</div>
+        </div>` : ''}
+        ${v.collocation ? `<div class="vocab-row">
+          <div class="vr-label">Collocation</div>
+          <div class="vr-val">${v.collocation}${v.collocationVn ? `<div class="vr-vn">${v.collocationVn}</div>` : ''}</div>
+        </div>` : ''}
+        ${v.example ? `<div class="vocab-row">
+          <div class="vr-label">Example</div>
+          <div class="vr-val" style="font-style:italic">${v.example}${v.exampleVn ? `<div class="vr-vn" style="font-style:normal">${v.exampleVn}</div>` : ''}</div>
+        </div>` : ''}
+        <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">🔊 Nghe phát âm</button>
+      </div>
+    </div>`).join('');
+}
+
+function buildShadowHTML(lines, i) {
+  return lines.map((l, li) => {
+    const id = `sh-${i}-${li}`;
+    const safeEn = l.en.replace(/'/g, "\\'");
+    return `
+    <div class="shadow-card" id="${id}-card">
+      <div class="shadow-speaker">${l.speaker}</div>
+      <div class="shadow-en">${l.en}</div>
+      <div class="shadow-vn">${l.vn}</div>
+      <div class="shadow-btns">
+        <button class="shadow-btn" onclick="speak('${safeEn}', 0.6)">▶ Nghe chậm</button>
+        <button class="shadow-btn primary" onclick="speak('${safeEn}', 0.9)">▶▶ Bình thường</button>
+      </div>
+
+      <div class="rec-zone">
+        <div class="rec-row">
+          <button class="rec-btn" id="${id}-recbtn" onclick="toggleRecord('${id}','${safeEn}')" title="Bấm để thu âm">🎤</button>
+          <div class="rec-label" id="${id}-reclabel"><strong>Bấm mic</strong> để luyện nói</div>
+          <button class="playback-btn" id="${id}-playbk" onclick="playbackRec('${id}')">▶ Nghe lại</button>
+        </div>
+        <div class="score-badge" id="${id}-score"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function initDay(i) {
+  fcIdx[i] = 0; fcFlipped[i] = false;
+  updateFlashcard(i);
+  renderQuiz(i);
+  renderDict(i);
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+let currentView = 'day'; 
+
+function openDay(i) {
+  currentView = 'day';
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  const fs = document.getElementById('panel-fullscript');
+  if (fs) fs.classList.remove('active');
+  document.getElementById(`panel-${i}`).classList.add('active');
+  currentDay = i;
+  renderNav();
+  const nav = document.getElementById('daysNav');
+  const pill = nav.children[i];
+  if (pill) pill.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+
+function openFullScript() {
+  currentView = 'fullscript';
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  const fs = document.getElementById('panel-fullscript');
+  if (fs) {
+    fs.classList.add('active');
+    DAYS.forEach((_, i) => {
+      const num = fs.querySelector(`#fschev-${i}`)?.closest('.fs-day-block')?.querySelector('.fs-day-num');
+      if (num) {
+        if (doneDays.includes(i)) num.classList.add('done-num');
+        else num.classList.remove('done-num');
+      }
+    });
+  }
+  renderNav();
+  const nav = document.getElementById('daysNav');
+  nav.lastElementChild?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+
+function toggleFsDay(i) {
+  const dlg  = document.getElementById(`fsdlg-${i}`);
+  const chev = document.getElementById(`fschev-${i}`);
+  const isOpen = dlg.classList.contains('open');
+  dlg.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+function switchMode(dayIdx, mode, btn) {
+  const panel = document.getElementById(`panel-${dayIdx}`);
+  panel.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  panel.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`mode-${dayIdx}-${mode}`).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+//  FLASHCARD
+// ═══════════════════════════════════════════════════════
+function updateFlashcard(i) {
+  const day = DAYS[i];
+  const cards = day.dialogue;
+  const idx = fcIdx[i];
+  const card = cards[idx];
+  document.getElementById(`fc-en-${i}`).textContent = card.en;
+  document.getElementById(`fc-spk-${i}`).textContent = card.speaker;
+  document.getElementById(`fc-vn-${i}`).textContent = card.vn;
+  document.getElementById(`fc-count-${i}`).textContent = `${idx + 1} / ${cards.length}`;
+  fcFlipped[i] = false;
+  document.getElementById(`fc-${i}`).classList.remove('flipped');
+}
+
+function flipCard(i) {
+  fcFlipped[i] = !fcFlipped[i];
+  document.getElementById(`fc-${i}`).classList.toggle('flipped', fcFlipped[i]);
+}
+function fcNext(i) {
+  const max = DAYS[i].dialogue.length - 1;
+  if (fcIdx[i] < max) { fcIdx[i]++; updateFlashcard(i); }
+}
+function fcPrev(i) {
+  if (fcIdx[i] > 0) { fcIdx[i]--; updateFlashcard(i); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════════════
+function renderQuiz(i) {
+  quizState[i] = { idx: 0, answered: false };
+  renderQuizQuestion(i);
+}
+
+function renderQuizQuestion(i) {
+  const qs = DAYS[i].quiz;
+  const state = quizState[i];
+  if (state.idx >= qs.length) {
+    document.getElementById(`quiz-body-${i}`).innerHTML = `
+      <div class="done-banner show">
+        <div class="done-banner-title">🎉 Hoàn thành Quiz!</div>
+        <div class="done-banner-sub">Bạn đã trả lời hết ${qs.length} câu. Tiếp tục với Dictation nhé!</div>
+      </div>
+      <button class="finish-btn" onclick="switchMode(${i},'dictation',document.querySelector('#panel-${i} .mode-tab:nth-child(4)'))">Tiếp tục Dictation →</button>`;
+    return;
+  }
+  const q = qs[state.idx];
+  state.answered = false;
+  document.getElementById(`quiz-body-${i}`).innerHTML = `
+    <div class="quiz-q-card">
+      <div class="quiz-q-num">Câu ${state.idx + 1} / ${qs.length}</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-q-inst">Chọn đáp án đúng</div>
+    </div>
+    <div class="quiz-opts">
+      ${q.opts.map((o, oi) => `<button class="quiz-opt" onclick="selectQuiz(${i},${oi})">${o}</button>`).join('')}
+    </div>
+    <div class="quiz-fb" id="qfb-${i}"></div>
+    <button class="quiz-next" id="qnext-${i}" onclick="nextQuiz(${i})" disabled>Câu tiếp theo →</button>`;
+}
+
+function selectQuiz(i, chosen) {
+  const state = quizState[i];
+  if (state.answered) return;
+  state.answered = true;
+  const q = DAYS[i].quiz[state.idx];
+  const opts = document.querySelectorAll(`#panel-${i} .quiz-opt`);
+  opts.forEach((o, oi) => { if (oi === q.ans) o.classList.add('correct'); });
+  const fb = document.getElementById(`qfb-${i}`);
+  if (chosen === q.ans) {
+    opts[chosen].classList.add('correct');
+    fb.textContent = '🎉 Chính xác! ' + q.exp;
+    fb.className = 'quiz-fb ok show';
+  } else {
+    opts[chosen].classList.add('wrong');
+    fb.textContent = '❌ Chưa đúng. ' + q.exp;
+    fb.className = 'quiz-fb nope show';
+  }
+  document.getElementById(`qnext-${i}`).disabled = false;
+}
+
+function nextQuiz(i) {
+  quizState[i].idx++;
+  renderQuizQuestion(i);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DICTATION
+// ═══════════════════════════════════════════════════════
+function renderDict(i) {
+  dictState[i] = { idx: 0, playing: false };
+  renderDictItem(i);
+}
+
+function renderDictItem(i) {
+  const items = DAYS[i].dictation;
+  const state = dictState[i];
+  if (state.idx >= items.length) {
+    document.getElementById(`dict-body-${i}`).innerHTML = `
+      <div class="done-banner show">
+        <div class="done-banner-title">✍️ Dictation xong rồi!</div>
+        <div class="done-banner-sub">Tuyệt! Giờ thực hành Shadowing cùng con nhé!</div>
+      </div>
+      <button class="finish-btn" onclick="switchMode(${i},'shadowing',document.querySelector('#panel-${i} .mode-tab:nth-child(5)'))">Tiếp tục Shadowing →</button>`;
+    return;
+  }
+  const item = items[state.idx];
+  state.playing = false;
+  document.getElementById(`dict-body-${i}`).innerHTML = `
+    <p class="section-note">Nghe và gõ lại từ bạn nghe được 👂 (${state.idx + 1}/${items.length})</p>
+    <div class="dict-card">
+      <div class="dict-blanks">${item.text.replace(/[^\s]/g, '_')}</div>
+      <div class="dict-hint">${item.hint}<br><em>${item.hintVn}</em></div>
+      <button class="play-btn" id="dplay-${i}" onclick="playDict(${i})">▶</button>
+      <input class="dict-input" id="dinput-${i}" type="text" placeholder="Gõ từ bạn nghe..."
+        oninput="checkDict(${i})" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="quiz-fb" id="dfb-${i}"></div>
+    <button class="quiz-next" id="dnext-${i}" onclick="nextDict(${i})" disabled>Từ tiếp theo →</button>`;
+}
+
+function playDict(i) {
+  const item = DAYS[i].dictation[dictState[i].idx];
+  const btn = document.getElementById(`dplay-${i}`);
+  btn.classList.add('playing');
+  speak(item.text, 0.75);
+  setTimeout(() => btn.classList.remove('playing'), 2000);
+}
+
+function checkDict(i) {
+  const item = DAYS[i].dictation[dictState[i].idx];
+  const inp = document.getElementById(`dinput-${i}`);
+  const val = inp.value.trim().toLowerCase();
+  const ans = item.text.toLowerCase();
+  if (!val) return;
+  if (val === ans) {
+    inp.className = 'dict-input correct';
+    const fb = document.getElementById(`dfb-${i}`);
+    fb.textContent = '🎉 Chính xác!'; fb.className = 'quiz-fb ok show';
+    document.getElementById(`dnext-${i}`).disabled = false;
+  } else {
+    inp.className = 'dict-input';
+  }
+}
+
+function nextDict(i) {
+  dictState[i].idx++;
+  renderDictItem(i);
+}
+
+// ═══════════════════════════════════════════════════════
+//  SPEECH
+// ═══════════════════════════════════════════════════════
 let _selectedVoice = null;
-const VOICE_PRIORITY = ['Google US English', 'Google UK English Female', 'Microsoft Aria Online (Natural)', 'Samantha', 'Karen'];
+const VOICE_PRIORITY = [
+  'Google US English', 'Google UK English Female',
+  'Microsoft Aria Online (Natural) - English (United States)',
+  'Samantha', 'Karen', 'Google العربية',
+];
 
 function pickVoice() {
   if (_selectedVoice) return _selectedVoice;
   const voices = speechSynthesis.getVoices();
   if (!voices.length) return null;
   for (const name of VOICE_PRIORITY) {
-    const v = voices.find(v => v.name.includes(name));
+    const v = voices.find(v => v.name === name);
     if (v) { _selectedVoice = v; return v; }
   }
-  const female = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
-  return female || voices.find(v => v.lang.startsWith('en')) || voices[0];
+  const googleFemale = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('male'));
+  if (googleFemale) { _selectedVoice = googleFemale; return googleFemale; }
+  const onlineFemale = voices.find(v => v.lang === 'en-US' && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('online')));
+  if (onlineFemale) { _selectedVoice = onlineFemale; return onlineFemale; }
+  const anyUS = voices.find(v => v.lang === 'en-US');
+  if (anyUS) { _selectedVoice = anyUS; return anyUS; }
+  return null;
 }
 
 if ('speechSynthesis' in window) {
@@ -382,375 +1306,136 @@ function speak(text, rate = 0.85) {
   speechSynthesis.speak(u);
 }
 
-// Render Nav
-function renderNav() {
-  const nav = document.getElementById('daysNav');
-  nav.innerHTML = '';
-  DAYS.forEach((d, i) => {
-    const isDone = doneDays.includes(i);
-    const isActive = (i === currentDay && currentView === 'day');
-    const cls = `day-pill ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}`;
-    nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})">
-      <span class="day-pill-num">${i + 1}</span>
-      ${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}
-    </button>`;
-  });
-  nav.innerHTML += `<button class="fs-pill ${currentView === 'fullscript' ? 'active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
-}
-
-// Render Panels
-function renderPanels() {
-  const container = document.getElementById('panels');
-  container.innerHTML = '';
-  DAYS.forEach((day, i) => container.innerHTML += buildDayPanel(day, i));
-  container.innerHTML += buildFullScriptPanel();
-  DAYS.forEach((_, i) => initDayState(i));
-}
-
-function buildDayPanel(day, i) {
-  return `
-    <div class="day-panel ${i === 0 ? 'active' : ''}" id="panel-${i}">
-      <div class="day-header">
-        <div class="day-num-label">Day ${i + 1} · Topic 01</div>
-        <div class="day-title">${day.title}</div>
-        <div class="day-dialogue-preview">
-          ${day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('')}
-        </div>
-      </div>
-
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="switchMode(${i},'fc',this)">📇 Flashcard</button>
-        <button class="mode-tab" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
-        <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">❓ Quiz</button>
-        <button class="mode-tab" onclick="switchMode(${i},'dict',this)">✍️ Dictation</button>
-        <button class="mode-tab" onclick="switchMode(${i},'shadow',this)">🎤 Shadowing</button>
-      </div>
-
-      <div class="mode-content active" id="mode-${i}-fc">
-        <div class="fc-wrap">
-          <div class="fc" id="fc-${i}" onclick="flipCard(${i})">
-            <div class="fc-front">
-              <div class="fc-en" id="fc-en-${i}"></div>
-              <div class="fc-speaker" id="fc-spk-${i}"></div>
-            </div>
-            <div class="fc-back">
-              <div class="fc-vn" id="fc-vn-${i}"></div>
-              <div class="fc-note" id="fc-note-${i}"></div>
-            </div>
-          </div>
-        </div>
-        <div class="fc-nav">
-          <button class="fc-btn" onclick="fcPrev(${i})">←</button>
-          <div class="fc-count" id="fc-count-${i}"></div>
-          <button class="fc-btn" onclick="fcNext(${i})">→</button>
-        </div>
-        <div style="text-align:center;margin-top:20px;">
-          <button class="speak-btn" onclick="speak(document.getElementById('fc-en-${i}').textContent)">🔊 Nghe hội thoại</button>
-        </div>
-      </div>
-
-      <div class="mode-content" id="mode-${i}-vocab">
-        ${day.vocab.map(v => `
-          <div class="vocab-card">
-            <div class="vocab-top">
-              <div class="vocab-word">${v.en}</div>
-              <div class="vocab-phonetic">${v.phonetic}</div>
-            </div>
-            <div class="vocab-body">
-              <div class="vocab-meaning">${v.meaning}</div>
-              <div class="vocab-row"><div class="vr-label">Synonym</div><div class="vr-val">${v.synonym || 'N/A'}</div></div>
-              <div class="vocab-row"><div class="vr-label">Collocation</div><div class="vr-val">${v.collocation || 'N/A'}</div></div>
-              <div class="vocab-row"><div class="vr-label">Example</div><div class="vr-val" style="font-style:italic">${v.example}<div class="vr-vn">${v.exampleVn}</div></div></div>
-              <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">🔊 Nghe phát âm</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="mode-content" id="mode-${i}-quiz">
-        <div id="quiz-container-${i}"></div>
-      </div>
-
-      <div class="mode-content" id="mode-${i}-dict">
-        <div id="dict-container-${i}"></div>
-      </div>
-
-      <div class="mode-content" id="mode-${i}-shadow">
-        ${day.shadowing.map((s, si) => `
-          <div class="shadow-card">
-            <div class="shadow-speaker">${s.speaker}</div>
-            <div class="shadow-en">${s.en}</div>
-            <div class="shadow-vn">${s.vn}</div>
-            <div class="shadow-btns">
-              <button class="shadow-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}', 0.6)">🐢 Chậm</button>
-              <button class="shadow-btn primary" onclick="speak('${s.en.replace(/'/g,"\\'")}', 0.9)">🔊 Chuẩn</button>
-            </div>
-            <div class="rec-zone">
-              <div class="rec-row">
-                <button class="rec-btn" id="rec-${i}-${si}" onclick="toggleRecord('${i}-${si}','${s.en.replace(/'/g,"\\'")}')">🎤</button>
-                <div class="rec-label" id="label-${i}-${si}">Bấm mic để luyện nói</div>
-                <button class="playback-btn" id="playbk-${i}-${si}" onclick="playbackRec('${i}-${si}')">▶ Nghe lại</button>
-              </div>
-              <div class="score-badge" id="score-${i}-${si}"></div>
-            </div>
-          </div>
-        `).join('')}
-        <div class="done-banner" id="done-${i}">
-          <div class="done-banner-title">🌟 Xuất sắc!</div>
-          <div class="done-banner-sub">Bạn đã hoàn thành bài học của ngày hôm nay.</div>
-        </div>
-        <button class="finish-btn" id="btn-finish-${i}" onclick="finishDay(${i})">✅ Đánh dấu hoàn thành</button>
-      </div>
-    </div>
-  `;
-}
-
-function buildFullScriptPanel() {
-  return `
-    <div id="panel-fullscript">
-      <div class="fullscript-hero">
-        <div class="topic-eyebrow">📜 Full Script</div>
-        <div class="topic-title">Toàn bộ kịch bản Morning Routine</div>
-      </div>
-      <div style="padding:20px;">
-        ${DAYS.map((d, i) => `
-          <div class="fs-day-block">
-            <div class="fs-day-header" onclick="toggleFsDay(${i})">
-              <div class="fs-day-num ${doneDays.includes(i) ? 'done' : ''}">${i+1}</div>
-              <div class="fs-day-title">${d.title}</div>
-              <div id="fs-chev-${i}" style="transition:0.2s;">›</div>
-            </div>
-            <div class="fs-dialogue" id="fs-dlg-${i}">
-              ${d.dialogue.map(l => `<div class="fs-line"><div class="fs-en">${l.en}</div><div class="fs-vn">${l.vn}</div></div>`).join('')}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
-
-// Logic điều hướng
-function openDay(i) {
-  currentDay = i; currentView = 'day';
-  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-fullscript').classList.remove('active');
-  document.getElementById(`panel-${i}`).classList.add('active');
-  renderNav();
-}
-
-function openFullScript() {
-  currentView = 'fullscript';
-  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-fullscript').classList.add('active');
-  renderNav();
-}
-
-function toggleFsDay(i) {
-  const dlg = document.getElementById(`fs-dlg-${i}`);
-  const chev = document.getElementById(`fs-chev-${i}`);
-  const isOpen = dlg.classList.contains('open');
-  dlg.classList.toggle('open', !isOpen);
-  chev.style.transform = isOpen ? 'rotate(0)' : 'rotate(90deg)';
-}
-
-function switchMode(d, m, btn) {
-  const panel = document.getElementById(`panel-${d}`);
-  panel.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  panel.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
-  panel.querySelector(`#mode-${d}-${m}`).classList.add('active');
-}
-
-// Flashcard Logic
-function initDayState(i) {
-  fcIdx[i] = 0; updateFc(i);
-  renderQuiz(i); renderDict(i);
-}
-
-function updateFc(i) {
-  const c = DAYS[i].dialogue[fcIdx[i]];
-  document.getElementById(`fc-en-${i}`).textContent = c.en;
-  document.getElementById(`fc-spk-${i}`).textContent = c.speaker;
-  document.getElementById(`fc-vn-${i}`).textContent = c.vn;
-  document.getElementById(`fc-note-${i}`).textContent = c.note || '';
-  document.getElementById(`fc-count-${i}`).textContent = `${fcIdx[i]+1} / ${DAYS[i].dialogue.length}`;
-  document.getElementById(`fc-${i}`).classList.remove('flipped');
-}
-
-function flipCard(i) { document.getElementById(`fc-${i}`).classList.toggle('flipped'); }
-function fcNext(i) { if(fcIdx[i] < DAYS[i].dialogue.length-1) { fcIdx[i]++; updateFc(i); } }
-function fcPrev(i) { if(fcIdx[i] > 0) { fcIdx[i]--; updateFc(i); } }
-
-// Quiz Logic
-function renderQuiz(i) {
-  quizState[i] = { idx: 0 }; renderQuizQ(i);
-}
-function renderQuizQ(i) {
-  const state = quizState[i]; const q = DAYS[i].quiz[state.idx];
-  const container = document.getElementById(`quiz-container-${i}`);
-  if (state.idx >= DAYS[i].quiz.length) {
-    container.innerHTML = '<div class="done-banner show">🎉 Bạn đã hoàn thành tất cả câu hỏi!</div>';
-    return;
-  }
-  container.innerHTML = `
-    <div class="quiz-q-card">
-      <div class="quiz-q-num">Câu ${state.idx + 1} / ${DAYS[i].quiz.length}</div>
-      <div class="quiz-q-text">${q.q}</div>
-    </div>
-    <div class="quiz-opts">
-      ${q.opts.map((o, oi) => `<button class="quiz-opt" id="q-${i}-${oi}" onclick="checkQuiz(${i},${oi})">${o}</button>`).join('')}
-    </div>
-    <div class="quiz-fb" id="qfb-${i}"></div>
-    <button class="quiz-next" id="qnext-${i}" onclick="nextQuiz(${i})" disabled>Câu tiếp theo →</button>
-  `;
-}
-function checkQuiz(i, chosen) {
-  const q = DAYS[i].quiz[quizState[i].idx];
-  const opts = document.querySelectorAll(`#panel-${i} .quiz-opt`);
-  opts.forEach(o => o.style.pointerEvents = 'none');
-  opts[q.ans].classList.add('correct');
-  const fb = document.getElementById(`qfb-${i}`);
-  fb.className = 'quiz-fb show ' + (chosen === q.ans ? 'ok' : 'nope');
-  fb.textContent = (chosen === q.ans ? '🌟 Chính xác! ' : '❌ Chưa đúng rồi. ') + q.exp;
-  if(chosen !== q.ans) opts[chosen].classList.add('wrong');
-  document.getElementById(`qnext-${i}`).disabled = false;
-}
-function nextQuiz(i) { quizState[i].idx++; renderQuizQ(i); }
-
-// Dictation Logic
-function renderDict(i) {
-  dictState[i] = { idx: 0 }; renderDictItem(i);
-}
-function renderDictItem(i) {
-  const state = dictState[i]; const it = DAYS[i].dictation[state.idx];
-  const container = document.getElementById(`dict-container-${i}`);
-  if (state.idx >= DAYS[i].dictation.length) {
-    container.innerHTML = '<div class="done-banner show">✍️ Tuyệt vời! Bạn đã hoàn thành phần gõ từ.</div>';
-    return;
-  }
-  container.innerHTML = `
-    <div class="dict-card">
-      <div class="dict-blanks">${it.text.replace(/[a-zA-Z]/g, '_')}</div>
-      <div class="dict-hint">${it.hint} (${it.hintVn})</div>
-      <button class="play-btn" id="dplay-${i}" onclick="playDict(${i})">▶</button>
-      <input class="dict-input" id="dinput-${i}" placeholder="Gõ từ bạn nghe được..." oninput="checkDict(${i})" autocomplete="off" spellcheck="false">
-      <div class="quiz-fb" id="dfb-${i}" style="margin-top:15px"></div>
-      <button class="quiz-next" id="dnext-${i}" onclick="nextDict(${i})" style="margin-top:15px" disabled>Từ tiếp theo →</button>
-    </div>
-  `;
-}
-function playDict(i) { 
-  speak(DAYS[i].dictation[dictState[i].idx].text, 0.75); 
-  const btn = document.getElementById(`dplay-${i}`);
-  btn.classList.add('playing');
-  setTimeout(() => btn.classList.remove('playing'), 1500);
-}
-function checkDict(i) {
-  const input = document.getElementById(`dinput-${i}`);
-  const fb = document.getElementById(`dfb-${i}`);
-  if (input.value.trim().toLowerCase() === DAYS[i].dictation[dictState[i].idx].text.toLowerCase()) {
-    input.classList.add('correct'); 
-    fb.className = 'quiz-fb show ok'; 
-    fb.textContent = '🌟 Xuất sắc!';
-    document.getElementById(`dnext-${i}`).disabled = false;
-  }
-}
-function nextDict(i) { dictState[i].idx++; renderDictItem(i); }
-
-// Shadowing & Recorder Logic
+// ═══════════════════════════════════════════════════════
+//  PRONUNCIATION RECORDER & SCORER
+// ═══════════════════════════════════════════════════════
 const recState = {};
-async function toggleRecord(id, target) {
-  const btn = document.getElementById(`rec-${id}`);
-  const label = document.getElementById(`label-${id}`);
-  if (recState[id]?.active) {
-    recState[id].mr.stop(); recState[id].active = false;
-    if(recState[id].recognition) recState[id].recognition.stop();
-    btn.classList.remove('recording'); label.textContent = 'Đang phân tích...';
-    setTimeout(() => scorePronunciation(id, target), 1000);
-  } else {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream); const chunks = [];
-      mr.ondataavailable = e => chunks.push(e.data);
-      mr.onstop = () => { recState[id].blob = new Blob(chunks, { type: 'audio/webm' }); document.getElementById(`playbk-${id}`).classList.add('show'); };
-      mr.start(); 
 
-      let recognition = null;
-      if(window.SpeechRecognition || window.webkitSpeechRecognition) {
-        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-US';
-        recognition.onresult = (e) => { recState[id].resultText = e.results[0][0].transcript; };
-        recognition.start();
-      }
-
-      recState[id] = { active: true, mr, chunks, recognition };
-      btn.classList.add('recording'); label.textContent = 'Đang thu âm...';
-      document.getElementById(`score-${id}`).classList.remove('show');
-    } catch (e) { alert('Không thể truy cập micro!'); }
-  }
+function toggleRecord(id, targetText) {
+  if (recState[id]?.active) stopRecord(id, targetText);
+  else startRecord(id, targetText);
 }
 
-function scorePronunciation(id, target) {
-  const badge = document.getElementById(`score-${id}`);
-  const label = document.getElementById(`label-${id}`);
-  const resultText = recState[id]?.resultText || "";
+async function startRecord(id, targetText) {
+  const btn    = document.getElementById(`${id}-recbtn`);
+  const label = document.getElementById(`${id}-reclabel`);
+  const score = document.getElementById(`${id}-score`);
+  const pbk    = document.getElementById(`${id}-playbk`);
+  score.className = 'score-badge';
+  pbk.className   = 'playback-btn';
 
-  let score = 0;
-  if (resultText) {
-    const tWords = target.toLowerCase().replace(/[.,?]/g,"").split(' ');
-    const rWords = resultText.toLowerCase().replace(/[.,?]/g,"").split(' ');
-    let matches = 0; tWords.forEach(w => { if(rWords.includes(w)) matches++; });
-    score = Math.round((matches / tWords.length) * 100);
-  } else {
-    score = Math.floor(Math.random() * 30) + 70; 
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch(e) {
+    label.innerHTML = '<strong style="color:var(--coral)">Không thể mở micro.</strong> Hãy cho phép trình duyệt truy cập micro.';
+    return;
   }
 
-  badge.className = 'score-badge show ' + (score > 90 ? 'excellent' : score > 70 ? 'good' : 'retry');
-  badge.innerHTML = `<strong>${score}% Chuẩn xác</strong><div class="score-bar-wrap"><div class="score-bar ${score > 90 ? 'excellent' : 'good'}" style="width:${score}%"></div></div>
-    ${resultText ? `<div style="font-size:12px; margin-top:5px; opacity:0.8">Học viên đọc: <i>"${resultText}"</i></div>` : ''}`;
-  label.textContent = 'Đã xong! Bấm mic để thử lại.';
+  const mr = new MediaRecorder(stream);
+  const chunks = [];
+  mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  mr.onstop = () => {
+    recState[id].blob = new Blob(chunks, { type: 'audio/webm' });
+    stream.getTracks().forEach(t => t.stop());
+    pbk.className = 'playback-btn show';
+  };
+  mr.start();
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR) {
+    const rec = new SR();
+    rec.lang = 'en-US'; rec.continuous = false;
+    rec.interimResults = false; rec.maxAlternatives = 3;
+    rec.onresult = e => {
+      const alts = [];
+      for (let i = 0; i < e.results[0].length; i++) alts.push(e.results[0][i].transcript.toLowerCase().trim());
+      recState[id].recognized = alts;
+    };
+    rec.onerror = () => { recState[id].recognized = []; };
+    rec.start();
+    recState[id] = { ...recState[id], recognition: rec };
+  }
+
+  recState[id] = { ...recState[id], mediaRecorder: mr, chunks, active: true, blob: null, recognized: [] };
+  btn.classList.add('recording'); btn.textContent = '⏹';
+  label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Bấm ⏹ để dừng';
 }
 
-function playbackRec(id) { if(recState[id]?.blob) new Audio(URL.createObjectURL(recState[id].blob)).play(); }
+function stopRecord(id, targetText) {
+  const state = recState[id];
+  if (!state?.active) return;
+  const btn    = document.getElementById(`${id}-recbtn`);
+  const label = document.getElementById(`${id}-reclabel`);
+  state.mediaRecorder.stop();
+  try { state.recognition?.stop(); } catch(e) {}
+  state.active = false;
+  btn.classList.remove('recording'); btn.textContent = '🎤';
+  label.innerHTML = '<strong>Đang chấm điểm...</strong>';
+  setTimeout(() => scoreProunciation(id, targetText), 900);
+}
 
-// Hoàn thành ngày học & Lưu Firebase
-async function finishDay(i) {
-  if(!doneDays.includes(i)) doneDays.push(i);
-  document.getElementById(`done-${i}`).classList.add('show');
-  document.getElementById(`btn-finish-${i}`).style.display = 'none';
-  renderNav();
+function scoreProunciation(id, targetText) {
+  const label  = document.getElementById(`${id}-reclabel`);
+  const badge  = document.getElementById(`${id}-score`);
+  const alts   = recState[id]?.recognized || [];
+  const tWords = targetText.toLowerCase().replace(/[^\w\s']/g, '').trim().split(/\s+/);
 
-  if (!currentUser) return;
-  const currentGlobalDay = i + 1;
-  const savedProgress = userProgress.progress[0] || 0;
+  if (!alts.length) { renderScore(badge, label, 0, tWords, []); return; }
 
-  if (currentGlobalDay > savedProgress) {
-    userProgress.progress[0] = currentGlobalDay;
-  }
+  let bestScore = 0, bestMatch = [];
+  alts.forEach(alt => {
+    const aWords = alt.replace(/[^\w\s']/g, '').split(/\s+/);
+    const { score, matches } = wordMatchScore(tWords, aWords);
+    if (score > bestScore) { bestScore = score; bestMatch = matches; }
+  });
+  renderScore(badge, label, bestScore, tWords, bestMatch);
+}
 
-  // Cập nhật Chuỗi ngày học (Streak)
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const todayTime = today.getTime();
-  const lastActiveTime = userProgress.lastActiveTime || 0;
-  const oneDay = 24 * 60 * 60 * 1000;
+function wordMatchScore(tWords, aWords) {
+  const matches = tWords.map(tw => {
+    const twn = norm(tw);
+    if (aWords.some(sw => norm(sw) === twn)) return { word: tw, hit: true };
+    const fuzzy = aWords.some(sw => twn.length >= 4 ? lev(twn, norm(sw)) <= 1 : norm(sw) === twn);
+    return { word: tw, hit: fuzzy };
+  });
+  return { score: Math.round(matches.filter(m => m.hit).length / tWords.length * 100), matches };
+}
 
-  if (lastActiveTime === 0) {
-    userProgress.streak = 1;
-    userProgress.lastActiveTime = todayTime;
-  } else {
-    const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
-    if (diffDays === 1) {
-      userProgress.streak = (userProgress.streak || 0) + 1;
-      userProgress.lastActiveTime = todayTime;
-    } else if (diffDays > 1) {
-      userProgress.streak = 1; 
-      userProgress.lastActiveTime = todayTime;
-    }
-  }
+function norm(w) { return w.toLowerCase().replace(/[^a-z']/g, ''); }
 
-  await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
+function lev(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length:m+1}, (_,i) => Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));
+  for (let i=1;i<=m;i++) for (let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function renderScore(badge, label, score, tWords, matches) {
+  let tier, emoji, msg, tip;
+  if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
+  else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
+  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
+  else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
+
+  const wordHTML = matches.length
+    ? '<div class="score-words">'+matches.map(m=>`<span class="score-word ${m.hit?'hit':'miss'}">${m.word}</span>`).join('')+'</div>' : '';
+
+  badge.className = `score-badge show ${tier}`;
+  badge.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="font-size:18px">${emoji}</span><strong>${msg}</strong>
+    </div>
+    <div class="score-bar-wrap"><div class="score-bar ${tier}" style="width:${score}%"></div></div>
+    <div style="font-size:12px;margin-top:4px;opacity:0.8">${tip}</div>
+    ${wordHTML}`;
+  label.innerHTML = '<strong>Bấm mic</strong> để thử lại';
+}
+
+function playbackRec(id) {
+  const blob = recState[id]?.blob;
+  if (!blob) return;
+  new Audio(URL.createObjectURL(blob)).play();
 }
 
 </script>
