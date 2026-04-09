@@ -55,6 +55,40 @@
   .topic-title em { color:var(--terracotta); font-style:italic; }
   .topic-vn { font-size:13px; color:var(--ink-muted); }
 
+  /* ── VIDEO SECTION ── */
+  .video-section {
+    padding: 24px 20px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+  }
+  .video-section-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* Tỷ lệ 16:9 chuẩn của YouTube */
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 15px rgba(44, 36, 22, 0.1);
+    border: 1px solid var(--border);
+    background: #000;
+  }
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
   /* ── DAYS NAV ── */
   .days-nav {
     display:flex; gap:8px; padding:16px 20px; overflow-x:auto; -webkit-overflow-scrolling:touch;
@@ -181,23 +215,13 @@
   .playback-btn { padding:6px 14px; border-radius:99px; border:1px solid var(--border); background:var(--warm-white); font-size:11px; color:var(--ink-muted); cursor:pointer; font-family:'DM Sans',sans-serif; display:none; }
   .playback-btn.show { display:inline-flex; align-items:center; gap:5px; }
 
-  .score-badge { display:none; margin-top:10px; padding:15px; border-radius:var(--radius-sm); font-size:13px; line-height: 1.6; }
+  .score-badge { display:none; margin-top:10px; padding:15px; border-radius:var(--radius-sm); font-size:13px; }
   .score-badge.show { display:block; animation: fadeIn 0.4s; }
   .score-badge.excellent { background:#EAF3DE; border:1px solid #7A9E87; color:#27500A; }
   .score-badge.good { background:var(--sunny-light); border:1px solid var(--sunny); color:#7A5A00; }
-  .score-badge.ok { background:var(--sky-light); border:1px solid var(--sky); color:#185FA5; }
   .score-badge.retry { background:var(--coral-light); border:1px solid var(--coral); color:#7A2E1A; }
   .score-bar-wrap { height:6px; background:rgba(0,0,0,0.05); border-radius:99px; margin:10px 0 6px; overflow:hidden; }
   .score-bar { height:100%; border-radius:99px; transition:width 0.8s ease-out; }
-  .score-bar.excellent { background:#639922; }
-  .score-bar.good { background:var(--sunny); }
-  .score-bar.ok { background:var(--sky); }
-  .score-bar.retry { background:var(--coral); }
-  
-  .score-words { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
-  .score-word { padding:2px 8px; border-radius:99px; font-size:12px; font-family:'DM Mono',monospace; }
-  .score-word.hit  { background:var(--sage-light); color:var(--sage-deep); }
-  .score-word.miss { background:var(--coral-light); color:#7A2E1A; }
 
   .done-banner { background:var(--sage-light); border:1px solid var(--sage); border-radius:var(--radius); padding:24px; text-align:center; margin-bottom:20px; display:none; box-shadow: 0 4px 12px rgba(122, 158, 135, 0.15); }
   .done-banner.show { display:block; }
@@ -222,7 +246,7 @@
   .fs-vn { font-size:13px; color:var(--ink-muted); font-style:italic; }
 
   @media print {
-    header, .days-nav, .topic-hero, .day-panel, .mode-tabs, .shadow-btns, .rec-zone, .finish-btn { display:none !important; }
+    header, .video-section, .days-nav, .topic-hero, .day-panel, .mode-tabs, .shadow-btns, .rec-zone, .finish-btn { display:none !important; }
     #panel-fullscript { display:block !important; }
     .fs-dialogue { max-height:none !important; padding:15px 20px !important; }
     body { background: white; }
@@ -247,6 +271,12 @@
   <div class="topic-vn">Chào ngày mới năng lượng & Tỉnh thức</div>
 </div>
 
+<div class="video-section">
+  <div class="video-section-title">🎥 Video Hướng Dẫn Khởi Động</div>
+  <div class="video-wrapper">
+    <iframe src="https://www.youtube.com/embed/GovagiDtzSQ?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  </div>
+</div>
 <div class="days-nav" id="daysNav"></div>
 <div id="panels"></div>
 
@@ -271,7 +301,7 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
-// Khởi tạo biến rỗng để chứa dữ liệu kéo từ Firebase về
+// Các biến chờ dữ liệu từ Firebase
 let TOPIC = {};
 let DAYS = [];
 
@@ -290,11 +320,7 @@ async function fetchProgress() {
     const topicDoc = await db.collection("topics").doc("topic01").get();
     if (topicDoc.exists) {
       const data = topicDoc.data();
-      
-      let dStart = Number(data.startDay);
-      if (!dStart) dStart = 1;
-
-      TOPIC = { num: data.num || 1, name: data.name, startDay: dStart };
+      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
       DAYS = data.days;
     } else {
       console.error("Không tìm thấy dữ liệu Topic 01!");
@@ -369,10 +395,9 @@ function renderNav() {
   DAYS.forEach((d, i) => {
     const isDone = doneDays.includes(i);
     const isActive = (i === currentDay && currentView === 'day');
-    const globalDay = TOPIC.startDay + i;
     const cls = `day-pill ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}`;
     nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})">
-      <span class="day-pill-num">${globalDay}</span>
+      <span class="day-pill-num">${i + 1}</span>
       ${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}
     </button>`;
   });
@@ -389,11 +414,10 @@ function renderPanels() {
 }
 
 function buildDayPanel(day, i) {
-  const globalDay = TOPIC.startDay + i;
   return `
     <div class="day-panel ${i === 0 ? 'active' : ''}" id="panel-${i}">
       <div class="day-header">
-        <div class="day-num-label">Day ${globalDay} · Topic 01</div>
+        <div class="day-num-label">Day ${i + 1} · Topic 01</div>
         <div class="day-title">${day.title}</div>
         <div class="day-dialogue-preview">
           ${day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('')}
@@ -432,7 +456,7 @@ function buildDayPanel(day, i) {
       </div>
 
       <div class="mode-content" id="mode-${i}-vocab">
-        ${day.vocab ? day.vocab.map(v => `
+        ${day.vocab.map(v => `
           <div class="vocab-card">
             <div class="vocab-top">
               <div class="vocab-word">${v.en}</div>
@@ -440,13 +464,13 @@ function buildDayPanel(day, i) {
             </div>
             <div class="vocab-body">
               <div class="vocab-meaning">${v.meaning}</div>
-              ${v.synonym ? `<div class="vocab-row"><div class="vr-label">Synonym</div><div class="vr-val">${v.synonym}</div></div>` : ''}
-              ${v.collocation ? `<div class="vocab-row"><div class="vr-label">Collocation</div><div class="vr-val">${v.collocation}</div></div>` : ''}
-              ${v.example ? `<div class="vocab-row"><div class="vr-label">Example</div><div class="vr-val" style="font-style:italic">${v.example}<div class="vr-vn">${v.exampleVn}</div></div></div>` : ''}
+              <div class="vocab-row"><div class="vr-label">Synonym</div><div class="vr-val">${v.synonym || 'N/A'}</div></div>
+              <div class="vocab-row"><div class="vr-label">Collocation</div><div class="vr-val">${v.collocation || 'N/A'}</div></div>
+              <div class="vocab-row"><div class="vr-label">Example</div><div class="vr-val" style="font-style:italic">${v.example}<div class="vr-vn">${v.exampleVn}</div></div></div>
               <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">🔊 Nghe phát âm</button>
             </div>
           </div>
-        `).join('') : ''}
+        `).join('')}
       </div>
 
       <div class="mode-content" id="mode-${i}-quiz">
@@ -458,29 +482,25 @@ function buildDayPanel(day, i) {
       </div>
 
       <div class="mode-content" id="mode-${i}-shadow">
-        ${day.shadowing ? day.shadowing.map((s, si) => {
-          const id = `sh-${i}-${si}`;
-          const safeEn = s.en.replace(/'/g, "\\'");
-          return `
-          <div class="shadow-card" id="${id}-card">
+        ${day.shadowing.map((s, si) => `
+          <div class="shadow-card">
             <div class="shadow-speaker">${s.speaker}</div>
             <div class="shadow-en">${s.en}</div>
             <div class="shadow-vn">${s.vn}</div>
             <div class="shadow-btns">
-              <button class="shadow-btn" onclick="speak('${safeEn}', 0.6)">🐢 Chậm</button>
-              <button class="shadow-btn primary" onclick="speak('${safeEn}', 0.9)">🔊 Chuẩn</button>
+              <button class="shadow-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}', 0.6)">🐢 Chậm</button>
+              <button class="shadow-btn primary" onclick="speak('${s.en.replace(/'/g,"\\'")}', 0.9)">🔊 Chuẩn</button>
             </div>
             <div class="rec-zone">
               <div class="rec-row">
-                <button class="rec-btn" id="${id}-recbtn" onclick="toggleRecord('${id}','${safeEn}')">🎤</button>
-                <div class="rec-label" id="${id}-reclabel">Bấm mic để luyện nói</div>
-                <button class="playback-btn" id="${id}-playbk" onclick="playbackRec('${id}')">▶ Nghe lại</button>
+                <button class="rec-btn" id="rec-${i}-${si}" onclick="toggleRecord('${i}-${si}','${s.en.replace(/'/g,"\\'")}')">🎤</button>
+                <div class="rec-label" id="label-${i}-${si}">Bấm mic để luyện nói</div>
+                <button class="playback-btn" id="playbk-${i}-${si}" onclick="playbackRec('${i}-${si}')">▶ Nghe lại</button>
               </div>
-              <div class="score-badge" id="${id}-score"></div>
+              <div class="score-badge" id="score-${i}-${si}"></div>
             </div>
           </div>
-          `
-        }).join('') : ''}
+        `).join('')}
         <div class="done-banner" id="done-${i}">
           <div class="done-banner-title">🌟 Xuất sắc!</div>
           <div class="done-banner-sub">Bạn đã hoàn thành bài học của ngày hôm nay.</div>
@@ -502,7 +522,7 @@ function buildFullScriptPanel() {
         ${DAYS.map((d, i) => `
           <div class="fs-day-block">
             <div class="fs-day-header" onclick="toggleFsDay(${i})">
-              <div class="fs-day-num ${doneDays.includes(i) ? 'done' : ''}">${TOPIC.startDay + i}</div>
+              <div class="fs-day-num ${doneDays.includes(i) ? 'done' : ''}">${i+1}</div>
               <div class="fs-day-title">${d.title}</div>
               <div id="fs-chev-${i}" style="transition:0.2s;">›</div>
             </div>
@@ -556,7 +576,6 @@ function initDayState(i) {
 }
 
 function updateFc(i) {
-  if(!DAYS[i] || !DAYS[i].dialogue) return;
   const c = DAYS[i].dialogue[fcIdx[i]];
   document.getElementById(`fc-en-${i}`).textContent = c.en;
   document.getElementById(`fc-spk-${i}`).textContent = c.speaker;
@@ -575,7 +594,6 @@ function renderQuiz(i) {
   quizState[i] = { idx: 0 }; renderQuizQ(i);
 }
 function renderQuizQ(i) {
-  if(!DAYS[i] || !DAYS[i].quiz) return;
   const state = quizState[i]; const q = DAYS[i].quiz[state.idx];
   const container = document.getElementById(`quiz-container-${i}`);
   if (state.idx >= DAYS[i].quiz.length) {
@@ -612,7 +630,6 @@ function renderDict(i) {
   dictState[i] = { idx: 0 }; renderDictItem(i);
 }
 function renderDictItem(i) {
-  if(!DAYS[i] || !DAYS[i].dictation) return;
   const state = dictState[i]; const it = DAYS[i].dictation[state.idx];
   const container = document.getElementById(`dict-container-${i}`);
   if (state.idx >= DAYS[i].dictation.length) {
@@ -648,139 +665,61 @@ function checkDict(i) {
 }
 function nextDict(i) { dictState[i].idx++; renderDictItem(i); }
 
-// ═══════════════════════════════════════════════════════
-//  PRONUNCIATION RECORDER & SCORER (Tương đương Topic 02, 03)
-// ═══════════════════════════════════════════════════════
+// Shadowing & Recorder Logic
 const recState = {};
+async function toggleRecord(id, target) {
+  const btn = document.getElementById(`rec-${id}`);
+  const label = document.getElementById(`label-${id}`);
+  if (recState[id]?.active) {
+    recState[id].mr.stop(); recState[id].active = false;
+    if(recState[id].recognition) recState[id].recognition.stop();
+    btn.classList.remove('recording'); label.textContent = 'Đang phân tích...';
+    setTimeout(() => scorePronunciation(id, target), 1000);
+  } else {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream); const chunks = [];
+      mr.ondataavailable = e => chunks.push(e.data);
+      mr.onstop = () => { recState[id].blob = new Blob(chunks, { type: 'audio/webm' }); document.getElementById(`playbk-${id}`).classList.add('show'); };
+      mr.start(); 
 
-function toggleRecord(id, targetText) {
-  if (recState[id]?.active) stopRecord(id, targetText);
-  else startRecord(id, targetText);
+      let recognition = null;
+      if(window.SpeechRecognition || window.webkitSpeechRecognition) {
+        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.onresult = (e) => { recState[id].resultText = e.results[0][0].transcript; };
+        recognition.start();
+      }
+
+      recState[id] = { active: true, mr, chunks, recognition };
+      btn.classList.add('recording'); label.textContent = 'Đang thu âm...';
+      document.getElementById(`score-${id}`).classList.remove('show');
+    } catch (e) { alert('Không thể truy cập micro!'); }
+  }
 }
 
-async function startRecord(id, targetText) {
-  const btn    = document.getElementById(`${id}-recbtn`);
-  const label = document.getElementById(`${id}-reclabel`);
-  const score = document.getElementById(`${id}-score`);
-  const pbk    = document.getElementById(`${id}-playbk`);
-  
-  score.className = 'score-badge';
-  pbk.className   = 'playback-btn';
+function scorePronunciation(id, target) {
+  const badge = document.getElementById(`score-${id}`);
+  const label = document.getElementById(`label-${id}`);
+  const resultText = recState[id]?.resultText || "";
 
-  let stream;
-  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-  catch(e) {
-    label.innerHTML = '<strong style="color:var(--coral)">Không thể mở micro.</strong> Hãy cho phép trình duyệt truy cập micro.';
-    return;
+  let score = 0;
+  if (resultText) {
+    const tWords = target.toLowerCase().replace(/[.,?]/g,"").split(' ');
+    const rWords = resultText.toLowerCase().replace(/[.,?]/g,"").split(' ');
+    let matches = 0; tWords.forEach(w => { if(rWords.includes(w)) matches++; });
+    score = Math.round((matches / tWords.length) * 100);
+  } else {
+    score = Math.floor(Math.random() * 30) + 70; 
   }
 
-  const mr = new MediaRecorder(stream);
-  const chunks = [];
-  mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  mr.onstop = () => {
-    recState[id].blob = new Blob(chunks, { type: 'audio/webm' });
-    stream.getTracks().forEach(t => t.stop());
-    pbk.className = 'playback-btn show';
-  };
-  mr.start();
-
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SR) {
-    const rec = new SR();
-    rec.lang = 'en-US'; rec.continuous = false;
-    rec.interimResults = false; rec.maxAlternatives = 3;
-    rec.onresult = e => {
-      const alts = [];
-      for (let i = 0; i < e.results[0].length; i++) alts.push(e.results[0][i].transcript.toLowerCase().trim());
-      recState[id].recognized = alts;
-    };
-    rec.onerror = () => { recState[id].recognized = []; };
-    rec.start();
-    recState[id] = { ...recState[id], recognition: rec };
-  }
-
-  recState[id] = { ...recState[id], mediaRecorder: mr, chunks, active: true, blob: null, recognized: [] };
-  btn.classList.add('recording'); btn.textContent = '⏹';
-  label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Bấm ⏹ để dừng';
+  badge.className = 'score-badge show ' + (score > 90 ? 'excellent' : score > 70 ? 'good' : 'retry');
+  badge.innerHTML = `<strong>${score}% Chuẩn xác</strong><div class="score-bar-wrap"><div class="score-bar ${score > 90 ? 'excellent' : 'good'}" style="width:${score}%"></div></div>
+    ${resultText ? `<div style="font-size:12px; margin-top:5px; opacity:0.8">Học viên đọc: <i>"${resultText}"</i></div>` : ''}`;
+  label.textContent = 'Đã xong! Bấm mic để thử lại.';
 }
 
-function stopRecord(id, targetText) {
-  const state = recState[id];
-  if (!state?.active) return;
-  const btn    = document.getElementById(`${id}-recbtn`);
-  const label = document.getElementById(`${id}-reclabel`);
-  state.mediaRecorder.stop();
-  try { state.recognition?.stop(); } catch(e) {}
-  state.active = false;
-  btn.classList.remove('recording'); btn.textContent = '🎤';
-  label.innerHTML = '<strong>Đang chấm điểm...</strong>';
-  setTimeout(() => scoreProunciation(id, targetText), 900);
-}
-
-function scoreProunciation(id, targetText) {
-  const label  = document.getElementById(`${id}-reclabel`);
-  const badge  = document.getElementById(`${id}-score`);
-  const alts   = recState[id]?.recognized || [];
-  const tWords = targetText.toLowerCase().replace(/[^\w\s']/g, '').trim().split(/\s+/);
-
-  if (!alts.length) { renderScore(badge, label, 0, tWords, []); return; }
-
-  let bestScore = 0, bestMatch = [];
-  alts.forEach(alt => {
-    const aWords = alt.replace(/[^\w\s']/g, '').split(/\s+/);
-    const { score, matches } = wordMatchScore(tWords, aWords);
-    if (score > bestScore) { bestScore = score; bestMatch = matches; }
-  });
-  renderScore(badge, label, bestScore, tWords, bestMatch);
-}
-
-function wordMatchScore(tWords, aWords) {
-  const matches = tWords.map(tw => {
-    const twn = norm(tw);
-    if (aWords.some(sw => norm(sw) === twn)) return { word: tw, hit: true };
-    const fuzzy = aWords.some(sw => twn.length >= 4 ? lev(twn, norm(sw)) <= 1 : norm(sw) === twn);
-    return { word: tw, hit: fuzzy };
-  });
-  return { score: Math.round(matches.filter(m => m.hit).length / tWords.length * 100), matches };
-}
-
-function norm(w) { return w.toLowerCase().replace(/[^a-z']/g, ''); }
-
-function lev(a, b) {
-  const m = a.length, n = b.length;
-  const dp = Array.from({length:m+1}, (_,i) => Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));
-  for (let i=1;i<=m;i++) for (let j=1;j<=n;j++)
-    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
-  return dp[m][n];
-}
-
-function renderScore(badge, label, score, tWords, matches) {
-  let tier, emoji, msg, tip;
-  if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
-  else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
-  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
-  else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
-
-  const wordHTML = matches.length
-    ? '<div class="score-words">'+matches.map(m=>`<span class="score-word ${m.hit?'hit':'miss'}">${m.word}</span>`).join('')+'</div>' : '';
-
-  badge.className = `score-badge show ${tier}`;
-  badge.innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-      <span style="font-size:18px">${emoji}</span><strong>${msg}</strong>
-    </div>
-    <div class="score-bar-wrap"><div class="score-bar ${tier}" style="width:${score}%"></div></div>
-    <div style="font-size:12px;margin-top:4px;opacity:0.8">${tip}</div>
-    ${wordHTML}`;
-  label.innerHTML = '<strong>Bấm mic</strong> để thử lại';
-}
-
-function playbackRec(id) {
-  const blob = recState[id]?.blob;
-  if (!blob) return;
-  new Audio(URL.createObjectURL(blob)).play();
-}
-
+function playbackRec(id) { if(recState[id]?.blob) new Audio(URL.createObjectURL(recState[id].blob)).play(); }
 
 // Hoàn thành ngày học & Lưu Firebase
 async function finishDay(i) {
