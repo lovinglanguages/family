@@ -456,8 +456,7 @@
   <div class="topic-vn">Giờ ăn vui vẻ</div>
 </div>
 
-<div class="days-nav" id="daysNav">
-  </div>
+<div class="days-nav" id="daysNav"></div>
 
 <div id="panels"></div>
 
@@ -482,319 +481,51 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
+// Khởi tạo biến rỗng chờ dữ liệu từ Firebase
+let TOPIC = {};
+let DAYS = [];
+
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     window.location.href = 'lani-be-a-gift.html';
   } else {
     currentUser = user;
-    await fetchProgress();
+    await fetchProgress(); 
     document.getElementById('loading-overlay').style.display = 'none';
   }
 });
 
 async function fetchProgress() {
   try {
+    // 1. Tải toàn bộ dữ liệu Topic 03 từ Firestore
+    const topicDoc = await db.collection("topics").doc("topic03").get();
+    if (topicDoc.exists) {
+      const data = topicDoc.data();
+      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
+      DAYS = data.days;
+    } else {
+      console.error("Không tìm thấy dữ liệu Topic 03 trên Firebase!");
+      document.getElementById('loading-overlay').innerHTML = '<p style="color:var(--coral);font-family:\'DM Sans\';">Lỗi: Không tìm thấy nội dung bài học.</p>';
+      return; 
+    }
+
+    // 2. Tải tiến độ người dùng
     const doc = await db.collection("users").doc(currentUser.uid).get();
     if (doc.exists) {
       userProgress = doc.data();
-      const daysCompleted = userProgress.progress[2] || 0; // Topic 03 (index 2)
+      // Tiến độ Topic 03 nằm ở index 2
+      const daysCompleted = userProgress.progress[2] || 0; 
       for(let i=0; i < daysCompleted; i++) {
         doneDays.push(i);
       }
     }
+
     renderPanels();
     renderNav();
   } catch (error) {
     console.error("Lỗi tải tiến độ:", error);
   }
 }
-
-// ═══════════════════════════════════════════════════════
-//  DATA — TOÀN BỘ 10 NGÀY CỦA BẠN (Topic 3: Meal Time)
-// ═══════════════════════════════════════════════════════
-const TOPIC = { num: '03', name: 'Meal Time', startDay: 21 }; // Topic 3 startDay
-
-const DAYS = [
-  // Day 1
-  {
-    title: 'Đến giờ ăn rồi',
-    dialogue: [
-      { speaker: 'Mom', en: 'Dinner is ready! Stop playing and come here, sweetie!', vn: 'Cơm chín rồi! Nghỉ chơi và ra đây ngay nào con yêu!' },
-      { speaker: 'Child', en: 'Just five more minutes, Mom!', vn: 'Cho con 5 phút nữa thôi mẹ ơi!' },
-    ],
-    vocab: [
-      { en: 'Dinner is ready', phonetic: '/ˈdɪnər ɪz ˈrɛdi/', speaker: 'Mom', meaning: 'Bữa tối đã sẵn sàng / Cơm chín rồi', synonym: 'Food is ready', synonymVn: 'Đồ ăn xong rồi', collocation: 'Dinner is ready', collocationVn: 'Cơm chín rồi', example: '"Dinner is ready! Come to the table."', exampleVn: '"Cơm chín rồi! Ra bàn ăn thôi nào."' },
-      { en: 'Stop playing', phonetic: '/stɒp ˈpleɪɪŋ/', speaker: 'Mom', meaning: 'Dừng chơi / Nghỉ chơi', synonym: 'Quit playing', synonymVn: 'Nghỉ chơi đi', collocation: 'Stop playing games', collocationVn: 'Dừng chơi game', example: '"Stop playing and wash your hands."', exampleVn: '"Nghỉ chơi và đi rửa tay đi con."' },
-      { en: 'Five more minutes', phonetic: '/faɪv mɔːr ˈmɪnɪts/', speaker: 'Child', meaning: '5 phút nữa thôi', synonym: 'A few more minutes', synonymVn: 'Vài phút nữa', collocation: 'Just five more minutes', collocationVn: 'Chỉ 5 phút nữa thôi', example: '"Just five more minutes, please!"', exampleVn: '"Cho con xin 5 phút nữa thôi ạ!"' }
-    ],
-    quiz: [
-      { q: '"Dinner is ready" có nghĩa là gì?', opts: ['Bữa sáng đã xong','Cơm chín rồi / Bữa tối sẵn sàng','Đi ngủ thôi','Đến giờ học'], ans: 1, exp: '"Dinner" là bữa tối, "ready" là sẵn sàng.' },
-      { q: 'Mẹ bảo bé làm gì trước khi ra ăn?', opts: ['Đi tắm','Nghỉ chơi (Stop playing)','Dọn đồ chơi','Xem TV'], ans: 1, exp: 'Mẹ nói "Stop playing and come here" - Nghỉ chơi và ra đây.' },
-      { q: 'Bé xin thêm bao nhiêu thời gian?', opts: ['1 phút','5 phút (Five more minutes)','10 phút','Nửa tiếng'], ans: 1, exp: 'Bé nói "Just five more minutes, Mom!"' }
-    ],
-    dictation: [
-      { text: 'Dinner is ready', hint: '3 từ · thông báo bữa tối', hintVn: 'Bữa tối đã sẵn sàng' },
-      { text: 'Stop playing', hint: '2 từ · yêu cầu dừng chơi', hintVn: 'Nghỉ chơi' },
-      { text: 'five more minutes', hint: '3 từ · xin thêm thời gian', hintVn: '5 phút nữa' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Dinner is ready! Stop playing and come here, sweetie!', vn: 'Cơm chín rồi! Nghỉ chơi và ra đây ngay nào con yêu!' },
-      { speaker: 'Child', en: 'Just five more minutes, Mom!', vn: 'Cho con 5 phút nữa thôi mẹ ơi!' }
-    ]
-  },
-
-  // Day 2
-  {
-    title: 'Nhắc nhở quy củ',
-    dialogue: [
-      { speaker: 'Mom', en: 'Did you wash your hands?', vn: 'Con đã rửa tay chưa đấy?' },
-      { speaker: 'Child', en: "Oops, I forgot. I'll go now!", vn: 'Ui, con quên mất. Con đi rửa ngay đây ạ!' },
-    ],
-    vocab: [
-      { en: 'Wash your hands', phonetic: '/wɒʃ jɔːr hændz/', speaker: 'Mom', meaning: 'Rửa tay', synonym: 'Clean your hands', synonymVn: 'Làm sạch tay', collocation: 'Wash your hands with soap', collocationVn: 'Rửa tay với xà phòng', example: '"Always wash your hands before eating."', exampleVn: '"Luôn rửa tay trước khi ăn nhé."' },
-      { en: 'I forgot', phonetic: '/aɪ fərˈɡɒt/', speaker: 'Child', meaning: 'Con quên mất', synonym: 'It slipped my mind', synonymVn: 'Con lỡ quên', collocation: 'Sorry, I forgot', collocationVn: 'Xin lỗi, con quên mất', example: '"Oops, I forgot to do my homework."', exampleVn: '"Ui, con quên làm bài tập rồi."' },
-      { en: "I'll go now", phonetic: '/aɪl ɡoʊ naʊ/', speaker: 'Child', meaning: 'Con đi ngay đây', synonym: "I'm going now", synonymVn: 'Con đi bây giờ đây', collocation: "I'll go now", collocationVn: 'Con đi ngay đây', example: '"I\'ll go now and wash them."', exampleVn: '"Con đi ngay đây và rửa tay."' }
-    ],
-    quiz: [
-      { q: '"Wash your hands" có nghĩa là gì?', opts: ['Rửa mặt','Chải tóc','Rửa tay','Đánh răng'], ans: 2, exp: '"Wash" = rửa, "hands" = tay. Hành động cần thiết trước khi ăn.' },
-      { q: 'Bé đã nhớ rửa tay chưa?', opts: ['Rồi','Chưa, bé quên mất (I forgot)','Bé không muốn rửa','Mẹ đã rửa cho bé'], ans: 1, exp: 'Bé thốt lên "Oops, I forgot" (Ui, con quên mất).' },
-      { q: 'Sau khi quên bé đã làm gì?', opts: ['Khóc','Đi chơi tiếp','Bảo mẹ rửa cho','Tự đi rửa ngay (I\'ll go now)'], ans: 3, exp: 'Bé nhanh nhẹn đáp "I\'ll go now!" (Con đi rửa ngay đây).' }
-    ],
-    dictation: [
-      { text: 'wash your hands', hint: '3 từ · hành động vệ sinh cá nhân', hintVn: 'rửa tay' },
-      { text: 'I forgot', hint: '2 từ · thừa nhận sự đãng trí', hintVn: 'Con quên mất' },
-      { text: "I'll go now", hint: '3 từ · hành động ngay lập tức', hintVn: 'Con đi ngay đây' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Did you wash your hands?', vn: 'Con đã rửa tay chưa đấy?' },
-      { speaker: 'Child', en: "Oops, I forgot. I'll go now!", vn: 'Ui, con quên mất. Con đi rửa ngay đây ạ!' }
-    ]
-  },
-
-  // Day 3
-  {
-    title: 'Lười ăn rau',
-    dialogue: [
-      { speaker: 'Mom', en: "Eat your vegetables! Don't just eat meat.", vn: 'Ăn rau đi con! Đừng có chỉ gắp mỗi thịt thế.' },
-      { speaker: 'Child', en: "But I don't like greens...", vn: 'Nhưng con không thích ăn rau xanh...' },
-    ],
-    vocab: [
-      { en: 'Vegetables', phonetic: '/ˈvɛdʒtəbəlz/', speaker: 'Mom', meaning: 'Rau củ', synonym: 'Greens, veggies', synonymVn: 'Rau xanh', collocation: 'Eat your vegetables', collocationVn: 'Ăn rau đi', example: '"Vegetables make you strong and healthy!"', exampleVn: '"Rau củ giúp con khỏe mạnh đấy!"' },
-      { en: "Don't just eat meat", phonetic: '/doʊnt dʒʌst iːt miːt/', speaker: 'Mom', meaning: 'Đừng chỉ ăn thịt', synonym: 'Eat other things too', synonymVn: 'Ăn thêm món khác nữa', collocation: 'Just eat meat', collocationVn: 'Chỉ ăn thịt', example: '"You need a balanced diet, don\'t just eat meat."', exampleVn: '"Con cần ăn uống cân bằng, đừng chỉ ăn mỗi thịt."' },
-      { en: 'Greens', phonetic: '/ɡriːnz/', speaker: 'Child', meaning: 'Rau xanh', synonym: 'Vegetables', synonymVn: 'Rau', collocation: 'Eat your greens', collocationVn: 'Ăn rau xanh đi', example: '"I don\'t like greens, but I will try a little."', exampleVn: '"Con không thích rau xanh, nhưng con sẽ thử một chút."' }
-    ],
-    quiz: [
-      { q: '"Vegetables" có nghĩa là gì?', opts: ['Thịt','Cá','Rau củ','Hoa quả'], ans: 2, exp: '"Vegetables" hay "veggies" là từ chung để gọi rau củ.' },
-      { q: 'Mẹ nhắc bé điều gì?', opts: ['Chỉ ăn thịt thôi','Đừng chỉ gắp mỗi thịt','Uống nhiều nước','Ăn nhanh lên'], ans: 1, exp: '"Don\'t just eat meat" = Đừng chỉ ăn mỗi thịt.' },
-      { q: 'Từ nào đồng nghĩa với "vegetables" trong bài?', opts: ['Meat','Fruit','Greens','Rice'], ans: 2, exp: '"Greens" thường được dùng để chỉ các loại rau lá xanh.' }
-    ],
-    dictation: [
-      { text: 'Eat your vegetables', hint: '3 từ · lời nhắc nhở ăn rau', hintVn: 'Ăn rau đi con' },
-      { text: 'eat meat', hint: '2 từ · ăn thịt', hintVn: 'Ăn thịt' },
-      { text: 'greens', hint: '1 từ · rau xanh', hintVn: 'Rau xanh' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "Eat your vegetables! Don't just eat meat.", vn: 'Ăn rau đi con! Đừng có chỉ gắp mỗi thịt thế.' },
-      { speaker: 'Child', en: "But I don't like greens...", vn: 'Nhưng con không thích ăn rau xanh...' }
-    ]
-  },
-
-  // Day 4
-  {
-    title: 'Tật ngậm cơm',
-    dialogue: [
-      { speaker: 'Mom', en: 'Chew and swallow! Stop holding it in your mouth.', vn: 'Nhai và nuốt đi nào! Đừng ngậm cơm trong miệng nữa con.' },
-      { speaker: 'Child', en: '(Chew, chew...)', vn: '(Nhai nhóp nhép)' },
-    ],
-    vocab: [
-      { en: 'Chew', phonetic: '/tʃuː/', speaker: 'Mom', meaning: 'Nhai', synonym: 'Munch', synonymVn: 'Nhai tóp tép', collocation: 'Chew well', collocationVn: 'Nhai kỹ', example: '"Make sure you chew your food well."', exampleVn: '"Nhớ nhai kỹ thức ăn nhé con."' },
-      { en: 'Swallow', phonetic: '/ˈswɒloʊ/', speaker: 'Mom', meaning: 'Nuốt', synonym: 'Gulp down', synonymVn: 'Nuốt chửng', collocation: 'Chew and swallow', collocationVn: 'Nhai và nuốt', example: '"Chew it five times, then swallow."', exampleVn: '"Nhai 5 lần, sau đó nuốt nhé."' },
-      { en: 'Stop holding it', phonetic: '/stɒp ˈhoʊldɪŋ ɪt/', speaker: 'Mom', meaning: 'Đừng ngậm / giữ trong miệng nữa', synonym: 'Don\'t keep it', synonymVn: 'Đừng giữ lại', collocation: 'Holding it in your mouth', collocationVn: 'Ngậm trong miệng', example: '"Stop holding it in your mouth, swallow it!"', exampleVn: '"Đừng ngậm trong miệng nữa, nuốt đi con!"' }
-    ],
-    quiz: [
-      { q: '"Chew" có nghĩa là gì?', opts: ['Nuốt','Nhai','Ngậm','Nhổ ra'], ans: 1, exp: '"Chew" là hành động nghiền nát thức ăn bằng răng (nhai).' },
-      { q: '"Swallow" có nghĩa là gì?', opts: ['Nhai','Ngậm','Nuốt','Thổi'], ans: 2, exp: '"Swallow" là hành động đưa thức ăn từ miệng xuống dạ dày (nuốt).' },
-      { q: 'Mẹ nhắc bé đừng làm gì?', opts: ['Đừng nói chuyện','Đừng ngậm thức ăn trong miệng','Đừng xem TV','Đừng khóc'], ans: 1, exp: '"Stop holding it in your mouth" nghĩa là ngừng giữ thức ăn trong miệng.' }
-    ],
-    dictation: [
-      { text: 'Chew and swallow', hint: '3 từ · nhai và nuốt', hintVn: 'Nhai và nuốt' },
-      { text: 'Stop holding it', hint: '3 từ · yêu cầu không ngậm', hintVn: 'Đừng ngậm nữa' },
-      { text: 'in your mouth', hint: '3 từ · trong miệng của bạn', hintVn: 'Trong miệng' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Chew and swallow! Stop holding it in your mouth.', vn: 'Nhai và nuốt đi nào! Đừng ngậm cơm trong miệng nữa con.' },
-      { speaker: 'Child', en: '(Chew, chew...)', vn: '(Nhai nhóp nhép)' }
-    ]
-  },
-
-  // Day 5
-  {
-    title: 'Mất tập trung',
-    dialogue: [
-      { speaker: 'Mom', en: 'No TV during meal time. Look at your bowl!', vn: 'Không có xem tivi lúc ăn. Tập trung vào bát cơm đi con!' },
-      { speaker: 'Child', en: 'Aww, okay...', vn: 'Dạ vâng ạ...' },
-    ],
-    vocab: [
-      { en: 'Meal time', phonetic: '/miːl taɪm/', speaker: 'Mom', meaning: 'Giờ ăn', synonym: 'Dinner time', synonymVn: 'Giờ ăn tối', collocation: 'During meal time', collocationVn: 'Trong suốt bữa ăn', example: '"We don\'t use phones during meal time."', exampleVn: '"Nhà mình không dùng điện thoại trong giờ ăn."' },
-      { en: 'Look at', phonetic: '/lʊk æt/', speaker: 'Mom', meaning: 'Nhìn vào / Tập trung vào', synonym: 'Focus on', synonymVn: 'Tập trung vào', collocation: 'Look at your bowl', collocationVn: 'Nhìn vào bát cơm', example: '"Look at your bowl while eating."', exampleVn: '"Hãy nhìn vào bát khi đang ăn nhé."' },
-      { en: 'Bowl', phonetic: '/boʊl/', speaker: 'Mom', meaning: 'Cái bát / chén', synonym: 'Dish', synonymVn: 'Cái đĩa / bát', collocation: 'A bowl of rice', collocationVn: 'Một bát cơm', example: '"Finish the rice in your bowl."', exampleVn: '"Ăn hết cơm trong bát của con đi."' }
-    ],
-    quiz: [
-      { q: 'Quy tắc mẹ đặt ra trong giờ ăn là gì?', opts: ['Không xem TV','Không nói chuyện','Không uống nước','Không đứng lên'], ans: 0, exp: '"No TV during meal time" = Không xem tivi trong giờ ăn.' },
-      { q: '"Meal time" có nghĩa là?', opts: ['Giờ học','Giờ đi ngủ','Giờ ăn','Giờ chơi'], ans: 2, exp: '"Meal" là bữa ăn, "time" là thời gian. "Meal time" = Giờ ăn.' },
-      { q: 'Mẹ bảo bé nhìn vào đâu?', opts: ['Nhìn TV','Nhìn vào bát cơm (Look at your bowl)','Nhìn ra cửa sổ','Nhìn mẹ'], ans: 1, exp: '"Look at your bowl" để nhắc bé tập trung vào việc ăn.' }
-    ],
-    dictation: [
-      { text: 'Meal time', hint: '2 từ · thời gian dành cho ăn uống', hintVn: 'Giờ ăn' },
-      { text: 'No TV', hint: '2 từ · quy tắc không màn hình', hintVn: 'Không tivi' },
-      { text: 'Look at your bowl', hint: '4 từ · lời nhắc nhở tập trung', hintVn: 'Nhìn vào bát của con' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'No TV during meal time. Look at your bowl!', vn: 'Không có xem tivi lúc ăn. Tập trung vào bát cơm đi con!' },
-      { speaker: 'Child', en: 'Aww, okay...', vn: 'Dạ vâng ạ...' }
-    ]
-  },
-
-  // Day 6
-  {
-    title: 'Rơi vãi đầy bàn',
-    dialogue: [
-      { speaker: 'Mom', en: "Be careful! You're dropping rice everywhere.", vn: 'Cẩn thận chứ! Con làm rơi cơm vãi ra bàn kìa.' },
-      { speaker: 'Child', en: "I'll be careful.", vn: 'Con sẽ cẩn thận ạ.' },
-    ],
-    vocab: [
-      { en: 'Be careful', phonetic: '/bi ˈkɛrfəl/', speaker: 'Mom', meaning: 'Cẩn thận', synonym: 'Watch out', synonymVn: 'Chú ý kìa', collocation: 'Please be careful', collocationVn: 'Làm ơn cẩn thận', example: '"Be careful, the soup is very hot!"', exampleVn: '"Cẩn thận nhé, canh đang rất nóng đấy!"' },
-      { en: 'Drop', phonetic: '/drɒp/', speaker: 'Mom', meaning: 'Làm rơi / Rớt', synonym: 'Spill', synonymVn: 'Làm đổ', collocation: 'Drop rice', collocationVn: 'Làm rơi cơm', example: '"Try not to drop food on the floor."', exampleVn: '"Cố gắng đừng làm rơi thức ăn xuống sàn nhà."' },
-      { en: 'Everywhere', phonetic: '/ˈɛvriˌwɛr/', speaker: 'Mom', meaning: 'Khắp mọi nơi / Khắp bàn', synonym: 'All over', synonymVn: 'Khắp nơi', collocation: 'Dropping everywhere', collocationVn: 'Rơi vãi khắp nơi', example: '"You\'re making a mess everywhere!"', exampleVn: '"Con đang làm bừa bộn khắp mọi nơi kìa!"' }
-    ],
-    quiz: [
-      { q: '"Be careful" dùng để làm gì?', opts: ['Khen ngợi','Nhắc nhở cẩn thận','Chào hỏi','Xin lỗi'], ans: 1, exp: '"Be careful" là lời nhắc nhở ai đó hãy cẩn thận, chú ý.' },
-      { q: 'Bé đang làm gì sai?', opts: ['Làm đổ nước','Làm rơi vãi cơm (dropping rice)','Làm vỡ bát','Khóc nhè'], ans: 1, exp: 'Mẹ nói "You\'re dropping rice everywhere" (Con đang làm rơi cơm khắp nơi).' },
-      { q: '"Everywhere" có nghĩa là gì?', opts: ['Một chỗ','Chỗ nào đó','Khắp mọi nơi','Không ở đâu'], ans: 2, exp: '"Everywhere" nghĩa là ở mọi nơi, trong ngữ cảnh này là vãi khắp bàn.' }
-    ],
-    dictation: [
-      { text: 'Be careful', hint: '2 từ · lời nhắc nhở an toàn, chú ý', hintVn: 'Cẩn thận' },
-      { text: 'dropping rice', hint: '2 từ · hành động làm vương vãi', hintVn: 'Làm rơi cơm' },
-      { text: 'everywhere', hint: '1 từ · vương vãi nhiều nơi', hintVn: 'Khắp nơi' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "Be careful! You're dropping rice everywhere.", vn: 'Cẩn thận chứ! Con làm rơi cơm vãi ra bàn kìa.' },
-      { speaker: 'Child', en: "I'll be careful.", vn: 'Con sẽ cẩn thận ạ.' }
-    ]
-  },
-
-  // Day 7
-  {
-    title: 'Thúc giục tốc độ',
-    dialogue: [
-      { speaker: 'Mom', en: 'Hurry up! Your food is getting cold.', vn: 'Ăn nhanh lên nào con! Đồ ăn nguội hết cả rồi kìa.' },
-      { speaker: 'Child', en: "I'm trying, Mommy!", vn: 'Con đang cố đây ạ!' },
-    ],
-    vocab: [
-      { en: 'Hurry up', phonetic: '/ˈhɜri ʌp/', speaker: 'Mom', meaning: 'Nhanh lên', synonym: 'Be quick', synonymVn: 'Nhanh chóng lên', collocation: 'Hurry up and eat', collocationVn: 'Ăn nhanh lên', example: '"Hurry up, or we will be late!"', exampleVn: '"Nhanh lên, nếu không chúng ta sẽ bị muộn đấy!"' },
-      { en: 'Getting cold', phonetic: '/ˈɡɛtɪŋ koʊld/', speaker: 'Mom', meaning: 'Đang nguội dần', synonym: 'Cooling down', synonymVn: 'Đang nguội đi', collocation: 'Food is getting cold', collocationVn: 'Đồ ăn đang nguội', example: '"Eat your soup before it gets cold."', exampleVn: '"Uống canh đi trước khi nó bị nguội."' },
-      { en: "I'm trying", phonetic: '/aɪm ˈtraɪɪŋ/', speaker: 'Child', meaning: 'Con đang cố gắng', synonym: 'Doing my best', synonymVn: 'Đang làm hết sức', collocation: "I'm trying my best", collocationVn: 'Con đang cố gắng hết sức', example: '"I\'m trying to finish it fast!"', exampleVn: '"Con đang cố ăn xong thật nhanh!"' }
-    ],
-    quiz: [
-      { q: '"Hurry up" có nghĩa là gì?', opts: ['Chậm lại','Dừng lại','Nhanh lên','Cẩn thận'], ans: 2, exp: '"Hurry up" là cụm từ thúc giục ai đó làm việc gì nhanh hơn.' },
-      { q: 'Tại sao mẹ lại giục bé ăn nhanh?', opts: ['Vì đến giờ đi ngủ','Vì đồ ăn đang nguội (getting cold)','Vì mẹ muốn dọn bàn','Vì sắp có khách'], ans: 1, exp: 'Mẹ nói "Your food is getting cold" (Đồ ăn của con đang nguội đi rồi kìa).' },
-      { q: 'Bé đáp lại lời giục của mẹ thế nào?', opts: ["I don't want to", "I'm trying, Mommy!", "I'm full", "Wait a minute"], ans: 1, exp: 'Bé nói "I\'m trying" thể hiện thái độ hợp tác, đang nỗ lực ăn nhanh hơn.' }
-    ],
-    dictation: [
-      { text: 'Hurry up', hint: '2 từ · lời thúc giục', hintVn: 'Nhanh lên' },
-      { text: 'getting cold', hint: '2 từ · trạng thái thức ăn', hintVn: 'Đang nguội dần' },
-      { text: "I'm trying", hint: '2 từ · lời đáp thể hiện nỗ lực', hintVn: 'Con đang cố' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Hurry up! Your food is getting cold.', vn: 'Ăn nhanh lên nào con! Đồ ăn nguội hết cả rồi kìa.' },
-      { speaker: 'Child', en: "I'm trying, Mommy!", vn: 'Con đang cố đây ạ!' }
-    ]
-  },
-
-  // Day 8
-  {
-    title: 'Giải cứu bằng canh',
-    dialogue: [
-      { speaker: 'Mom', en: "Here, have some soup. It's easier to swallow.", vn: 'Đây, chan tí canh vào cho dễ nuốt nào.' },
-      { speaker: 'Child', en: 'Yes, please.', vn: 'Dạ vâng ạ.' },
-    ],
-    vocab: [
-      { en: 'Have some soup', phonetic: '/hæv sʌm suːp/', speaker: 'Mom', meaning: 'Ăn/uống chút canh', synonym: 'Eat some soup', synonymVn: 'Ăn chút súp', collocation: 'Have a bowl of soup', collocationVn: 'Ăn một bát canh', example: '"Have some soup to warm your stomach."', exampleVn: '"Uống chút canh cho ấm bụng nhé."' },
-      { en: 'Easier', phonetic: '/ˈiːziər/', speaker: 'Mom', meaning: 'Dễ dàng hơn', synonym: 'Simpler', synonymVn: 'Đơn giản hơn', collocation: 'Easier to do', collocationVn: 'Dễ làm hơn', example: '"This spoon is easier to use."', exampleVn: '"Cái thìa này dễ dùng hơn."' },
-      { en: 'Yes, please', phonetic: '/jɛs pliːz/', speaker: 'Child', meaning: 'Dạ vâng ạ (cách nhận lời lịch sự)', synonym: 'Sure, thanks', synonymVn: 'Chắc chắn rồi, cảm ơn', collocation: 'Yes, please', collocationVn: 'Dạ vâng xin vui lòng', example: '"Would you like more water?" - "Yes, please."', exampleVn: '"Con có muốn thêm nước không?" - "Dạ có ạ."' }
-    ],
-    quiz: [
-      { q: '"Soup" trong bữa ăn của người Việt thường là món gì?', opts: ['Món nướng','Canh','Tráng miệng','Món xào'], ans: 1, exp: '"Soup" thường dùng để gọi các món canh hoặc súp lỏng.' },
-      { q: 'Tại sao mẹ bảo bé húp canh?', opts: ['Vì canh rất ngon','Cho dễ nuốt (easier to swallow)','Vì canh sắp nguội','Vì bé khát'], ans: 1, exp: 'Mẹ nói "It\'s easier to swallow" (chan canh vào sẽ giúp cơm trơn và dễ nuốt hơn).' },
-      { q: '"Yes, please" thể hiện điều gì?', opts: ['Sự từ chối','Sự giận dỗi','Cách nhận lời lịch sự','Lời chào tạm biệt'], ans: 2, exp: '"Yes, please" là cách trả lời rất lịch sự khi được ai đó mời hoặc đưa cho món đồ gì.' }
-    ],
-    dictation: [
-      { text: 'some soup', hint: '2 từ · món nước', hintVn: 'chút canh / súp' },
-      { text: 'easier to swallow', hint: '3 từ · tác dụng của canh', hintVn: 'dễ nuốt hơn' },
-      { text: 'Yes please', hint: '2 từ · lời nhận lịch sự', hintVn: 'Dạ vâng ạ' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "Here, have some soup. It's easier to swallow.", vn: 'Đây, chan tí canh vào cho dễ nuốt nào.' },
-      { speaker: 'Child', en: 'Yes, please.', vn: 'Dạ vâng ạ.' }
-    ]
-  },
-
-  // Day 9
-  {
-    title: 'Vét bát',
-    dialogue: [
-      { speaker: 'Mom', en: 'Finish your bowl. Just three more bites!', vn: 'Ăn nốt bát đi con. Còn 3 miếng nữa thôi!' },
-      { speaker: 'Child', en: "I'm so full!", vn: 'Con no quá rồi mẹ ơi!' },
-    ],
-    vocab: [
-      { en: 'Finish your bowl', phonetic: '/ˈfɪnɪʃ jɔːr boʊl/', speaker: 'Mom', meaning: 'Ăn hết bát (vét bát)', synonym: 'Eat it all', synonymVn: 'Ăn hết đi', collocation: 'Finish your food', collocationVn: 'Ăn xong phần ăn của bạn', example: '"Come on, finish your bowl and you can go play."', exampleVn: '"Thôi nào, ăn hết bát đi rồi con có thể đi chơi."' },
-      { en: 'Three more bites', phonetic: '/θriː mɔːr baɪts/', speaker: 'Mom', meaning: '3 miếng nữa', synonym: 'Three spoonfuls', synonymVn: '3 thìa nữa', collocation: 'Just one more bite', collocationVn: 'Chỉ một miếng nữa thôi', example: '"Just take three more bites for mommy."', exampleVn: '"Ăn thêm 3 miếng nữa cho mẹ vui nhé."' },
-      { en: "I'm full", phonetic: '/aɪm fʊl/', speaker: 'Child', meaning: 'Con no rồi', synonym: 'I have had enough', synonymVn: 'Con đã ăn đủ', collocation: "I'm so full", collocationVn: 'Con no quá', example: '"I can\'t eat anymore, I\'m full."', exampleVn: '"Con không thể ăn thêm nữa, con no rồi."' }
-    ],
-    quiz: [
-      { q: '"Finish your bowl" có nghĩa là gì?', opts: ['Rửa bát','Ăn hết thức ăn trong bát','Làm vỡ bát','Cất bát đi'], ans: 1, exp: '"Finish" là hoàn thành. "Finish your bowl" là ăn sạch phần cơm trong bát.' },
-      { q: 'Mẹ khuyến khích bé ăn thêm bao nhiêu miếng?', opts: ['1 miếng','2 miếng','3 miếng (three more bites)','5 miếng'], ans: 2, exp: 'Mẹ nói "Just three more bites!"' },
-      { q: 'Bé cảm thấy thế nào?', opts: ['Rất đói','Rất khát','Rất no (I\'m full)','Buồn ngủ'], ans: 2, exp: '"I\'m full" có nghĩa là cái bụng đã đầy, bé đã ăn no.' }
-    ],
-    dictation: [
-      { text: 'Finish your bowl', hint: '3 từ · yêu cầu ăn sạch', hintVn: 'Ăn hết bát' },
-      { text: 'more bites', hint: '2 từ · số lần nhai/miếng cắn', hintVn: 'miếng nữa' },
-      { text: "I'm so full", hint: '3 từ · trạng thái no bụng', hintVn: 'Con no quá' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Finish your bowl. Just three more bites!', vn: 'Ăn nốt bát đi con. Còn 3 miếng nữa thôi!' },
-      { speaker: 'Child', en: "I'm so full!", vn: 'Con no quá rồi mẹ ơi!' }
-    ]
-  },
-
-  // Day 10
-  {
-    title: 'Cuối cùng cũng xong',
-    dialogue: [
-      { speaker: 'Mom', en: 'Finally! Now go wipe your mouth.', vn: 'Cuối cùng cũng xong! Giờ con đi lau miệng đi.' },
-      { speaker: 'Child', en: 'All done! Yay!', vn: 'Xong rồi! Hoan hô!' },
-    ],
-    vocab: [
-      { en: 'Finally', phonetic: '/ˈfaɪnəli/', speaker: 'Mom', meaning: 'Cuối cùng thì', synonym: 'At last', synonymVn: 'Rốt cuộc', collocation: 'Finally done', collocationVn: 'Cuối cùng cũng xong', example: '"Finally, we finished the meal!"', exampleVn: '"Cuối cùng thì chúng ta cũng ăn xong!"' },
-      { en: 'Wipe your mouth', phonetic: '/waɪp jɔːr maʊθ/', speaker: 'Mom', meaning: 'Lau miệng', synonym: 'Clean your mouth', synonymVn: 'Làm sạch miệng', collocation: 'Wipe your face', collocationVn: 'Lau mặt', example: '"Use a napkin to wipe your mouth."', exampleVn: '"Dùng khăn giấy để lau miệng nhé."' },
-      { en: 'All done', phonetic: '/ɔːl dʌn/', speaker: 'Child', meaning: 'Xong hết rồi / Xong xuôi', synonym: 'Finished', synonymVn: 'Hoàn thành', collocation: 'All done eating', collocationVn: 'Ăn xong hết rồi', example: '"I\'m all done with my dinner!"', exampleVn: '"Con đã ăn xong bữa tối rồi!"' }
-    ],
-    quiz: [
-      { q: '"Finally" thường được dùng khi nào?', opts: ['Bắt đầu việc gì','Việc gì đó kéo dài rốt cuộc cũng xong','Khi chào hỏi','Khi xin lỗi'], ans: 1, exp: '"Finally" (Cuối cùng thì) mang cảm giác nhẹ nhõm khi một việc tốn nhiều thời gian đã kết thúc.' },
-      { q: 'Mẹ bảo bé đi làm gì sau khi ăn xong?', opts: ['Đi ngủ','Đi lau miệng (wipe your mouth)','Đi chơi','Xem TV'], ans: 1, exp: 'Mẹ dặn "go wipe your mouth" để giữ vệ sinh sạch sẽ sau bữa ăn.' },
-      { q: '"All done!" có ý nghĩa tương tự từ nào?', opts: ['Start','Finished / Xong xuôi','Wait','More'], ans: 1, exp: '"All done" là cách nói vui vẻ, hào hứng của trẻ nhỏ khi hoàn thành xong một việc gì.' }
-    ],
-    dictation: [
-      { text: 'Finally', hint: '1 từ · trạng từ thể hiện sự kết thúc', hintVn: 'Cuối cùng thì' },
-      { text: 'wipe your mouth', hint: '3 từ · hành động vệ sinh sau ăn', hintVn: 'lau miệng' },
-      { text: 'All done', hint: '2 từ · lời reo vui hoàn thành', hintVn: 'Xong hết rồi' }
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Finally! Now go wipe your mouth.', vn: 'Cuối cùng cũng xong! Giờ con đi lau miệng đi.' },
-      { speaker: 'Child', en: 'All done! Yay!', vn: 'Xong rồi! Hoan hô!' }
-    ]
-  }
-];
 
 // ═══════════════════════════════════════════════════════
 //  STATE
@@ -809,14 +540,12 @@ let dictState = {}; // per day
 // ═══════════════════════════════════════════════════════
 
 async function finishDay(i, btnElement) {
-  // Ẩn nút hoàn thành
   if(btnElement) btnElement.style.display = 'none';
 
   if (!doneDays.includes(i)) {
     doneDays.push(i);
   }
   
-  // Hiện banner
   document.getElementById(`done-${i}`).classList.add('show');
   renderNav();
   document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
@@ -824,39 +553,33 @@ async function finishDay(i, btnElement) {
   if (!currentUser) return;
   
   const currentGlobalDay = i + 1; 
-  const savedProgress = userProgress.progress[2] || 0; // Topic 03 is index 2
+  // Ghi nhận progress cho Topic 03 (index 2)
+  const savedProgress = userProgress.progress[2] || 0;
 
-  // 1. Lưu tiến độ nếu là bài mới
   if (currentGlobalDay > savedProgress) {
     userProgress.progress[2] = currentGlobalDay;
   }
 
-  // 2. LOGIC TÍNH STREAK CHUẨN XÁC
   const today = new Date();
-  today.setHours(0,0,0,0); // Đưa về 00:00:00 của ngày hôm nay
+  today.setHours(0,0,0,0);
   const todayTime = today.getTime();
   const lastActiveTime = userProgress.lastActiveTime || 0;
-  const oneDay = 24 * 60 * 60 * 1000; // 1 ngày tính bằng miligiây
+  const oneDay = 24 * 60 * 60 * 1000;
 
   if (lastActiveTime === 0) {
-    // Lần đầu tiên học
     userProgress.streak = 1;
     userProgress.lastActiveTime = todayTime;
   } else {
     const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
     if (diffDays === 1) {
-      // Học ngày tiếp theo liền kề
       userProgress.streak = (userProgress.streak || 0) + 1;
       userProgress.lastActiveTime = todayTime;
     } else if (diffDays > 1) {
-      // Bỏ lỡ hơn 1 ngày -> Mất streak, đếm lại từ 1
       userProgress.streak = 1; 
       userProgress.lastActiveTime = todayTime;
     }
-    // Nếu diffDays === 0 (Học lại lần 2 trong cùng 1 ngày) thì không cộng thêm
   }
 
-  // Ghi lên Firebase
   await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
 }
 
@@ -927,7 +650,7 @@ function buildFullScriptPanel() {
   <div id="panel-fullscript">
     <div class="fullscript-hero">
       <div class="fullscript-hero-eyebrow">📜 Full Script · Topic ${TOPIC.num}</div>
-      <div class="fullscript-hero-title">Meal Time — Toàn bộ kịch bản</div>
+      <div class="fullscript-hero-title">${TOPIC.name} — Toàn bộ kịch bản</div>
       <div class="fullscript-hero-sub">10 ngày · ${DAYS.reduce((s,d)=>s+d.dialogue.length,0)} câu hội thoại · Bấm từng ngày để mở rộng</div>
     </div>
     <div class="fullscript-content">
@@ -1423,7 +1146,7 @@ function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
   else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
-  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;                tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
+  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
 
   const wordHTML = matches.length
