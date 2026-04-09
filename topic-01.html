@@ -256,7 +256,6 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
-// KHỞI TẠO RỖNG ĐỂ CHỜ KÉO TỪ FIREBASE
 let TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
 let DAYS = []; 
  
@@ -265,11 +264,7 @@ auth.onAuthStateChanged(async (user) => {
     window.location.href = 'lani-be-a-gift.html'; 
   } else {
     currentUser = user;
-    
-    // 1. Tải dữ liệu bài học từ Firebase
     await fetchLessonData();
-    
-    // 2. Nếu tải được dữ liệu, render giao diện. Nếu không, báo lỗi.
     if (DAYS && DAYS.length > 0) {
       await fetchProgress();
       document.getElementById('loading-overlay').style.display = 'none';
@@ -288,7 +283,6 @@ async function fetchLessonData() {
   try {
     const docRef = db.collection("topics").doc("topic01");
     const docSnap = await docRef.get();
-
     if (docSnap.exists) {
       const data = docSnap.data();
       DAYS = data.days || []; 
@@ -318,38 +312,32 @@ async function fetchProgress() {
 }
  
 // ═══════════════════════════════════════════════════════
-//  STATE
+//  STATE & NAVIGATION LOGIC
 // ═══════════════════════════════════════════════════════
 let currentDay = 0;
 let fcIdx = {}, fcFlipped = {};
 let quizState = {};
 let dictState = {};
+let currentView = 'day'; 
  
-// ═══════════════════════════════════════════════════════
-//  DAYS NAV & FIRESTORE SYNC
-// ═══════════════════════════════════════════════════════
 async function finishDay(i, btnElement) {
   if(btnElement) btnElement.style.display = 'none';
   if (!doneDays.includes(i)) doneDays.push(i);
-  
   document.getElementById(`done-${i}`).classList.add('show');
   renderNav();
   document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
  
   if (!currentUser) return;
-  
   const currentGlobalDay = i + 1; 
   const savedProgress = userProgress.progress[0] || 0;
   if (currentGlobalDay > savedProgress) {
     userProgress.progress[0] = currentGlobalDay;
   }
- 
   const today = new Date();
   today.setHours(0,0,0,0);
   const todayTime = today.getTime();
   const lastActiveTime = userProgress.lastActiveTime || 0;
   const oneDay = 24 * 60 * 60 * 1000;
- 
   if (lastActiveTime === 0) {
     userProgress.streak = 1;
     userProgress.lastActiveTime = todayTime;
@@ -381,6 +369,51 @@ function renderNav() {
   });
   const fsActive = currentView === 'fullscript';
   nav.innerHTML += `<button class="fs-pill${fsActive ? ' active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
+}
+
+function openDay(i) {
+  currentView = 'day';
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  const fs = document.getElementById('panel-fullscript');
+  if (fs) fs.classList.remove('active');
+  document.getElementById(`panel-${i}`).classList.add('active');
+  currentDay = i;
+  renderNav();
+  const nav = document.getElementById('daysNav');
+  const pill = nav.children[i];
+  if (pill) pill.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+ 
+function openFullScript() {
+  currentView = 'fullscript';
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  const fs = document.getElementById('panel-fullscript');
+  if (fs) {
+    fs.classList.add('active');
+    DAYS.forEach((_, i) => {
+      const num = fs.querySelector(`#fschev-${i}`)?.closest('.fs-day-block')?.querySelector('.fs-day-num');
+      if (num) { if (doneDays.includes(i)) num.classList.add('done-num'); else num.classList.remove('done-num'); }
+    });
+  }
+  renderNav();
+  const nav = document.getElementById('daysNav');
+  nav.lastElementChild?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+ 
+function toggleFsDay(i) {
+  const dlg  = document.getElementById(`fsdlg-${i}`);
+  const chev = document.getElementById(`fschev-${i}`);
+  const isOpen = dlg.classList.contains('open');
+  dlg.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+ 
+function switchMode(dayIdx, mode, btn) {
+  const panel = document.getElementById(`panel-${dayIdx}`);
+  panel.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  panel.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`mode-${dayIdx}-${mode}`).classList.add('active');
 }
  
 // ═══════════════════════════════════════════════════════
@@ -445,57 +478,10 @@ function buildShadowHTML(lines, i) {
 }
  
 function initDay(i) { fcIdx[i] = 0; fcFlipped[i] = false; updateFlashcard(i); renderQuiz(i); renderDict(i); }
- 
+
 // ═══════════════════════════════════════════════════════
-//  NAVIGATION & INTERACTION LOGIC
+//  FLASHCARD, QUIZ, DICTATION LOGIC
 // ═══════════════════════════════════════════════════════
-let currentView = 'day'; 
- 
-function openDay(i) {
-  currentView = 'day';
-  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-  const fs = document.getElementById('panel-fullscript');
-  if (fs) fs.classList.remove('active');
-  document.getElementById(`panel-${i}`).classList.add('active');
-  currentDay = i;
-  renderNav();
-  const nav = document.getElementById('daysNav');
-  const pill = nav.children[i];
-  if (pill) pill.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
-}
- 
-function openFullScript() {
-  currentView = 'fullscript';
-  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-  const fs = document.getElementById('panel-fullscript');
-  if (fs) {
-    fs.classList.add('active');
-    DAYS.forEach((_, i) => {
-      const num = fs.querySelector(`#fschev-${i}`)?.closest('.fs-day-block')?.querySelector('.fs-day-num');
-      if (num) { if (doneDays.includes(i)) num.classList.add('done-num'); else num.classList.remove('done-num'); }
-    });
-  }
-  renderNav();
-  const nav = document.getElementById('daysNav');
-  nav.lastElementChild?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
-}
- 
-function toggleFsDay(i) {
-  const dlg  = document.getElementById(`fsdlg-${i}`);
-  const chev = document.getElementById(`fschev-${i}`);
-  const isOpen = dlg.classList.contains('open');
-  dlg.classList.toggle('open', !isOpen);
-  chev.classList.toggle('open', !isOpen);
-}
- 
-function switchMode(dayIdx, mode, btn) {
-  const panel = document.getElementById(`panel-${dayIdx}`);
-  panel.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  panel.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
-  document.getElementById(`mode-${dayIdx}-${mode}`).classList.add('active');
-}
- 
 function updateFlashcard(i) {
   const day = DAYS[i]; const cards = day.dialogue; const idx = fcIdx[i]; const card = cards[idx];
   document.getElementById(`fc-en-${i}`).textContent = card.en;
@@ -556,7 +542,7 @@ function checkDict(i) {
 function nextDict(i) { dictState[i].idx++; renderDictItem(i); }
 
 // ═══════════════════════════════════════════════════════
-//  TEXT TO SPEECH (TỐI ƯU CHO MOBILE)
+//  TEXT TO SPEECH (TỐI ƯU CHO ĐIỆN THOẠI)
 // ═══════════════════════════════════════════════════════
 let _selectedVoice = null;
 const VOICE_PRIORITY = ['Google US English', 'Google UK English Female', 'Microsoft Aria Online (Natural) - English (United States)', 'Samantha', 'Karen', 'Google العربية'];
@@ -585,7 +571,6 @@ if ('speechSynthesis' in window) {
     speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); }; 
 }
 
-// Mẹo "đánh thức" trình đọc giọng nói trên thiết bị di động
 let isVoiceAwake = false;
 document.addEventListener('touchstart', function() {
     if (!isVoiceAwake && 'speechSynthesis' in window) {
@@ -610,34 +595,20 @@ function speak(text, rate = 0.85) {
       console.warn("Trình duyệt không hỗ trợ Text-to-Speech");
       return;
   }
-
-  // Hủy các lệnh đọc cũ đang bị kẹt
   window.speechSynthesis.cancel();
-
-  // Đợi 50ms trước khi đọc để bộ nhớ kịp xử lý, tránh crash trên iOS
   setTimeout(() => {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US'; 
-      u.rate = rate; 
-      u.pitch = 1.0;
-      u.volume = 1.0;
-      
-      const voice = pickVoice(); 
-      if (voice) u.voice = voice;
-      
-      u.onstart = () => {}; 
-      u.onerror = (e) => console.warn("Lỗi đọc giọng nói:", e);
-      
+      u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0; u.volume = 1.0;
+      const voice = pickVoice(); if (voice) u.voice = voice;
+      u.onstart = () => {}; u.onerror = (e) => console.warn("Lỗi đọc giọng nói:", e);
       window.speechSynthesis.speak(u);
   }, 50);
 }
 
 // ═══════════════════════════════════════════════════════
-//  SPEECH RECOGNITION (TỰ ĐỘNG PHÂN BIỆT PC & MOBILE)
+//  SPEECH RECOGNITION (CẢI TIẾN: TỰ ĐỘNG NHẬN DIỆN DI ĐỘNG & TỰ CHẤM ĐIỂM)
 // ═══════════════════════════════════════════════════════
 const recState = {};
-
-// Tự động kiểm tra xem người dùng đang xài điện thoại hay máy tính
 const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
 function toggleRecord(id, targetText) { 
@@ -653,7 +624,7 @@ async function startRecord(id, targetText) {
 
   score.className = 'score-badge';
   
-  // Mặc định ẩn nút nghe lại (sẽ chỉ bật lên nếu là PC và thu âm thành công)
+  // Ẩn nút nghe lại trên di động để tránh tranh giành Micro
   pbk.style.display = 'none'; 
   pbk.classList.remove('show');
 
@@ -665,7 +636,7 @@ async function startRecord(id, targetText) {
 
   recState[id] = { active: true, recognized: [], recognition: null, mediaRecorder: null, chunks: [], blob: null, error: null, stream: null };
 
-  // NẾU LÀ MÁY TÍNH: Bật thêm chức năng ghi âm (MediaRecorder) để nghe lại
+  // NẾU LÀ MÁY TÍNH: Bật MediaRecorder để lưu file nghe lại
   if (!isMobileDevice) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -675,19 +646,19 @@ async function startRecord(id, targetText) {
         mr.onstop = () => {
             recState[id].blob = new Blob(recState[id].chunks, { type: mr.mimeType || 'audio/webm' });
             pbk.className = 'playback-btn show';
-            pbk.style.display = 'inline-flex'; // Hiện nút nghe lại trên giao diện PC
+            pbk.style.display = 'inline-flex'; 
         };
         mr.start();
         recState[id].mediaRecorder = mr;
-      } catch(e) {
-        console.warn("PC: Không bật được MediaRecorder", e);
-      }
+      } catch(e) { console.warn("PC: Không bật được MediaRecorder", e); }
   }
 
-  // LUÔN BẬT CHẤM ĐIỂM AI CHO CẢ PC LẪN ĐIỆN THOẠI
+  // TÍNH NĂNG CHẤM ĐIỂM AI (CHO CẢ PC VÀ ĐIỆN THOẠI)
   const rec = new SR();
   rec.lang = 'en-US';
-  rec.continuous = true; 
+  
+  // QUAN TRỌNG: Để false trên Android/iOS giúp Google nhận kết quả chính xác khi ta ngưng nói
+  rec.continuous = false; 
   rec.interimResults = true; 
 
   rec.onresult = e => {
@@ -698,8 +669,15 @@ async function startRecord(id, targetText) {
     if (currentAlts.length > 0) recState[id].recognized = currentAlts;
   };
 
+  // CƠ CHẾ UX MỚI: Người dùng ngưng nói -> AI tự dừng -> Tự động chấm điểm!
+  rec.onend = () => {
+      if (recState[id].active) {
+          stopRecord(id, targetText); 
+      }
+  };
+
   rec.onerror = (e) => { 
-      console.warn("Lỗi nhận diện API:", e.error);
+      console.warn("Lỗi API Nhận diện:", e.error);
       recState[id].error = e.error; 
   };
 
@@ -713,19 +691,17 @@ async function startRecord(id, targetText) {
   }
 
   btn.classList.add('recording'); btn.textContent = '⏹';
-  label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Bấm ⏹ để dừng';
+  label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Hãy đọc và ngưng nói để tự chấm điểm';
 }
 
 function stopRecord(id, targetText) {
   const state = recState[id];
   if (!state?.active) return;
 
+  state.active = false;
   const btn = document.getElementById(`${id}-recbtn`);
   const label = document.getElementById(`${id}-reclabel`);
 
-  state.active = false;
-  
-  // Dừng luồng lưu file ghi âm (nếu đang chạy trên máy tính)
   if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
       state.mediaRecorder.stop();
   }
@@ -740,27 +716,21 @@ function stopRecord(id, targetText) {
   if (state.recognition) {
     try { state.recognition.stop(); } catch(e) {}
 
-    let checkCount = 0;
-    const waitInterval = setInterval(() => {
-        checkCount++;
-        // Chờ kết quả tối đa 2 giây (10 lần x 200ms)
-        if ((state.recognized && state.recognized.length > 0) || state.error || checkCount >= 10) {
-            clearInterval(waitInterval);
-            
-            if (state.error && state.recognized.length === 0) {
-                 let errVi = state.error;
-                 if(errVi === 'no-speech') errVi = 'Không nghe thấy tiếng';
-                 if(errVi === 'not-allowed') errVi = 'Chưa cấp quyền Micro';
-                 if(errVi === 'network') errVi = 'Lỗi mạng Internet';
-                 if(errVi === 'aborted') errVi = 'Bị ngắt đột ngột';
-                 
-                 label.innerHTML = `<strong style="color:var(--coral)">Lỗi: ${errVi}</strong>. Thử lại nhé!`;
-                 scoreProunciation(id, targetText); 
-            } else {
-                 scoreProunciation(id, targetText);
-            }
+    // Chờ thêm 500ms để đảm bảo Chrome tải xong kết quả văn bản cuối cùng trước khi báo lỗi
+    setTimeout(() => {
+        if (state.error && state.recognized.length === 0) {
+             let errVi = state.error;
+             if(errVi === 'no-speech') errVi = 'Không nghe thấy tiếng';
+             if(errVi === 'not-allowed') errVi = 'Chưa cấp quyền Micro';
+             if(errVi === 'network') errVi = 'Lỗi mạng Internet';
+             if(errVi === 'aborted') errVi = 'Bị ngắt đột ngột';
+             
+             label.innerHTML = `<strong style="color:var(--coral)">Lỗi: ${errVi}</strong>. Hãy thử lại!`;
+             scoreProunciation(id, targetText); 
+        } else {
+             scoreProunciation(id, targetText);
         }
-    }, 200);
+    }, 500);
   } else {
     scoreProunciation(id, targetText);
   }
