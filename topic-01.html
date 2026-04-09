@@ -633,10 +633,17 @@ function speak(text, rate = 0.85) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  SPEECH RECOGNITION (BẢN CHỐNG XUNG ĐỘT MICRO TRÊN ĐIỆN THOẠI)
+//  SPEECH RECOGNITION (TỰ ĐỘNG PHÂN BIỆT PC & MOBILE)
 // ═══════════════════════════════════════════════════════
 const recState = {};
-function toggleRecord(id, targetText) { if (recState[id]?.active) stopRecord(id, targetText); else startRecord(id, targetText); }
+
+// Tự động kiểm tra xem người dùng đang xài điện thoại hay máy tính
+const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+function toggleRecord(id, targetText) { 
+    if (recState[id]?.active) stopRecord(id, targetText); 
+    else startRecord(id, targetText); 
+}
 
 async function startRecord(id, targetText) {
   const btn = document.getElementById(`${id}-recbtn`);
@@ -645,65 +652,65 @@ async function startRecord(id, targetText) {
   const pbk = document.getElementById(`${id}-playbk`);
 
   score.className = 'score-badge';
-  pbk.className = 'playback-btn';
+  
+  // Mặc định ẩn nút nghe lại (sẽ chỉ bật lên nếu là PC và thu âm thành công)
+  pbk.style.display = 'none'; 
+  pbk.classList.remove('show');
 
-  let stream;
-  try {
-    // Xin quyền Micro chung
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch(e) {
-    label.innerHTML = '<strong style="color:var(--coral)">Không thể mở micro.</strong> Xin cấp quyền cho trình duyệt.';
-    return;
-  }
-
-  // Khởi tạo state
-  recState[id] = { active: true, recognized: [], recognition: null, mediaRecorder: null, chunks: [], blob: null, error: null, stream: stream };
-
-  // 1. ƯU TIÊN SỐ 1: KHỞI TẠO NHẬN DIỆN GIỌNG NÓI TRƯỚC
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SR) {
-    const rec = new SR();
-    rec.lang = 'en-US';
-    rec.continuous = false; // Tắt continuous để chống treo trên iOS
-    rec.interimResults = true;
-
-    rec.onresult = e => {
-      let currentAlts = [];
-      for (let i = 0; i < e.results.length; i++) {
-        currentAlts.push(e.results[i][0].transcript.toLowerCase().trim());
-      }
-      if (currentAlts.length > 0) recState[id].recognized = currentAlts;
-    };
-
-    // Bắt lỗi để báo ra màn hình thay vì chết ngầm
-    rec.onerror = (e) => { 
-        console.warn("Lỗi nhận diện:", e.error);
-        recState[id].error = e.error; 
-    };
-
-    try {
-      rec.start();
-      recState[id].recognition = rec;
-    } catch(e) { console.error(e); }
-  } else {
-     recState[id].error = "no-support";
+  if (!SR) {
+      label.innerHTML = '<strong style="color:var(--coral)">Trình duyệt không hỗ trợ.</strong> Hãy mở bằng Google Chrome/Safari.';
+      return;
   }
 
-  // 2. ƯU TIÊN SỐ 2: KHỞI TẠO GHI ÂM SAU (Lùi lại 200ms để không giành giật Micro)
-  setTimeout(() => {
-     if(!recState[id].active) {
-         stream.getTracks().forEach(t => t.stop());
-         return;
-     }
-     const mr = new MediaRecorder(stream);
-     mr.ondataavailable = e => { if (e.data.size > 0) recState[id].chunks.push(e.data); };
-     mr.onstop = () => {
-        recState[id].blob = new Blob(recState[id].chunks, { type: mr.mimeType || 'audio/webm' });
-        pbk.className = 'playback-btn show';
-     };
-     mr.start();
-     recState[id].mediaRecorder = mr;
-  }, 200);
+  recState[id] = { active: true, recognized: [], recognition: null, mediaRecorder: null, chunks: [], blob: null, error: null, stream: null };
+
+  // NẾU LÀ MÁY TÍNH: Bật thêm chức năng ghi âm (MediaRecorder) để nghe lại
+  if (!isMobileDevice) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recState[id].stream = stream;
+        const mr = new MediaRecorder(stream);
+        mr.ondataavailable = e => { if (e.data.size > 0) recState[id].chunks.push(e.data); };
+        mr.onstop = () => {
+            recState[id].blob = new Blob(recState[id].chunks, { type: mr.mimeType || 'audio/webm' });
+            pbk.className = 'playback-btn show';
+            pbk.style.display = 'inline-flex'; // Hiện nút nghe lại trên giao diện PC
+        };
+        mr.start();
+        recState[id].mediaRecorder = mr;
+      } catch(e) {
+        console.warn("PC: Không bật được MediaRecorder", e);
+      }
+  }
+
+  // LUÔN BẬT CHẤM ĐIỂM AI CHO CẢ PC LẪN ĐIỆN THOẠI
+  const rec = new SR();
+  rec.lang = 'en-US';
+  rec.continuous = true; 
+  rec.interimResults = true; 
+
+  rec.onresult = e => {
+    let currentAlts = [];
+    for (let i = 0; i < e.results.length; i++) {
+      currentAlts.push(e.results[i][0].transcript.toLowerCase().trim());
+    }
+    if (currentAlts.length > 0) recState[id].recognized = currentAlts;
+  };
+
+  rec.onerror = (e) => { 
+      console.warn("Lỗi nhận diện API:", e.error);
+      recState[id].error = e.error; 
+  };
+
+  try {
+    rec.start();
+    recState[id].recognition = rec;
+  } catch(e) { 
+      console.error(e); 
+      label.innerHTML = '<strong style="color:var(--coral)">Lỗi Micro.</strong> Vui lòng tải lại trang.';
+      return;
+  }
 
   btn.classList.add('recording'); btn.textContent = '⏹';
   label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Bấm ⏹ để dừng';
@@ -716,8 +723,9 @@ function stopRecord(id, targetText) {
   const btn = document.getElementById(`${id}-recbtn`);
   const label = document.getElementById(`${id}-reclabel`);
 
-  // Dừng mọi thứ lại
   state.active = false;
+  
+  // Dừng luồng lưu file ghi âm (nếu đang chạy trên máy tính)
   if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
       state.mediaRecorder.stop();
   }
@@ -727,7 +735,7 @@ function stopRecord(id, targetText) {
 
   btn.classList.remove('recording');
   btn.textContent = '🎤';
-  label.innerHTML = '<strong>Đang phân tích giọng nói...</strong>';
+  label.innerHTML = '<strong>Đang chấm điểm...</strong>';
 
   if (state.recognition) {
     try { state.recognition.stop(); } catch(e) {}
@@ -735,19 +743,19 @@ function stopRecord(id, targetText) {
     let checkCount = 0;
     const waitInterval = setInterval(() => {
         checkCount++;
-        // Chờ kết quả trả về, hoặc nếu có lỗi, hoặc quá 2 giây (10 * 200ms) thì chốt
+        // Chờ kết quả tối đa 2 giây (10 lần x 200ms)
         if ((state.recognized && state.recognized.length > 0) || state.error || checkCount >= 10) {
             clearInterval(waitInterval);
             
-            // Xử lý báo lỗi chi tiết ra giao diện để Lani dễ bắt bệnh cho học viên
             if (state.error && state.recognized.length === 0) {
                  let errVi = state.error;
                  if(errVi === 'no-speech') errVi = 'Không nghe thấy tiếng';
-                 if(errVi === 'not-allowed') errVi = 'Chưa cấp quyền';
+                 if(errVi === 'not-allowed') errVi = 'Chưa cấp quyền Micro';
                  if(errVi === 'network') errVi = 'Lỗi mạng Internet';
-                 if(errVi === 'aborted') errVi = 'Bị trình duyệt ngắt';
-                 label.innerHTML = `<strong style="color:var(--coral)">Lỗi: ${errVi}</strong>. Hãy mở bằng Safari/Chrome.`;
-                 scoreProunciation(id, targetText); // Điểm sẽ là 0
+                 if(errVi === 'aborted') errVi = 'Bị ngắt đột ngột';
+                 
+                 label.innerHTML = `<strong style="color:var(--coral)">Lỗi: ${errVi}</strong>. Thử lại nhé!`;
+                 scoreProunciation(id, targetText); 
             } else {
                  scoreProunciation(id, targetText);
             }
