@@ -461,7 +461,7 @@ async function fetchProgress() {
     const doc = await db.collection("users").doc(currentUser.uid).get();
     if (doc.exists) {
       userProgress = doc.data();
-      const daysCompleted = userProgress.progress[0] || 0; // Topic 01 (index 0)
+      const daysCompleted = userProgress.progress[0] || 0;
       for(let i=0; i < daysCompleted; i++) {
         doneDays.push(i);
       }
@@ -474,63 +474,62 @@ async function fetchProgress() {
 }
  
 // ═══════════════════════════════════════════════════════
-//  DATA — TOÀN BỘ 10 NGÀY CỦA BẠN (Đã làm sạch sẽ chú thích)
+//  DATA — TOÀN BỘ 10 NGÀY CỦA BẠN (CẬP NHẬT MỚI)
 // ═══════════════════════════════════════════════════════
 const TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
  
 const DAYS = [
   // Day 1
   {
-    title: 'Đánh thức dịu dàng',
+    title: 'Đánh thức bé lười',
     dialogue: [
-      { speaker: 'Mom', en: 'Wakey wakey, baby!', vn: 'Dậy thôi cưng ơi!' },
-      { speaker: 'Child', en: 'Good morning, mommy!', vn: 'Chào buổi sáng mẹ ạ!' },
+      { speaker: 'Mom', en: "Wakey wakey, sleepyhead! It's time to get up.", vn: 'Dậy thôi, dậy thôi nào sâu ngủ ơi! Đến giờ thức dậy rồi.' },
+      { speaker: 'Child', en: 'Good morning, Mommy... Just five more minutes?', vn: 'Chào buổi sáng mẹ yêu... Cho con nằm thêm 5 phút nữa thôi được không ạ?' },
     ],
     vocab: [
-      { en: 'Wakey wakey', phonetic: '/ˈweɪki ˈweɪki/', speaker: 'Mom', meaning: 'Dậy thôi nào! (cách nói dễ thương để đánh thức trẻ)', synonym: 'Wake up!, Rise and shine!', synonymVn: 'Dậy đi!, Dậy thôi nào!', collocation: 'Wakey wakey, sleepyhead', collocationVn: 'Dậy thôi nào, đồ sâu ngủ', example: '"Wakey wakey, baby! Time to start a new day!"', exampleVn: '"Dậy thôi cưng! Đã đến giờ bắt đầu một ngày mới rồi!"' },
-      { en: 'Good morning', phonetic: '/ɡʊd ˈmɔːrnɪŋ/', speaker: 'Child', meaning: 'Chào buổi sáng', synonym: 'Morning!, Good day!', synonymVn: 'Chào buổi sáng!, Chào ngày mới!', collocation: 'Good morning, everyone', collocationVn: 'Chào buổi sáng mọi người', example: '"Good morning, mommy! I slept so well."', exampleVn: '"Chào buổi sáng mẹ! Con ngủ ngon lắm."' },
+      { en: 'Sleepyhead', phonetic: '/ˈsliːpihɛd/', speaker: 'Mom', meaning: 'Sâu ngủ, bé lười biếng (cách gọi yêu)', synonym: 'sleepy person', synonymVn: 'người ngái ngủ', collocation: 'Wake up, sleepyhead!', collocationVn: 'Dậy thôi, đồ sâu ngủ!', example: '"Come on, sleepyhead, breakfast is ready!"', exampleVn: '"Thôi nào đồ sâu ngủ, bữa sáng sẵn sàng rồi!"' },
+      { en: 'Five more minutes', phonetic: '/faɪv mɔːr ˈmɪnɪts/', speaker: 'Child', meaning: 'Thêm 5 phút nữa', synonym: 'a little longer', synonymVn: 'một chút nữa', collocation: 'just five more minutes', collocationVn: 'chỉ 5 phút nữa thôi', example: '"Can I sleep for just five more minutes?"', exampleVn: '"Con có thể ngủ thêm 5 phút nữa không?"' },
     ],
     quiz: [
-      { q: '"Wakey wakey" có nghĩa là gì?', opts: ['Dậy thôi nào!','Ngủ ngon nhé!','Ăn sáng thôi!','Đi tắm nào!'], ans: 0, exp: '"Wakey wakey" là cách nói dễ thương, dùng để đánh thức trẻ nhỏ dịu dàng.' },
-      { q: 'Con nói gì khi thức dậy?', opts: ['Good night!','Good morning, mommy!','Goodbye!','See you later!'], ans: 1, exp: '"Good morning" là lời chào buổi sáng. Con trả lời lại mẹ bằng "Good morning, mommy!"' },
-      { q: 'Từ nào đồng nghĩa với "Wakey wakey"?', opts: ['Good night','Sleep tight','Wake up!','Be quiet'], ans: 2, exp: '"Wake up!" có nghĩa tương đương – đều là "dậy thôi", nhưng "Wakey wakey" nghe dễ thương hơn!' },
+      { q: '"Sleepyhead" có nghĩa là gì?', opts: ['Cái đầu buồn ngủ','Đồ sâu ngủ (cách gọi yêu)','Đi ngủ thôi','Người thông minh'], ans: 1, exp: '"Sleepyhead" là cách nói dễ thương, nựng nịu để gọi ai đó đang ngái ngủ.' },
+      { q: 'Con xin phép mẹ điều gì?', opts: ['Đi chơi','Ăn sáng','Ngủ thêm 5 phút','Đọc truyện'], ans: 2, exp: 'Bé nói "Just five more minutes?" để xin nướng thêm một chút nữa.' },
+      { q: 'Cụm "It\'s time to..." mang nghĩa là gì?', opts: ['Đã đến giờ làm gì đó','Hết giờ rồi','Không có thời gian','Thời gian trôi nhanh'], ans: 0, exp: '"It\'s time to get up" = Đã đến giờ thức dậy rồi.' },
     ],
     dictation: [
-      { text: 'Wakey wakey', hint: '2 từ · cách đánh thức trẻ dễ thương', hintVn: 'Dậy thôi nào!' },
-      { text: 'Good morning', hint: '2 từ · lời chào buổi sáng', hintVn: 'Chào buổi sáng' },
-      { text: 'mommy', hint: '1 từ · cách con gọi mẹ', hintVn: 'mẹ ơi' },
+      { text: 'sleepyhead', hint: '1 từ · cách gọi người ngái ngủ dễ thương', hintVn: 'đồ sâu ngủ' },
+      { text: 'five more minutes', hint: '3 từ · xin thêm một khoảng thời gian ngắn', hintVn: '5 phút nữa' },
+      { text: 'time to get up', hint: '4 từ · thông báo giờ thức giấc', hintVn: 'đến giờ dậy rồi' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Wakey wakey, baby!', vn: 'Dậy thôi cưng ơi!' },
-      { speaker: 'Child', en: 'Good morning, mommy!', vn: 'Chào buổi sáng mẹ ạ!' },
+      { speaker: 'Mom', en: "Wakey wakey, sleepyhead! It's time to get up.", vn: 'Dậy thôi, dậy thôi nào sâu ngủ ơi! Đến giờ thức dậy rồi.' },
+      { speaker: 'Child', en: 'Good morning, Mommy... Just five more minutes?', vn: 'Chào buổi sáng mẹ yêu... Cho con nằm thêm 5 phút nữa thôi được không ạ?' },
     ],
   },
   
   // Day 2
   {
-    title: 'Chào đón ánh dương',
+    title: 'Nắng lên rồi',
     dialogue: [
-      { speaker: 'Mom', en: 'Good morning, sweetie. Rise and shine!', vn: 'Chào buổi sáng con yêu, dậy thôi nào!' },
-      { speaker: 'Child', en: "I'm awake!", vn: 'Con thức dậy rồi đây!' },
+      { speaker: 'Mom', en: "Come on, let's open the curtains. Look! The sun is shining.", vn: 'Thôi nào, để mẹ kéo rèm ra nhé. Nhìn kìa! Nắng đang tỏa sáng rực rỡ luôn.' },
+      { speaker: 'Child', en: "Okay, okay, I'm awake now.", vn: 'Dạ vâng, dạ vâng, con tỉnh ngủ rồi đây ạ.' },
     ],
     vocab: [
-      { en: 'Rise and shine', phonetic: '/raɪz ənd ʃaɪn/', speaker: 'Mom', meaning: 'Dậy thôi nào! (như mặt trời mọc và tỏa sáng)', synonym: 'Wake up!, Get up!', synonymVn: 'Dậy đi!, Thức dậy nào!', collocation: 'Rise and shine, sleepyhead', collocationVn: 'Dậy tỏa sáng nào, bé lười ngủ', example: '"Rise and shine, sweetie! The sun is already up!"', exampleVn: '"Dậy tỏa sáng nào con yêu! Mặt trời đã lên rồi kìa!"' },
-      { en: 'Sweetie', phonetic: '/ˈswiːti/', speaker: 'Mom', meaning: 'Con yêu, cưng (cách gọi thân mật)', synonym: 'Honey, darling, baby', synonymVn: 'Cưng, yêu, bé', collocation: 'Good morning sweetie', collocationVn: 'Chào buổi sáng con yêu', example: '"Good morning, sweetie. Did you sleep well?"', exampleVn: '"Chào buổi sáng con yêu. Con ngủ có ngon không?"' },
-      { en: "I'm awake", phonetic: '/aɪm əˈweɪk/', speaker: 'Child', meaning: 'Con thức dậy rồi / Con đang thức', synonym: "I'm up!, I'm awake now!", synonymVn: 'Con dậy rồi!, Con thức rồi đây!', collocation: "I'm wide awake", collocationVn: 'Con thức hoàn toàn rồi', example: '"I\'m awake, Mommy! I\'m ready for breakfast!"', exampleVn: '"Con thức rồi mẹ ơi! Con sẵn sàng ăn sáng rồi!"' },
+      { en: 'Curtains', phonetic: '/ˈkɜːrtənz/', speaker: 'Mom', meaning: 'Rèm cửa', synonym: 'drapes, blinds', synonymVn: 'màn cửa', collocation: 'open the curtains', collocationVn: 'kéo rèm ra / mở rèm', example: '"Let\'s open the curtains to let the light in."', exampleVn: '"Mở rèm ra để ánh sáng lùa vào nào."' },
+      { en: 'Shine', phonetic: '/ʃaɪn/', speaker: 'Mom', meaning: 'Tỏa sáng, chiếu sáng', synonym: 'glow, beam', synonymVn: 'phát sáng, chiếu rọi', collocation: 'the sun is shining', collocationVn: 'mặt trời đang tỏa sáng', example: '"The sun is shining brightly today."', exampleVn: '"Hôm nay nắng tỏa sáng rực rỡ."' },
     ],
     quiz: [
-      { q: '"Rise and shine" có nghĩa là?', opts: ['Ngủ thêm một chút','Dậy thôi nào!','Ăn tối thôi','Đi ngủ đi'], ans: 1, exp: '"Rise" = mọc/dậy, "shine" = tỏa sáng. Cụm từ này nghĩa là "dậy và tỏa sáng như mặt trời nhé!"' },
-      { q: '"Sweetie" dùng để gọi ai?', opts: ['Người lạ','Thú cưng','Con yêu / người thân thương','Giáo viên'], ans: 2, exp: '"Sweetie" là cách gọi thân mật, yêu thương, dùng với người thân, bạn bè hoặc con cái.' },
-      { q: 'Con bé nói "___" để báo mẹ biết mình đã thức.', opts: ["I'm sleeping","I'm hungry","I'm awake!","I'm tired"], ans: 2, exp: '"I\'m awake!" = Con đã thức rồi. Bé dùng câu này để báo mẹ biết mình nghe thấy.' },
+      { q: '"Open the curtains" có nghĩa là?', opts: ['Mở cửa sổ','Đóng cửa lại','Kéo / mở rèm cửa','Lau cửa kính'], ans: 2, exp: '"Curtains" là rèm cửa, mở rèm ra để đón ánh nắng.' },
+      { q: '"The sun is shining" miêu tả điều gì?', opts: ['Trời đang mưa','Mặt trời lặn','Nắng đang tỏa sáng','Trời nhiều mây'], ans: 2, exp: '"Shine" là tỏa sáng, chiếu sáng. Ý mẹ là trời đã sáng bảnh mắt rồi.' },
+      { q: 'Bé nói "I\'m awake now" để thông báo điều gì?', opts: ['Con đói rồi','Con tỉnh ngủ rồi','Con mệt lắm','Con đang mơ'], ans: 1, exp: '"Awake" là tỉnh thức, không còn ngủ nữa.' },
     ],
     dictation: [
-      { text: 'Rise and shine', hint: '3 từ · khuyến khích dậy dạng thơ mộng', hintVn: 'Dậy và tỏa sáng nào!' },
-      { text: 'sweetie', hint: '1 từ · cách gọi yêu thương', hintVn: 'Con yêu' },
-      { text: "I'm awake", hint: '2 từ · thông báo đã thức', hintVn: 'Con thức rồi' },
+      { text: 'curtains', hint: '1 từ · tấm vải che cửa sổ', hintVn: 'rèm cửa' },
+      { text: 'sun is shining', hint: '3 từ · miêu tả thời tiết buổi sáng', hintVn: 'nắng đang tỏa sáng' },
+      { text: "I'm awake", hint: '2 từ · thông báo trạng thái', hintVn: 'con tỉnh rồi' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Good morning, sweetie. Rise and shine!', vn: 'Chào buổi sáng con yêu, dậy thôi nào!' },
-      { speaker: 'Child', en: "I'm awake!", vn: 'Con thức dậy rồi đây!' },
+      { speaker: 'Mom', en: "Come on, let's open the curtains. Look! The sun is shining.", vn: 'Thôi nào, để mẹ kéo rèm ra nhé. Nhìn kìa! Nắng đang tỏa sáng rực rỡ luôn.' },
+      { speaker: 'Child', en: "Okay, okay, I'm awake now.", vn: 'Dạ vâng, dạ vâng, con tỉnh ngủ rồi đây ạ.' },
     ],
   },
   
@@ -538,217 +537,217 @@ const DAYS = [
   {
     title: 'Rửa mặt mát mẻ',
     dialogue: [
-      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.' },
-      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!' },
+      { speaker: 'Mom', en: 'Good! Now go wash your face and freshen up.', vn: 'Ngoan lắm! Giờ con đi rửa mặt cho tỉnh táo đi nào.' },
+      { speaker: 'Child', en: 'Done! The water is so refreshing.', vn: 'Xong rồi ạ! Nước mát sảng khoái quá mẹ ơi.' },
     ],
     vocab: [
-      { en: 'Wash your face', phonetic: '/wɒʃ jɔːr feɪs/', speaker: 'Mom', meaning: 'Rửa mặt', synonym: 'Clean your face', synonymVn: 'Làm sạch mặt', collocation: 'wash your face and hands', collocationVn: 'rửa mặt và tay', example: '"Go wash your face, then come have breakfast."', exampleVn: '"Đi rửa mặt rồi ra ăn sáng nhé con."' },
-      { en: 'Splash', phonetic: '/splæʃ/', speaker: 'Child', meaning: 'Táp / vẩy nước; tiếng nước bắn tung tóe', synonym: 'sprinkle, splatter', synonymVn: 'vảy nước, bắn tung tóe', collocation: 'splash water', collocationVn: 'vẩy nước', example: '"Splash, splash! The water is cold and refreshing!"', exampleVn: '"Táp táp! Nước lạnh và mát mẻ quá!"' },
+      { en: 'Freshen up', phonetic: '/ˈfrɛʃən ʌp/', speaker: 'Mom', meaning: 'Làm cho tỉnh táo, tươi tỉnh lại', synonym: 'revitalize', synonymVn: 'làm mới mình', collocation: 'wash and freshen up', collocationVn: 'rửa mặt và làm tỉnh táo', example: '"I need to freshen up before we leave."', exampleVn: '"Mình cần làm cho tỉnh táo một chút trước khi đi."' },
+      { en: 'Refreshing', phonetic: '/rɪˈfrɛʃɪŋ/', speaker: 'Child', meaning: 'Mát mẻ, sảng khoái', synonym: 'cooling, invigorating', synonymVn: 'làm mát, tràn đầy năng lượng', collocation: 'so refreshing', collocationVn: 'thật sảng khoái', example: '"This glass of water is so refreshing!"', exampleVn: '"Cốc nước này thật sảng khoái mát mẻ quá!"' },
     ],
     quiz: [
-      { q: '"Wash your face" nghĩa là?', opts: ['Chải tóc','Rửa mặt','Đánh răng','Tắm'], ans: 1, exp: '"Wash" = rửa, "face" = mặt. Đây là việc làm đầu tiên sau khi thức dậy.' },
-      { q: '"Splash" diễn tả điều gì?', opts: ['Tiếng cửa đóng','Tiếng nước bắn tung tóe','Tiếng còi xe','Tiếng cười'], ans: 1, exp: '"Splash" là âm thanh và hành động khi nước bắn, vẩy hoặc táp lên mặt.' },
-      { q: 'Mẹ dùng câu nào để nhắc con rửa mặt?', opts: ['Go brush your teeth','Go eat breakfast','Go wash your face','Go take a bath'], ans: 2, exp: '"Go wash your face" = Đi rửa mặt đi. "Go + verb" là cách ra lệnh nhẹ nhàng bằng tiếng Anh.' },
+      { q: '"Freshen up" dùng để khuyên ai đó làm gì?', opts: ['Đi ngủ tiếp','Làm cho bản thân tỉnh táo tươi mới','Đi thay quần áo','Đi ăn sáng'], ans: 1, exp: '"Freshen up" mang nghĩa rửa mặt, chải đầu... để bản thân thấy tươi tỉnh, gọn gàng.' },
+      { q: 'Cảm giác "refreshing" là gì?', opts: ['Nóng bức','Mệt mỏi','Sảng khoái, mát mẻ','Sợ hãi'], ans: 2, exp: 'Nước buổi sáng táp lên mặt mang lại cảm giác mát lạnh và sảng khoái (refreshing).' },
+      { q: 'Bé nói "Done!" khi nào?', opts: ['Khi chưa bắt đầu','Khi đang làm','Khi đã hoàn thành xong','Khi muốn bỏ cuộc'], ans: 2, exp: '"Done" nghĩa là "Xong rồi", bé báo cáo với mẹ là đã rửa mặt xong.' },
     ],
     dictation: [
-      { text: 'wash your face', hint: '3 từ · việc làm buổi sáng', hintVn: 'Rửa mặt' },
-      { text: 'Splash', hint: '1 từ · âm thanh nước bắn', hintVn: 'Táp nước!' },
+      { text: 'freshen up', hint: '2 từ · làm cho tươi tỉnh', hintVn: 'tỉnh táo lại' },
+      { text: 'refreshing', hint: '1 từ · cảm giác mát lạnh', hintVn: 'sảng khoái' },
+      { text: 'wash your face', hint: '3 từ · hành động làm sạch', hintVn: 'rửa mặt' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Go wash your face.', vn: 'Đi rửa mặt đi nào.' },
-      { speaker: 'Child', en: 'Splash, splash!', vn: 'Táp táp nước!' },
+      { speaker: 'Mom', en: 'Good! Now go wash your face and freshen up.', vn: 'Ngoan lắm! Giờ con đi rửa mặt cho tỉnh táo đi nào.' },
+      { speaker: 'Child', en: 'Done! The water is so refreshing.', vn: 'Xong rồi ạ! Nước mát sảng khoái quá mẹ ơi.' },
     ],
   },
   
   // Day 4
   {
-    title: 'Đánh răng sạch sẽ',
+    title: 'Miệng sạch thơm tho',
     dialogue: [
-      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.' },
-      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!' },
+      { speaker: 'Mom', en: "Don't forget to brush your teeth too.", vn: 'Đừng quên đánh răng nữa nhé con.' },
+      { speaker: 'Child', en: 'Brush, brush, brush! My mouth feels so clean!', vn: 'Chà, chà, chà! Miệng con sạch tinh luôn rồi này!' },
     ],
     vocab: [
-      { en: 'Brush your teeth', phonetic: '/brʌʃ jɔːr tiːθ/', speaker: 'Mom', meaning: 'Đánh răng', synonym: 'clean your teeth', synonymVn: 'làm sạch răng', collocation: "brush teeth twice a day", collocationVn: 'đánh răng hai lần mỗi ngày', example: '"Let\'s brush your teeth before bed, sweetheart."', exampleVn: '"Cùng đánh răng trước khi ngủ nhé con yêu."' },
-      { en: "Let's", phonetic: '/lɛts/', speaker: 'Mom', meaning: 'Cùng nhau... (đề xuất làm gì đó cùng nhau)', synonym: "Shall we", synonymVn: 'Mình cùng nhé', collocation: "Let's go", collocationVn: 'Cùng đi nào', example: '"Let\'s do it together! It\'s more fun that way."', exampleVn: '"Cùng làm cùng nhau nào! Vui hơn nhiều đấy."' },
+      { en: 'Forget', phonetic: '/fərˈɡɛt/', speaker: 'Mom', meaning: 'Quên', synonym: 'fail to remember', synonymVn: 'không nhớ', collocation: "don't forget to...", collocationVn: 'đừng quên làm...', example: '"Don\'t forget to pack your lunch!"', exampleVn: '"Đừng quên mang theo bữa trưa nhé!"' },
+      { en: 'Clean', phonetic: '/kliːn/', speaker: 'Child', meaning: 'Sạch sẽ', synonym: 'pure, spotless', synonymVn: 'trong trẻo, không tì vết', collocation: 'feels so clean', collocationVn: 'cảm thấy rất sạch', example: '"My hands are nice and clean now."', exampleVn: '"Tay con bây giờ sạch bong rồi."' },
     ],
     quiz: [
-      { q: '"Let\'s brush your teeth" nghĩa là?', opts: ['Con hãy tự đánh răng','Cùng đánh răng nào','Mẹ đánh răng cho con','Đừng đánh răng'], ans: 1, exp: '"Let\'s" = "Cùng nhau nào" – thể hiện mẹ muốn làm cùng con, tạo sự gắn kết.' },
-      { q: '"Teeth" là số nhiều của từ nào?', opts: ['Teeths','Tooth','Tooths','Teethes'], ans: 1, exp: '"Tooth" (một cái răng) → số nhiều bất quy tắc là "teeth". Không thêm "s"!' },
-      { q: 'Bé bắt chước âm thanh đánh răng bằng câu nào?', opts: ['Splash splash','Glug glug','Brush brush brush','Scrub scrub'], ans: 2, exp: '"Brush brush brush!" – bé vừa nói vừa làm động tác, giúp ghi nhớ từ qua hành động.' },
+      { q: '"Don\'t forget" có nghĩa là gì?', opts: ['Hãy nhớ kỹ','Đừng quên nhé','Không được làm','Làm ngay đi'], ans: 1, exp: '"Don\'t" (Đừng) + "Forget" (Quên) = Lời nhắc nhở nhẹ nhàng.' },
+      { q: 'Cảm giác của bé sau khi đánh răng là gì?', opts: ['Đau nhức','Ngọt ngào','Sạch sẽ tinh tươm','Khó chịu'], ans: 2, exp: 'Bé miêu tả miệng mình "feels so clean" - cảm giác cực kỳ sạch sẽ.' },
+      { q: '"Teeth" là số nhiều của từ nào?', opts: ['Teeths','Tooth','Tooths','Teethes'], ans: 1, exp: '"Tooth" (một cái răng) có dạng số nhiều bất quy tắc là "teeth".' },
     ],
     dictation: [
-      { text: "Let's brush", hint: '2 từ · mời gọi cùng làm', hintVn: 'Cùng... nào' },
-      { text: 'teeth', hint: '1 từ · số nhiều bất quy tắc của tooth', hintVn: 'Răng (nhiều chiếc)' },
-      { text: 'Brush brush brush', hint: '3 từ · âm thanh hành động', hintVn: 'Chà chà chà' },
+      { text: "Don't forget", hint: '2 từ · lời nhắc nhở', hintVn: 'đừng quên' },
+      { text: 'brush your teeth', hint: '3 từ · vệ sinh răng miệng', hintVn: 'đánh răng' },
+      { text: 'so clean', hint: '2 từ · tính từ miêu tả trạng thái', hintVn: 'rất sạch' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Let's brush your teeth.", vn: 'Cùng đánh răng nào.' },
-      { speaker: 'Child', en: 'Brush, brush, brush!', vn: 'Chà, chà, chà!' },
+      { speaker: 'Mom', en: "Don't forget to brush your teeth too.", vn: 'Đừng quên đánh răng nữa nhé con.' },
+      { speaker: 'Child', en: 'Brush, brush, brush! My mouth feels so clean!', vn: 'Chà, chà, chà! Miệng con sạch tinh luôn rồi này!' },
     ],
   },
   
   // Day 5
   {
-    title: 'Thanh lọc cơ thể',
+    title: 'Ly nước ấm bụng',
     dialogue: [
-      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.' },
-      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!' },
+      { speaker: 'Mom', en: 'Here, drink some warm water.', vn: 'Đây, con uống chút nước ấm đi.' },
+      { speaker: 'Child', en: 'Thanks, Mom. It warms my tummy.', vn: 'Con cảm ơn mẹ. Nước làm ấm bụng con quá.' },
     ],
     vocab: [
-      { en: 'Warm water', phonetic: '/wɔːrm ˈwɔːtər/', speaker: 'Mom', meaning: 'Nước ấm', synonym: 'hot water', synonymVn: 'nước nóng', collocation: 'drink warm water', collocationVn: 'uống nước ấm', example: '"Drinking warm water in the morning is good for your health."', exampleVn: '"Uống nước ấm mỗi sáng rất tốt cho sức khoẻ con nhé."' },
-      { en: 'Glug glug', phonetic: '/ɡlʌɡ ɡlʌɡ/', speaker: 'Child', meaning: 'Ừng ực (âm thanh khi uống nước)', synonym: 'gulp gulp', synonymVn: 'ực ực', collocation: 'glug glug down', collocationVn: 'tu một hơi', example: '"Glug, glug! This water tastes so good, Mom!"', exampleVn: '"Ừng ực! Nước ngon quá mẹ ơi!"' },
-      { en: 'Thank you', phonetic: '/θæŋk juː/', speaker: 'Child', meaning: 'Cảm ơn', synonym: 'Thanks', synonymVn: 'Cảm ơn nha', collocation: 'Thank you so much', collocationVn: 'Cảm ơn rất nhiều', example: '"Thank you, Mom! You always take such good care of me."', exampleVn: '"Cảm ơn mẹ! Mẹ lúc nào cũng chăm sóc con thật tốt."' },
+      { en: 'Warm', phonetic: '/wɔːrm/', speaker: 'Mom', meaning: 'Ấm, làm ấm', synonym: 'heat up slightly', synonymVn: 'tỏa nhiệt nhẹ', collocation: 'warm water', collocationVn: 'nước ấm', example: '"This soup will warm you up."', exampleVn: '"Bát súp này sẽ làm con ấm người lên."' },
+      { en: 'Tummy', phonetic: '/ˈtʌmi/', speaker: 'Child', meaning: 'Cái bụng (cách gọi dễ thương cho trẻ con)', synonym: 'stomach, belly', synonymVn: 'dạ dày, bụng', collocation: 'warms my tummy', collocationVn: 'làm ấm bụng con', example: '"My tummy is full after a big meal."', exampleVn: '"Bụng con no căng sau bữa ăn lớn rồi."' },
     ],
     quiz: [
-      { q: '"Warm water" nghĩa là?', opts: ['Nước lạnh','Nước ấm','Nước đá','Nước sôi'], ans: 1, exp: '"Warm" = ấm (không nóng, không lạnh). "Cold" = lạnh, "hot" = nóng, "iced" = có đá.' },
-      { q: '"Glug glug" diễn tả âm thanh gì?', opts: ['Tiếng nhai','Tiếng uống nước','Tiếng nấu ăn','Tiếng cười'], ans: 1, exp: '"Glug glug" là âm thanh khi nuốt nước – giúp bé nhớ từ qua âm thanh vui nhộn!' },
-      { q: 'Sau khi uống nước, bé nói gì?', opts: ['Good morning!','I\'m hungry!','Thank you, Mom!','Let\'s go!'], ans: 2, exp: '"Thank you, Mom!" – bé biết cảm ơn khi được mẹ chăm sóc, thể hiện phép lịch sự đẹp.' },
+      { q: '"Warm water" khác với "Cold water" như thế nào?', opts: ['Cùng nhiệt độ','Nước ấm >< Nước lạnh','Nước nóng sôi >< Nước đá','Không có gì khác'], ans: 1, exp: 'Warm là ấm (vừa phải, dễ chịu), trái ngược với Cold (lạnh).' },
+      { q: '"Tummy" là từ dễ thương dùng để chỉ bộ phận nào?', opts: ['Cái đầu','Bàn tay','Cái bụng','Đôi chân'], ans: 2, exp: '"Tummy" thường được trẻ con dùng để chỉ cái bụng (stomach/belly).' },
+      { q: 'Từ "warms" trong câu "It warms my tummy" đóng vai trò là loại từ gì?', opts: ['Danh từ','Động từ','Tính từ','Trạng từ'], ans: 1, exp: 'Ở đây "warms" là động từ (làm ấm), có thêm "s" vì chủ ngữ "It" (ngôi thứ 3 số ít).' },
     ],
     dictation: [
-      { text: 'warm water', hint: '2 từ · loại nước uống buổi sáng', hintVn: 'Nước ấm' },
-      { text: 'Glug glug', hint: '2 từ · âm thanh uống nước', hintVn: 'Ừng ực' },
-      { text: 'Thank you', hint: '2 từ · lời cảm ơn', hintVn: 'Cảm ơn' },
+      { text: 'drink some', hint: '2 từ · hành động uống một chút', hintVn: 'uống chút' },
+      { text: 'warm water', hint: '2 từ · thức uống buổi sáng', hintVn: 'nước ấm' },
+      { text: 'tummy', hint: '1 từ · bộ phận cơ thể dễ thương', hintVn: 'cái bụng' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Drink some warm water.', vn: 'Uống một chút nước ấm nhé con.' },
-      { speaker: 'Child', en: 'Glug, glug. Thank you, Mom!', vn: 'Ừng ực. Con cảm ơn mẹ!' },
+      { speaker: 'Mom', en: 'Here, drink some warm water.', vn: 'Đây, con uống chút nước ấm đi.' },
+      { speaker: 'Child', en: 'Thanks, Mom. It warms my tummy.', vn: 'Con cảm ơn mẹ. Nước làm ấm bụng con quá.' },
     ],
   },
   
   // Day 6
   {
-    title: 'Rèn luyện sự tĩnh lặng',
+    title: 'Phút giây tĩnh lặng',
     dialogue: [
-      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.' },
-      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.' },
+      { speaker: 'Mom', en: 'Come sit next to me for a minute. Let\'s sit quietly.', vn: 'Lại đây ngồi cạnh mẹ một lát. Hai mẹ con mình cùng ngồi tĩnh lặng nhé.' },
+      { speaker: 'Child', en: 'Like this? Should I close my eyes?', vn: 'Như thế này ạ? Con có nên nhắm mắt lại không mẹ?' },
     ],
     vocab: [
-      { en: 'Sit down quietly', phonetic: '/sɪt daʊn ˈkwaɪətli/', speaker: 'Mom', meaning: 'Ngồi xuống yên lặng', synonym: 'sit still', synonymVn: 'ngồi im', collocation: 'sit quietly', collocationVn: 'ngồi yên', example: '"Now sit down quietly and take a deep breath."', exampleVn: '"Bây giờ hãy ngồi yên và hít một hơi thật sâu nhé."' },
-      { en: 'Yes, Mommy', phonetic: '/jɛs ˈmɒmi/', speaker: 'Child', meaning: 'Vâng ạ, mẹ ơi', synonym: 'Yes Mom', synonymVn: 'Vâng mẹ', collocation: 'Yes Mommy', collocationVn: 'Vâng mẹ ơi', example: '"Yes, Mommy. I will sit quietly."', exampleVn: '"Vâng mẹ. Con sẽ ngồi yên ạ."' },
+      { en: 'Next to me', phonetic: '/nɛkst tu mi/', speaker: 'Mom', meaning: 'Cạnh mẹ, sát bên mẹ', synonym: 'beside me', synonymVn: 'bên cạnh mẹ', collocation: 'sit next to me', collocationVn: 'ngồi cạnh mẹ', example: '"Come and stand next to me."', exampleVn: '"Lại đây đứng sát bên mẹ nào."' },
+      { en: 'Close my eyes', phonetic: '/kloʊz maɪ aɪz/', speaker: 'Child', meaning: 'Nhắm mắt lại', synonym: 'shut eyes', synonymVn: 'khép mắt', collocation: 'close your eyes tightly', collocationVn: 'nhắm chặt mắt', example: '"Close your eyes and make a wish!"', exampleVn: '"Nhắm mắt lại và ước một điều đi nào!"' },
     ],
     quiz: [
-      { q: '"Quietly" có nghĩa là?', opts: ['Nhanh chóng','Im lặng / yên tĩnh','Vui vẻ','Mạnh mẽ'], ans: 1, exp: '"Quietly" = một cách yên tĩnh, không gây ồn ào. Trái nghĩa: "loudly" = ồn ào.' },
-      { q: 'Mẹ dùng câu nào để nhắc bé ngồi yên?', opts: ['Go wash your face','Now sit down quietly','Drink warm water','Rise and shine'], ans: 1, exp: '"Now sit down quietly" – "now" nhấn mạnh đây là thời điểm thực hiện ngay.' },
-      { q: 'Bé đáp lại mẹ bằng câu nào?', opts: ['No Mommy!','I\'m hungry!','Yes, Mommy.','Let\'s play!'], ans: 2, exp: '"Yes, Mommy." – ngắn gọn, lịch sự, thể hiện bé nghe lời và tôn trọng mẹ.' },
+      { q: '"Next to" có nghĩa là gì?', opts: ['Ở phía sau','Ở phía trước','Ở bên cạnh','Ở xa'], ans: 2, exp: '"Next to" dùng để chỉ vị trí ngay sát bên cạnh.' },
+      { q: '"Quietly" miêu tả cách làm việc gì đó như thế nào?', opts: ['Rất ồn ào','Rất nhanh','Trong yên lặng','Rất chậm'], ans: 2, exp: 'Đuôi -ly tạo thành trạng từ, "quietly" là một cách yên tĩnh, không phát ra tiếng động.' },
+      { q: 'Hành động ngược lại với "Close my eyes" là gì?', opts: ['Open my eyes','Wash my eyes','Rub my eyes','Blink'], ans: 0, exp: '"Open" (mở) là từ trái nghĩa với "Close" (đóng/nhắm).' },
     ],
     dictation: [
-      { text: 'sit down quietly', hint: '3 từ · hành động cần làm', hintVn: 'Ngồi xuống yên lặng' },
-      { text: 'Yes Mommy', hint: '2 từ · câu đáp lại của bé', hintVn: 'Vâng ạ mẹ ơi' },
+      { text: 'next to me', hint: '3 từ · vị trí kề bên', hintVn: 'cạnh mẹ' },
+      { text: 'sit quietly', hint: '2 từ · hành động giữ im lặng', hintVn: 'ngồi tĩnh lặng' },
+      { text: 'close my eyes', hint: '3 từ · hành động với đôi mắt', hintVn: 'nhắm mắt con' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Now, sit down quietly.', vn: 'Bây giờ, hãy ngồi xuống thật yên lặng nhé.' },
-      { speaker: 'Child', en: 'Yes, Mommy.', vn: 'Vâng ạ.' },
+      { speaker: 'Mom', en: 'Come sit next to me for a minute. Let\'s sit quietly.', vn: 'Lại đây ngồi cạnh mẹ một lát. Hai mẹ con mình cùng ngồi tĩnh lặng nhé.' },
+      { speaker: 'Child', en: 'Like this? Should I close my eyes?', vn: 'Như thế này ạ? Con có nên nhắm mắt lại không mẹ?' },
     ],
   },
   
   // Day 7
   {
-    title: 'Lắng nghe cơ thể',
+    title: 'Trò chơi hơi thở',
     dialogue: [
-      { speaker: 'Mom', en: 'Observe your natural breath.', vn: 'Hãy quan sát hơi thở tự nhiên của con nhé.' },
-      { speaker: 'Child', en: 'Like this?', vn: 'Như thế này phải không mẹ?' },
+      { speaker: 'Mom', en: 'Exactly. Close your eyes and observe your breath.', vn: 'Chính xác rồi. Con nhắm mắt lại và quan sát hơi thở của mình nhé.' },
+      { speaker: 'Child', en: 'Just observe it? Like a game?', vn: 'Chỉ quan sát thôi hả mẹ? Giống như một trò chơi ấy nhỉ?' },
     ],
     vocab: [
-      { en: 'Observe', phonetic: '/əbˈzɜːrv/', speaker: 'Mom', meaning: 'Quan sát, chú ý đến', synonym: 'watch, notice', synonymVn: 'nhìn, để ý', collocation: 'observe your breath', collocationVn: 'quan sát hơi thở', example: '"Observe your breath coming in and going out."', exampleVn: '"Hãy quan sát hơi thở đi vào và đi ra nhé."' },
-      { en: 'Natural breath', phonetic: '/ˈnætʃərəl brɛθ/', speaker: 'Mom', meaning: 'Hơi thở tự nhiên', synonym: 'normal breathing', synonymVn: 'thở bình thường', collocation: 'natural breath', collocationVn: 'hơi thở tự nhiên', example: '"Just observe your natural breath. Don\'t try to change it."', exampleVn: '"Chỉ cần quan sát hơi thở tự nhiên thôi. Đừng cố thay đổi nó nhé."' },
-      { en: 'Like this?', phonetic: '/laɪk ðɪs/', speaker: 'Child', meaning: 'Như thế này phải không? (hỏi xác nhận)', synonym: 'Is this right?', synonymVn: 'Đúng rồi không?', collocation: 'like this?', collocationVn: 'như thế này?', example: '"Like this, Mommy? Am I doing it right?"', exampleVn: '"Như thế này phải không mẹ? Con làm đúng chưa?"' },
+      { en: 'Exactly', phonetic: '/ɪɡˈzæktli/', speaker: 'Mom', meaning: 'Chính xác, đúng là như vậy', synonym: 'precisely, right', synonymVn: 'chính xác, chuẩn luôn', collocation: 'that is exactly it', collocationVn: 'chính xác là như vậy', example: '"Exactly! You did a great job."', exampleVn: '"Chính xác! Con làm rất tốt."' },
+      { en: 'Game', phonetic: '/ɡeɪm/', speaker: 'Child', meaning: 'Trò chơi', synonym: 'play, amusement', synonymVn: 'sự vui đùa, giải trí', collocation: 'like a game', collocationVn: 'giống như một trò chơi', example: '"Learning can be fun, just like a game."', exampleVn: '"Việc học cũng có thể rất vui, giống hệt một trò chơi vậy."' },
+      { en: 'Observe', phonetic: '/əbˈzɜːrv/', speaker: 'Mom', meaning: 'Quan sát, chú ý', synonym: 'watch carefully', synonymVn: 'nhìn kỹ', collocation: 'observe the breath', collocationVn: 'quan sát hơi thở', example: '"We observe the stars at night."', exampleVn: '"Chúng ta quan sát những vì sao vào ban đêm."' },
     ],
     quiz: [
-      { q: '"Observe" có nghĩa là?', opts: ['Bỏ qua','Quan sát / chú ý','Chạy nhảy','Ăn uống'], ans: 1, exp: '"Observe" = quan sát một cách chú ý. Khác với "look" (nhìn) – observe có chiều sâu hơn.' },
-      { q: '"Natural breath" nghĩa là?', opts: ['Hơi thở mạnh','Hơi thở nhanh','Hơi thở tự nhiên','Hơi thở chậm'], ans: 2, exp: '"Natural" = tự nhiên. Mẹ dạy bé thiền bằng cách quan sát hơi thở mà không can thiệp.' },
-      { q: 'Bé hỏi "Like this?" để làm gì?', opts: ['Phàn nàn','Xác nhận xem mình làm đúng chưa','Từ chối','Đùa giỡn'], ans: 1, exp: '"Like this?" = Như thế này phải không? Bé muốn mẹ xác nhận để biết mình đang làm đúng.' },
+      { q: '"Exactly" dùng để làm gì trong giao tiếp?', opts: ['Để từ chối','Để khẳng định đối phương nói đúng','Để hỏi lại','Để tỏ thái độ giận dữ'], ans: 1, exp: '"Exactly" là cách động viên, xác nhận rằng điều ai đó vừa làm hoặc nói là hoàn toàn chính xác.' },
+      { q: '"Observe" có nghĩa là gì?', opts: ['Nhắm mắt','Quan sát, để ý','Thở mạnh','Chơi đùa'], ans: 1, exp: '"Observe" mang tính chất quan sát có chủ đích và sự tập trung tĩnh lặng.' },
+      { q: 'Bé so sánh việc thiền/quan sát hơi thở với điều gì?', opts: ['Việc học','Đi ngủ','Một trò chơi (a game)','Một bài hát'], ans: 2, exp: 'Trẻ em thường tiếp thu tốt nhất khi coi mọi thứ "like a game" (như một trò chơi).' },
     ],
     dictation: [
-      { text: 'Observe', hint: '1 từ · động từ quan sát', hintVn: 'Quan sát' },
-      { text: 'natural breath', hint: '2 từ · hơi thở không cố ý', hintVn: 'Hơi thở tự nhiên' },
-      { text: 'Like this', hint: '2 từ · câu hỏi xác nhận', hintVn: 'Như thế này?' },
+      { text: 'Exactly', hint: '1 từ · sự đồng tình hoàn toàn', hintVn: 'Chính xác' },
+      { text: 'observe your breath', hint: '3 từ · sự chú tâm vào hơi thở', hintVn: 'quan sát hơi thở' },
+      { text: 'Like a game', hint: '3 từ · sự so sánh thú vị', hintVn: 'Giống như trò chơi' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Observe your natural breath.', vn: 'Hãy quan sát hơi thở tự nhiên của con nhé.' },
-      { speaker: 'Child', en: 'Like this?', vn: 'Như thế này phải không mẹ?' },
+      { speaker: 'Mom', en: 'Exactly. Close your eyes and observe your breath.', vn: 'Chính xác rồi. Con nhắm mắt lại và quan sát hơi thở của mình nhé.' },
+      { speaker: 'Child', en: 'Just observe it? Like a game?', vn: 'Chỉ quan sát thôi hả mẹ? Giống như một trò chơi ấy nhỉ?' },
     ],
   },
   
   // Day 8
   {
-    title: 'Quan sát hơi thở',
+    title: 'Hơi thở tự nhiên',
     dialogue: [
-      { speaker: 'Mom', en: 'Breathe in... and breathe out...', vn: 'Hít vào... và thở ra...' },
-      { speaker: 'Child', en: 'In... and out...', vn: 'Hít vào... và thở ra...' },
+      { speaker: 'Mom', en: "Yes! Feel your natural breath. You don't need to control it.", vn: 'Đúng rồi! Cảm nhận hơi thở tự nhiên của con. Con không cần phải điều khiển nó đâu.' },
+      { speaker: 'Child', en: 'I feel it going in and out.', vn: 'Con cảm thấy hơi thở đang đi vào và đi ra rồi ạ.' },
     ],
     vocab: [
-      { en: 'Breathe in', phonetic: '/briːð ɪn/', speaker: 'Mom', meaning: 'Hít vào', synonym: 'inhale', synonymVn: 'hít vào', collocation: 'breathe in slowly', collocationVn: 'hít vào chậm', example: '"Breathe in slowly through your nose..."', exampleVn: '"Hít vào chậm qua mũi..."' },
-      { en: 'Breathe out', phonetic: '/briːð aʊt/', speaker: 'Mom', meaning: 'Thở ra', synonym: 'exhale', synonymVn: 'thở ra', collocation: 'breathe out slowly', collocationVn: 'thở ra chậm', example: '"Breathe out gently and feel your body relax."', exampleVn: '"Thở ra thật nhẹ nhàng và cảm nhận cơ thể thư giãn nhé."' },
+      { en: 'Natural', phonetic: '/ˈnætʃərəl/', speaker: 'Mom', meaning: 'Tự nhiên, vốn có', synonym: 'normal, unforced', synonymVn: 'bình thường, không gượng ép', collocation: 'natural breath', collocationVn: 'hơi thở tự nhiên', example: '"Let your breathing be slow and natural."', exampleVn: '"Hãy để nhịp thở của con thật chậm rãi và tự nhiên."' },
+      { en: 'Control', phonetic: '/kənˈtroʊl/', speaker: 'Mom', meaning: 'Điều khiển, kiểm soát', synonym: 'manage, direct', synonymVn: 'quản lý, chỉ đạo', collocation: "don't need to control", collocationVn: 'không cần kiểm soát', example: '"You can\'t control the weather, but you can control your attitude."', exampleVn: '"Bạn không thể kiểm soát thời tiết, nhưng bạn có thể kiểm soát thái độ của mình."' },
     ],
     quiz: [
-      { q: '"Breathe in" có nghĩa là?', opts: ['Thở ra','Nín thở','Hít vào','Thở mạnh'], ans: 2, exp: '"Breathe in" = hít vào. "In" chỉ hướng vào trong. Trái nghĩa: "breathe out" = thở ra.' },
-      { q: 'Từ đồng nghĩa với "breathe in" là?', opts: ['Exhale','Inhale','Sigh','Yawn'], ans: 1, exp: '"Inhale" = hít vào. "Exhale" = thở ra. Đây là từ vựng y học/khoa học.' },
-      { q: 'Bé lặp lại theo mẹ câu nào?', opts: ['Yes Mommy','Like this?','In... and out...','Thank you Mom'], ans: 2, exp: '"In... and out..." – bé lặp lại ngắn gọn, phản chiếu lời mẹ, rất hay dùng trong thiền.' },
+      { q: 'Cụm từ "natural breath" nghĩa là gì?', opts: ['Hơi thở dồn dập','Hơi thở nhân tạo','Hơi thở tự nhiên không gượng ép','Hơi thở nín lặng'], ans: 2, exp: 'Trong Vipassana, ta chỉ quan sát sự thật như nó vốn là (tự nhiên), không can thiệp.' },
+      { q: '"Control" có nghĩa là gì?', opts: ['Nhìn lướt qua','Thả lỏng','Điều khiển, kiểm soát','Bỏ chạy'], ans: 2, exp: 'Mẹ dặn bé không cần "control" - tức là không cần cố tình thở sâu hay thở ngắn, cứ để tự nhiên.' },
+      { q: 'Bé cảm nhận hơi thở như thế nào?', opts: ['Dừng lại','Đi vào và đi ra (in and out)','Bay lên cao','Rất lạnh'], ans: 1, exp: '"Going in and out" là nhịp hít vào - thở ra cơ bản nhất.' },
     ],
     dictation: [
-      { text: 'Breathe in', hint: '2 từ · hít không khí vào', hintVn: 'Hít vào' },
-      { text: 'breathe out', hint: '2 từ · đẩy không khí ra', hintVn: 'Thở ra' },
-      { text: 'In and out', hint: '3 từ · chu kỳ hít thở', hintVn: 'Vào và ra' },
+      { text: 'natural breath', hint: '2 từ · hơi thở bình thường', hintVn: 'hơi thở tự nhiên' },
+      { text: 'control it', hint: '2 từ · chi phối điều gì đó', hintVn: 'điều khiển nó' },
+      { text: 'in and out', hint: '3 từ · hướng đi của luồng khí', hintVn: 'vào và ra' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Breathe in... and breathe out...', vn: 'Hít vào... và thở ra...' },
-      { speaker: 'Child', en: 'In... and out...', vn: 'Hít vào... và thở ra...' },
+      { speaker: 'Mom', en: "Yes! Feel your natural breath. You don't need to control it.", vn: 'Đúng rồi! Cảm nhận hơi thở tự nhiên của con. Con không cần phải điều khiển nó đâu.' },
+      { speaker: 'Child', en: 'I feel it going in and out.', vn: 'Con cảm thấy hơi thở đang đi vào và đi ra rồi ạ.' },
     ],
   },
   
   // Day 9
   {
-    title: 'Khởi động tinh thần',
+    title: 'Cảm giác bình yên',
     dialogue: [
-      { speaker: 'Mom', en: 'Are you ready to start a new day?', vn: 'Con đã sẵn sàng bắt đầu một ngày mới chưa?' },
-      { speaker: 'Child', en: "Yes, I'm ready!", vn: 'Vâng, con sẵn sàng rồi!' },
+      { speaker: 'Mom', en: 'Just observe it. How do you feel?', vn: 'Cứ quan sát hơi thở thôi. Con cảm thấy thế nào?' },
+      { speaker: 'Child', en: 'I feel so peaceful, Mommy.', vn: 'Con cảm thấy thật bình yên, mẹ ạ.' },
     ],
     vocab: [
-      { en: 'Are you ready?', phonetic: '/ɑːr juː ˈrɛdi/', speaker: 'Mom', meaning: 'Con đã sẵn sàng chưa?', synonym: "Are you set?", synonymVn: 'Con chuẩn bị xong chưa?', collocation: "Are you ready to go?", collocationVn: 'Con sẵn sàng đi chưa?', example: '"Are you ready to start a new day, my love?"', exampleVn: '"Con đã sẵn sàng bắt đầu ngày mới chưa, con yêu của mẹ?"' },
-      { en: "I'm ready!", phonetic: '/aɪm ˈrɛdi/', speaker: 'Child', meaning: 'Con sẵn sàng rồi!', synonym: "I'm all set!", synonymVn: 'Con chuẩn bị xong rồi!', collocation: "I'm ready to go", collocationVn: 'Con sẵn sàng đi rồi', example: '"Yes, I\'m ready! Let\'s have a great day!"', exampleVn: '"Vâng con sẵn sàng rồi! Cùng có một ngày thật tuyệt nhé!"' },
-      { en: 'New day', phonetic: '/njuː deɪ/', speaker: 'Mom', meaning: 'Ngày mới', synonym: 'fresh day', synonymVn: 'ngày tươi mới', collocation: 'start a new day', collocationVn: 'bắt đầu ngày mới', example: '"Every morning brings a beautiful new day full of possibilities."', exampleVn: '"Mỗi buổi sáng mang đến một ngày mới tươi đẹp đầy cơ hội."' },
+      { en: 'Feel', phonetic: '/fiːl/', speaker: 'Mom', meaning: 'Cảm thấy (về thể chất hoặc tinh thần)', synonym: 'experience, sense', synonymVn: 'trải nghiệm, cảm nhận', collocation: 'How do you feel?', collocationVn: 'Con cảm thấy thế nào?', example: '"I feel very happy today."', exampleVn: '"Hôm nay con cảm thấy rất vui."' },
+      { en: 'Peaceful', phonetic: '/ˈpiːsfʊl/', speaker: 'Child', meaning: 'Bình yên, thanh thản', synonym: 'calm, quiet', synonymVn: 'bình tĩnh, yên tĩnh', collocation: 'feel so peaceful', collocationVn: 'cảm thấy thật bình yên', example: '"The garden is a very peaceful place."', exampleVn: '"Khu vườn là một nơi rất thanh bình."' },
     ],
     quiz: [
-      { q: '"Are you ready?" dùng để hỏi điều gì?', opts: ['Hỏi tên','Hỏi tuổi','Hỏi xem đã sẵn sàng chưa','Hỏi địa chỉ'], ans: 2, exp: '"Are you ready?" = Con/Bạn đã sẵn sàng chưa? Câu hỏi Yes/No thường dùng trước khi bắt đầu việc gì đó.' },
-      { q: 'Bé trả lời "Yes, I\'m ready!" nghĩa là?', opts: ['Con chưa sẵn sàng','Con sẵn sàng rồi!','Con muốn ngủ thêm','Con đói rồi'], ans: 1, exp: '"Yes, I\'m ready!" = Vâng, con sẵn sàng rồi! Câu trả lời khẳng định tích cực.' },
-      { q: '"New day" có nghĩa là?', opts: ['Ngày hôm qua','Ngày cũ','Ngày mới','Ngày nghỉ'], ans: 2, exp: '"New" = mới, "day" = ngày. "New day" gợi lên sự tươi mới, tích cực khi bắt đầu mỗi sáng.' },
+      { q: 'Câu hỏi "How do you feel?" dùng để hỏi về điều gì?', opts: ['Bạn tên là gì?','Bạn bao nhiêu tuổi?','Bạn cảm thấy thế nào?','Bạn đang đi đâu?'], ans: 2, exp: 'Đây là câu hỏi thường dùng để hỏi thăm cảm xúc hoặc tình trạng sức khỏe.' },
+      { q: '"Peaceful" thuộc từ loại nào?', opts: ['Danh từ (Noun)','Tính từ (Adjective)','Động từ (Verb)','Giới từ (Preposition)'], ans: 1, exp: 'Đuôi -ful thường tạo thành tính từ miêu tả tính chất (bình yên, đầy sự thanh thản).' },
+      { q: 'Từ đồng nghĩa với "peaceful" có thể là?', opts: ['Noisy','Angry','Calm','Busy'], ans: 2, exp: '"Calm" (điềm tĩnh, tĩnh lặng) có nghĩa tương đương với "Peaceful".' },
     ],
     dictation: [
-      { text: 'Are you ready', hint: '3 từ · câu hỏi về sự sẵn sàng', hintVn: 'Con đã sẵn sàng chưa?' },
-      { text: "I'm ready", hint: '2 từ · câu trả lời khẳng định', hintVn: 'Con sẵn sàng rồi' },
-      { text: 'new day', hint: '2 từ · ngày bắt đầu', hintVn: 'Ngày mới' },
+      { text: 'Just observe', hint: '2 từ · chỉ việc theo dõi', hintVn: 'Cứ quan sát' },
+      { text: 'How do you feel', hint: '4 từ · câu hỏi về cảm xúc', hintVn: 'con cảm thấy thế nào' },
+      { text: 'peaceful', hint: '1 từ · trạng thái tĩnh tại', hintVn: 'bình yên' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Are you ready to start a new day?', vn: 'Con đã sẵn sàng bắt đầu một ngày mới chưa?' },
-      { speaker: 'Child', en: "Yes, I'm ready!", vn: 'Vâng, con sẵn sàng rồi!' },
+      { speaker: 'Mom', en: 'Just observe it. How do you feel?', vn: 'Cứ quan sát hơi thở thôi. Con cảm thấy thế nào?' },
+      { speaker: 'Child', en: 'I feel so peaceful, Mommy.', vn: 'Con cảm thấy thật bình yên, mẹ ạ.' },
     ],
   },
   
   // Day 10
   {
-    title: 'Khẳng định tích cực',
+    title: 'Tự chọn quần áo',
     dialogue: [
-      { speaker: 'Mom', en: 'Today is a happy day!', vn: 'Hôm nay là một ngày vui vẻ!' },
-      { speaker: 'Child', en: 'A very happy day!', vn: 'Một ngày rất vui vẻ!' },
+      { speaker: 'Mom', en: 'Wonderful! Now, let\'s get changed out of those pajamas.', vn: 'Tuyệt vời quá! Giờ thì mình thay bộ đồ ngủ này ra thôi nào.' },
+      { speaker: 'Child', en: 'Can I pick my clothes today? Let\'s go to the closet!', vn: 'Hôm nay con tự chọn quần áo được không mẹ? Mình cùng ra tủ đồ đi!' },
     ],
     vocab: [
-      { en: 'Happy day', phonetic: '/ˈhæpi deɪ/', speaker: 'Mom', meaning: 'Ngày vui vẻ / ngày hạnh phúc', synonym: 'joyful day', synonymVn: 'ngày đầy niềm vui', collocation: 'happy day', collocationVn: 'ngày vui vẻ', example: '"Today is a happy day because we are together!"', exampleVn: '"Hôm nay là một ngày vui vì chúng ta bên nhau!"' },
-      { en: 'Very', phonetic: '/ˈvɛri/', speaker: 'Child', meaning: 'Rất, vô cùng (nhấn mạnh)', synonym: 'so, really', synonymVn: 'thật sự, thực sự', collocation: 'very happy', collocationVn: 'rất vui', example: '"A very happy day! I love spending time with you, Mom."', exampleVn: '"Một ngày rất vui! Con thích ở bên mẹ lắm."' },
-      { en: 'Today', phonetic: '/təˈdeɪ/', speaker: 'Mom', meaning: 'Hôm nay', synonym: 'this day', synonymVn: 'ngày hôm nay', collocation: 'today is', collocationVn: 'hôm nay là', example: '"Today is going to be a wonderful day. I just know it!"', exampleVn: '"Hôm nay sẽ là một ngày tuyệt vời. Mẹ biết chắc mà!"' },
+      { en: 'Pajamas', phonetic: '/pəˈdʒɑːməz/', speaker: 'Mom', meaning: 'Đồ ngủ (pijama)', synonym: 'sleepwear', synonymVn: 'đồ mặc ngủ', collocation: 'changed out of pajamas', collocationVn: 'thay đồ ngủ ra', example: '"Take off your pajamas and put on your school uniform."', exampleVn: '"Cởi đồ ngủ ra và mặc đồng phục đi học vào nào."' },
+      { en: 'Pick', phonetic: '/pɪk/', speaker: 'Child', meaning: 'Lựa chọn, nhặt', synonym: 'choose, select', synonymVn: 'chọn lựa', collocation: 'pick my clothes', collocationVn: 'chọn quần áo của con', example: '"Can you pick a color for the wall?"', exampleVn: '"Bạn có thể chọn một màu cho bức tường được không?"' },
+      { en: 'Closet', phonetic: '/ˈklɒzɪt/', speaker: 'Child', meaning: 'Tủ quần áo (tiếng Anh-Mỹ)', synonym: 'wardrobe', synonymVn: 'tủ đồ', collocation: 'go to the closet', collocationVn: 'đi tới tủ quần áo', example: '"Hang your coat in the closet, please."', exampleVn: '"Làm ơn treo áo khoác của bạn vào trong tủ nhé."' },
     ],
     quiz: [
-      { q: '"Happy" có nghĩa là?', opts: ['Buồn','Tức giận','Vui vẻ / hạnh phúc','Mệt mỏi'], ans: 2, exp: '"Happy" = vui vẻ, hạnh phúc. Trái nghĩa: "sad" = buồn, "angry" = tức giận.' },
-      { q: 'Bé dùng từ nào để nhấn mạnh "rất"?', opts: ['So','Really','Very','Extremely'], ans: 2, exp: '"Very" = rất. "A very happy day!" – bé lặp lại ý mẹ và thêm "very" để nhấn mạnh sự vui vẻ.' },
-      { q: '"Today" nghĩa là?', opts: ['Hôm qua','Ngày mai','Hôm nay','Mỗi ngày'], ans: 2, exp: '"Today" = hôm nay. "Yesterday" = hôm qua, "tomorrow" = ngày mai.' },
+      { q: '"Pajamas" là loại trang phục dùng để làm gì?', opts: ['Đi tiệc','Đi bơi','Đi ngủ','Đi học'], ans: 2, exp: '"Pajamas" (hay pyjamas ở Anh) là bộ đồ mặc ở nhà để đi ngủ cho thoải mái.' },
+      { q: '"Pick" trong câu "pick my clothes" mang nghĩa là gì?', opts: ['Ném đi','Lựa chọn','Cất vào','Xé rách'], ans: 1, exp: 'Ở đây "pick" đồng nghĩa với "choose" - tự tay lựa chọn đồ mình thích.' },
+      { q: '"Closet" và "Wardrobe" đều có nghĩa là gì?', opts: ['Giường ngủ','Bàn học','Tủ lạnh','Tủ quần áo'], ans: 3, exp: 'Cả hai từ đều chỉ chiếc tủ để treo và cất giữ quần áo.' },
     ],
     dictation: [
-      { text: 'Today', hint: '1 từ · thời gian hiện tại', hintVn: 'Hôm nay' },
-      { text: 'happy day', hint: '2 từ · ngày tràn đầy niềm vui', hintVn: 'Ngày vui vẻ' },
-      { text: 'A very happy day', hint: '4 từ · câu khẳng định của bé', hintVn: 'Một ngày rất vui vẻ' },
+      { text: 'pajamas', hint: '1 từ · trang phục mặc ban đêm', hintVn: 'đồ ngủ' },
+      { text: 'pick my clothes', hint: '3 từ · hành động tự ra quyết định trang phục', hintVn: 'chọn quần áo' },
+      { text: 'closet', hint: '1 từ · nơi cất giữ áo quần', hintVn: 'tủ đồ' },
     ],
     shadowing: [
-      { speaker: 'Mom', en: 'Today is a happy day!', vn: 'Hôm nay là một ngày vui vẻ!' },
-      { speaker: 'Child', en: 'A very happy day!', vn: 'Một ngày rất vui vẻ!' },
+      { speaker: 'Mom', en: 'Wonderful! Now, let\'s get changed out of those pajamas.', vn: 'Tuyệt vời quá! Giờ thì mình thay bộ đồ ngủ này ra thôi nào.' },
+      { speaker: 'Child', en: 'Can I pick my clothes today? Let\'s go to the closet!', vn: 'Hôm nay con tự chọn quần áo được không mẹ? Mình cùng ra tủ đồ đi!' },
     ],
   },
 ];
@@ -756,24 +755,22 @@ const DAYS = [
 // ═══════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════
-let currentDay = 0; // 0-indexed
+let currentDay = 0;
 let fcIdx = {}, fcFlipped = {};
-let quizState = {}; // per day
-let dictState = {}; // per day
+let quizState = {};
+let dictState = {};
  
 // ═══════════════════════════════════════════════════════
 //  DAYS NAV & FIRESTORE SYNC
 // ═══════════════════════════════════════════════════════
  
 async function finishDay(i, btnElement) {
-  // Ẩn nút hoàn thành
   if(btnElement) btnElement.style.display = 'none';
  
   if (!doneDays.includes(i)) {
     doneDays.push(i);
   }
   
-  // Hiện banner
   document.getElementById(`done-${i}`).classList.add('show');
   renderNav();
   document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
@@ -783,37 +780,30 @@ async function finishDay(i, btnElement) {
   const currentGlobalDay = i + 1; 
   const savedProgress = userProgress.progress[0] || 0;
  
-  // 1. Lưu tiến độ nếu là bài mới
   if (currentGlobalDay > savedProgress) {
     userProgress.progress[0] = currentGlobalDay;
   }
  
-  // 2. LOGIC TÍNH STREAK CHUẨN XÁC
   const today = new Date();
-  today.setHours(0,0,0,0); // Đưa về 00:00:00 của ngày hôm nay
+  today.setHours(0,0,0,0);
   const todayTime = today.getTime();
   const lastActiveTime = userProgress.lastActiveTime || 0;
-  const oneDay = 24 * 60 * 60 * 1000; // 1 ngày tính bằng miligiây
+  const oneDay = 24 * 60 * 60 * 1000;
  
   if (lastActiveTime === 0) {
-    // Lần đầu tiên học
     userProgress.streak = 1;
     userProgress.lastActiveTime = todayTime;
   } else {
     const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
     if (diffDays === 1) {
-      // Học ngày tiếp theo liền kề
       userProgress.streak = (userProgress.streak || 0) + 1;
       userProgress.lastActiveTime = todayTime;
     } else if (diffDays > 1) {
-      // Bỏ lỡ hơn 1 ngày -> Mất streak, đếm lại từ 1
       userProgress.streak = 1; 
       userProgress.lastActiveTime = todayTime;
     }
-    // Nếu diffDays === 0 (Học lại lần 2 trong cùng 1 ngày) thì không cộng thêm
   }
  
-  // Ghi lên Firebase
   await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
 }
  
