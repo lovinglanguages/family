@@ -407,18 +407,35 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
+// Khởi tạo các biến rỗng thay cho dữ liệu tĩnh khổng lồ trước đây
+let TOPIC = {};
+let DAYS = [];
+
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     window.location.href = 'lani-be-a-gift.html';
   } else {
     currentUser = user;
-    await fetchProgress();
+    await fetchProgress(); // Hàm này bây giờ sẽ tải cả bài học lẫn tiến độ
     document.getElementById('loading-overlay').style.display = 'none';
   }
 });
 
 async function fetchProgress() {
   try {
+    // 1. Tải toàn bộ dữ liệu Topic 02 từ Firestore về
+    const topicDoc = await db.collection("topics").doc("topic02").get();
+    if (topicDoc.exists) {
+      const data = topicDoc.data();
+      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
+      DAYS = data.days;
+    } else {
+      console.error("Không tìm thấy dữ liệu Topic 02 trên Firebase!");
+      document.getElementById('loading-overlay').innerHTML = '<p style="color:var(--coral);font-family:\'DM Sans\';">Lỗi: Không tìm thấy nội dung bài học. Vui lòng kiểm tra lại Firebase.</p>';
+      return; // Dừng lại nếu không có bài học
+    }
+
+    // 2. Tải tiến độ học tập của người dùng
     const doc = await db.collection("users").doc(currentUser.uid).get();
     if (doc.exists) {
       userProgress = doc.data();
@@ -428,283 +445,14 @@ async function fetchProgress() {
         doneDays.push(i);
       }
     }
+
+    // 3. Tiến hành vẽ giao diện (Render)
     renderPanels();
     renderNav();
   } catch (error) {
     console.error("Lỗi tải tiến độ:", error);
   }
 }
-
-// ═══════════════════════════════════════════════════════
-//  DATA — TOPIC 02: GETTING DRESSED
-// ═══════════════════════════════════════════════════════
-const TOPIC = { num: '02', name: 'Getting Dressed', startDay: 1 };
-
-const DAYS = [
-  // Day 1
-  {
-    title: 'Bắt đầu thay đồ',
-    dialogue: [
-      { speaker: 'Mom', en: "It's time to get dressed!", vn: 'Đến lúc thay quần áo rồi!' },
-      { speaker: 'Child', en: 'What should I wear?', vn: 'Con nên mặc gì đây ạ?' },
-    ],
-    vocab: [
-      { en: 'Get dressed', phonetic: '/ɡet drest/', speaker: 'Mom', meaning: 'Thay quần áo, mặc quần áo', synonym: 'Put clothes on', synonymVn: 'Mặc đồ vào', collocation: "It's time to get dressed", collocationVn: 'Đã đến lúc thay đồ', example: '"Hurry up and get dressed for school!"', exampleVn: '"Nhanh lên và thay đồ đi học nào!"' },
-      { en: 'Wear', phonetic: '/wer/', speaker: 'Child', meaning: 'Mặc, mang, đội', synonym: 'Have on', synonymVn: 'Đang mặc trên người', collocation: 'What to wear', collocationVn: 'Mặc gì đây', example: '"What should I wear today? The blue or the red one?"', exampleVn: '"Hôm nay con nên mặc gì nhỉ? Cái màu xanh hay màu đỏ?"' },
-    ],
-    quiz: [
-      { q: '"Get dressed" có nghĩa là gì?', opts: ['Đi ngủ','Thay/Mặc quần áo','Ăn sáng','Đánh răng'], ans: 1, exp: '"Get dressed" nghĩa là hành động mặc đồ hoặc thay quần áo để chuẩn bị ra ngoài.' },
-      { q: 'Khi muốn hỏi "Con nên mặc gì?", bé dùng mẫu câu nào?', opts: ['What is this?','Where are my clothes?','What should I wear?','Can I sleep?'], ans: 2, exp: '"What should I wear?" là một câu hỏi rất hữu ích khi con cần mẹ tư vấn trang phục.' },
-    ],
-    dictation: [
-      { text: 'get dressed', hint: '2 từ · hành động mặc quần áo', hintVn: 'Thay đồ' },
-      { text: 'wear', hint: '1 từ · mặc/đội/mang', hintVn: 'Mặc' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "It's time to get dressed!", vn: 'Đến lúc thay quần áo rồi!' },
-      { speaker: 'Child', en: 'What should I wear?', vn: 'Con nên mặc gì đây ạ?' },
-    ],
-  },
-
-  // Day 2
-  {
-    title: 'Lựa chọn quần áo',
-    dialogue: [
-      { speaker: 'Mom', en: 'Pick a shirt, sweetie.', vn: 'Chọn một chiếc áo đi con yêu.' },
-      { speaker: 'Child', en: 'This yellow one!', vn: 'Chiếc màu vàng này ạ!' },
-    ],
-    vocab: [
-      { en: 'Pick', phonetic: '/pɪk/', speaker: 'Mom', meaning: 'Chọn lựa', synonym: 'Choose, select', synonymVn: 'Chọn, lựa', collocation: 'Pick a shirt', collocationVn: 'Chọn một chiếc áo', example: '"Pick the toy you want to play with."', exampleVn: '"Con hãy chọn món đồ chơi con muốn chơi đi."' },
-      { en: 'Shirt', phonetic: '/ʃɜːrt/', speaker: 'Mom', meaning: 'Áo sơ mi, áo', synonym: 'T-shirt, top', synonymVn: 'Áo thun, phần áo trên', collocation: 'A clean shirt', collocationVn: 'Một chiếc áo sạch', example: '"Put on your blue shirt."', exampleVn: '"Mặc chiếc áo màu xanh của con vào nhé."' },
-      { en: 'Yellow', phonetic: '/ˈjeləʊ/', speaker: 'Child', meaning: 'Màu vàng', synonym: '', synonymVn: '', collocation: 'Yellow shirt', collocationVn: 'Áo màu vàng', example: '"I like the yellow one like the sun!"', exampleVn: '"Con thích cái màu vàng giống mặt trời!"' },
-    ],
-    quiz: [
-      { q: '"Pick" trong câu của mẹ có nghĩa là gì?', opts: ['Nhặt lên','Ném đi','Chọn lựa','Mặc vào'], ans: 2, exp: '"Pick" ở ngữ cảnh này nghĩa là "Choose" - chọn lựa.' },
-      { q: 'Bé đã chọn chiếc áo màu gì?', opts: ['Red','Blue','Yellow','Green'], ans: 2, exp: 'Bé đã chọn chiếc áo màu vàng: "This yellow one!"' },
-    ],
-    dictation: [
-      { text: 'Pick', hint: '1 từ · hành động lựa chọn', hintVn: 'Chọn' },
-      { text: 'shirt', hint: '1 từ · áo mặc nửa trên', hintVn: 'Áo' },
-      { text: 'yellow', hint: '1 từ · màu của mặt trời', hintVn: 'Màu vàng' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Pick a shirt, sweetie.', vn: 'Chọn một chiếc áo đi con yêu.' },
-      { speaker: 'Child', en: 'This yellow one!', vn: 'Chiếc màu vàng này ạ!' },
-    ],
-  },
-
-  // Day 3
-  {
-    title: 'Mặc áo',
-    dialogue: [
-      { speaker: 'Mom', en: "Arms up! Let's put on your shirt.", vn: 'Giơ tay lên nào! Cùng xỏ áo vào nhé.' },
-      { speaker: 'Child', en: "Yes, Let's put on my shirt.", vn: 'Vâng ạ, mình cùng mặc áo của con nào.' },
-    ],
-    vocab: [
-      { en: 'Arms up', phonetic: '/ɑːrmz ʌp/', speaker: 'Mom', meaning: 'Giơ hai tay lên', synonym: 'Raise your hands', synonymVn: 'Đưa tay lên', collocation: 'Put your arms up', collocationVn: 'Giơ hai tay của con lên', example: '"Arms up so I can take off your shirt."', exampleVn: '"Giơ tay lên để mẹ cởi áo cho con nào."' },
-      { en: 'Put on', phonetic: '/pʊt ɒn/', speaker: 'Mom', meaning: 'Mặc (vào), xỏ (vào)', synonym: 'Wear, slip on', synonymVn: 'Mặc, xỏ nhanh vào', collocation: 'Put on a shirt', collocationVn: 'Mặc áo vào', example: '"Let\'s put on your coat. It\'s cold outside."', exampleVn: '"Cùng mặc áo khoác vào nào. Ngoài trời lạnh lắm."' },
-    ],
-    quiz: [
-      { q: 'Mẹ bảo con giơ tay lên bằng cụm từ nào?', opts: ['Legs up!','Arms up!','Stand up!','Sit down!'], ans: 1, exp: '"Arms" là hai cánh tay. "Arms up!" là giơ hai tay lên để xỏ áo dễ hơn.' },
-      { q: '"Put on" trái nghĩa với từ nào?', opts: ['Wear','Take off','Look at','Pick'], ans: 1, exp: '"Put on" là mặc vào, còn "Take off" là cởi ra.' },
-    ],
-    dictation: [
-      { text: 'Arms up', hint: '2 từ · giơ cánh tay', hintVn: 'Giơ tay lên' },
-      { text: "Let's put on", hint: '3 từ · Cùng mặc vào nào', hintVn: 'Cùng xỏ vào' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "Arms up! Let's put on your shirt.", vn: 'Giơ tay lên nào! Cùng xỏ áo vào nhé.' },
-      { speaker: 'Child', en: "Yes, Let's put on my shirt.", vn: 'Vâng ạ, mình cùng mặc áo của con nào.' },
-    ],
-  },
-
-  // Day 4
-  {
-    title: 'Mặc quần',
-    dialogue: [
-      { speaker: 'Mom', en: 'Now, step into your pants.', vn: 'Bây giờ con bước chân vào quần nhé.' },
-      { speaker: 'Child', en: 'One leg, two legs!', vn: 'Một chân, hai chân!' },
-    ],
-    vocab: [
-      { en: 'Step into', phonetic: '/step ˈɪntuː/', speaker: 'Mom', meaning: 'Bước chân vào (để mặc đồ)', synonym: 'Put your legs in', synonymVn: 'Cho chân vào', collocation: 'Step into your shoes', collocationVn: 'Xỏ chân vào giày', example: '"Hold my hand and step into your pants."', exampleVn: '"Nắm tay mẹ và xỏ chân vào quần nhé."' },
-      { en: 'Pants', phonetic: '/pænts/', speaker: 'Mom', meaning: 'Quần dài', synonym: 'Trousers', synonymVn: 'Quần tây/dài', collocation: 'A pair of pants', collocationVn: 'Một chiếc quần', example: '"These blue pants are very warm."', exampleVn: '"Chiếc quần màu xanh này rất ấm."' },
-      { en: 'Leg', phonetic: '/leɡ/', speaker: 'Child', meaning: 'Cái chân', synonym: '', synonymVn: '', collocation: 'Left leg, right leg', collocationVn: 'Chân trái, chân phải', example: '"One leg, two legs. Good job!"', exampleVn: '"Một chân, hai chân. Giỏi quá!"' },
-    ],
-    quiz: [
-      { q: '"Step into your pants" nghĩa là gì?', opts: ['Cởi quần ra','Gấp quần lại','Bước chân (xỏ) vào quần','Nhảy lên quần'], ans: 2, exp: '"Step into" dùng để diễn tả hành động bước chân vào ống quần, váy hoặc giày.' },
-      { q: 'Khi mặc quần, bé đếm gì?', opts: ['Arms','Hands','Legs','Toes'], ans: 2, exp: 'Bé đếm chân: "One leg, two legs!"' },
-    ],
-    dictation: [
-      { text: 'step into', hint: '2 từ · bước vào / xỏ vào', hintVn: 'Xỏ vào' },
-      { text: 'pants', hint: '1 từ · quần dài', hintVn: 'Quần dài' },
-      { text: 'legs', hint: '1 từ · số nhiều của chân', hintVn: 'Những cái chân' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Now, step into your pants.', vn: 'Bây giờ con bước chân vào quần nhé.' },
-      { speaker: 'Child', en: 'One leg, two legs!', vn: 'Một chân, hai chân!' },
-    ],
-  },
-
-  // Day 5
-  {
-    title: 'Mang tất ấm áp',
-    dialogue: [
-      { speaker: 'Mom', en: "Don't forget your socks.", vn: 'Đừng quên mang tất con nhé.' },
-      { speaker: 'Child', en: 'Wiggle, wiggle toes!', vn: 'Ngọ nguậy những ngón chân nào!' },
-    ],
-    vocab: [
-      { en: 'Forget', phonetic: '/fərˈɡet/', speaker: 'Mom', meaning: 'Quên', synonym: 'Leave behind', synonymVn: 'Bỏ lại', collocation: "Don't forget", collocationVn: 'Đừng quên', example: '"Don\'t forget to brush your teeth!"', exampleVn: '"Đừng quên đánh răng nhé!"' },
-      { en: 'Socks', phonetic: '/sɒks/', speaker: 'Mom', meaning: 'Đôi tất / vớ', synonym: '', synonymVn: '', collocation: 'Put on socks', collocationVn: 'Mang tất', example: '"Your feet need warm socks today."', exampleVn: '"Hôm nay chân con cần đôi tất ấm đấy."' },
-      { en: 'Wiggle', phonetic: '/ˈwɪɡl/', speaker: 'Child', meaning: 'Ngọ nguậy, lúc lắc', synonym: 'Wag, wriggle', synonymVn: 'Lắc lư, vặn vẹo', collocation: 'Wiggle your toes', collocationVn: 'Ngọ nguậy ngón chân', example: '"Can you wiggle your fingers?"', exampleVn: '"Con có thể ngọ nguậy các ngón tay không?"' },
-    ],
-    quiz: [
-      { q: 'Mẹ nhắc con đừng quên mang gì?', opts: ['Hat','Shirt','Pants','Socks'], ans: 3, exp: 'Mẹ nói: "Don\'t forget your socks." (Đừng quên mang tất)' },
-      { q: '"Wiggle" có nghĩa là gì?', opts: ['Ngọ nguậy / lắc nhẹ','Đứng im','Chạy nhanh','Nhảy múa'], ans: 0, exp: '"Wiggle" là hành động ngọ nguậy, thường dùng cho ngón tay, ngón chân, cái đuôi.' },
-    ],
-    dictation: [
-      { text: 'forget', hint: '1 từ · không nhớ', hintVn: 'Quên' },
-      { text: 'socks', hint: '1 từ · tất mang ở chân', hintVn: 'Đôi tất' },
-      { text: 'Wiggle', hint: '1 từ · hành động lúc lắc ngón chân', hintVn: 'Ngọ nguậy' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "Don't forget your socks.", vn: 'Đừng quên mang tất con nhé.' },
-      { speaker: 'Child', en: 'Wiggle, wiggle toes!', vn: 'Ngọ nguậy những ngón chân nào!' },
-    ],
-  },
-
-  // Day 6
-  {
-    title: 'Mang giày',
-    dialogue: [
-      { speaker: 'Mom', en: "Let's put on your shoes.", vn: 'Cùng mang giày vào thôi.' },
-      { speaker: 'Child', en: 'Left and right!', vn: 'Bên trái và bên phải!' },
-    ],
-    vocab: [
-      { en: 'Shoes', phonetic: '/ʃuːz/', speaker: 'Mom', meaning: 'Đôi giày', synonym: 'Footwear', synonymVn: 'Giày dép nói chung', collocation: 'Tie your shoes', collocationVn: 'Buộc dây giày', example: '"Your shoes are so cool!"', exampleVn: '"Đôi giày của con ngầu quá!"' },
-      { en: 'Left and right', phonetic: '/left ənd raɪt/', speaker: 'Child', meaning: 'Trái và phải', synonym: 'Both sides', synonymVn: 'Cả hai bên', collocation: 'Left foot, right foot', collocationVn: 'Chân trái, chân phải', example: '"Put the left shoe on the left foot."', exampleVn: '"Mang chiếc giày trái vào chân trái nhé."' },
-    ],
-    quiz: [
-      { q: 'Món đồ tiếp theo con cần mang là gì?', opts: ['Socks','Shoes','Hat','Pants'], ans: 1, exp: 'Sau khi mang tất, bé tiếp tục xỏ giày (Shoes).' },
-      { q: '"Left and right" mang ý nghĩa gì trong bài học?', opts: ['Đi về bên trái rồi bên phải','Trái và phải (mang giày đúng chân)','Đứng lại','Xoay vòng tròn'], ans: 1, exp: 'Bé tự nhắc mình chú ý xỏ giày đúng bên "trái" và "phải".' },
-    ],
-    dictation: [
-      { text: 'shoes', hint: '1 từ · món đồ đi vào chân để ra ngoài', hintVn: 'Đôi giày' },
-      { text: 'Left and right', hint: '3 từ · hai phía/hai bên', hintVn: 'Trái và phải' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "Let's put on your shoes.", vn: 'Cùng mang giày vào thôi.' },
-      { speaker: 'Child', en: 'Left and right!', vn: 'Bên trái và bên phải!' },
-    ],
-  },
-
-  // Day 7
-  {
-    title: 'Thêm phụ kiện',
-    dialogue: [
-      { speaker: 'Mom', en: "It's sunny today. Wear your hat.", vn: 'Hôm nay trời nắng. Đội mũ vào con nhé.' },
-      { speaker: 'Child', en: 'Got it, Mom!', vn: 'Con nhớ rồi ạ!' },
-    ],
-    vocab: [
-      { en: 'Sunny', phonetic: '/ˈsʌni/', speaker: 'Mom', meaning: 'Có nắng, nhiều nắng', synonym: 'Bright, shining', synonymVn: 'Sáng sủa, chói chang', collocation: 'Sunny day', collocationVn: 'Ngày nắng', example: '"It\'s a beautiful sunny day to play outside."', exampleVn: '"Một ngày nắng đẹp để chơi ngoài trời."' },
-      { en: 'Hat', phonetic: '/hæt/', speaker: 'Mom', meaning: 'Cái mũ / nón', synonym: 'Cap', synonymVn: 'Mũ lưỡi trai', collocation: 'Wear a hat', collocationVn: 'Đội mũ', example: '"Take off your hat inside the house."', exampleVn: '"Vào nhà thì cởi mũ ra nhé con."' },
-      { en: 'Got it', phonetic: '/ɡɒt ɪt/', speaker: 'Child', meaning: 'Nhớ rồi, hiểu rồi ạ', synonym: 'I understand', synonymVn: 'Con hiểu rồi', collocation: 'I got it', collocationVn: 'Con nắm được rồi', example: '"Hold my hand when crossing the street. - Got it, Mom!"', exampleVn: '"Nắm tay mẹ khi qua đường nhé. - Con nhớ rồi ạ!"' },
-    ],
-    quiz: [
-      { q: 'Vì sao mẹ bảo bé phải đội mũ?', opts: ['Vì trời mưa (Rainy)','Vì trời nắng (Sunny)','Vì trời lạnh (Cold)','Vì trời tuyết (Snowy)'], ans: 1, exp: 'Mẹ nói: "It\'s sunny today" (Hôm nay trời có nắng).' },
-      { q: '"Got it, Mom!" thể hiện điều gì?', opts: ['Con không hiểu','Con hiểu và sẽ làm theo','Con đang cầm nó','Con bị mất đồ'], ans: 1, exp: '"Got it" là cụm từ lóng rất phổ biến, nghĩa là "Tôi đã hiểu/Tôi nhớ rồi".' },
-    ],
-    dictation: [
-      { text: 'sunny', hint: '1 từ · thời tiết có mặt trời', hintVn: 'Nhiều nắng' },
-      { text: 'hat', hint: '1 từ · đội trên đầu', hintVn: 'Cái mũ' },
-      { text: 'Got it', hint: '2 từ · thể hiện đã hiểu/nhớ lời mẹ dặn', hintVn: 'Nhớ rồi ạ' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: "It's sunny today. Wear your hat.", vn: 'Hôm nay trời nắng. Đội mũ vào con nhé.' },
-      { speaker: 'Child', en: 'Got it, Mom!', vn: 'Con nhớ rồi ạ!' },
-    ],
-  },
-
-  // Day 8
-  {
-    title: 'Chải tóc gọn gàng',
-    dialogue: [
-      { speaker: 'Mom', en: 'Let me comb your hair.', vn: 'Để mẹ chải tóc cho con nhé.' },
-      { speaker: 'Child', en: 'Nice and neat!', vn: 'Thật đẹp và gọn gàng!' },
-    ],
-    vocab: [
-      { en: 'Comb', phonetic: '/kəʊm/', speaker: 'Mom', meaning: 'Chải (tóc), cái lược', synonym: 'Brush', synonymVn: 'Chải', collocation: 'Comb your hair', collocationVn: 'Chải tóc', example: '"I will comb your hair so you look handsome."', exampleVn: '"Mẹ sẽ chải tóc để con trông thật bảnh trai."' },
-      { en: 'Hair', phonetic: '/her/', speaker: 'Mom', meaning: 'Tóc', synonym: '', synonymVn: '', collocation: 'Short hair, long hair', collocationVn: 'Tóc ngắn, tóc dài', example: '"Your hair smells so good!"', exampleVn: '"Tóc con thơm quá!"' },
-      { en: 'Neat', phonetic: '/niːt/', speaker: 'Child', meaning: 'Gọn gàng, ngăn nắp', synonym: 'Tidy, well-kept', synonymVn: 'Gọn gàng, sạch sẽ', collocation: 'Nice and neat', collocationVn: 'Đẹp và gọn gàng', example: '"Keep your room nice and neat."', exampleVn: '"Hãy giữ phòng con thật gọn gàng ngăn nắp nhé."' },
-    ],
-    quiz: [
-      { q: 'Hành động "Comb your hair" nghĩa là gì?', opts: ['Cắt tóc','Gội đầu','Chải tóc','Buộc tóc'], ans: 2, exp: '"Comb" có nghĩa là dùng lược chải cho tóc gọn gàng.' },
-      { q: 'Cụm từ "Nice and neat!" dùng để miêu tả điều gì?', opts: ['Thật ồn ào','Thật đẹp và gọn gàng','Rất mềm mại','Đang bừa bộn'], ans: 1, exp: '"Neat" nghĩa là gọn gàng, "Nice and neat" là một cách khen ngợi sự chỉn chu.' },
-    ],
-    dictation: [
-      { text: 'comb', hint: '1 từ · động từ làm mượt tóc bằng lược', hintVn: 'Chải' },
-      { text: 'hair', hint: '1 từ · mọc trên đỉnh đầu', hintVn: 'Tóc' },
-      { text: 'neat', hint: '1 từ · ngăn nắp/chỉn chu', hintVn: 'Gọn gàng' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Let me comb your hair.', vn: 'Để mẹ chải tóc cho con nhé.' },
-      { speaker: 'Child', en: 'Nice and neat!', vn: 'Thật đẹp và gọn gàng!' },
-    ],
-  },
-
-  // Day 9
-  {
-    title: 'Cảm nhận sự thoải mái',
-    dialogue: [
-      { speaker: 'Mom', en: 'Do your clothes feel comfortable?', vn: 'Quần áo của con mặc có thoải mái không?' },
-      { speaker: 'Child', en: 'Yes, very soft!', vn: 'Có ạ, rất mềm mại!' },
-    ],
-    vocab: [
-      { en: 'Comfortable', phonetic: '/ˈkʌmftəbl/', speaker: 'Mom', meaning: 'Thoải mái', synonym: 'Cozy, relaxed', synonymVn: 'Thoải mái, thư giãn', collocation: 'Feel comfortable', collocationVn: 'Cảm thấy thoải mái', example: '"Are your new shoes comfortable?"', exampleVn: '"Đôi giày mới của con đi có êm/thoải mái không?"' },
-      { en: 'Clothes', phonetic: '/kləʊðz/', speaker: 'Mom', meaning: 'Quần áo', synonym: 'Apparel, garments', synonymVn: 'Y phục, trang phục', collocation: 'Clean clothes', collocationVn: 'Quần áo sạch', example: '"Put your dirty clothes in the basket."', exampleVn: '"Bỏ quần áo bẩn của con vào rổ nhé."' },
-      { en: 'Soft', phonetic: '/sɒft/', speaker: 'Child', meaning: 'Mềm mại', synonym: 'Smooth, gentle', synonymVn: 'Mịn màng, êm ái', collocation: 'Very soft', collocationVn: 'Rất mềm', example: '"This blanket is so soft!"', exampleVn: '"Cái chăn này thật mềm mại!"' },
-    ],
-    quiz: [
-      { q: '"Clothes" có nghĩa là gì?', opts: ['Quần áo','Đồ chơi','Sách vở','Giày dép'], ans: 0, exp: '"Clothes" là từ vựng chỉ quần áo (áo, quần, váy...) nói chung.' },
-      { q: 'Bé cảm nhận bộ đồ đang mặc thế nào?', opts: ['Very hard (Rất cứng)','Very hot (Rất nóng)','Very soft (Rất mềm mại)','Very tight (Rất chật)'], ans: 2, exp: 'Bé đáp: "Yes, very soft!" (Có ạ, rất mềm mại!)' },
-    ],
-    dictation: [
-      { text: 'comfortable', hint: '1 từ · cảm giác dễ chịu khi mặc đồ', hintVn: 'Thoải mái' },
-      { text: 'clothes', hint: '1 từ · áo, quần nói chung', hintVn: 'Quần áo' },
-      { text: 'soft', hint: '1 từ · không thô ráp', hintVn: 'Mềm mại' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'Do your clothes feel comfortable?', vn: 'Quần áo của con mặc có thoải mái không?' },
-      { speaker: 'Child', en: 'Yes, very soft!', vn: 'Có ạ, rất mềm mại!' },
-    ],
-  },
-
-  // Day 10
-  {
-    title: 'Khẳng định sự tự tin',
-    dialogue: [
-      { speaker: 'Mom', en: 'You look wonderful today!', vn: 'Hôm nay trông con tuyệt lắm!' },
-      { speaker: 'Child', en: "I am ready! Let's go!", vn: 'Con sẵn sàng rồi! Đi thôi ạ!' },
-    ],
-    vocab: [
-      { en: 'Wonderful', phonetic: '/ˈwʌndərfl/', speaker: 'Mom', meaning: 'Tuyệt vời, tuyệt đẹp', synonym: 'Amazing, great', synonymVn: 'Đáng kinh ngạc, rất tốt', collocation: 'Look wonderful', collocationVn: 'Trông tuyệt vời', example: '"You did a wonderful job today!"', exampleVn: '"Hôm nay con đã làm rất tuyệt vời!"' },
-      { en: 'Ready', phonetic: '/ˈredi/', speaker: 'Child', meaning: 'Sẵn sàng', synonym: 'Prepared', synonymVn: 'Đã chuẩn bị xong', collocation: 'Be ready for', collocationVn: 'Sẵn sàng cho...', example: '"Are you ready for breakfast?"', exampleVn: '"Con đã sẵn sàng ăn sáng chưa?"' },
-      { en: "Let's go", phonetic: '/lets ɡəʊ/', speaker: 'Child', meaning: 'Đi thôi!', synonym: 'Time to leave', synonymVn: 'Đến lúc đi rồi', collocation: "Let's go outside", collocationVn: 'Cùng ra ngoài thôi', example: '"Grab your bag and let\'s go!"', exampleVn: '"Lấy cặp của con và đi thôi nào!"' },
-    ],
-    quiz: [
-      { q: '"Wonderful" có ý nghĩa là gì?', opts: ['Bình thường','Xấu xí','Tuyệt vời','Buồn bã'], ans: 2, exp: '"Wonderful" là một lời khen mạnh mẽ, mang nghĩa rất tuyệt vời, lộng lẫy.' },
-      { q: 'Cụm từ nào nghĩa là "Chúng ta cùng đi thôi"?', opts: ['Stand up',"Let's go!",'Come here','Sit down'], ans: 1, exp: '"Let\'s go!" thường được dùng khi mọi người đã chuẩn bị xong và sẵn sàng rời khỏi nhà.' },
-    ],
-    dictation: [
-      { text: 'wonderful', hint: '1 từ · rất tuyệt vời', hintVn: 'Tuyệt vời' },
-      { text: 'ready', hint: '1 từ · trạng thái đã chuẩn bị xong', hintVn: 'Sẵn sàng' },
-      { text: "Let's go", hint: '2 từ · lời rủ bắt đầu khởi hành', hintVn: 'Đi thôi' },
-    ],
-    shadowing: [
-      { speaker: 'Mom', en: 'You look wonderful today!', vn: 'Hôm nay trông con tuyệt lắm!' },
-      { speaker: 'Child', en: "I am ready! Let's go!", vn: 'Con sẵn sàng rồi! Đi thôi ạ!' },
-    ],
-  },
-];
 
 // ═══════════════════════════════════════════════════════
 //  STATE
@@ -1330,7 +1078,7 @@ function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
   else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
-  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;                tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
+  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
 
   const wordHTML = matches.length
