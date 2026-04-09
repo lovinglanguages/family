@@ -245,12 +245,6 @@
   .fs-en { font-family:'Playfair Display',serif; font-size:17px; margin-bottom:4px; color: var(--ink); }
   .fs-vn { font-size:13px; color:var(--ink-muted); font-style:italic; }
 
-  @media print {
-    header, .video-section, .days-nav, .topic-hero, .day-panel, .mode-tabs, .shadow-btns, .rec-zone, .finish-btn { display:none !important; }
-    #panel-fullscript { display:block !important; }
-    .fs-dialogue { max-height:none !important; padding:15px 20px !important; }
-    body { background: white; }
-  }
 </style>
 </head>
 <body>
@@ -531,7 +525,6 @@ function buildFullScriptPanel() {
             </div>
           </div>
         `).join('')}
-        <button class="finish-btn" style="background:transparent; border: 1.5px solid var(--terracotta); color:var(--terracotta);" onclick="window.print()">🖨️ In kịch bản ra giấy</button>
       </div>
     </div>
   `;
