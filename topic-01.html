@@ -633,7 +633,7 @@ function speak(text, rate = 0.85) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  SPEECH RECOGNITION (TỐI ƯU CHO MOBILE)
+//  SPEECH RECOGNITION (BẢN CHỐNG XUNG ĐỘT MICRO TRÊN ĐIỆN THOẠI)
 // ═══════════════════════════════════════════════════════
 const recState = {};
 function toggleRecord(id, targetText) { if (recState[id]?.active) stopRecord(id, targetText); else startRecord(id, targetText); }
@@ -649,53 +649,61 @@ async function startRecord(id, targetText) {
 
   let stream;
   try {
+    // Xin quyền Micro chung
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   } catch(e) {
-    label.innerHTML = '<strong style="color:var(--coral)">Không thể mở micro.</strong> Hãy cấp quyền cho trình duyệt.';
+    label.innerHTML = '<strong style="color:var(--coral)">Không thể mở micro.</strong> Xin cấp quyền cho trình duyệt.';
     return;
   }
 
-  const mr = new MediaRecorder(stream);
-  const chunks = [];
-  mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  mr.onstop = () => {
-    recState[id].blob = new Blob(chunks, { type: mr.mimeType || 'audio/webm' });
-    stream.getTracks().forEach(t => t.stop());
-    pbk.className = 'playback-btn show';
-  };
-  mr.start();
+  // Khởi tạo state
+  recState[id] = { active: true, recognized: [], recognition: null, mediaRecorder: null, chunks: [], blob: null, error: null, stream: stream };
 
+  // 1. ƯU TIÊN SỐ 1: KHỞI TẠO NHẬN DIỆN GIỌNG NÓI TRƯỚC
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recState[id] = { mediaRecorder: mr, chunks, active: true, blob: null, recognized: [], recognition: null };
-
   if (SR) {
     const rec = new SR();
     rec.lang = 'en-US';
-    rec.continuous = true; // Tránh tự động ngắt trên mobile
-    rec.interimResults = true; // Bắt kết quả ngay lập tức
-    rec.maxAlternatives = 3;
+    rec.continuous = false; // Tắt continuous để chống treo trên iOS
+    rec.interimResults = true;
 
     rec.onresult = e => {
       let currentAlts = [];
       for (let i = 0; i < e.results.length; i++) {
-        for (let j = 0; j < e.results[i].length; j++) {
-          currentAlts.push(e.results[i][j].transcript.toLowerCase().trim());
-        }
+        currentAlts.push(e.results[i][0].transcript.toLowerCase().trim());
       }
-      if (currentAlts.length > 0) {
-          recState[id].recognized = currentAlts;
-      }
+      if (currentAlts.length > 0) recState[id].recognized = currentAlts;
     };
 
-    rec.onerror = (e) => {
-      console.warn("Speech API Error: ", e.error);
+    // Bắt lỗi để báo ra màn hình thay vì chết ngầm
+    rec.onerror = (e) => { 
+        console.warn("Lỗi nhận diện:", e.error);
+        recState[id].error = e.error; 
     };
 
     try {
       rec.start();
       recState[id].recognition = rec;
-    } catch(e) { console.error("Không thể bắt đầu nhận diện", e); }
+    } catch(e) { console.error(e); }
+  } else {
+     recState[id].error = "no-support";
   }
+
+  // 2. ƯU TIÊN SỐ 2: KHỞI TẠO GHI ÂM SAU (Lùi lại 200ms để không giành giật Micro)
+  setTimeout(() => {
+     if(!recState[id].active) {
+         stream.getTracks().forEach(t => t.stop());
+         return;
+     }
+     const mr = new MediaRecorder(stream);
+     mr.ondataavailable = e => { if (e.data.size > 0) recState[id].chunks.push(e.data); };
+     mr.onstop = () => {
+        recState[id].blob = new Blob(recState[id].chunks, { type: mr.mimeType || 'audio/webm' });
+        pbk.className = 'playback-btn show';
+     };
+     mr.start();
+     recState[id].mediaRecorder = mr;
+  }, 200);
 
   btn.classList.add('recording'); btn.textContent = '⏹';
   label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Bấm ⏹ để dừng';
@@ -708,8 +716,15 @@ function stopRecord(id, targetText) {
   const btn = document.getElementById(`${id}-recbtn`);
   const label = document.getElementById(`${id}-reclabel`);
 
+  // Dừng mọi thứ lại
   state.active = false;
-  state.mediaRecorder.stop();
+  if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
+      state.mediaRecorder.stop();
+  }
+  if (state.stream) {
+      state.stream.getTracks().forEach(t => t.stop());
+  }
+
   btn.classList.remove('recording');
   btn.textContent = '🎤';
   label.innerHTML = '<strong>Đang phân tích giọng nói...</strong>';
@@ -717,13 +732,25 @@ function stopRecord(id, targetText) {
   if (state.recognition) {
     try { state.recognition.stop(); } catch(e) {}
 
-    // Polling: Kiểm tra kết quả liên tục tối đa 3 giây
     let checkCount = 0;
     const waitInterval = setInterval(() => {
         checkCount++;
-        if ((recState[id].recognized && recState[id].recognized.length > 0) || checkCount >= 15) {
+        // Chờ kết quả trả về, hoặc nếu có lỗi, hoặc quá 2 giây (10 * 200ms) thì chốt
+        if ((state.recognized && state.recognized.length > 0) || state.error || checkCount >= 10) {
             clearInterval(waitInterval);
-            scoreProunciation(id, targetText);
+            
+            // Xử lý báo lỗi chi tiết ra giao diện để Lani dễ bắt bệnh cho học viên
+            if (state.error && state.recognized.length === 0) {
+                 let errVi = state.error;
+                 if(errVi === 'no-speech') errVi = 'Không nghe thấy tiếng';
+                 if(errVi === 'not-allowed') errVi = 'Chưa cấp quyền';
+                 if(errVi === 'network') errVi = 'Lỗi mạng Internet';
+                 if(errVi === 'aborted') errVi = 'Bị trình duyệt ngắt';
+                 label.innerHTML = `<strong style="color:var(--coral)">Lỗi: ${errVi}</strong>. Hãy mở bằng Safari/Chrome.`;
+                 scoreProunciation(id, targetText); // Điểm sẽ là 0
+            } else {
+                 scoreProunciation(id, targetText);
+            }
         }
     }, 200);
   } else {
