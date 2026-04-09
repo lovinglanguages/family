@@ -53,7 +53,6 @@
   .hero h1 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--ink); line-height: 1.2; }
   .hero em { color: var(--terracotta); font-style: italic; display: block; margin-top: 8px; }
 
-  /* STATS & PROGRESS */
   .stats-summary { display: flex; justify-content: space-around; padding: 20px 24px; text-align: center; background: var(--warm-white); }
   .stat-item { flex: 1; }
   .stat-value { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--terracotta); font-weight: 600; display: block; }
@@ -64,14 +63,12 @@
   .progress-track { height: 8px; background: var(--blush); border-radius: 10px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--terracotta); width: 0%; transition: width 1s ease-out; }
 
-  /* STREAK BANNER */
   .streak-banner { margin: 24px; background: var(--sunny-light); border-radius: var(--radius); padding: 18px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(242, 201, 76, 0.3); }
   .streak-fire { font-size: 32px; }
   .streak-text { flex: 1; line-height: 1.4; }
   .streak-count { font-size: 18px; font-weight: 700; color: #8A6A00; display: block; }
   .streak-msg { font-size: 14px; color: #A07000; }
 
-  /* TOPICS GRID */
   .topics-grid { padding: 0 24px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .topic-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; cursor: pointer; transition: all 0.25s; position: relative; }
   .topic-card.locked { opacity: 0.6; filter: grayscale(0.8); cursor: not-allowed; }
@@ -83,8 +80,7 @@
   .badge-done { background: var(--sage-light); color: var(--sage-deep); }
   .badge-wip { background: var(--sunny-light); color: #8A6A00; }
 
-  /* LEADERBOARD */
-  .leaderboard-section { margin: 0 24px 40px; }
+  .leaderboard-section { margin: 0 24px 20px; }
   .lb-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 16px; }
   .lb-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .lb-item:last-child { border-bottom: none; }
@@ -94,6 +90,16 @@
   .lb-streak { font-size: 13px; font-weight: 600; color: #A07000; }
 
   .section-title { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-muted); padding: 0 24px; margin: 32px 0 16px; font-weight: 700; }
+
+  /* FOOTER STYLING */
+  footer {
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+  }
 </style>
 </head>
 <body>
@@ -176,6 +182,11 @@
   <div class="leaderboard-section">
     <div class="lb-card" id="leaderboard-container"></div>
   </div>
+
+  <footer>
+    © Lani · Be A Gift · Loving Languages<br>
+    All rights reserved 2026
+  </footer>
 </div>
 
 <script>
@@ -211,7 +222,6 @@ const TOPICS_INFO = [
 let isLoginMode = true;
 let isWhitelisted = false;
 
-// 3. XỬ LÝ AUTHENTICATION
 auth.onAuthStateChanged(async (user) => {
   const loading = document.getElementById('loading-overlay');
   if (user) {
@@ -254,7 +264,6 @@ async function handleAuth() {
 
 function logout() { auth.signOut(); }
 
-// 4. HIỂN THỊ DASHBOARD
 async function loadUserData(user) {
   const userRef = db.collection("users").doc(user.uid);
   const doc = await userRef.get();
@@ -266,10 +275,7 @@ async function loadUserData(user) {
 }
 
 function renderDashboardUI(data) {
-  // Cập nhật Streak
   document.getElementById('user-streak-value').textContent = data.streak || 0;
-
-  // Tính toán tiến độ tổng thể
   const totalDaysDone = Object.values(data.progress || {}).reduce((a, b) => a + b, 0);
   const totalTarget = 110;
   const percentage = Math.min((totalDaysDone / totalTarget) * 100, 100);
@@ -277,15 +283,12 @@ function renderDashboardUI(data) {
   document.getElementById('progress-text').textContent = `${totalDaysDone} / ${totalTarget} ngày`;
   document.getElementById('main-progress-bar').style.width = percentage + '%';
 
-  // Render Grid
   const grid = document.getElementById('main-topics-grid');
   grid.innerHTML = '';
 
   TOPICS_INFO.forEach((t) => {
     const isLocked = t.id !== 0 && !isWhitelisted;
     const daysInTopic = (data.progress && data.progress[t.id]) || 0;
-    
-    // Badge logic: Hiện số ngày nếu đã học, hiện dấu '-' nếu chưa, hiện khóa nếu chưa mở
     let badgeContent = isLocked ? '🔒' : (daysInTopic > 0 ? daysInTopic : '-');
     let badgeClass = daysInTopic >= 10 ? 'badge-done' : (daysInTopic > 0 ? 'badge-wip' : '');
 
@@ -304,7 +307,7 @@ function goToTopic(id, url) {
   if (id === 0 || isWhitelisted) {
     window.location.href = url;
   } else {
-    alert("Khóa học từ Topic 2 dành riêng cho học viên của Lani. Nhắn Lani để được mở khóa bạn nhé! ❤️");
+    alert("Khóa học dành riêng cho học viên của Lani. Nhắn Lani để được mở khóa nhé! ❤️");
   }
 }
 
@@ -316,19 +319,16 @@ async function renderLeaderboard() {
     snap.forEach(doc => {
         const d = doc.data();
         if(d.streak > 0) {
-            const displayName = d.email ? d.email.split('@')[0] : 'Học viên';
-            html += `
-                <div class="lb-item">
+            const displayName = d.email ? d.email.split('@')[0] : 'User';
+            html += `<div class="lb-item">
                 <div class="lb-avatar">${displayName.charAt(0).toUpperCase()}</div>
                 <div class="lb-info"><div class="lb-name">${displayName}</div></div>
                 <div class="lb-streak">🔥 ${d.streak}</div>
                 </div>`;
         }
     });
-    container.innerHTML = html || '<p style="font-size:12px; color:#999; text-align:center; padding: 10px;">Hãy bắt đầu chuỗi học đầu tiên!</p>';
-  } catch(e) {
-    container.innerHTML = '<p style="font-size:11px; color:#999; text-align:center;">Đang tải bảng xếp hạng...</p>';
-  }
+    container.innerHTML = html || '<p style="padding:10px; font-size:12px; color:#999; text-align:center;">Học ngay để lên top!</p>';
+  } catch(e) { container.innerHTML = ''; }
 }
 
 function showScreen(id) {
