@@ -286,7 +286,6 @@ auth.onAuthStateChanged(async (user) => {
 // ═══════════════════════════════════════════════════════
 async function fetchLessonData() {
   try {
-    // Đã cập nhật lại đúng Collection và Document theo ảnh bạn cung cấp
     const docRef = db.collection("topics").doc("topic01");
     const docSnap = await docRef.get();
 
@@ -294,7 +293,7 @@ async function fetchLessonData() {
       const data = docSnap.data();
       DAYS = data.days || []; 
     } else {
-      console.error("Không tìm thấy dữ liệu (Document 'topic01' không tồn tại trong collection 'topics').");
+      console.error("Không tìm thấy dữ liệu.");
     }
   } catch (error) {
     console.error("Lỗi tải dữ liệu bài học:", error);
@@ -555,35 +554,90 @@ function checkDict(i) {
   else { document.getElementById(`dinput-${i}`).className = 'dict-input'; }
 }
 function nextDict(i) { dictState[i].idx++; renderDictItem(i); }
- 
+
+// ═══════════════════════════════════════════════════════
+//  TEXT TO SPEECH (TỐI ƯU CHO MOBILE)
+// ═══════════════════════════════════════════════════════
 let _selectedVoice = null;
 const VOICE_PRIORITY = ['Google US English', 'Google UK English Female', 'Microsoft Aria Online (Natural) - English (United States)', 'Samantha', 'Karen', 'Google العربية'];
+
 function pickVoice() {
-  if (_selectedVoice) return _selectedVoice;
-  const voices = speechSynthesis.getVoices(); if (!voices.length) return null;
-  for (const name of VOICE_PRIORITY) { const v = voices.find(v => v.name === name); if (v) { _selectedVoice = v; return v; } }
-  const googleFemale = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('male'));
-  if (googleFemale) { _selectedVoice = googleFemale; return googleFemale; }
-  const onlineFemale = voices.find(v => v.lang === 'en-US' && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('online')));
-  if (onlineFemale) { _selectedVoice = onlineFemale; return onlineFemale; }
-  const anyUS = voices.find(v => v.lang === 'en-US');
-  if (anyUS) { _selectedVoice = anyUS; return anyUS; }
-  return null;
+  if (_selectedVoice) return _selectedVoice;
+  const voices = speechSynthesis.getVoices(); 
+  if (!voices.length) return null;
+  
+  for (const name of VOICE_PRIORITY) { 
+      const v = voices.find(v => v.name === name); 
+      if (v) { _selectedVoice = v; return v; } 
+  }
+  const googleFemale = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('male'));
+  if (googleFemale) { _selectedVoice = googleFemale; return googleFemale; }
+  
+  const onlineFemale = voices.find(v => v.lang === 'en-US' && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('online')));
+  if (onlineFemale) { _selectedVoice = onlineFemale; return onlineFemale; }
+  
+  const anyUS = voices.find(v => v.lang === 'en-US');
+  if (anyUS) { _selectedVoice = anyUS; return anyUS; }
+  return null;
 }
-if ('speechSynthesis' in window) { speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); }; }
+
+if ('speechSynthesis' in window) { 
+    speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); }; 
+}
+
+// Mẹo "đánh thức" trình đọc giọng nói trên thiết bị di động
+let isVoiceAwake = false;
+document.addEventListener('touchstart', function() {
+    if (!isVoiceAwake && 'speechSynthesis' in window) {
+        const dummy = new SpeechSynthesisUtterance('');
+        dummy.volume = 0; 
+        window.speechSynthesis.speak(dummy);
+        isVoiceAwake = true;
+    }
+}, { once: true });
+
+document.addEventListener('click', function() {
+    if (!isVoiceAwake && 'speechSynthesis' in window) {
+        const dummy = new SpeechSynthesisUtterance('');
+        dummy.volume = 0;
+        window.speechSynthesis.speak(dummy);
+        isVoiceAwake = true;
+    }
+}, { once: true });
+
 function speak(text, rate = 0.85) {
-  if (!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0;
-  const voice = pickVoice(); if (voice) u.voice = voice;
-  speechSynthesis.speak(u);
+  if (!('speechSynthesis' in window)) {
+      console.warn("Trình duyệt không hỗ trợ Text-to-Speech");
+      return;
+  }
+
+  // Hủy các lệnh đọc cũ đang bị kẹt
+  window.speechSynthesis.cancel();
+
+  // Đợi 50ms trước khi đọc để bộ nhớ kịp xử lý, tránh crash trên iOS
+  setTimeout(() => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; 
+      u.rate = rate; 
+      u.pitch = 1.0;
+      u.volume = 1.0;
+      
+      const voice = pickVoice(); 
+      if (voice) u.voice = voice;
+      
+      u.onstart = () => {}; 
+      u.onerror = (e) => console.warn("Lỗi đọc giọng nói:", e);
+      
+      window.speechSynthesis.speak(u);
+  }, 50);
 }
- 
+
+// ═══════════════════════════════════════════════════════
+//  SPEECH RECOGNITION (TỐI ƯU CHO MOBILE)
+// ═══════════════════════════════════════════════════════
 const recState = {};
 function toggleRecord(id, targetText) { if (recState[id]?.active) stopRecord(id, targetText); else startRecord(id, targetText); }
 
-// --- BẢN VÁ LỖI NHẬN DIỆN TRÊN ĐIỆN THOẠI ---
 async function startRecord(id, targetText) {
   const btn = document.getElementById(`${id}-recbtn`);
   const label = document.getElementById(`${id}-reclabel`);
@@ -617,8 +671,8 @@ async function startRecord(id, targetText) {
   if (SR) {
     const rec = new SR();
     rec.lang = 'en-US';
-    rec.continuous = true;
-    rec.interimResults = true;
+    rec.continuous = true; // Tránh tự động ngắt trên mobile
+    rec.interimResults = true; // Bắt kết quả ngay lập tức
     rec.maxAlternatives = 3;
 
     rec.onresult = e => {
@@ -663,6 +717,7 @@ function stopRecord(id, targetText) {
   if (state.recognition) {
     try { state.recognition.stop(); } catch(e) {}
 
+    // Polling: Kiểm tra kết quả liên tục tối đa 3 giây
     let checkCount = 0;
     const waitInterval = setInterval(() => {
         checkCount++;
@@ -675,8 +730,10 @@ function stopRecord(id, targetText) {
     scoreProunciation(id, targetText);
   }
 }
-// --- KẾT THÚC BẢN VÁ LỖI ---
 
+// ═══════════════════════════════════════════════════════
+//  SCORING LOGIC
+// ═══════════════════════════════════════════════════════
 function scoreProunciation(id, targetText) {
   const label = document.getElementById(`${id}-reclabel`); const badge = document.getElementById(`${id}-score`);
   const alts = recState[id]?.recognized || []; const tWords = targetText.toLowerCase().replace(/[^\w\s']/g, '').trim().split(/\s+/);
@@ -690,6 +747,7 @@ function scoreProunciation(id, targetText) {
   });
   renderScore(badge, label, bestScore, tWords, bestMatch);
 }
+
 function wordMatchScore(tWords, aWords) {
   const matches = tWords.map(tw => {
     const twn = norm(tw);
@@ -699,13 +757,16 @@ function wordMatchScore(tWords, aWords) {
   });
   return { score: Math.round(matches.filter(m => m.hit).length / tWords.length * 100), matches };
 }
+
 function norm(w) { return w.toLowerCase().replace(/[^a-z']/g, ''); }
+
 function lev(a, b) {
   const m = a.length, n = b.length;
   const dp = Array.from({length:m+1}, (_,i) => Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));
   for (let i=1;i<=m;i++) for (let j=1;j<=n;j++) dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
   return dp[m][n];
 }
+
 function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
@@ -717,6 +778,7 @@ function renderScore(badge, label, score, tWords, matches) {
   badge.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:18px">${emoji}</span><strong>${msg}</strong></div><div class="score-bar-wrap"><div class="score-bar ${tier}" style="width:${score}%"></div></div><div style="font-size:12px;margin-top:4px;opacity:0.8">${tip}</div>${wordHTML}`;
   label.innerHTML = '<strong>Bấm mic</strong> để thử lại';
 }
+
 function playbackRec(id) { const blob = recState[id]?.blob; if (blob) new Audio(URL.createObjectURL(blob)).play(); }
 </script>
 </body>
