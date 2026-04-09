@@ -147,7 +147,6 @@
     background:var(--blush); color:var(--terracotta);
     font-size:20px; cursor:pointer; transition:all 0.25s;
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    /* Quan trọng cho touch */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     user-select: none;
@@ -594,39 +593,13 @@ function speak(text, rate = 0.85) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  SPEECH RECOGNITION — ANDROID CHROME COMPATIBLE
-//
-//  Root cause trên Android Chrome:
-//  - continuous=true  → bị Chrome mobile từ chối/bỏ qua hoàn toàn
-//  - continuous=false → SR tự stop sau ~5s, onend fire TRƯỚC onresult flush
-//  - Gọi rec.stop() thủ công khi đang nghe → abort, mất sạch kết quả
-//  - interimResults đôi khi là DUY NHẤT có data trên Android (isFinal không fire)
-//
-//  Giải pháp đúng:
-//  1. continuous=false (bắt buộc Android Chrome)
-//  2. KHÔNG BAO GIỜ gọi rec.stop() — để SR tự kết thúc tự nhiên
-//  3. Thu thập CẢ interim làm fallback khi không có final
-//  4. onend → đợi 300ms để đảm bảo onresult flush xong → chấm điểm
-//  5. Nút ⏹ chỉ set flag "muốn dừng", không gọi rec.stop()
+//  SPEECH RECOGNITION & RECORDING
 // ═══════════════════════════════════════════════════════
 
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 const recState = {};
 
-function toggleRecord(id, targetText) {
-  const state = recState[id];
-  if (state && state.active) {
-    // Người dùng bấm dừng: set flag, KHÔNG gọi rec.stop()
-    // SR sẽ tự kết thúc sau khi im lặng, onend sẽ xử lý
-    state.wantsStop = true;
-    const label = document.getElementById(`${id}-reclabel`);
-    if (label) label.innerHTML = `<span class="rec-status-dot"></span><strong style="color:var(--sage-deep)">Đang xử lý...</strong> chờ chút`;
-  } else {
-    startRecord(id, targetText);
-  }
-}
-
-function startRecord(id, targetText) {
+async function startRecord(id, targetText) {
   const btn     = document.getElementById(`${id}-recbtn`);
   const label   = document.getElementById(`${id}-reclabel`);
   const interim = document.getElementById(`${id}-interim`);
@@ -639,110 +612,109 @@ function startRecord(id, targetText) {
   if (interim) interim.textContent = '';
   pbk.classList.remove('show');
 
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    label.innerHTML = '<strong style="color:var(--coral)">Trình duyệt không hỗ trợ.</strong><br><span style="font-size:11px">Dùng Chrome trên Android hoặc Safari trên iOS.</span>';
-    return;
-  }
-
-  // Khởi tạo state
   recState[id] = {
     active: true,
     wantsStop: false,
-    // Thu thập TẤT CẢ — final và interim làm fallback
-    bestFinal: '',      // kết quả isFinal tốt nhất
-    latestInterim: '',  // kết quả interim mới nhất (fallback)
-    allInterim: '',     // tất cả interim từng nhận được
+    bestFinal: '',
+    latestInterim: '',
+    allInterim: '',
     recognition: null,
-    safetyTimer: null
+    mediaRec: null,
+    audioChunks: [],
+    safetyTimer: null,
+    blob: null
   };
   const state = recState[id];
 
-  // ── Tạo SR instance ──
-  const rec = new SR();
-  rec.lang = 'en-US';
-  rec.continuous = false;    // BẮT BUỘC false trên Android Chrome
-  rec.interimResults = true; // Cần để nhận interim làm fallback
-  rec.maxAlternatives = 1;
-  state.recognition = rec;
-
-  // ── Timer an toàn: nếu sau 12s vẫn không có onend → tự finalize ──
-  state.safetyTimer = setTimeout(() => {
-    if (state.active) {
-      state.active = false;
-      doFinalize(id, targetText);
-    }
-  }, 12000);
-
-  rec.onstart = () => {
-    btn.classList.add('recording');
-    btn.textContent = '⏹';
-    btn.disabled = false;
-    label.innerHTML = `<span class="rec-status-dot"></span><strong style="color:var(--coral)">Đang nghe...</strong> Nói câu này rồi chờ tự chấm`;
-    if (interim) interim.textContent = '';
-  };
-
-  rec.onresult = (event) => {
-    // Duyệt từ resultIndex để không đọc lại kết quả cũ
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const text = event.results[i][0].transcript.trim();
-      if (!text) continue;
-
-      if (event.results[i].isFinal) {
-        state.bestFinal += (state.bestFinal ? ' ' : '') + text;
-      } else {
-        // Interim: cập nhật liên tục, dùng làm fallback
-        state.latestInterim = text;
-        state.allInterim    = text; // interim cuối cùng đủ để dùng
-      }
-
-      // Hiển thị realtime cho user thấy đang nhận diện
-      const show = state.bestFinal || state.latestInterim;
-      if (interim && show) {
-        interim.innerHTML = `<span style="color:var(--terracotta)">🎤 ${show}</span>`;
-      }
-    }
-  };
-
-  rec.onerror = (event) => {
-    clearTimeout(state.safetyTimer);
-    const err = event.error;
-
-    if (err === 'not-allowed' || err === 'service-not-allowed') {
-      state.active = false;
-      btn.classList.remove('recording'); btn.textContent = '🎤';
-      label.innerHTML = '<strong style="color:var(--coral)">Chưa cấp quyền Micro!</strong><br><span style="font-size:11px">Chrome → Cài đặt → Quyền trang web → Micro → Cho phép</span>';
-      return;
-    }
-    if (err === 'network') {
-      state.active = false;
-      btn.classList.remove('recording'); btn.textContent = '🎤';
-      label.innerHTML = '<strong style="color:var(--coral)">Lỗi mạng</strong> — cần kết nối Internet để nhận diện giọng nói.';
-      return;
-    }
-    // no-speech, aborted, audio-capture, etc.
-    // → onend sẽ tự fire sau đó, xử lý ở đó
-    console.warn('[SR onerror]', err);
-  };
-
-  rec.onend = () => {
-    // onend luôn fire sau cùng — đây là nơi DUY NHẤT xử lý kết quả
-    clearTimeout(state.safetyTimer);
-
-    if (!state.active) return; // Đã xử lý rồi (từ safetyTimer)
-    state.active = false;
-
-    // Đợi thêm 350ms: Chrome Android đôi khi flush onresult SAU onend
-    setTimeout(() => doFinalize(id, targetText), 350);
-  };
+  btn.classList.add('recording');
+  btn.textContent = '⏹';
+  btn.disabled = false;
+  label.innerHTML = `<span class="rec-status-dot"></span><strong style="color:var(--coral)">Đang ghi âm...</strong> ${isMobile ? 'Bấm ⏹ để dừng' : 'Nói câu này rồi chờ tự chấm'}`;
 
   try {
-    rec.start();
-  } catch(e) {
-    clearTimeout(state.safetyTimer);
+    // 1. Xin quyền thu âm Audio thực tế (để có thể "Nghe lại")
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    state.mediaRec = new MediaRecorder(stream);
+    state.mediaRec.ondataavailable = e => { if (e.data.size > 0) state.audioChunks.push(e.data); };
+    state.mediaRec.onstop = () => {
+      state.blob = new Blob(state.audioChunks, { type: 'audio/webm' });
+      pbk.classList.add('show'); // Hiển thị nút nghe lại
+      stream.getTracks().forEach(t => t.stop()); // Tắt mic
+    };
+    state.mediaRec.start();
+
+    // 2. Chấm điểm bằng SpeechRecognition (Chỉ áp dụng trên máy tính)
+    if (!isMobile) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SR) {
+        const rec = new SR();
+        rec.lang = 'en-US';
+        rec.continuous = false;
+        rec.interimResults = true;
+        rec.maxAlternatives = 1;
+        state.recognition = rec;
+
+        rec.onresult = (event) => {
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const text = event.results[i][0].transcript.trim();
+            if (!text) continue;
+            if (event.results[i].isFinal) state.bestFinal += (state.bestFinal ? ' ' : '') + text;
+            else { state.latestInterim = text; state.allInterim = text; }
+            
+            const show = state.bestFinal || state.latestInterim;
+            if (interim && show) interim.innerHTML = `<span style="color:var(--terracotta)">🎤 ${show}</span>`;
+          }
+        };
+
+        rec.onerror = (event) => { console.warn('[SR onerror]', event.error); };
+        
+        rec.onend = () => {
+          if (state.active) {
+            state.active = false;
+            if (state.mediaRec && state.mediaRec.state !== 'inactive') state.mediaRec.stop();
+            setTimeout(() => doFinalize(id, targetText), 350);
+          }
+        };
+        
+        rec.start();
+      }
+    }
+
+    // Timer an toàn phòng khi bị treo
+    state.safetyTimer = setTimeout(() => {
+      if (state.active) {
+        state.active = false;
+        if (state.recognition) state.recognition.abort();
+        if (state.mediaRec && state.mediaRec.state !== 'inactive') state.mediaRec.stop();
+        doFinalize(id, targetText);
+      }
+    }, isMobile ? 15000 : 12000);
+
+  } catch (err) {
     state.active = false;
-    console.error('[SR start]', e);
-    label.innerHTML = '<strong style="color:var(--coral)">Lỗi Micro.</strong> Tải lại trang và thử lại.';
+    btn.classList.remove('recording'); btn.textContent = '🎤';
+    label.innerHTML = '<strong style="color:var(--coral)">Chưa cấp quyền Micro!</strong><br><span style="font-size:11px">Cài đặt → Quyền trang web → Micro → Cho phép</span>';
+    console.error('[Record Error]', err);
+  }
+}
+
+function toggleRecord(id, targetText) {
+  const state = recState[id];
+  if (state && state.active) {
+    // Người dùng bấm dừng thủ công
+    state.active = false;
+    clearTimeout(state.safetyTimer);
+    const label = document.getElementById(`${id}-reclabel`);
+    if (label) label.innerHTML = `<span class="rec-status-dot"></span><strong style="color:var(--sage-deep)">Đang xử lý...</strong> chờ chút`;
+
+    if (state.recognition) state.recognition.stop();
+    if (state.mediaRec && state.mediaRec.state !== 'inactive') state.mediaRec.stop();
+
+    if (isMobile) {
+      setTimeout(() => doFinalize(id, targetText), 100);
+    }
+  } else {
+    startRecord(id, targetText);
   }
 }
 
@@ -752,30 +724,45 @@ function doFinalize(id, targetText) {
   const label   = document.getElementById(`${id}-reclabel`);
   const interim = document.getElementById(`${id}-interim`);
 
-  // Reset UI
+  // Reset UI nút bấm
   btn.classList.remove('recording');
   btn.textContent = '🎤';
   btn.disabled = false;
   if (interim) interim.textContent = '';
 
-  // Lấy transcript: ưu tiên final, fallback sang interim
-  const transcript = (state.bestFinal || state.allInterim || '').trim();
+  if (isMobile) {
+    // Chỉ hiển thị thông báo ghi âm thành công, BỎ QUA logic chấm điểm
+    const badge = document.getElementById(`${id}-score`);
+    badge.className = 'score-badge show ok';
+    badge.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:18px">✅</span>
+        <strong>Đã ghi âm xong!</strong>
+      </div>
+      <div style="font-size:12px;margin-top:4px;opacity:0.8">
+        Bấm <strong>▶ Nghe lại</strong> để tự so sánh phát âm của bạn với mẫu nhé.
+      </div>
+    `;
+    label.innerHTML = '<strong>Bấm mic</strong> để thu âm lại';
+  } else {
+    // Có cả chấm điểm trên Desktop
+    const transcript = (state.bestFinal || state.allInterim || '').trim();
 
-  if (!transcript) {
-    const score = document.getElementById(`${id}-score`);
-    renderScore(score, label, 0, targetText.toLowerCase().replace(/[^\w\s']/g,'').split(/\s+/), []);
-    return;
+    if (!transcript) {
+      const scoreBadge = document.getElementById(`${id}-score`);
+      renderScore(scoreBadge, label, 0, targetText.toLowerCase().replace(/[^\w\s']/g,'').split(/\s+/), []);
+      return;
+    }
+
+    label.innerHTML = '<strong>Đang chấm điểm...</strong>';
+    scoreProunciation(id, targetText, transcript);
   }
-
-  label.innerHTML = '<strong>Đang chấm điểm...</strong>';
-  scoreProunciation(id, targetText, transcript);
 }
 
-// stopRecord không dùng nữa, giữ lại để không báo lỗi nếu HTML cũ gọi
 function stopRecord(id, targetText) { toggleRecord(id, targetText); }
 
 // ═══════════════════════════════════════════════════════
-//  SCORING
+//  SCORING (CHỈ HOẠT ĐỘNG TRÊN DESKTOP)
 // ═══════════════════════════════════════════════════════
 function scoreProunciation(id, targetText, transcript) {
   const label  = document.getElementById(`${id}-reclabel`);
