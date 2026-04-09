@@ -256,44 +256,45 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
-// KHÔNG CÒN MẢNG DAYS CỨNG NỮA - KHỞI TẠO RỖNG ĐỂ CHỜ KÉO TỪ FIREBASE
+// KHỞI TẠO RỖNG ĐỂ CHỜ KÉO TỪ FIREBASE
 let TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
 let DAYS = []; 
  
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
-    window.location.href = 'lani-be-a-gift.html'; // Yêu cầu đăng nhập
+    window.location.href = 'lani-be-a-gift.html'; 
   } else {
     currentUser = user;
     
     // 1. Tải dữ liệu bài học từ Firebase
     await fetchLessonData();
     
-    // 2. Nếu tải được dữ liệu, render giao diện. Nếu không, báo lỗi rõ ràng.
+    // 2. Nếu tải được dữ liệu, render giao diện. Nếu không, báo lỗi.
     if (DAYS && DAYS.length > 0) {
       await fetchProgress();
       document.getElementById('loading-overlay').style.display = 'none';
     } else {
       document.getElementById('spinner-icon').style.display = 'none';
-      document.getElementById('loading-text').innerHTML = "Chưa có dữ liệu bài học!<br><span style='font-size:12px'>Vui lòng kiểm tra lại Firestore (lessons > topic_01)</span>";
+      document.getElementById('loading-text').innerHTML = "Chưa có dữ liệu bài học!<br><span style='font-size:12px'>Vui lòng kiểm tra lại Firestore (topics > topic01)</span>";
       document.getElementById('loading-text').style.color = "var(--coral)";
     }
   }
 });
 
 // ═══════════════════════════════════════════════════════
-//  TẢI DỮ LIỆU TỪ FIREBASE (Thay thế dữ liệu cứng)
+//  TẢI DỮ LIỆU TỪ FIREBASE 
 // ═══════════════════════════════════════════════════════
 async function fetchLessonData() {
   try {
-    const docRef = db.collection("lessons").doc("topic_01");
+    // Đã cập nhật lại đúng Collection và Document theo ảnh bạn cung cấp
+    const docRef = db.collection("topics").doc("topic01");
     const docSnap = await docRef.get();
 
     if (docSnap.exists) {
       const data = docSnap.data();
       DAYS = data.days || []; 
     } else {
-      console.error("Không tìm thấy dữ liệu (Document 'topic_01' không tồn tại).");
+      console.error("Không tìm thấy dữ liệu (Document 'topic01' không tồn tại trong collection 'topics').");
     }
   } catch (error) {
     console.error("Lỗi tải dữ liệu bài học:", error);
