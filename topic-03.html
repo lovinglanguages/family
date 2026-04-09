@@ -501,7 +501,19 @@ async function fetchProgress() {
     const topicDoc = await db.collection("topics").doc("topic03").get();
     if (topicDoc.exists) {
       const data = topicDoc.data();
-      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
+      
+      // KIỂM TRA VÀ GÁN START DAY MẶC ĐỊNH LÀ 21 NẾU BỊ LỖI HOẶC THIẾU
+      let dStart = Number(data.startDay);
+      if (!dStart || dStart === 1 || dStart === 11) {
+          dStart = 21;
+      }
+
+      TOPIC = { 
+        num: data.num || 3, 
+        name: data.name || "Meal Time", 
+        startDay: dStart 
+      };
+      
       DAYS = data.days;
     } else {
       console.error("Không tìm thấy dữ liệu Topic 03 trên Firebase!");
@@ -732,6 +744,7 @@ function buildPanel(day, i, globalDay) {
 }
 
 function buildVocabHTML(vocab, i) {
+  if(!vocab) return '';
   return vocab.map(v => `
     <div class="vocab-card">
       <div class="vocab-top">
@@ -759,6 +772,7 @@ function buildVocabHTML(vocab, i) {
 }
 
 function buildShadowHTML(lines, i) {
+  if(!lines) return '';
   return lines.map((l, li) => {
     const id = `sh-${i}-${li}`;
     const safeEn = l.en.replace(/'/g, "\\'");
@@ -849,6 +863,7 @@ function switchMode(dayIdx, mode, btn) {
 // ═══════════════════════════════════════════════════════
 function updateFlashcard(i) {
   const day = DAYS[i];
+  if(!day || !day.dialogue) return;
   const cards = day.dialogue;
   const idx = fcIdx[i];
   const card = cards[idx];
@@ -882,6 +897,7 @@ function renderQuiz(i) {
 
 function renderQuizQuestion(i) {
   const qs = DAYS[i].quiz;
+  if(!qs) return;
   const state = quizState[i];
   if (state.idx >= qs.length) {
     document.getElementById(`quiz-body-${i}`).innerHTML = `
@@ -942,6 +958,7 @@ function renderDict(i) {
 
 function renderDictItem(i) {
   const items = DAYS[i].dictation;
+  if(!items) return;
   const state = dictState[i];
   if (state.idx >= items.length) {
     document.getElementById(`dict-body-${i}`).innerHTML = `
