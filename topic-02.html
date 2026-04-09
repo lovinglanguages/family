@@ -427,7 +427,19 @@ async function fetchProgress() {
     const topicDoc = await db.collection("topics").doc("topic02").get();
     if (topicDoc.exists) {
       const data = topicDoc.data();
-      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
+      
+      // KIỂM TRA VÀ GÁN START DAY MẶC ĐỊNH LÀ 11 NẾU BỊ LỖI
+      let dStart = Number(data.startDay);
+      if (!dStart || dStart === 1) {
+          dStart = 11;
+      }
+
+      TOPIC = { 
+        num: data.num || 2, 
+        name: data.name || "Getting Dressed", 
+        startDay: dStart 
+      };
+      
       DAYS = data.days;
     } else {
       console.error("Không tìm thấy dữ liệu Topic 02 trên Firebase!");
