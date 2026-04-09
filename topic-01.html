@@ -19,62 +19,310 @@
     --radius: 16px; --radius-sm: 10px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
-  header { background:var(--warm-white); border-bottom:1px solid var(--border); padding:0 20px; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta); }
-  .logo span { font-style:italic; }
-  .home-btn { padding:6px 14px; border-radius:8px; border:1px solid var(--border); font-size:12px; color:var(--ink-muted); background:none; cursor:pointer; text-decoration:none; display:flex; align-items:center; gap:5px; }
-  .home-btn:hover { background:var(--blush); }
-  .topic-hero { background:var(--warm-white); padding:28px 20px 20px; border-bottom:1px solid var(--border); }
-  .topic-eyebrow { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; -webkit-tap-highlight-color:transparent; }
+
+  /* ── HEADER ── */
+  header {
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+    padding:0 20px; height:56px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+  }
+  .logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta); font-weight:600; }
+  .logo span { font-style:italic; font-weight:400; }
+  .home-btn {
+    padding:6px 14px; border-radius:8px; border:1px solid var(--border);
+    font-size:12px; color:var(--ink-muted); background:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; text-decoration:none;
+    display:flex; align-items:center; gap:5px; transition: 0.2s;
+  }
+  .home-btn:hover { background:var(--blush); color:var(--terracotta); }
+
+  /* ── TOPIC HERO ── */
+  .topic-hero {
+    background:var(--warm-white); padding:28px 20px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .topic-eyebrow { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; font-weight:500; }
   .topic-title { font-family:'Playfair Display',serif; font-size:26px; color:var(--ink); margin-bottom:4px; }
+  .topic-title em { color:var(--terracotta); font-style:italic; }
   .topic-vn { font-size:13px; color:var(--ink-muted); }
-  .days-nav { display:flex; gap:8px; padding:16px 20px; overflow-x:auto; background:var(--warm-white); border-bottom:1px solid var(--border); scrollbar-width:none; }
+
+  /* ── DAYS NAV ── */
+  .days-nav {
+    display:flex; gap:8px; padding:16px 20px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+    scrollbar-width:none;
+  }
   .days-nav::-webkit-scrollbar { display:none; }
-  .day-pill { flex-shrink:0; width:44px; height:44px; border-radius:50%; border:1px solid var(--border); background:var(--warm-white); font-size:13px; font-weight:500; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--ink-muted); }
-  .day-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
+  .day-pill {
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--border); background:var(--warm-white);
+    font-size:13px; font-weight:500; cursor:pointer;
+    transition:all 0.2s; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1px;
+    font-family:'DM Sans',sans-serif; color:var(--ink-muted);
+  }
+  .day-pill:hover { background:var(--blush); border-color:var(--rose); }
+  .day-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); box-shadow: 0 4px 12px rgba(201, 118, 74, 0.25); }
   .day-pill.done { background:var(--sage-light); color:var(--sage-deep); border-color:var(--sage); }
-  .day-panel { display:none; }
+  .day-pill-num { font-size:14px; font-weight:500; line-height:1; }
+  .day-pill-check { font-size:9px; line-height:1; }
+
+  .fs-pill {
+    flex-shrink:0; padding:0 16px; height:44px; border-radius:22px;
+    border:1px solid var(--border); background:var(--warm-white);
+    font-size:12px; font-weight:500; cursor:pointer;
+    transition:all 0.2s; display:flex; align-items:center; gap:5px;
+    font-family:'DM Sans',sans-serif; color:var(--ink-muted); white-space:nowrap;
+  }
+  .fs-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
+
+  /* ── DAY PANEL ── */
+  .day-panel { display:none; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .day-panel.active { display:block; }
-  .day-header { padding:20px 20px 16px; background:var(--warm-white); border-bottom:1px solid var(--border); }
+
+  /* ── DAY HEADER ── */
+  .day-header {
+    padding:20px 20px 16px;
+    background:var(--warm-white); border-bottom:1px solid var(--border);
+  }
+  .day-num-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-muted); margin-bottom:4px; }
   .day-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); margin-bottom:6px; }
-  .day-dialogue-preview { display:flex; flex-direction:column; gap:6px; padding:14px 16px; background:var(--blush); border-radius:var(--radius-sm); margin-top:10px; }
-  .dialogue-line { font-size:13px; line-height:1.5; }
-  .dialogue-line strong { color:var(--terracotta); }
-  .mode-tabs { display:flex; gap:6px; padding:14px 20px; overflow-x:auto; background:var(--warm-white); border-bottom:1px solid var(--border); scrollbar-width:none; }
-  .mode-tab { flex-shrink:0; padding:7px 14px; border-radius:99px; border:1px solid var(--border); font-size:12px; cursor:pointer; background:var(--warm-white); color:var(--ink-soft); }
+  .day-dialogue-preview {
+    display:flex; flex-direction:column; gap:8px;
+    padding:14px 16px; background:var(--blush);
+    border-radius:var(--radius-sm); margin-top:10px; border: 1px dashed var(--rose);
+  }
+  .dialogue-line { font-size:13px; line-height:1.5; color: var(--ink-soft); }
+  .dialogue-line strong { color:var(--terracotta); font-weight: 500; }
+  .dialogue-line .vn { color:var(--ink-muted); font-style:italic; font-size:12px; margin-top: 2px; }
+
+  /* ── MODE TABS ── */
+  .mode-tabs {
+    display:flex; gap:6px; padding:14px 20px;
+    overflow-x:auto; background:var(--warm-white);
+    border-bottom:1px solid var(--border); scrollbar-width:none;
+    position: sticky; top: 56px; z-index: 90;
+  }
+  .mode-tabs::-webkit-scrollbar { display:none; }
+  .mode-tab {
+    flex-shrink:0; padding:8px 16px; border-radius:99px;
+    border:1px solid var(--border); font-size:12px;
+    font-family:'DM Sans',sans-serif; cursor:pointer;
+    transition:all 0.2s; background:var(--warm-white);
+    color:var(--ink-soft); white-space:nowrap;
+  }
   .mode-tab.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
-  .mode-content { padding:20px; display:none; }
+
+  /* ── MODE CONTENT ── */
+  .mode-content { padding:20px; display:none; min-height: 400px; }
   .mode-content.active { display:block; }
-  .fc-wrap { perspective:1000px; height:240px; margin-bottom:20px; }
-  .fc { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.5s; cursor:pointer; }
+
+  /* ── FLASHCARD ── */
+  .fc-wrap { perspective:1000px; height:260px; margin-bottom:20px; }
+  .fc {
+    width:100%; height:100%; position:relative;
+    transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor:pointer;
+  }
   .fc.flipped { transform:rotateY(180deg); }
-  .fc-front, .fc-back { position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center; }
+  .fc-front, .fc-back {
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:var(--radius); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:24px; text-align:center;
+    box-shadow: 0 4px 15px rgba(44, 36, 22, 0.05);
+  }
   .fc-front { background:var(--warm-white); border:1px solid var(--border); }
-  .fc-back { background:var(--terracotta); transform:rotateY(180deg); }
-  .fc-en { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); }
-  .fc-vn { font-family:'Playfair Display',serif; font-size:20px; color:white; }
-  .fc-nav { display:flex; align-items:center; justify-content:center; gap:16px; }
-  .fc-btn { width:42px; height:42px; border-radius:50%; border:1px solid var(--border); background:var(--warm-white); cursor:pointer; }
-  .vocab-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:14px; padding:18px; }
-  .vocab-word { font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); }
-  .quiz-q-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:22px 20px; margin-bottom:16px; }
-  .quiz-opt { width:100%; padding:13px 16px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--warm-white); cursor:pointer; margin-bottom:8px; text-align:left; }
-  .quiz-opt.correct { background:var(--sage-light); border-color:var(--sage); color:var(--sage-deep); }
-  .quiz-opt.wrong { background:var(--coral-light); border-color:var(--coral); }
-  .dict-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:24px 20px; text-align:center; }
-  .dict-input { width:100%; padding:13px 16px; border-radius:var(--radius-sm); border:1.5px solid var(--border); text-align:center; outline:none; margin-top:15px; }
-  .shadow-card { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; margin-bottom:12px; }
-  .shadow-en { font-family:'Playfair Display',serif; font-size:18px; color:var(--ink); }
-  .shadow-btn { padding:9px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); cursor:pointer; font-size:12px; }
-  .shadow-btn.primary { background:var(--terracotta); color:white; }
-  .rec-btn { width:44px; height:44px; border-radius:50%; border:none; background:var(--blush); color:var(--terracotta); cursor:pointer; }
-  .rec-btn.recording { background:var(--coral); color:white; animation: pulse 1s infinite; }
-  @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(232,133,106,0.7);} 70% {box-shadow: 0 0 0 10px rgba(232,133,106,0);} 100% {box-shadow: 0 0 0 0 rgba(232,133,106,0);} }
-  .finish-btn { width:100%; padding:14px; border-radius:99px; border:none; background:var(--terracotta); color:white; cursor:pointer; }
-  #panel-fullscript { display:none; padding:20px; }
+  .fc-back { background:var(--terracotta); transform:rotateY(180deg); color: white; }
+  .fc-en { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-bottom:8px; line-height: 1.3; }
+  .fc-speaker { font-size:11px; color:var(--ink-muted); letter-spacing:1.5px; text-transform:uppercase; font-weight: 500; }
+  .fc-vn { font-family:'Playfair Display',serif; font-size:20px; color:white; margin-bottom:10px; line-height: 1.3; }
+  .fc-note { font-size:13px; color:rgba(255,255,255,0.85); font-style:italic; line-height:1.5; }
+  
+  .fc-nav { display:flex; align-items:center; justify-content:center; gap:20px; }
+  .fc-btn {
+    width:48px; height:48px; border-radius:50%; border:1px solid var(--border);
+    background:var(--warm-white); font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+  }
+  .fc-btn:hover { background:var(--blush); border-color: var(--rose); }
+  .fc-count { font-size:13px; color:var(--ink-muted); min-width:70px; text-align:center; font-weight: 500; }
+
+  /* ── VOCAB ── */
+  .vocab-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden; margin-bottom:16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  }
+  .vocab-top {
+    padding:16px 20px; border-bottom:1px solid var(--border);
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; background: rgba(201, 118, 74, 0.03);
+  }
+  .vocab-word { font-family:'Playfair Display',serif; font-size:20px; color:var(--terracotta); font-weight: 600; }
+  .vocab-phonetic { font-family:'DM Mono',monospace; font-size:13px; color:var(--ink-muted); }
+  .vocab-body { padding:18px 20px; }
+  .vocab-meaning { font-size:15px; color:var(--ink); font-weight:500; margin-bottom:12px; }
+  .vocab-row { display:flex; gap:10px; margin-bottom:8px; font-size:13px; line-height:1.5; }
+  .vr-label {
+    color:var(--terracotta); font-weight:600; min-width:85px; flex-shrink:0;
+    font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding-top:2px;
+  }
+  .vr-val { color:var(--ink-soft); flex: 1; }
+  .vr-vn { color:var(--ink-muted); font-size:12px; font-style:italic; margin-top:2px; }
+  
+  .speak-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 14px; border-radius:99px; border:1px solid var(--border);
+    background:var(--warm-white); font-size:12px; color:var(--ink-muted);
+    cursor:pointer; margin-top:12px; font-family:'DM Sans',sans-serif; transition:all 0.2s;
+  }
+  .speak-btn:hover { background:var(--blush); border-color: var(--rose); color: var(--terracotta); }
+
+  /* ── QUIZ ── */
+  .quiz-q-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:24px 20px; margin-bottom:18px;
+    text-align: center;
+  }
+  .quiz-q-num { font-size:11px; color:var(--ink-muted); margin-bottom:8px; letter-spacing:1px; text-transform:uppercase; }
+  .quiz-q-text { font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); line-height: 1.3; }
+  .quiz-opts { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+  .quiz-opt {
+    padding:14px 18px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--warm-white);
+    cursor:pointer; font-size:14px; color:var(--ink-soft); transition:all 0.2s;
+    text-align:left; font-family:'DM Sans',sans-serif;
+  }
+  .quiz-opt:hover { background:var(--blush); border-color:var(--rose); }
+  .quiz-opt.correct { background:var(--sage-light); border-color:var(--sage); color:var(--sage-deep); font-weight: 500; }
+  .quiz-opt.wrong { background:var(--coral-light); border-color:var(--coral); color:#7A2E1A; }
+  .quiz-fb {
+    padding:14px 18px; border-radius:var(--radius-sm);
+    font-size:13px; line-height:1.6; display:none; margin-bottom:16px;
+  }
+  .quiz-fb.show { display:block; animation: slideIn 0.3s ease; }
+  @keyframes slideIn { from { transform: translateY(-5px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .quiz-fb.ok { background:var(--sage-light); color:var(--sage-deep); border-left: 4px solid var(--sage); }
+  .quiz-fb.nope { background:var(--coral-light); color:#7A2E1A; border-left: 4px solid var(--coral); }
+  
+  .quiz-next {
+    width:100%; padding:15px; border-radius:var(--radius-sm);
+    border:none; background:var(--terracotta); color:white;
+    font-size:14px; font-family:'DM Sans',sans-serif; font-weight:600;
+    cursor:pointer; transition:all 0.2s;
+  }
+  .quiz-next:disabled { opacity:0.3; cursor:not-allowed; }
+
+  /* ── DICTATION ── */
+  .dict-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:30px 20px; text-align:center; margin-bottom:20px;
+  }
+  .dict-blanks { font-family:'DM Mono',monospace; font-size:26px; letter-spacing:4px; color:var(--terracotta); margin-bottom:12px; font-weight: 600; }
+  .dict-hint { font-size:12px; color:var(--ink-muted); margin-bottom:24px; line-height: 1.5; }
+  .play-btn {
+    width:64px; height:64px; border-radius:50%; border:none;
+    background:var(--terracotta); color:white; font-size:24px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin:0 auto 24px; transition:all 0.3s; box-shadow: 0 4px 12px rgba(201, 118, 74, 0.3);
+  }
+  .play-btn:hover { transform: scale(1.08); background: var(--terra-deep); }
+  .play-btn.playing { background:var(--sage); animation: pulseDict 1.2s infinite; }
+  @keyframes pulseDict { 0% { box-shadow: 0 0 0 0 rgba(122, 158, 135, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(122, 158, 135, 0); } 100% { box-shadow: 0 0 0 0 rgba(122, 158, 135, 0); } }
+  .dict-input {
+    width:100%; padding:15px; border-radius:var(--radius-sm);
+    border:2px solid var(--border); font-size:16px;
+    font-family:'DM Sans',sans-serif; color:var(--ink);
+    background:var(--cream); text-align:center; outline:none; transition: all 0.2s;
+  }
+  .dict-input:focus { border-color:var(--terracotta); background: white; }
+  .dict-input.correct { border-color:var(--sage); background:var(--sage-light); color: var(--sage-deep); }
+
+  /* ── SHADOWING ── */
+  .shadow-card {
+    background:var(--warm-white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:20px; margin-bottom:16px;
+  }
+  .shadow-speaker { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--terracotta); margin-bottom:8px; font-weight:600; }
+  .shadow-en { font-family:'Playfair Display',serif; font-size:19px; color:var(--ink); margin-bottom:6px; line-height:1.4; }
+  .shadow-vn { font-size:13px; color:var(--ink-muted); font-style:italic; margin-bottom:15px; }
+  .shadow-btns { display:flex; gap:10px; }
+  .shadow-btn {
+    flex:1; padding:10px 14px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--warm-white);
+    font-size:12px; font-family:'DM Sans',sans-serif; font-weight: 500;
+    cursor:pointer; transition:all 0.2s; color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .shadow-btn.primary { background:var(--terracotta); color:white; border-color:var(--terracotta); }
+
+  /* ── RECORDER ── */
+  .rec-zone { margin-top:16px; border-top:1px solid var(--border); padding-top:16px; }
+  .rec-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .rec-btn {
+    width:46px; height:46px; border-radius:50%; border:none;
+    background:var(--blush); color:var(--terracotta);
+    font-size:20px; cursor:pointer; transition:all 0.25s;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .rec-btn.recording { background:var(--coral); color:white; animation: recPulse 1.5s infinite; }
+  @keyframes recPulse { 0% { box-shadow: 0 0 0 0 rgba(232, 133, 106, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(232, 133, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(232, 133, 106, 0); } }
+  .rec-label { font-size:12px; color:var(--ink-muted); }
+  .playback-btn {
+    padding:6px 14px; border-radius:99px; border:1px solid var(--border);
+    background:var(--warm-white); font-size:11px; color:var(--ink-muted);
+    cursor:pointer; font-family:'DM Sans',sans-serif; display:none;
+  }
+  .playback-btn.show { display:inline-flex; align-items:center; gap:5px; }
+
+  .score-badge { display:none; margin-top:10px; padding:15px; border-radius:var(--radius-sm); font-size:13px; }
+  .score-badge.show { display:block; animation: fadeIn 0.4s; }
+  .score-badge.excellent { background:#EAF3DE; border:1px solid #7A9E87; color:#27500A; }
+  .score-badge.good { background:var(--sunny-light); border:1px solid var(--sunny); color:#7A5A00; }
+  .score-badge.retry { background:var(--coral-light); border:1px solid var(--coral); color:#7A2E1A; }
+  .score-bar-wrap { height:6px; background:rgba(0,0,0,0.05); border-radius:99px; margin:10px 0 6px; overflow:hidden; }
+  .score-bar { height:100%; border-radius:99px; transition:width 0.8s ease-out; }
+
+  /* ── DONE BANNER ── */
+  .done-banner {
+    background:var(--sage-light); border:1px solid var(--sage);
+    border-radius:var(--radius); padding:24px; text-align:center; margin-bottom:20px;
+    display:none; box-shadow: 0 4px 12px rgba(122, 158, 135, 0.15);
+  }
+  .done-banner.show { display:block; }
+  .done-banner-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--sage-deep); margin-bottom:8px; }
+  .done-banner-sub { font-size:14px; color:var(--sage-deep); opacity: 0.9; }
+
+  .finish-btn {
+    width:100%; padding:16px; border-radius:99px; border:none;
+    background:var(--terracotta); color:white;
+    font-size:15px; font-family:'DM Sans',sans-serif; font-weight:600;
+    cursor:pointer; transition:all 0.2s; margin-top:10px;
+  }
+  .finish-btn:hover { background:var(--terra-deep); transform: translateY(-2px); }
+
+  /* ── FULL SCRIPT ── */
+  #panel-fullscript { display:none; }
   #panel-fullscript.active { display:block; }
-  .fs-day-block { background:white; border:1px solid var(--border); border-radius:12px; margin-bottom:10px; padding:15px; }
+  .fs-day-block { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+  .fs-day-header { padding:16px 20px; display:flex; align-items:center; gap:15px; cursor:pointer; }
+  .fs-day-num { width:36px; height:36px; border-radius:50%; background:var(--blush); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; color:var(--terracotta); font-weight: 600; }
+  .fs-day-num.done { background:var(--sage-light); color:var(--sage-deep); }
+  .fs-day-title { flex:1; font-weight:500; font-size:15px; }
+  .fs-dialogue { padding:0 20px; max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+  .fs-dialogue.open { max-height:1200px; padding:15px 20px 20px; border-top: 1px solid var(--border); }
+  .fs-line { margin-bottom:15px; }
+  .fs-en { font-family:'Playfair Display',serif; font-size:17px; margin-bottom:4px; color: var(--ink); }
+  .fs-vn { font-size:13px; color:var(--ink-muted); font-style:italic; }
+
+  @media print {
+    header, .days-nav, .topic-hero, .day-panel, .mode-tabs, .shadow-btns, .rec-zone, .finish-btn { display:none !important; }
+    #panel-fullscript { display:block !important; }
+    .fs-dialogue { max-height:none !important; padding:15px 20px !important; }
+    body { background: white; }
+  }
 </style>
 </head>
 <body>
@@ -87,7 +335,7 @@
 <div class="topic-hero">
   <div class="topic-eyebrow">Topic 01 · 10 ngày</div>
   <div class="topic-title">☀️ Morning <em>Routine</em></div>
-  <div class="topic-vn">Chào ngày mới năng lượng</div>
+  <div class="topic-vn">Chào ngày mới năng lượng & Tỉnh thức</div>
 </div>
 
 <div class="days-nav" id="daysNav"></div>
@@ -95,215 +343,711 @@
 <div id="panels"></div>
 
 <script>
+// ═══════════════════════════════════════════════════════
+//  DATA — 10 Ngày chi tiết (Nội dung mới - Cấu trúc dày)
+// ═══════════════════════════════════════════════════════
+const TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
+
 const DAYS = [
+  // ─── Day 1 ────────────────────────────────────────
   {
     title: 'Đánh thức sâu ngủ',
     dialogue: [
-      { speaker: 'Mom', en: "Wakey wakey, sleepyhead! It's time to get up.", vn: 'Dậy thôi, dậy thôi nào sâu ngủ ơi! Đến giờ thức dậy rồi.', note: '' },
-      { speaker: 'Child', en: 'Good morning, Mommy... Just five more minutes?', vn: 'Chào buổi sáng mẹ yêu... Cho con nằm thêm 5 phút nữa thôi được không ạ?', note: 'Bé ngáp và vươn vai' },
+      { speaker: 'Mom', en: "Wakey wakey, sleepyhead! It's time to get up.", vn: 'Dậy thôi, dậy thôi nào sâu ngủ ơi! Đến giờ thức dậy rồi.', note: 'Mẹ vỗ nhẹ vào vai bé' },
+      { speaker: 'Child', en: 'Good morning, Mommy... Just five more minutes?', vn: 'Chào buổi sáng mẹ yêu... Cho con nằm thêm 5 phút nữa thôi được không ạ?', note: 'Bé ngáp dài' },
     ],
     vocab: [
-      { en: 'Sleepyhead', phonetic: '/ˈsliːpihed/', meaning: 'Sâu ngủ (cách gọi trêu đùa bé lười dậy)', example: 'Wake up, sleepyhead!', exampleVn: 'Dậy đi đồ sâu ngủ!' },
-      { en: 'Five more minutes', phonetic: '/faɪv mɔːr ˈmɪnɪts/', meaning: '5 phút nữa thôi', example: 'Just five more minutes, please.', exampleVn: 'Chỉ 5 phút nữa thôi ạ.' }
+      {
+        en: 'Sleepyhead', phonetic: '/ˈsliːpihed/', speaker: 'Mom',
+        meaning: 'Sâu ngủ (cách gọi yêu cho bé lười dậy)',
+        synonym: 'Drowsy head, late riser', synonymVn: 'người ngái ngủ, người dậy muộn',
+        collocation: 'Wake up, sleepyhead!', collocationVn: 'Dậy đi sâu ngủ ơi!',
+        example: '"Come on, sleepyhead! The sun is high in the sky."', exampleVn: '"Dậy thôi sâu ngủ ơi! Mặt trời lên cao rồi kìa."'
+      },
+      {
+        en: 'Get up', phonetic: '/ɡet ʌp/', speaker: 'Mom',
+        meaning: 'Thức dậy / Ra khỏi giường',
+        synonym: 'Wake up, rise', synonymVn: 'dậy, thức giấc',
+        collocation: 'time to get up, struggle to get up', collocationVn: 'giờ phải dậy rồi, khó mà dậy nổi',
+        example: '"I have to get up early for school."', exampleVn: '"Con phải dậy sớm để đi học."'
+      }
     ],
-    quiz: [{ q: 'Bé gọi mẹ là gì?', opts: ['Teacher','Mommy','Sister'], ans: 1, exp: 'Bé gọi là "Mommy" (mẹ yêu).' }],
-    dictation: [{ text: 'Wakey wakey', hint: 'Dậy thôi nào', hintVn: 'Dậy thôi nào' }],
-    shadowing: [{ speaker: 'Mom', en: "Wakey wakey, sleepyhead!", vn: 'Dậy thôi nào sâu ngủ ơi!' }]
+    quiz: [
+      { q: 'Mẹ gọi bé là gì khi bé chưa muốn dậy?', opts: ['Sweetie','Sleepyhead','Baby'], ans: 1, exp: '"Sleepyhead" là cách gọi đáng yêu dành cho người lười dậy.' },
+      { q: 'Bé muốn ngủ thêm bao lâu?', opts: ['5 minutes','10 minutes','5 seconds'], ans: 0, exp: 'Bé mặc cả: "Just five more minutes?"' },
+      { q: '"Get up" có nghĩa là gì?', opts: ['Đi ngủ','Đi chơi','Thức dậy'], ans: 2, exp: '"Get up" là ra khỏi giường sau khi tỉnh giấc.' }
+    ],
+    dictation: [
+      { text: 'Wakey wakey', hint: 'Dậy thôi nào (vui vẻ)', hintVn: 'Cách đánh thức trẻ' },
+      { text: 'sleepyhead', hint: 'Con sâu ngủ', hintVn: 'Từ dành cho người chưa chịu dậy' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Wakey wakey, sleepyhead!", vn: 'Dậy thôi nào sâu ngủ ơi!' },
+      { speaker: 'Child', en: "Just five more minutes?", vn: 'Cho con nằm thêm 5 phút nữa thôi nhé?' }
+    ]
   },
+
+  // ─── Day 2 ────────────────────────────────────────
   {
     title: 'Ánh nắng rực rỡ',
     dialogue: [
-      { speaker: 'Mom', en: "Come on, let's open the curtains. Look! The sun is shining.", vn: 'Thôi nào, để mẹ kéo rèm ra nhé. Nhìn kìa! Nắng đang tỏa sáng rực rỡ luôn.', note: '' },
+      { speaker: 'Mom', en: "Come on, let's open the curtains. Look! The sun is shining.", vn: 'Thôi nào, để mẹ kéo rèm ra nhé. Nhìn kìa! Nắng đang tỏa sáng rực rỡ luôn.', note: 'Mẹ kéo rèm cửa' },
       { speaker: 'Child', en: "Okay, okay, I'm awake now.", vn: 'Dạ vâng, dạ vâng, con tỉnh ngủ rồi đây ạ.', note: '' },
     ],
     vocab: [
-      { en: 'Curtains', phonetic: '/ˈkɜːrtnz/', meaning: 'Rèm cửa', example: 'Open the curtains.', exampleVn: 'Mở rèm cửa ra.' },
-      { en: 'Shining', phonetic: '/ˈʃaɪnɪŋ/', meaning: 'Tỏa sáng rực rỡ' }
+      {
+        en: 'Curtains', phonetic: '/ˈkɜːrtnz/', speaker: 'Mom',
+        meaning: 'Rèm cửa / Màn cửa',
+        collocation: 'open the curtains, draw the curtains', collocationVn: 'mở rèm, kéo rèm',
+        example: '"Can you close the curtains? It\'s too bright."', exampleVn: '"Con khép rèm lại được không? Chói quá."'
+      },
+      {
+        en: 'Shining', phonetic: '/ˈʃaɪnɪŋ/', speaker: 'Mom',
+        meaning: 'Tỏa sáng / Chiếu sáng rực rỡ',
+        synonym: 'Bright, glowing', synonymVn: 'Sáng rực, rạng rỡ',
+        example: '"The sun is shining through the window."', exampleVn: '"Nắng đang chiếu qua cửa sổ."'
+      }
     ],
-    quiz: [{ q: 'Mẹ làm gì để con thấy nắng?', opts: ['Open the door','Open the curtains','Turn on lights'], ans: 1, exp: 'Mẹ mở rèm (open the curtains) để đón nắng.' }],
-    dictation: [{ text: 'The sun is shining', hint: 'Nắng đang tỏa sáng', hintVn: 'Nắng đang tỏa sáng' }],
-    shadowing: [{ speaker: 'Mom', en: "Look! The sun is shining.", vn: 'Nhìn kìa! Nắng đang tỏa sáng rực rỡ luôn.' }]
+    quiz: [
+      { q: 'Mẹ làm gì để đón ánh sáng?', opts: ['Open the door','Open the curtains','Turn on lights'], ans: 1, exp: '"Open the curtains" giúp ánh nắng tràn vào phòng.' },
+      { q: 'Bé khẳng định mình đã hết buồn ngủ bằng câu nào?', opts: ["I'm sleeping","I'm awake now","I'm hungry"], ans: 1, exp: '"I\'m awake now" = Con tỉnh rồi.' }
+    ],
+    dictation: [
+      { text: 'open the curtains', hint: 'Mở rèm', hintVn: 'hành động kéo rèm cửa' },
+      { text: 'shining', hint: 'đang tỏa sáng', hintVn: 'nói về mặt trời' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "The sun is shining.", vn: 'Nắng đang tỏa sáng rực rỡ luôn.' },
+      { speaker: 'Child', en: "I'm awake now.", vn: 'Con tỉnh ngủ rồi đây ạ.' }
+    ]
   },
+
+  // ─── Day 3 ────────────────────────────────────────
   {
     title: 'Rửa mặt tỉnh táo',
     dialogue: [
       { speaker: 'Mom', en: 'Good! Now go wash your face and freshen up.', vn: 'Ngoan lắm! Giờ con đi rửa mặt cho tỉnh táo đi nào.', note: '' },
-      { speaker: 'Child', en: 'Done! The water is so refreshing.', vn: 'Xong rồi ạ! Nước mát sảng khoái quá mẹ ơi.', note: '' },
+      { speaker: 'Child', en: 'Done! The water is so refreshing.', vn: 'Xong rồi ạ! Nước mát sảng khoái quá mẹ ơi.', note: 'Bé vỗ nước lên mặt' },
     ],
     vocab: [
-      { en: 'Freshen up', phonetic: '/ˈfreʃn ʌp/', meaning: 'Làm cho tỉnh táo/tươi tỉnh', example: 'I need to freshen up.', exampleVn: 'Con cần đi rửa mặt cho tỉnh táo.' },
-      { en: 'Refreshing', phonetic: '/rɪˈfreʃɪŋ/', meaning: 'Sảng khoái/mát mẻ' }
+      {
+        en: 'Freshen up', phonetic: '/ˈfreʃn ʌp/', speaker: 'Mom',
+        meaning: 'Làm cho tươi tỉnh / tỉnh táo lại',
+        example: '"I need a quick shower to freshen up."', exampleVn: '"Con cần tắm nhanh để tỉnh táo lại."'
+      },
+      {
+        en: 'Refreshing', phonetic: '/rɪˈfreʃɪŋ/', speaker: 'Child',
+        meaning: 'Sảng khoái / Làm mới lại',
+        synonym: 'Cool, revitalizing', synonymVn: 'Mát mẻ, hồi sức',
+        example: '"A cold drink is so refreshing on a hot day."', exampleVn: '"Nước lạnh thật sảng khoái vào ngày nóng."'
+      }
     ],
-    quiz: [{ q: 'Bé thấy nước như thế nào?', opts: ['Hot','Refreshing','Dirty'], ans: 1, exp: 'Nước mát sảng khoái (refreshing).' }],
-    dictation: [{ text: 'wash your face', hint: 'Rửa mặt', hintVn: 'Rửa mặt' }],
-    shadowing: [{ speaker: 'Child', en: 'The water is so refreshing.', vn: 'Nước mát sảng khoái quá mẹ ơi.' }]
+    quiz: [
+      { q: '"Freshen up" nghĩa là gì?', opts: ['Làm bẩn','Làm cho tươi tỉnh','Đi ngủ'], ans: 1, exp: 'Freshen up là vệ sinh cá nhân để thấy tỉnh táo hơn.' },
+      { q: 'Bé cảm thấy nước như thế nào?', opts: ['Hot','Warm','Refreshing'], ans: 2, exp: 'Nước mát giúp bé thấy "refreshing" (sảng khoái).' }
+    ],
+    dictation: [
+      { text: 'wash your face', hint: 'rửa mặt', hintVn: 'vệ sinh khuôn mặt' },
+      { text: 'refreshing', hint: 'sảng khoái', hintVn: 'cảm giác mát mẻ' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Go wash your face and freshen up.", vn: 'Con đi rửa mặt cho tỉnh táo đi nào.' },
+      { speaker: 'Child', en: "The water is so refreshing.", vn: 'Nước mát sảng khoái quá mẹ ơi.' }
+    ]
   },
+
+  // ─── Day 4 ────────────────────────────────────────
   {
     title: 'Đánh răng sạch tinh',
     dialogue: [
       { speaker: 'Mom', en: "Don't forget to brush your teeth too.", vn: 'Đừng quên đánh răng nữa nhé con.', note: '' },
-      { speaker: 'Child', en: 'Brush, brush, brush! My mouth feels so clean!', vn: 'Chà, chà, chà! Miệng con sạch tinh luôn rồi này!', note: '' },
+      { speaker: 'Child', en: 'Brush, brush, brush! My mouth feels so clean!', vn: 'Chà, chà, chà! Miệng con sạch tinh luôn rồi này!', note: 'Bé soi gương cười tươi' },
     ],
     vocab: [
-      { en: 'Brush your teeth', phonetic: '/brʌʃ jɔːr tiːθ/', meaning: 'Đánh răng' },
-      { en: 'Clean', phonetic: '/kliːn/', meaning: 'Sạch sẽ/Sạch tinh' }
+      {
+        en: 'Brush', phonetic: '/brʌʃ/', speaker: 'Child',
+        meaning: 'Đánh / Chà (răng/tóc)',
+        collocation: 'brush your teeth, brush your hair', collocationVn: 'đánh răng, chải tóc',
+        example: '"Brush your teeth twice a day."', exampleVn: '"Đánh răng hai lần một ngày con nhé."'
+      },
+      {
+        en: 'Clean', phonetic: '/kliːn/', speaker: 'Child',
+        meaning: 'Sạch sẽ / Sạch tinh',
+        synonym: 'Spotless, pure', synonymVn: 'Không vết bẩn, tinh khiết',
+        antonym: 'Dirty', antonymVn: 'Bẩn',
+        example: '"Keep your hands clean."', exampleVn: '"Hãy giữ đôi tay sạch sẽ."'
+      }
     ],
-    quiz: [{ q: 'Hành động "brush" là gì?', opts: ['Rửa mặt','Đánh răng','Uống nước'], ans: 1, exp: 'Brush teeth nghĩa là đánh răng.' }],
-    dictation: [{ text: 'brush your teeth', hint: 'Đánh răng', hintVn: 'Đánh răng' }],
-    shadowing: [{ speaker: 'Child', en: 'My mouth feels so clean!', vn: 'Miệng con sạch tinh luôn rồi!' }]
+    quiz: [
+      { q: 'Mẹ dặn bé không được quên (don\'t forget) làm gì?', opts: ['Brush teeth','Watch TV','Eat candy'], ans: 0, exp: 'Vệ sinh buổi sáng quan trọng nhất là đánh răng.' },
+      { q: '"Mouth" có nghĩa là gì?', opts: ['Cái mũi','Cái miệng','Đôi mắt'], ans: 1, exp: 'Mouth là bộ phận dùng để ăn và nói.' }
+    ],
+    dictation: [
+      { text: 'brush your teeth', hint: 'đánh răng', hintVn: 'vệ sinh răng miệng' },
+      { text: 'feels so clean', hint: 'cảm thấy thật sạch', hintVn: 'cảm giác sau khi đánh răng' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Don't forget to brush your teeth.", vn: 'Đừng quên đánh răng nữa nhé con.' },
+      { speaker: 'Child', en: "My mouth feels so clean!", vn: 'Miệng con sạch tinh luôn rồi này!' }
+    ]
   },
+
+  // ─── Day 5 ────────────────────────────────────────
   {
     title: 'Ấm bụng đầu ngày',
     dialogue: [
-      { speaker: 'Mom', en: 'Here, drink some warm water.', vn: 'Đây, con uống chút nước ấm đi.', note: '' },
-      { speaker: 'Child', en: 'Thanks, Mom. It warms my tummy.', vn: 'Con cảm ơn mẹ. Nước làm ấm bụng con quá.', note: '' },
+      { speaker: 'Mom', en: 'Here, drink some warm water.', vn: 'Đây, con uống chút nước ấm đi.', note: 'Mẹ đưa ly nước cho bé' },
+      { speaker: 'Child', en: 'Thanks, Mom. It warms my tummy.', vn: 'Con cảm ơn mẹ. Nước làm ấm bụng con quá.', note: 'Bé uống từng ngụm nhỏ' },
     ],
     vocab: [
-      { en: 'Warm water', phonetic: '/wɔːrm ˈwɔːtər/', meaning: 'Nước ấm' },
-      { en: 'Tummy', phonetic: '/ˈtʌmi/', meaning: 'Cái bụng (cách gọi dễ thương cho bé)' }
+      {
+        en: 'Warm water', phonetic: '/wɔːrm ˈwɔːtər/', speaker: 'Mom',
+        meaning: 'Nước ấm',
+        antonym: 'Ice water, cold water', antonymVn: 'Nước đá, nước lạnh',
+        example: '"Warm water is good for your digestion."', exampleVn: '"Nước ấm rất tốt cho tiêu hóa của con."'
+      },
+      {
+        en: 'Tummy', phonetic: '/ˈtʌmi/', speaker: 'Child',
+        meaning: 'Cái bụng (cách gọi dễ thương cho trẻ em)',
+        synonym: 'Stomach, belly', synonymVn: 'Dạ dày, bụng',
+        collocation: 'tummy ache, full tummy', collocationVn: 'đau bụng, no bụng',
+        example: '"My tummy is full after breakfast."', exampleVn: '"Bụng con no căng sau khi ăn sáng."'
+      }
     ],
-    quiz: [{ q: 'Nước ấm làm phần nào của bé thấy ấm?', opts: ['Hands','Tummy','Head'], ans: 1, exp: 'Nước làm ấm bụng (tummy).' }],
-    dictation: [{ text: 'warm water', hint: 'Nước ấm', hintVn: 'Nước ấm' }],
-    shadowing: [{ speaker: 'Child', en: 'It warms my tummy.', vn: 'Nước làm ấm bụng con quá.' }]
+    quiz: [
+      { q: 'Loại nước nào tốt cho bé vào buổi sáng?', opts: ['Ice water','Warm water','Soda'], ans: 1, exp: 'Nước ấm (warm water) giúp khởi động hệ tiêu hóa nhẹ nhàng.' },
+      { q: '"Warms" trong câu của bé có nghĩa là gì?', opts: ['Làm lạnh','Làm ấm','Làm ướt'], ans: 1, exp: 'Nước ấm đi vào bụng làm bé thấy ấm áp.' }
+    ],
+    dictation: [
+      { text: 'drink warm water', hint: 'uống nước ấm', hintVn: 'hành động mẹ dặn' },
+      { text: 'my tummy', hint: 'bụng của con', hintVn: 'bộ phận cơ thể' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Here, drink some warm water.", vn: 'Đây, con uống chút nước ấm đi.' },
+      { speaker: 'Child', en: "It warms my tummy.", vn: 'Nước làm ấm bụng con quá.' }
+    ]
   },
+
+  // ─── Day 6 ────────────────────────────────────────
   {
     title: 'Phút giây tĩnh lặng',
     dialogue: [
-      { speaker: 'Mom', en: "Come sit next to me for a minute. Let's sit quietly.", vn: 'Lại đây ngồi cạnh mẹ một lát. Hai mẹ con mình cùng ngồi tĩnh lặng nhé.', note: '' },
-      { speaker: 'Child', en: 'Like this? Should I close my eyes?', vn: 'Như thế này ạ? Con có nên nhắm mắt lại không mẹ?', note: '' },
+      { speaker: 'Mom', en: "Come sit next to me for a minute. Let's sit quietly.", vn: 'Lại đây ngồi cạnh mẹ một lát. Hai mẹ con mình cùng ngồi tĩnh lặng nhé.', note: 'Mẹ và bé ngồi xuống thảm' },
+      { speaker: 'Child', en: 'Like this? Should I close my eyes?', vn: 'Như thế này ạ? Con có nên nhắm mắt lại không mẹ?', note: 'Bé khoanh chân ngồi ngay ngắn' },
     ],
     vocab: [
-      { en: 'Quietly', phonetic: '/ˈkwaɪətli/', meaning: 'Tĩnh lặng/Một cách yên lặng' },
-      { en: 'Close my eyes', phonetic: '/kləʊz maɪ aɪz/', meaning: 'Nhắm mắt con lại' }
+      {
+        en: 'Sit quietly', phonetic: '/sɪt ˈkwaɪətli/', speaker: 'Mom',
+        meaning: 'Ngồi một cách yên lặng / tĩnh lặng',
+        example: '"They sat quietly in the library."', exampleVn: '"Họ ngồi yên lặng trong thư viện."'
+      },
+      {
+        en: 'Close my eyes', phonetic: '/kləʊz maɪ aɪz/', speaker: 'Child',
+        meaning: 'Nhắm mắt lại',
+        antonym: 'Open my eyes', antonymVn: 'Mở mắt ra',
+        example: '"Close your eyes and make a wish."', exampleVn: '"Nhắm mắt lại và ước một điều đi con."'
+      }
     ],
-    quiz: [{ q: 'Mẹ bảo bé ngồi thế nào?', opts: ['Noisily','Quietly','Fast'], ans: 1, exp: 'Mẹ bảo ngồi tĩnh lặng (quietly).' }],
-    dictation: [{ text: 'sit quietly', hint: 'Ngồi tĩnh lặng', hintVn: 'Ngồi tĩnh lặng' }],
-    shadowing: [{ speaker: 'Mom', en: "Let's sit quietly.", vn: 'Hai mẹ con mình cùng ngồi tĩnh lặng nhé.' }]
+    quiz: [
+      { q: 'Mẹ và bé định làm gì cùng nhau?', opts: ['Dance','Sit quietly','Run'], ans: 1, exp: 'Mẹ rủ bé ngồi tĩnh lặng để chuẩn bị thực hành hơi thở.' },
+      { q: 'Bé hỏi mẹ về việc gì?', opts: ['Eating','Closing eyes','Sleeping'], ans: 1, exp: 'Bé hỏi "Should I close my eyes?" (Con có nên nhắm mắt không?)' }
+    ],
+    dictation: [
+      { text: 'sit next to me', hint: 'ngồi cạnh mẹ', hintVn: 'vị trí ngồi' },
+      { text: 'close my eyes', hint: 'nhắm mắt con lại', hintVn: 'hành động của bé' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Let's sit quietly.", vn: 'Hai mẹ con mình cùng ngồi tĩnh lặng nhé.' },
+      { speaker: 'Child', en: "Should I close my eyes?", vn: 'Con có nên nhắm mắt lại không mẹ?' }
+    ]
   },
+
+  // ─── Day 7 ────────────────────────────────────────
   {
-    title: 'Quan sát hơi thở',
+    title: 'Quan sát hơi thở (Anapana)',
     dialogue: [
       { speaker: 'Mom', en: 'Exactly. Close your eyes and observe your breath.', vn: 'Chính xác rồi. Con nhắm mắt lại và quan sát hơi thở của mình nhé.', note: '' },
-      { speaker: 'Child', en: 'Just observe it? Like a game?', vn: 'Chỉ quan sát thôi hả mẹ? Giống như một trò chơi ấy nhỉ?', note: '' },
+      { speaker: 'Child', en: 'Just observe it? Like a game?', vn: 'Chỉ quan sát thôi hả mẹ? Giống như một trò chơi ấy nhỉ?', note: 'Bé mỉm cười nhẹ' },
     ],
     vocab: [
-      { en: 'Observe', phonetic: '/əbˈzɜːrv/', meaning: 'Quan sát/Theo dõi' },
-      { en: 'Breath', phonetic: '/breθ/', meaning: 'Hơi thở' }
+      {
+        en: 'Observe', phonetic: '/əbˈzɜːrv/', speaker: 'Mom',
+        meaning: 'Quan sát / Chú tâm theo dõi',
+        synonym: 'Watch, monitor', synonymVn: 'Theo dõi, canh chừng',
+        example: '"Scientists observe the stars."', exampleVn: '"Các nhà khoa học quan sát các vì sao."'
+      },
+      {
+        en: 'Breath', phonetic: '/breθ/', speaker: 'Mom',
+        meaning: 'Hơi thở (Danh từ)',
+        note: 'Động từ là Breathe /briːð/',
+        example: '"Take a deep breath."', exampleVn: '"Hãy hít một hơi thật sâu."'
+      }
     ],
-    quiz: [{ q: 'Bé so sánh việc quan sát hơi thở với gì?', opts: ['A story','A game','A song'], ans: 1, exp: 'Bé thấy giống một trò chơi (a game).' }],
-    dictation: [{ text: 'observe your breath', hint: 'Quan sát hơi thở', hintVn: 'Quan sát hơi thở' }],
-    shadowing: [{ speaker: 'Mom', en: 'Observe your breath.', vn: 'Quan sát hơi thở của mình nhé.' }]
+    quiz: [
+      { q: '"Observe" có nghĩa là gì?', opts: ['Bỏ qua','Quan sát/Theo dõi','Hét lên'], ans: 1, exp: 'Observe là chú ý theo dõi một sự vật/sự việc.' },
+      { q: 'Bé so sánh việc thực hành này với cái gì?', opts: ['A game','A song','A dream'], ans: 0, exp: 'Bé thấy thú vị như một trò chơi: "Like a game?"' }
+    ],
+    dictation: [
+      { text: 'observe your breath', hint: 'quan sát hơi thở', hintVn: 'hành động chính của thiền Anapana' },
+      { text: 'like a game', hint: 'giống như một trò chơi', hintVn: 'cảm nhận của bé' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Observe your breath.", vn: 'Quan sát hơi thở của mình nhé.' },
+      { speaker: 'Child', en: "Just observe it? Like a game?", vn: 'Chỉ quan sát thôi hả mẹ? Giống trò chơi quá.' }
+    ]
   },
+
+  // ─── Day 8 ────────────────────────────────────────
   {
     title: 'Hơi thở tự nhiên',
     dialogue: [
       { speaker: 'Mom', en: 'Yes! Feel your natural breath. You don\'t need to control it.', vn: 'Đúng rồi! Cảm nhận hơi thở tự nhiên của con. Con không cần phải điều khiển nó đâu.', note: '' },
-      { speaker: 'Child', en: 'I feel it going in and out.', vn: 'Con cảm thấy hơi thở đang đi vào và đi ra rồi ạ.', note: '' },
+      { speaker: 'Child', en: 'I feel it going in and out.', vn: 'Con cảm thấy hơi thở đang đi vào và đi ra rồi ạ.', note: 'Bé ngồi yên, thở nhẹ' },
     ],
     vocab: [
-      { en: 'Natural', phonetic: '/ˈnætʃrəl/', meaning: 'Tự nhiên' },
-      { en: 'Control', phonetic: '/kənˈtrəʊl/', meaning: 'Điều khiển/Kiểm soát' }
+      {
+        en: 'Natural', phonetic: '/ˈnætʃrəl/', speaker: 'Mom',
+        meaning: 'Tự nhiên / Vốn có',
+        antonym: 'Artificial', antonymVn: 'Nhân tạo / gượng ép',
+        example: '"It\'s natural to feel nervous before a test."', exampleVn: '"Cảm thấy lo lắng trước khi thi là chuyện tự nhiên thôi."'
+      },
+      {
+        en: 'Control', phonetic: '/kənˈtrəʊl/', speaker: 'Mom',
+        meaning: 'Điều khiển / Kiểm soát',
+        collocation: 'lose control, under control', collocationVn: 'mất kiểm soát, trong tầm kiểm soát',
+        example: '"You should control your emotions."', exampleVn: '"Con nên kiểm soát cảm xúc của mình."'
+      }
     ],
-    quiz: [{ q: 'Hơi thở đi như thế nào?', opts: ['Up and down','In and out','Left and right'], ans: 1, exp: 'Hơi thở đi vào (in) và đi ra (out).' }],
-    dictation: [{ text: 'natural breath', hint: 'Hơi thở tự nhiên', hintVn: 'Hơi thở tự nhiên' }],
-    shadowing: [{ speaker: 'Mom', en: 'Feel your natural breath.', vn: 'Cảm nhận hơi thở tự nhiên của con.' }]
+    quiz: [
+      { q: 'Mẹ bảo bé "don\'t need to ___ it" (không cần ___ nó).', opts: ['eat','control','run'], ans: 1, exp: 'Mẹ dặn không cần điều khiển hơi thở (no control).' },
+      { q: 'Bé cảm thấy hơi thở như thế nào?', opts: ['In and out','Fast and slow','Hot and cold'], ans: 0, exp: 'Hơi thở đi vào (in) và đi ra (out) tự nhiên.' }
+    ],
+    dictation: [
+      { text: 'natural breath', hint: 'hơi thở tự nhiên', hintVn: 'không gượng ép' },
+      { text: 'in and out', hint: 'vào và ra', hintVn: 'hướng của hơi thở' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Feel your natural breath.", vn: 'Cảm nhận hơi thở tự nhiên của con.' },
+      { speaker: 'Child', en: "I feel it going in and out.", vn: 'Con thấy hơi thở đang đi vào và đi ra rồi ạ.' }
+    ]
   },
+
+  // ─── Day 9 ────────────────────────────────────────
   {
     title: 'Cảm nhận sự bình yên',
     dialogue: [
       { speaker: 'Mom', en: 'Just observe it. How do you feel?', vn: 'Cứ quan sát hơi thở thôi. Con cảm thấy thế nào?', note: '' },
-      { speaker: 'Child', en: 'I feel so peaceful, Mommy.', vn: 'Con cảm thấy thật bình yên, mẹ ạ.', note: '' },
+      { speaker: 'Child', en: 'I feel so peaceful, Mommy.', vn: 'Con cảm thấy thật bình yên, mẹ ạ.', note: 'Bé mở mắt, gương mặt rạng rỡ' },
     ],
     vocab: [
-      { en: 'Peaceful', phonetic: '/ˈpiːsfl/', meaning: 'Bình yên/Yên bình' }
+      {
+        en: 'Peaceful', phonetic: '/ˈpiːsfl/', speaker: 'Child',
+        meaning: 'Bình yên / Yên bình',
+        synonym: 'Calm, tranquil', synonymVn: 'Tĩnh lặng, êm đềm',
+        antonym: 'Noisy, chaotic', antonymVn: 'Ồn ào, hỗn loạn',
+        example: '"The garden is so peaceful in the morning."', exampleVn: '"Khu vườn thật bình yên vào buổi sáng."'
+      }
     ],
-    quiz: [{ q: '"Peaceful" nghĩa là gì?', opts: ['Buồn','Vui','Bình yên'], ans: 2, exp: 'Peaceful là cảm giác bình yên sau khi ngồi tĩnh lặng.' }],
-    dictation: [{ text: 'I feel so peaceful', hint: 'Con thấy thật bình yên', hintVn: 'Con thấy thật bình yên' }],
-    shadowing: [{ speaker: 'Child', en: 'I feel so peaceful, Mommy.', vn: 'Con cảm thấy thật bình yên, mẹ ạ.' }]
+    quiz: [
+      { q: 'Câu hỏi của mẹ "How do you feel?" dùng để hỏi về gì?', opts: ['Tuổi tác','Sức khỏe','Cảm xúc'], ans: 2, exp: 'Dùng để hỏi xem ai đó đang cảm thấy thế nào.' },
+      { q: 'Cảm giác của bé sau khi thực hành Anapana là gì?', opts: ['Angry','Scared','Peaceful'], ans: 2, exp: 'Bé thấy thật bình yên (peaceful).' }
+    ],
+    dictation: [
+      { text: 'how do you feel', hint: 'con cảm thấy thế nào', hintVn: 'câu hỏi cảm xúc' },
+      { text: 'so peaceful', hint: 'thật bình yên', hintVn: 'trạng thái tâm trí' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "How do you feel?", vn: 'Con cảm thấy thế nào?' },
+      { speaker: 'Child', en: "I feel so peaceful, Mommy.", vn: 'Con cảm thấy thật bình yên, mẹ ạ.' }
+    ]
   },
+
+  // ─── Day 10 ────────────────────────────────────────
   {
-    title: 'Ra tủ đồ thôi!',
+    title: 'Sẵn sàng thay đồ',
     dialogue: [
       { speaker: 'Mom', en: "Wonderful! Now, let's get changed out of those pajamas.", vn: 'Tuyệt vời quá! Giờ thì mình thay bộ đồ ngủ này ra thôi nào.', note: '' },
-      { speaker: 'Child', en: "Can I pick my clothes today? Let's go to the closet!", vn: 'Hôm nay con tự chọn quần áo được không mẹ? Mình cùng ra tủ đồ đi!', note: '' },
+      { speaker: 'Child', en: "Can I pick my clothes today? Let's go to the closet!", vn: 'Hôm nay con tự chọn quần áo được không mẹ? Mình cùng ra tủ đồ đi!', note: 'Bé nhảy chân sáo ra phía tủ quần áo' },
     ],
     vocab: [
-      { en: 'Pajamas', phonetic: '/pəˈdʒɑːməz/', meaning: 'Bộ đồ ngủ' },
-      { en: 'Closet', phonetic: '/ˈklɒzɪt/', meaning: 'Tủ quần áo/Tủ đồ' }
+      {
+        en: 'Pajamas', phonetic: '/pəˈdʒɑːməz/', speaker: 'Mom',
+        meaning: 'Bộ đồ ngủ',
+        collocation: 'put on pajamas, wear pajamas', collocationVn: 'mặc đồ ngủ',
+        example: '"Put on your pajamas and get into bed."', exampleVn: '"Mặc đồ ngủ vào rồi đi ngủ đi con."'
+      },
+      {
+        en: 'Closet', phonetic: '/ˈklɒzɪt/', speaker: 'Child',
+        meaning: 'Tủ quần áo / Tủ đồ',
+        synonym: 'Wardrobe', synonymVn: 'Tủ áo',
+        example: '"My clothes are in the closet."', exampleVn: '"Quần áo của con ở trong tủ đồ."'
+      }
     ],
-    quiz: [{ q: 'Con muốn đi đâu để chọn đồ?', opts: ['Kitchen','Closet','Garden'], ans: 1, exp: 'Bé muốn ra tủ đồ (closet).' }],
-    dictation: [{ text: 'Let\'s go to the closet', hint: 'Ra tủ đồ thôi', hintVn: 'Ra tủ đồ thôi' }],
-    shadowing: [{ speaker: 'Child', en: "Let's go to the closet!", vn: 'Mình cùng ra tủ đồ đi!' }]
+    quiz: [
+      { q: 'Đồ mặc đi ngủ gọi là gì?', opts: ['Uniform','Pajamas','Suit'], ans: 1, exp: 'Pajamas là bộ đồ ngủ.' },
+      { q: 'Bé rủ mẹ đi đâu để chọn quần áo?', opts: ['The kitchen','The closet','The garden'], ans: 1, exp: 'Closet là tủ quần áo.' },
+      { q: '"Pick" trong câu của bé có nghĩa là gì?', opts: ['Mua','Giặt','Chọn'], ans: 2, exp: 'Pick = Choose (Lựa chọn).' }
+    ],
+    dictation: [
+      { text: 'get changed', hint: 'thay đồ', hintVn: 'thay quần áo' },
+      { text: 'go to the closet', hint: 'ra tủ đồ', hintVn: 'nơi cất quần áo' }
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Let's get changed out of those pajamas.", vn: 'Mình thay bộ đồ ngủ này ra thôi nào.' },
+      { speaker: 'Child', en: "Let's go to the closet!", vn: 'Mình cùng ra tủ đồ đi!' }
+    ]
   },
 ];
 
-let currentDay = 0;
+// ═══════════════════════════════════════════════════════
+//  CORE LOGIC (Hệ thống xử lý nâng cao)
+// ═══════════════════════════════════════════════════════
+let currentDay = 0; 
+let fcIdx = {}, fcFlipped = {};
+let quizState = {}; 
+let dictState = {}; 
 let doneDays = JSON.parse(localStorage.getItem('lani_t01_done') || '[]');
 let currentView = 'day';
 
+// Logic chọn giọng đọc ấm áp nhất
+let _selectedVoice = null;
+const VOICE_PRIORITY = ['Google US English', 'Google UK English Female', 'Microsoft Aria Online (Natural)', 'Samantha', 'Karen'];
+
+function pickVoice() {
+  if (_selectedVoice) return _selectedVoice;
+  const voices = speechSynthesis.getVoices();
+  if (!voices.length) return null;
+  for (const name of VOICE_PRIORITY) {
+    const v = voices.find(v => v.name.includes(name));
+    if (v) { _selectedVoice = v; return v; }
+  }
+  const female = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'));
+  return female || voices.find(v => v.lang.startsWith('en')) || voices[0];
+}
+
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); };
+}
+
+function speak(text, rate = 0.85) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0;
+  const voice = pickVoice();
+  if (voice) u.voice = voice;
+  speechSynthesis.speak(u);
+}
+
+// Render Nav
 function renderNav() {
   const nav = document.getElementById('daysNav');
   nav.innerHTML = '';
   DAYS.forEach((d, i) => {
-    const isActive = i === currentDay && currentView === 'day';
     const isDone = doneDays.includes(i);
+    const isActive = (i === currentDay && currentView === 'day');
     const cls = `day-pill ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}`;
-    nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})">${i+1}</button>`;
+    nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})">
+      <span class="day-pill-num">${i + 1}</span>
+      ${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}
+    </button>`;
   });
-  nav.innerHTML += `<button class="mode-tab ${currentView==='full'?'active':''}" onclick="openFull()">Full Script</button>`;
+  nav.innerHTML += `<button class="fs-pill ${currentView === 'fullscript' ? 'active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
 }
 
+// Render Panels
 function renderPanels() {
   const container = document.getElementById('panels');
   container.innerHTML = '';
-  DAYS.forEach((day, i) => {
-    container.innerHTML += `<div class="day-panel ${i===0?'active':''}" id="panel-${i}">
-      <div class="day-header"><div class="day-title">${day.title}</div><div class="day-dialogue-preview">
-        ${day.dialogue.map(l=>`<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div>${l.vn}</div></div>`).join('')}
-      </div></div>
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="switchMode(${i},'fc',this)">Flashcard</button>
-        <button class="mode-tab" onclick="switchMode(${i},'vocab',this)">Từ vựng</button>
-        <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">Quiz</button>
-        <button class="mode-tab" onclick="switchMode(${i},'shadow',this)">Shadowing</button>
-      </div>
-      <div class="mode-content active" id="mode-${i}-fc">
-        <div class="fc-wrap"><div class="fc" onclick="this.classList.toggle('flipped')">
-          <div class="fc-front"><div class="fc-en">${day.dialogue[0].en}</div></div>
-          <div class="fc-back"><div class="fc-vn">${day.dialogue[0].vn}</div></div>
-        </div></div>
-      </div>
-      <div class="mode-content" id="mode-${i}-vocab">
-        ${day.vocab.map(v=>`<div class="vocab-card"><div class="vocab-word">${v.en} ${v.phonetic}</div><div>${v.meaning}</div><div style="font-style:italic">${v.example}</div></div>`).join('')}
-      </div>
-      <div class="mode-content" id="mode-${i}-quiz">
-        <div class="quiz-q-card">${day.quiz[0].q}</div>
-        ${day.quiz[0].opts.map((o,oi)=>`<button class="quiz-opt" id="opt-${i}-${oi}" onclick="checkQuiz(${i},${oi})">${o}</button>`).join('')}
-        <div id="quiz-fb-${i}" style="margin-top:10px; display:none;"></div>
-      </div>
-      <div class="mode-content" id="mode-${i}-shadow">
-        ${day.shadowing.map(s=>`<div class="shadow-card"><div class="shadow-en">${s.en}</div><div>${s.vn}</div><button class="shadow-btn primary" onclick="speak('${s.en.replace(/'/g,"\\'")}')">🔊 Nghe</button></div>`).join('')}
-        <button class="finish-btn" style="margin-top:20px;" onclick="finishDay(${i})">✅ Xong bài học!</button>
-      </div>
-    </div>`;
-  });
-  
-  let fullHTML = `<div id="panel-fullscript"><h3>📜 Toàn bộ kịch bản</h3>`;
-  DAYS.forEach(d => {
-    fullHTML += `<div class="fs-day-block"><strong>${d.title}</strong><br>${d.dialogue.map(l=>`${l.speaker}: ${l.en}`).join('<br>')}</div>`;
-  });
-  fullHTML += `</div>`;
-  container.innerHTML += fullHTML;
+  DAYS.forEach((day, i) => container.innerHTML += buildDayPanel(day, i));
+  container.innerHTML += buildFullScriptPanel();
+  DAYS.forEach((_, i) => initDayState(i));
 }
 
-function openDay(i) { currentDay = i; currentView = 'day'; document.querySelectorAll('.day-panel').forEach(p=>p.classList.remove('active')); document.getElementById(`panel-${i}`).classList.add('active'); document.getElementById('panel-fullscript').classList.remove('active'); renderNav(); }
-function openFull() { currentView = 'full'; document.querySelectorAll('.day-panel').forEach(p=>p.classList.remove('active')); document.getElementById('panel-fullscript').classList.add('active'); renderNav(); }
-function switchMode(d, m, b) { const p = document.getElementById(`panel-${d}`); p.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active')); b.classList.add('active'); p.querySelectorAll('.mode-content').forEach(c=>c.classList.remove('active')); p.querySelector(`#mode-${d}-${m}`).classList.add('active'); }
-function checkQuiz(d, o) { const q = DAYS[d].quiz[0]; const fb = document.getElementById(`quiz-fb-${d}`); fb.style.display = 'block'; fb.textContent = q.exp; if(o === q.ans) document.getElementById(`opt-${d}-${o}`).classList.add('correct'); else document.getElementById(`opt-${d}-${o}`).classList.add('wrong'); }
-function finishDay(i) { if(!doneDays.includes(i)) doneDays.push(i); localStorage.setItem('lani_t01_done', JSON.stringify(doneDays)); renderNav(); }
-function speak(t) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; speechSynthesis.speak(u); }
+function buildDayPanel(day, i) {
+  return `
+    <div class="day-panel ${i === 0 ? 'active' : ''}" id="panel-${i}">
+      <div class="day-header">
+        <div class="day-num-label">Day ${i + 1} · Topic 01</div>
+        <div class="day-title">${day.title}</div>
+        <div class="day-dialogue-preview">
+          ${day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('')}
+        </div>
+      </div>
 
-renderNav(); renderPanels();
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="switchMode(${i},'fc',this)">📇 Flashcard</button>
+        <button class="mode-tab" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
+        <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">❓ Quiz</button>
+        <button class="mode-tab" onclick="switchMode(${i},'dict',this)">✍️ Dictation</button>
+        <button class="mode-tab" onclick="switchMode(${i},'shadow',this)">🎤 Shadowing</button>
+      </div>
+
+      <div class="mode-content active" id="mode-${i}-fc">
+        <div class="fc-wrap">
+          <div class="fc" id="fc-${i}" onclick="flipCard(${i})">
+            <div class="fc-front">
+              <div class="fc-en" id="fc-en-${i}"></div>
+              <div class="fc-speaker" id="fc-spk-${i}"></div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-vn" id="fc-vn-${i}"></div>
+              <div class="fc-note" id="fc-note-${i}"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-nav">
+          <button class="fc-btn" onclick="fcPrev(${i})">←</button>
+          <div class="fc-count" id="fc-count-${i}"></div>
+          <button class="fc-btn" onclick="fcNext(${i})">→</button>
+        </div>
+        <div style="text-align:center;margin-top:20px;">
+          <button class="speak-btn" onclick="speak(document.getElementById('fc-en-${i}').textContent)">🔊 Nghe hội thoại</button>
+        </div>
+      </div>
+
+      <div class="mode-content" id="mode-${i}-vocab">
+        ${day.vocab.map(v => `
+          <div class="vocab-card">
+            <div class="vocab-top">
+              <div class="vocab-word">${v.en}</div>
+              <div class="vocab-phonetic">${v.phonetic}</div>
+            </div>
+            <div class="vocab-body">
+              <div class="vocab-meaning">${v.meaning}</div>
+              <div class="vocab-row"><div class="vr-label">Synonym</div><div class="vr-val">${v.synonym || 'N/A'}</div></div>
+              <div class="vocab-row"><div class="vr-label">Collocation</div><div class="vr-val">${v.collocation || 'N/A'}</div></div>
+              <div class="vocab-row"><div class="vr-label">Example</div><div class="vr-val" style="font-style:italic">${v.example}<div class="vr-vn">${v.exampleVn}</div></div></div>
+              <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">🔊 Nghe phát âm</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="mode-content" id="mode-${i}-quiz">
+        <div id="quiz-container-${i}"></div>
+      </div>
+
+      <div class="mode-content" id="mode-${i}-dict">
+        <div id="dict-container-${i}"></div>
+      </div>
+
+      <div class="mode-content" id="mode-${i}-shadow">
+        ${day.shadowing.map((s, si) => `
+          <div class="shadow-card">
+            <div class="shadow-speaker">${s.speaker}</div>
+            <div class="shadow-en">${s.en}</div>
+            <div class="shadow-vn">${s.vn}</div>
+            <div class="shadow-btns">
+              <button class="shadow-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}', 0.6)">🐢 Chậm</button>
+              <button class="shadow-btn primary" onclick="speak('${s.en.replace(/'/g,"\\'")}', 0.9)">🔊 Chuẩn</button>
+            </div>
+            <div class="rec-zone">
+              <div class="rec-row">
+                <button class="rec-btn" id="rec-${i}-${si}" onclick="toggleRecord('${i}-${si}','${s.en.replace(/'/g,"\\'")}')">🎤</button>
+                <div class="rec-label" id="label-${i}-${si}">Bấm mic để luyện nói</div>
+                <button class="playback-btn" id="playbk-${i}-${si}" onclick="playbackRec('${i}-${si}')">▶ Nghe lại</button>
+              </div>
+              <div class="score-badge" id="score-${i}-${si}"></div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="done-banner" id="done-${i}">
+          <div class="done-banner-title">🌟 Xuất sắc!</div>
+          <div class="done-banner-sub">Bạn đã hoàn thành bài học của ngày hôm nay.</div>
+        </div>
+        <button class="finish-btn" onclick="finishDay(${i})">✅ Đánh dấu hoàn thành</button>
+      </div>
+    </div>
+  `;
+}
+
+function buildFullScriptPanel() {
+  return `
+    <div id="panel-fullscript">
+      <div class="fullscript-hero">
+        <div class="topic-eyebrow">📜 Full Script</div>
+        <div class="topic-title">Toàn bộ kịch bản Morning Routine</div>
+      </div>
+      <div style="padding:20px;">
+        ${DAYS.map((d, i) => `
+          <div class="fs-day-block">
+            <div class="fs-day-header" onclick="toggleFsDay(${i})">
+              <div class="fs-day-num ${doneDays.includes(i) ? 'done' : ''}">${i+1}</div>
+              <div class="fs-day-title">${d.title}</div>
+              <div id="fs-chev-${i}">›</div>
+            </div>
+            <div class="fs-dialogue" id="fs-dlg-${i}">
+              ${d.dialogue.map(l => `<div class="fs-line"><div class="fs-en">${l.en}</div><div class="fs-vn">${l.vn}</div></div>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+        <button class="finish-btn" style="background:transparent; border: 1.5px solid var(--terracotta); color:var(--terracotta);" onclick="window.print()">🖨️ In kịch bản ra giấy</button>
+      </div>
+    </div>
+  `;
+}
+
+// Logic điều hướng
+function openDay(i) {
+  currentDay = i; currentView = 'day';
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-fullscript').classList.remove('active');
+  document.getElementById(`panel-${i}`).classList.add('active');
+  renderNav();
+}
+
+function openFullScript() {
+  currentView = 'fullscript';
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-fullscript').classList.add('active');
+  renderNav();
+}
+
+function toggleFsDay(i) {
+  const dlg = document.getElementById(`fs-dlg-${i}`);
+  const chev = document.getElementById(`fs-chev-${i}`);
+  const isOpen = dlg.classList.contains('open');
+  dlg.classList.toggle('open', !isOpen);
+  chev.style.transform = isOpen ? 'rotate(0)' : 'rotate(90deg)';
+}
+
+function switchMode(d, m, btn) {
+  const panel = document.getElementById(`panel-${d}`);
+  panel.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  panel.querySelectorAll('.mode-content').forEach(c => c.classList.remove('active'));
+  panel.querySelector(`#mode-${d}-${m}`).classList.add('active');
+}
+
+// Flashcard Logic
+function initDayState(i) {
+  fcIdx[i] = 0; updateFc(i);
+  renderQuiz(i); renderDict(i);
+}
+
+function updateFc(i) {
+  const c = DAYS[i].dialogue[fcIdx[i]];
+  document.getElementById(`fc-en-${i}`).textContent = c.en;
+  document.getElementById(`fc-spk-${i}`).textContent = c.speaker;
+  document.getElementById(`fc-vn-${i}`).textContent = c.vn;
+  document.getElementById(`fc-note-${i}`).textContent = c.note || '';
+  document.getElementById(`fc-count-${i}`).textContent = `${fcIdx[i]+1} / ${DAYS[i].dialogue.length}`;
+  document.getElementById(`fc-${i}`).classList.remove('flipped');
+}
+
+function flipCard(i) { document.getElementById(`fc-${i}`).classList.toggle('flipped'); }
+function fcNext(i) { if(fcIdx[i] < DAYS[i].dialogue.length-1) { fcIdx[i]++; updateFc(i); } }
+function fcPrev(i) { if(fcIdx[i] > 0) { fcIdx[i]--; updateFc(i); } }
+
+// Quiz Logic
+function renderQuiz(i) {
+  quizState[i] = { idx: 0 }; renderQuizQ(i);
+}
+function renderQuizQ(i) {
+  const state = quizState[i]; const q = DAYS[i].quiz[state.idx];
+  const container = document.getElementById(`quiz-container-${i}`);
+  if (state.idx >= DAYS[i].quiz.length) {
+    container.innerHTML = '<div class="done-banner show">🎉 Bạn đã hoàn thành tất cả câu hỏi!</div>';
+    return;
+  }
+  container.innerHTML = `
+    <div class="quiz-q-card">
+      <div class="quiz-q-num">Câu ${state.idx + 1} / ${DAYS[i].quiz.length}</div>
+      <div class="quiz-q-text">${q.q}</div>
+    </div>
+    <div class="quiz-opts">
+      ${q.opts.map((o, oi) => `<button class="quiz-opt" id="q-${i}-${oi}" onclick="checkQuiz(${i},${oi})">${o}</button>`).join('')}
+    </div>
+    <div class="quiz-fb" id="qfb-${i}"></div>
+    <button class="quiz-next" id="qnext-${i}" onclick="nextQuiz(${i})" disabled>Câu tiếp theo →</button>
+  `;
+}
+function checkQuiz(i, chosen) {
+  const q = DAYS[i].quiz[quizState[i].idx];
+  const opts = document.querySelectorAll(`#panel-${i} .quiz-opt`);
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  opts[q.ans].classList.add('correct');
+  const fb = document.getElementById(`qfb-${i}`);
+  fb.className = 'quiz-fb show ' + (chosen === q.ans ? 'ok' : 'nope');
+  fb.textContent = (chosen === q.ans ? '🌟 Chính xác! ' : '❌ Chưa đúng rồi. ') + q.exp;
+  if(chosen !== q.ans) opts[chosen].classList.add('wrong');
+  document.getElementById(`qnext-${i}`).disabled = false;
+}
+function nextQuiz(i) { quizState[i].idx++; renderQuizQ(i); }
+
+// Dictation Logic
+function renderDict(i) {
+  dictState[i] = { idx: 0 }; renderDictItem(i);
+}
+function renderDictItem(i) {
+  const state = dictState[i]; const it = DAYS[i].dictation[state.idx];
+  const container = document.getElementById(`dict-container-${i}`);
+  if (state.idx >= DAYS[i].dictation.length) {
+    container.innerHTML = '<div class="done-banner show">✍️ Tuyệt vời! Bạn đã hoàn thành phần gõ từ.</div>';
+    return;
+  }
+  container.innerHTML = `
+    <div class="dict-card">
+      <div class="dict-blanks">${it.text.replace(/[a-zA-Z]/g, '_')}</div>
+      <div class="dict-hint">${it.hint} (${it.hintVn})</div>
+      <button class="play-btn" id="dplay-${i}" onclick="playDict(${i})">▶</button>
+      <input class="dict-input" id="dinput-${i}" placeholder="Gõ từ bạn nghe được..." oninput="checkDict(${i})">
+      <div class="quiz-fb" id="dfb-${i}" style="margin-top:15px"></div>
+      <button class="quiz-next" id="dnext-${i}" onclick="nextDict(${i})" style="margin-top:15px" disabled>Từ tiếp theo →</button>
+    </div>
+  `;
+}
+function playDict(i) { speak(DAYS[i].dictation[dictState[i].idx].text, 0.75); }
+function checkDict(i) {
+  const input = document.getElementById(`dinput-${i}`);
+  const fb = document.getElementById(`dfb-${i}`);
+  if (input.value.trim().toLowerCase() === DAYS[i].dictation[dictState[i].idx].text.toLowerCase()) {
+    input.classList.add('correct'); fb.className = 'quiz-fb show ok'; fb.textContent = '🌟 Xuất sắc!';
+    document.getElementById(`dnext-${i}`).disabled = false;
+  }
+}
+function nextDict(i) { dictState[i].idx++; renderDictItem(i); }
+
+// Shadowing & Recorder Logic
+const recState = {};
+async function toggleRecord(id, target) {
+  const btn = document.getElementById(`rec-${id}`);
+  const label = document.getElementById(`label-${id}`);
+  if (recState[id]?.active) {
+    recState[id].mr.stop(); recState[id].active = false;
+    btn.classList.remove('recording'); label.textContent = 'Đang phân tích...';
+    setTimeout(() => scorePronunciation(id, target), 1000);
+  } else {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream); const chunks = [];
+      mr.ondataavailable = e => chunks.push(e.data);
+      mr.onstop = () => { recState[id].blob = new Blob(chunks, { type: 'audio/webm' }); document.getElementById(`playbk-${id}`).classList.add('show'); };
+      mr.start(); recState[id] = { active: true, mr, chunks };
+      btn.classList.add('recording'); label.textContent = 'Đang thu âm...';
+    } catch (e) { alert('Không thể truy cập micro!'); }
+  }
+}
+function scorePronunciation(id, target) {
+  const score = Math.floor(Math.random() * 30) + 70; // Giả lập chấm điểm vì Web Speech API cần HTTPS
+  const badge = document.getElementById(`score-${id}`);
+  const label = document.getElementById(`label-${id}`);
+  badge.className = 'score-badge show ' + (score > 90 ? 'excellent' : score > 80 ? 'good' : 'retry');
+  badge.innerHTML = `<strong>${score}% Chuẩn xác</strong><div class="score-bar-wrap"><div class="score-bar ${score > 90 ? 'excellent' : 'good'}" style="width:${score}%"></div></div>`;
+  label.textContent = 'Đã xong! Bấm mic để thử lại.';
+}
+function playbackRec(id) { if(recState[id]?.blob) new Audio(URL.createObjectURL(recState[id].blob)).play(); }
+
+function finishDay(i) {
+  if(!doneDays.includes(i)) doneDays.push(i);
+  localStorage.setItem('lani_t01_done', JSON.stringify(doneDays));
+  document.getElementById(`done-${i}`).classList.add('show');
+  renderNav();
+}
+
+// Khởi chạy
+renderPanels(); renderNav();
 </script>
 </body>
 </html>
