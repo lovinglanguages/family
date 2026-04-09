@@ -428,9 +428,29 @@
   .fs-pill:hover { background:var(--blush); border-color:var(--rose); }
   .fs-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
 
+  /* ── YOUTUBE EMBED ── */
+  .fullscript-video {
+    margin-bottom: 20px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 56.25%; /* Tỷ lệ 16:9 chuẩn của YouTube */
+    height: 0;
+    box-shadow: 0 4px 12px rgba(44,36,22,0.08);
+  }
+  .fullscript-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
   @media print {
     header, .days-nav, .topic-hero, .day-panel, .mode-tabs,
-    .fullscript-print-btn, .fs-speak-btn, .fs-day-header .fs-chevron { display:none !important; }
+    .fullscript-print-btn, .fs-speak-btn, .fs-day-header .fs-chevron,
+    .fullscript-video { display:none !important; }
     #panel-fullscript { display:block !important; }
     .fs-dialogue { max-height:none !important; padding:14px 18px 16px !important; }
     .fs-day-block { break-inside:avoid; }
@@ -481,7 +501,6 @@ let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
 
-// Khởi tạo các biến rỗng thay cho dữ liệu tĩnh khổng lồ trước đây
 let TOPIC = {};
 let DAYS = [];
 
@@ -490,7 +509,7 @@ auth.onAuthStateChanged(async (user) => {
     window.location.href = 'lani-be-a-gift.html';
   } else {
     currentUser = user;
-    await fetchProgress(); // Hàm này bây giờ sẽ tải cả bài học lẫn tiến độ
+    await fetchProgress(); 
     document.getElementById('loading-overlay').style.display = 'none';
   }
 });
@@ -501,19 +520,25 @@ async function fetchProgress() {
     const topicDoc = await db.collection("topics").doc("topic01").get();
     if (topicDoc.exists) {
       const data = topicDoc.data();
-      TOPIC = { num: data.num, name: data.name, startDay: data.startDay };
+      // Gắn mặc định ID YouTube vào nếu trên Firebase chưa có
+      TOPIC = { 
+        num: data.num, 
+        name: data.name, 
+        startDay: data.startDay,
+        youtubeId: data.youtubeId || 'xSz6J2eW2cQ' 
+      };
       DAYS = data.days;
     } else {
       console.error("Không tìm thấy dữ liệu Topic 01 trên Firebase!");
       document.getElementById('loading-overlay').innerHTML = '<p style="color:var(--coral);font-family:\'DM Sans\';">Lỗi: Không tìm thấy nội dung bài học. Vui lòng kiểm tra lại Firebase.</p>';
-      return; // Dừng lại nếu không có bài học
+      return; 
     }
 
     // 2. Tải tiến độ học tập của người dùng
     const doc = await db.collection("users").doc(currentUser.uid).get();
     if (doc.exists) {
       userProgress = doc.data();
-      const daysCompleted = userProgress.progress[0] || 0; // Topic 01 (index 0)
+      const daysCompleted = userProgress.progress[0] || 0; 
       for(let i=0; i < daysCompleted; i++) {
         doneDays.push(i);
       }
@@ -530,24 +555,22 @@ async function fetchProgress() {
 // ═══════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════
-let currentDay = 0; // 0-indexed
+let currentDay = 0; 
 let fcIdx = {}, fcFlipped = {};
-let quizState = {}; // per day
-let dictState = {}; // per day
+let quizState = {}; 
+let dictState = {}; 
 
 // ═══════════════════════════════════════════════════════
 //  DAYS NAV & FIRESTORE SYNC
 // ═══════════════════════════════════════════════════════
 
 async function finishDay(i, btnElement) {
-  // Ẩn nút hoàn thành
   if(btnElement) btnElement.style.display = 'none';
 
   if (!doneDays.includes(i)) {
     doneDays.push(i);
   }
   
-  // Hiện banner
   document.getElementById(`done-${i}`).classList.add('show');
   renderNav();
   document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
@@ -557,37 +580,30 @@ async function finishDay(i, btnElement) {
   const currentGlobalDay = i + 1; 
   const savedProgress = userProgress.progress[0] || 0;
 
-  // 1. Lưu tiến độ nếu là bài mới
   if (currentGlobalDay > savedProgress) {
     userProgress.progress[0] = currentGlobalDay;
   }
 
-  // 2. LOGIC TÍNH STREAK CHUẨN XÁC
   const today = new Date();
-  today.setHours(0,0,0,0); // Đưa về 00:00:00 của ngày hôm nay
+  today.setHours(0,0,0,0); 
   const todayTime = today.getTime();
   const lastActiveTime = userProgress.lastActiveTime || 0;
-  const oneDay = 24 * 60 * 60 * 1000; // 1 ngày tính bằng miligiây
+  const oneDay = 24 * 60 * 60 * 1000; 
 
   if (lastActiveTime === 0) {
-    // Lần đầu tiên học
     userProgress.streak = 1;
     userProgress.lastActiveTime = todayTime;
   } else {
     const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
     if (diffDays === 1) {
-      // Học ngày tiếp theo liền kề
       userProgress.streak = (userProgress.streak || 0) + 1;
       userProgress.lastActiveTime = todayTime;
     } else if (diffDays > 1) {
-      // Bỏ lỡ hơn 1 ngày -> Mất streak, đếm lại từ 1
       userProgress.streak = 1; 
       userProgress.lastActiveTime = todayTime;
     }
-    // Nếu diffDays === 0 (Học lại lần 2 trong cùng 1 ngày) thì không cộng thêm
   }
 
-  // Ghi lên Firebase
   await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
 }
 
@@ -645,7 +661,7 @@ function buildFullScriptPanel() {
       <div class="fs-day-header" onclick="toggleFsDay(${i})">
         <div class="fs-day-num${isDone ? ' done-num' : ''}">${globalDay}</div>
         <div class="fs-day-info">
-          <div class="fs-day-label">Day ${globalDay} · Topic ${TOPIC.num}</div>
+          <div class="fs-day-label">${globalDay} · Topic ${TOPIC.num}</div>
           <div class="fs-day-title">${day.title}</div>
         </div>
         <div class="fs-chevron" id="fschev-${i}">›</div>
@@ -653,6 +669,16 @@ function buildFullScriptPanel() {
       <div class="fs-dialogue" id="fsdlg-${i}">${dlHTML}</div>
     </div>`;
   }).join('');
+
+  const youtubeHTML = TOPIC.youtubeId ? `
+    <div class="fullscript-video">
+      <iframe 
+        src="https://www.youtube.com/embed/${TOPIC.youtubeId}?rel=0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    </div>
+  ` : '';
 
   return `
   <div id="panel-fullscript">
@@ -662,6 +688,7 @@ function buildFullScriptPanel() {
       <div class="fullscript-hero-sub">10 ngày · ${DAYS.reduce((s,d)=>s+d.dialogue.length,0)} câu hội thoại · Bấm từng ngày để mở rộng</div>
     </div>
     <div class="fullscript-content">
+      ${youtubeHTML}
       ${lines}
       <button class="fullscript-print-btn" onclick="window.print()">🖨️ In toàn bộ kịch bản</button>
     </div>
@@ -678,7 +705,7 @@ function buildPanel(day, i, globalDay) {
   return `
   <div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
     <div class="day-header">
-      <div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div>
+      <div class="day-num-label">${globalDay} · Topic ${TOPIC.num}</div>
       <div class="day-title">${day.title}</div>
       <div class="day-dialogue-preview">${dlHTML}</div>
     </div>
@@ -732,7 +759,7 @@ function buildPanel(day, i, globalDay) {
       ${buildShadowHTML(day.shadowing, i)}
       <div class="done-banner" id="done-${i}">
         <div class="done-banner-title">🌟 Tuyệt vời!</div>
-        <div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div>
+        <div class="done-banner-sub">Bạn đã hoàn thành ${globalDay}. Tiến độ đã được lưu lại!</div>
       </div>
       <button class="finish-btn" onclick="finishDay(${i})">✅ Hoàn thành ngày học!</button>
     </div>
@@ -1154,7 +1181,7 @@ function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
   else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
-  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
+  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;                tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
 
   const wordHTML = matches.length
