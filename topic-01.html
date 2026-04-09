@@ -123,6 +123,7 @@
   .play-btn { width:60px; height:60px; border-radius:50%; border:none; background:var(--terracotta); color:white; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; transition:all 0.2s; }
   .play-btn:hover { background:var(--terra-deep); transform:scale(1.05); }
   .play-btn.playing { background:var(--sage); animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
   .dict-input { width:100%; padding:13px 16px; border-radius:var(--radius-sm); border:1.5px solid var(--border); font-size:16px; font-family:'DM Sans',sans-serif; color:var(--ink); background:var(--cream); text-align:center; outline:none; transition:border-color 0.2s; }
   .dict-input:focus { border-color:var(--terracotta); }
   .dict-input.correct { border-color:var(--sage); background:var(--sage-light); }
@@ -132,25 +133,38 @@
   .shadow-speaker { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--terracotta); margin-bottom:6px; font-weight:500; }
   .shadow-en { font-family:'Playfair Display',serif; font-size:18px; color:var(--ink); margin-bottom:4px; line-height:1.4; }
   .shadow-vn { font-size:13px; color:var(--ink-muted); font-style:italic; margin-bottom:12px; }
-  .shadow-note { font-size:12px; color:var(--sage-deep); background:var(--sage-light); padding:5px 10px; border-radius:6px; margin-bottom:12px; display:inline-block; }
   .shadow-btns { display:flex; gap:8px; }
   .shadow-btn { flex:1; padding:9px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--warm-white); font-size:12px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; gap:5px; }
   .shadow-btn:hover { background:var(--blush); }
   .shadow-btn.primary { background:var(--terracotta); color:white; border-color:var(--terracotta); }
   .shadow-btn.primary:hover { background:var(--terra-deep); }
  
+  /* ── REC ZONE ── */
   .rec-zone { margin-top:12px; border-top:1px solid var(--border); padding-top:12px; }
   .rec-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-  .rec-btn { width:44px; height:44px; border-radius:50%; border:none; background:var(--blush); color:var(--terracotta); font-size:18px; cursor:pointer; transition:all 0.25s; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .rec-btn {
+    width:52px; height:52px; border-radius:50%; border:none;
+    background:var(--blush); color:var(--terracotta);
+    font-size:20px; cursor:pointer; transition:all 0.25s;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    /* Quan trọng cho touch */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+  }
   .rec-btn:hover { background:var(--rose); }
   .rec-btn.recording { background:var(--coral); color:white; animation:rec-pulse 1s infinite; }
-  @keyframes rec-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,133,106,0.5)} 50%{box-shadow:0 0 0 8px rgba(232,133,106,0)} }
-  .rec-label { font-size:12px; color:var(--ink-muted); }
+  .rec-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  @keyframes rec-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,133,106,0.5)} 50%{box-shadow:0 0 0 10px rgba(232,133,106,0)} }
+  .rec-label { font-size:12px; color:var(--ink-muted); flex:1; line-height:1.4; }
   .rec-label strong { color:var(--ink-soft); }
+  .rec-status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--coral); animation:blink 1s infinite; margin-right:4px; vertical-align:middle; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
   .playback-btn { padding:6px 14px; border-radius:99px; border:1px solid var(--border); background:var(--warm-white); font-size:12px; color:var(--ink-muted); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; display:none; }
   .playback-btn.show { display:inline-flex; align-items:center; gap:5px; }
   .playback-btn:hover { background:var(--blush); }
- 
+
+  /* Score badge */
   .score-badge { display:none; margin-top:10px; padding:12px 16px; border-radius:var(--radius-sm); font-size:13px; line-height:1.6; }
   .score-badge.show { display:block; }
   .score-badge.excellent { background:#EAF3DE; border:1px solid #7A9E87; color:#27500A; }
@@ -167,7 +181,10 @@
   .score-word { padding:2px 8px; border-radius:99px; font-size:12px; font-family:'DM Mono',monospace; }
   .score-word.hit  { background:var(--sage-light); color:var(--sage-deep); }
   .score-word.miss { background:var(--coral-light); color:#7A2E1A; }
- 
+
+  /* Interim transcript preview */
+  .interim-box { font-size:12px; color:var(--ink-muted); font-style:italic; min-height:18px; margin-top:4px; }
+
   .done-banner { background:var(--sage-light); border:1px solid var(--sage); border-radius:var(--radius); padding:20px; text-align:center; margin-bottom:16px; display:none; }
   .done-banner.show { display:block; }
   .done-banner-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--sage-deep); margin-bottom:6px; }
@@ -226,7 +243,6 @@
   <div class="topic-eyebrow">Topic 01 · 10 ngày</div>
   <div class="topic-title">☀️ Morning <em>Routine</em></div>
   <div class="topic-vn">Chào ngày mới năng lượng</div>
-  
   <div class="video-container">
     <iframe width="100%" height="315" src="https://www.youtube.com/embed/GovagiDtzSQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border-radius: var(--radius-sm); border: 1px solid var(--border);"></iframe>
   </div>
@@ -255,13 +271,12 @@ const db = firebase.firestore();
 let currentUser = null;
 let userProgress = { progress: {} };
 let doneDays = [];
-
 let TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
-let DAYS = []; 
+let DAYS = [];
  
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
-    window.location.href = 'lani-be-a-gift.html'; 
+    window.location.href = 'lani-be-a-gift.html';
   } else {
     currentUser = user;
     await fetchLessonData();
@@ -276,18 +291,13 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-// ═══════════════════════════════════════════════════════
-//  TẢI DỮ LIỆU TỪ FIREBASE 
-// ═══════════════════════════════════════════════════════
 async function fetchLessonData() {
   try {
     const docRef = db.collection("topics").doc("topic01");
     const docSnap = await docRef.get();
     if (docSnap.exists) {
       const data = docSnap.data();
-      DAYS = data.days || []; 
-    } else {
-      console.error("Không tìm thấy dữ liệu.");
+      DAYS = data.days || [];
     }
   } catch (error) {
     console.error("Lỗi tải dữ liệu bài học:", error);
@@ -300,9 +310,7 @@ async function fetchProgress() {
     if (doc.exists) {
       userProgress = doc.data();
       const daysCompleted = userProgress.progress[0] || 0;
-      for(let i=0; i < daysCompleted; i++) {
-        doneDays.push(i);
-      }
+      for (let i = 0; i < daysCompleted; i++) doneDays.push(i);
     }
     renderPanels();
     renderNav();
@@ -312,44 +320,33 @@ async function fetchProgress() {
 }
  
 // ═══════════════════════════════════════════════════════
-//  STATE & NAVIGATION LOGIC
+//  STATE & NAVIGATION
 // ═══════════════════════════════════════════════════════
 let currentDay = 0;
 let fcIdx = {}, fcFlipped = {};
 let quizState = {};
 let dictState = {};
-let currentView = 'day'; 
+let currentView = 'day';
  
 async function finishDay(i, btnElement) {
-  if(btnElement) btnElement.style.display = 'none';
+  if (btnElement) btnElement.style.display = 'none';
   if (!doneDays.includes(i)) doneDays.push(i);
   document.getElementById(`done-${i}`).classList.add('show');
   renderNav();
   document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
- 
   if (!currentUser) return;
-  const currentGlobalDay = i + 1; 
+  const currentGlobalDay = i + 1;
   const savedProgress = userProgress.progress[0] || 0;
-  if (currentGlobalDay > savedProgress) {
-    userProgress.progress[0] = currentGlobalDay;
-  }
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  if (currentGlobalDay > savedProgress) userProgress.progress[0] = currentGlobalDay;
+  const today = new Date(); today.setHours(0,0,0,0);
   const todayTime = today.getTime();
   const lastActiveTime = userProgress.lastActiveTime || 0;
-  const oneDay = 24 * 60 * 60 * 1000;
-  if (lastActiveTime === 0) {
-    userProgress.streak = 1;
-    userProgress.lastActiveTime = todayTime;
-  } else {
+  const oneDay = 86400000;
+  if (lastActiveTime === 0) { userProgress.streak = 1; userProgress.lastActiveTime = todayTime; }
+  else {
     const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
-    if (diffDays === 1) {
-      userProgress.streak = (userProgress.streak || 0) + 1;
-      userProgress.lastActiveTime = todayTime;
-    } else if (diffDays > 1) {
-      userProgress.streak = 1; 
-      userProgress.lastActiveTime = todayTime;
-    }
+    if (diffDays === 1) { userProgress.streak = (userProgress.streak || 0) + 1; userProgress.lastActiveTime = todayTime; }
+    else if (diffDays > 1) { userProgress.streak = 1; userProgress.lastActiveTime = todayTime; }
   }
   await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
 }
@@ -381,7 +378,7 @@ function openDay(i) {
   renderNav();
   const nav = document.getElementById('daysNav');
   const pill = nav.children[i];
-  if (pill) pill.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+  if (pill) pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
  
 function openFullScript() {
@@ -397,7 +394,7 @@ function openFullScript() {
   }
   renderNav();
   const nav = document.getElementById('daysNav');
-  nav.lastElementChild?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+  nav.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
  
 function toggleFsDay(i) {
@@ -438,16 +435,13 @@ function buildFullScriptPanel() {
       const safeEn = l.en.replace(/'/g, "\\'");
       return `<div class="fs-line"><div class="fs-speaker">${l.speaker}</div><div class="fs-en">${l.en}</div><div class="fs-vn">${l.vn}</div><div class="fs-line-btns"><button class="fs-speak-btn" onclick="speak('${safeEn}',0.9)">🔊 Nghe</button><button class="fs-speak-btn slow" onclick="speak('${safeEn}',0.6)">🐢 Chậm</button></div></div>`;
     }).join('');
- 
     return `<div class="fs-day-block"><div class="fs-day-header" onclick="toggleFsDay(${i})"><div class="fs-day-num${isDone ? ' done-num' : ''}">${globalDay}</div><div class="fs-day-info"><div class="fs-day-label">Day ${globalDay} · Topic ${TOPIC.num}</div><div class="fs-day-title">${day.title}</div></div><div class="fs-chevron" id="fschev-${i}">›</div></div><div class="fs-dialogue" id="fsdlg-${i}">${dlHTML}</div></div>`;
   }).join('');
- 
   return `<div id="panel-fullscript"><div class="fullscript-hero"><div class="fullscript-hero-eyebrow">📜 Full Script · Topic ${TOPIC.num}</div><div class="fullscript-hero-title">Morning Routine — Toàn bộ kịch bản</div><div class="fullscript-hero-sub">10 ngày · ${DAYS.reduce((s,d)=>s+d.dialogue.length,0)} câu hội thoại · Bấm từng ngày để mở rộng</div></div><div class="fullscript-content">${lines}</div></div>`;
 }
  
 function buildPanel(day, i, globalDay) {
   const dlHTML = day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('');
- 
   return `<div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
     <div class="day-header"><div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div><div class="day-title">${day.title}</div><div class="day-dialogue-preview">${dlHTML}</div></div>
     <div class="mode-tabs" id="tabs-${i}">
@@ -461,7 +455,7 @@ function buildPanel(day, i, globalDay) {
     <div class="mode-content" id="mode-${i}-vocab">${buildVocabHTML(day.vocab, i)}</div>
     <div class="mode-content" id="mode-${i}-quiz"><div id="quiz-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-dictation"><div id="dict-body-${i}"></div></div>
-    <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}<div class="done-banner" id="done-${i}"><div class="done-banner-title">🌟 Tuyệt vời!</div><div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div></div><button class="finish-btn" onclick="finishDay(${i})">✅ Hoàn thành ngày học!</button></div>
+    <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}<div class="done-banner" id="done-${i}"><div class="done-banner-title">🌟 Tuyệt vời!</div><div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div></div><button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button></div>
   </div>`;
 }
  
@@ -473,17 +467,36 @@ function buildShadowHTML(lines, i) {
   return lines.map((l, li) => {
     const id = `sh-${i}-${li}`;
     const safeEn = l.en.replace(/'/g, "\\'");
-    return `<div class="shadow-card" id="${id}-card"><div class="shadow-speaker">${l.speaker}</div><div class="shadow-en">${l.en}</div><div class="shadow-vn">${l.vn}</div><div class="shadow-btns"><button class="shadow-btn" onclick="speak('${safeEn}', 0.6)">▶ Nghe chậm</button><button class="shadow-btn primary" onclick="speak('${safeEn}', 0.9)">▶▶ Bình thường</button></div><div class="rec-zone"><div class="rec-row"><button class="rec-btn" id="${id}-recbtn" onclick="toggleRecord('${id}','${safeEn}')" title="Bấm để thu âm">🎤</button><div class="rec-label" id="${id}-reclabel"><strong>Bấm mic</strong> để luyện nói</div><button class="playback-btn" id="${id}-playbk" onclick="playbackRec('${id}')">▶ Nghe lại</button></div><div class="score-badge" id="${id}-score"></div></div></div>`;
+    return `<div class="shadow-card" id="${id}-card">
+      <div class="shadow-speaker">${l.speaker}</div>
+      <div class="shadow-en">${l.en}</div>
+      <div class="shadow-vn">${l.vn}</div>
+      <div class="shadow-btns">
+        <button class="shadow-btn" onclick="speak('${safeEn}', 0.6)">▶ Nghe chậm</button>
+        <button class="shadow-btn primary" onclick="speak('${safeEn}', 0.9)">▶▶ Bình thường</button>
+      </div>
+      <div class="rec-zone">
+        <div class="rec-row">
+          <button class="rec-btn" id="${id}-recbtn" onclick="toggleRecord('${id}','${safeEn}')" title="Bấm để thu âm">🎤</button>
+          <div style="flex:1">
+            <div class="rec-label" id="${id}-reclabel"><strong>Bấm mic</strong> để luyện nói</div>
+            <div class="interim-box" id="${id}-interim"></div>
+          </div>
+          <button class="playback-btn" id="${id}-playbk" onclick="playbackRec('${id}')">▶ Nghe lại</button>
+        </div>
+        <div class="score-badge" id="${id}-score"></div>
+      </div>
+    </div>`;
   }).join('');
 }
  
 function initDay(i) { fcIdx[i] = 0; fcFlipped[i] = false; updateFlashcard(i); renderQuiz(i); renderDict(i); }
 
 // ═══════════════════════════════════════════════════════
-//  FLASHCARD, QUIZ, DICTATION LOGIC
+//  FLASHCARD
 // ═══════════════════════════════════════════════════════
 function updateFlashcard(i) {
-  const day = DAYS[i]; const cards = day.dialogue; const idx = fcIdx[i]; const card = cards[idx];
+  const cards = DAYS[i].dialogue; const idx = fcIdx[i]; const card = cards[idx];
   document.getElementById(`fc-en-${i}`).textContent = card.en;
   document.getElementById(`fc-spk-${i}`).textContent = card.speaker;
   document.getElementById(`fc-vn-${i}`).textContent = card.vn;
@@ -492,9 +505,12 @@ function updateFlashcard(i) {
   document.getElementById(`fc-${i}`).classList.remove('flipped');
 }
 function flipCard(i) { fcFlipped[i] = !fcFlipped[i]; document.getElementById(`fc-${i}`).classList.toggle('flipped', fcFlipped[i]); }
-function fcNext(i) { const max = DAYS[i].dialogue.length - 1; if (fcIdx[i] < max) { fcIdx[i]++; updateFlashcard(i); } }
+function fcNext(i) { if (fcIdx[i] < DAYS[i].dialogue.length - 1) { fcIdx[i]++; updateFlashcard(i); } }
 function fcPrev(i) { if (fcIdx[i] > 0) { fcIdx[i]--; updateFlashcard(i); } }
  
+// ═══════════════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════════════
 function renderQuiz(i) { quizState[i] = { idx: 0, answered: false }; renderQuizQuestion(i); }
 function renderQuizQuestion(i) {
   const qs = DAYS[i].quiz; const state = quizState[i];
@@ -511,12 +527,15 @@ function selectQuiz(i, chosen) {
   const opts = document.querySelectorAll(`#panel-${i} .quiz-opt`);
   opts.forEach((o, oi) => { if (oi === q.ans) o.classList.add('correct'); });
   const fb = document.getElementById(`qfb-${i}`);
-  if (chosen === q.ans) { opts[chosen].classList.add('correct'); fb.textContent = '🎉 Chính xác! ' + q.exp; fb.className = 'quiz-fb ok show'; } 
+  if (chosen === q.ans) { opts[chosen].classList.add('correct'); fb.textContent = '🎉 Chính xác! ' + q.exp; fb.className = 'quiz-fb ok show'; }
   else { opts[chosen].classList.add('wrong'); fb.textContent = '❌ Chưa đúng. ' + q.exp; fb.className = 'quiz-fb nope show'; }
   document.getElementById(`qnext-${i}`).disabled = false;
 }
 function nextQuiz(i) { quizState[i].idx++; renderQuizQuestion(i); }
  
+// ═══════════════════════════════════════════════════════
+//  DICTATION
+// ═══════════════════════════════════════════════════════
 function renderDict(i) { dictState[i] = { idx: 0, playing: false }; renderDictItem(i); }
 function renderDictItem(i) {
   const items = DAYS[i].dictation; const state = dictState[i];
@@ -536,221 +555,315 @@ function checkDict(i) {
   const val = document.getElementById(`dinput-${i}`).value.trim().toLowerCase();
   const ans = DAYS[i].dictation[dictState[i].idx].text.toLowerCase();
   if (!val) return;
-  if (val === ans) { document.getElementById(`dinput-${i}`).className = 'dict-input correct'; document.getElementById(`dfb-${i}`).textContent = '🎉 Chính xác!'; document.getElementById(`dfb-${i}`).className = 'quiz-fb ok show'; document.getElementById(`dnext-${i}`).disabled = false; } 
+  if (val === ans) { document.getElementById(`dinput-${i}`).className = 'dict-input correct'; document.getElementById(`dfb-${i}`).textContent = '🎉 Chính xác!'; document.getElementById(`dfb-${i}`).className = 'quiz-fb ok show'; document.getElementById(`dnext-${i}`).disabled = false; }
   else { document.getElementById(`dinput-${i}`).className = 'dict-input'; }
 }
 function nextDict(i) { dictState[i].idx++; renderDictItem(i); }
 
 // ═══════════════════════════════════════════════════════
-//  TEXT TO SPEECH (TỐI ƯU CHO ĐIỆN THOẠI)
+//  TEXT TO SPEECH
 // ═══════════════════════════════════════════════════════
 let _selectedVoice = null;
-const VOICE_PRIORITY = ['Google US English', 'Google UK English Female', 'Microsoft Aria Online (Natural) - English (United States)', 'Samantha', 'Karen', 'Google العربية'];
+const VOICE_PRIORITY = ['Google US English', 'Google UK English Female', 'Microsoft Aria Online (Natural) - English (United States)', 'Samantha', 'Karen'];
 
 function pickVoice() {
   if (_selectedVoice) return _selectedVoice;
-  const voices = speechSynthesis.getVoices(); 
+  const voices = speechSynthesis.getVoices();
   if (!voices.length) return null;
-  
-  for (const name of VOICE_PRIORITY) { 
-      const v = voices.find(v => v.name === name); 
-      if (v) { _selectedVoice = v; return v; } 
+  for (const name of VOICE_PRIORITY) {
+    const v = voices.find(v => v.name === name);
+    if (v) { _selectedVoice = v; return v; }
   }
   const googleFemale = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google') && !v.name.toLowerCase().includes('male'));
   if (googleFemale) { _selectedVoice = googleFemale; return googleFemale; }
-  
-  const onlineFemale = voices.find(v => v.lang === 'en-US' && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('online')));
-  if (onlineFemale) { _selectedVoice = onlineFemale; return onlineFemale; }
-  
   const anyUS = voices.find(v => v.lang === 'en-US');
   if (anyUS) { _selectedVoice = anyUS; return anyUS; }
   return null;
 }
-
-if ('speechSynthesis' in window) { 
-    speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); }; 
-}
-
-let isVoiceAwake = false;
-document.addEventListener('touchstart', function() {
-    if (!isVoiceAwake && 'speechSynthesis' in window) {
-        const dummy = new SpeechSynthesisUtterance('');
-        dummy.volume = 0; 
-        window.speechSynthesis.speak(dummy);
-        isVoiceAwake = true;
-    }
-}, { once: true });
-
-document.addEventListener('click', function() {
-    if (!isVoiceAwake && 'speechSynthesis' in window) {
-        const dummy = new SpeechSynthesisUtterance('');
-        dummy.volume = 0;
-        window.speechSynthesis.speak(dummy);
-        isVoiceAwake = true;
-    }
-}, { once: true });
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => { _selectedVoice = null; pickVoice(); };
 
 function speak(text, rate = 0.85) {
-  if (!('speechSynthesis' in window)) {
-      console.warn("Trình duyệt không hỗ trợ Text-to-Speech");
-      return;
-  }
+  if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   setTimeout(() => {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0; u.volume = 1.0;
-      const voice = pickVoice(); if (voice) u.voice = voice;
-      u.onstart = () => {}; u.onerror = (e) => console.warn("Lỗi đọc giọng nói:", e);
-      window.speechSynthesis.speak(u);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = rate; u.pitch = 1.0; u.volume = 1.0;
+    const voice = pickVoice(); if (voice) u.voice = voice;
+    window.speechSynthesis.speak(u);
   }, 50);
 }
 
 // ═══════════════════════════════════════════════════════
-//  SPEECH RECOGNITION (CẢI TIẾN: TỰ ĐỘNG NHẬN DIỆN DI ĐỘNG & TỰ CHẤM ĐIỂM)
+//  SPEECH RECOGNITION — PHIÊN BẢN SỬA LỖI CHO ĐIỆN THOẠI
+//
+//  Vấn đề gốc:
+//  1. onend tự gọi stopRecord → vòng lặp, nhưng recognized vẫn rỗng
+//  2. continuous=false + interimResults=true trên iOS/Android:
+//     API tự dừng sớm, onend fire trước khi onresult có kết quả cuối
+//  3. Không có cơ chế "đợi onresult xong rồi mới chấm"
+//
+//  Giải pháp:
+//  - Tách biệt hoàn toàn luồng ghi âm (MediaRecorder) và nhận diện (SR)
+//  - SR chạy continuous=true trên tất cả thiết bị, dừng khi user bấm STOP
+//  - Nếu user không bấm STOP (onend tự fire), thu thập kết quả và chấm ngay
+//  - Timeout safety 4s: nếu không có gì → báo không nghe rõ
+//  - finalTranscript accumulate đúng cách
 // ═══════════════════════════════════════════════════════
-const recState = {};
-const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
-function toggleRecord(id, targetText) { 
-    if (recState[id]?.active) stopRecord(id, targetText); 
-    else startRecord(id, targetText); 
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const recState = {};
+
+function toggleRecord(id, targetText) {
+  if (recState[id] && recState[id].active) {
+    stopRecord(id, targetText);
+  } else {
+    startRecord(id, targetText);
+  }
 }
 
 async function startRecord(id, targetText) {
-  const btn = document.getElementById(`${id}-recbtn`);
-  const label = document.getElementById(`${id}-reclabel`);
-  const score = document.getElementById(`${id}-score`);
-  const pbk = document.getElementById(`${id}-playbk`);
+  const btn    = document.getElementById(`${id}-recbtn`);
+  const label  = document.getElementById(`${id}-reclabel`);
+  const interim = document.getElementById(`${id}-interim`);
+  const score  = document.getElementById(`${id}-score`);
+  const pbk    = document.getElementById(`${id}-playbk`);
 
+  // Reset UI
   score.className = 'score-badge';
-  
-  // Ẩn nút nghe lại trên di động để tránh tranh giành Micro
-  pbk.style.display = 'none'; 
+  score.innerHTML = '';
+  interim.textContent = '';
   pbk.classList.remove('show');
 
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
-      label.innerHTML = '<strong style="color:var(--coral)">Trình duyệt không hỗ trợ.</strong> Hãy mở bằng Google Chrome/Safari.';
-      return;
+    label.innerHTML = '<strong style="color:var(--coral)">Trình duyệt không hỗ trợ.</strong><br>Dùng Chrome (Android) hoặc Safari (iOS 14.5+).';
+    return;
   }
 
-  recState[id] = { active: true, recognized: [], recognition: null, mediaRecorder: null, chunks: [], blob: null, error: null, stream: null };
+  // Khởi tạo state
+  recState[id] = {
+    active: true,
+    finalTranscript: '',   // tích lũy kết quả final
+    interimTranscript: '', // kết quả tạm thời hiển thị
+    recognition: null,
+    mediaRecorder: null,
+    chunks: [],
+    blob: null,
+    stream: null,
+    autoStopped: false,    // flag: onend tự fire (ko phải user bấm stop)
+    noSpeechTimer: null    // timeout fallback
+  };
 
-  // NẾU LÀ MÁY TÍNH: Bật MediaRecorder để lưu file nghe lại
-  if (!isMobileDevice) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        recState[id].stream = stream;
-        const mr = new MediaRecorder(stream);
-        mr.ondataavailable = e => { if (e.data.size > 0) recState[id].chunks.push(e.data); };
-        mr.onstop = () => {
-            recState[id].blob = new Blob(recState[id].chunks, { type: mr.mimeType || 'audio/webm' });
-            pbk.className = 'playback-btn show';
-            pbk.style.display = 'inline-flex'; 
-        };
-        mr.start();
-        recState[id].mediaRecorder = mr;
-      } catch(e) { console.warn("PC: Không bật được MediaRecorder", e); }
+  const state = recState[id];
+
+  // ── MediaRecorder (chỉ PC, để có nút nghe lại) ──
+  if (!isMobile) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      state.stream = stream;
+      const mr = new MediaRecorder(stream);
+      mr.ondataavailable = e => { if (e.data.size > 0) state.chunks.push(e.data); };
+      mr.onstop = () => {
+        state.blob = new Blob(state.chunks, { type: mr.mimeType || 'audio/webm' });
+        pbk.classList.add('show');
+      };
+      mr.start();
+      state.mediaRecorder = mr;
+    } catch(e) { /* Tiếp tục dù không ghi được file */ }
   }
 
-  // TÍNH NĂNG CHẤM ĐIỂM AI (CHO CẢ PC VÀ ĐIỆN THOẠI)
+  // ── Speech Recognition ──
   const rec = new SR();
   rec.lang = 'en-US';
-  
-  // QUAN TRỌNG: Để false trên Android/iOS giúp Google nhận kết quả chính xác khi ta ngưng nói
-  rec.continuous = false; 
-  rec.interimResults = true; 
+  /**
+   * QUAN TRỌNG: continuous=true trên mọi thiết bị
+   * → tránh bị auto-stop sau 1-2 giây trên Android/iOS
+   * → người dùng tự bấm STOP (hoặc onend tự chạy sau khi im lặng đủ lâu)
+   */
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.maxAlternatives = 1;
 
-  rec.onresult = e => {
-    let currentAlts = [];
-    for (let i = 0; i < e.results.length; i++) {
-      currentAlts.push(e.results[i][0].transcript.toLowerCase().trim());
-    }
-    if (currentAlts.length > 0) recState[id].recognized = currentAlts;
-  };
-
-  // CƠ CHẾ UX MỚI: Người dùng ngưng nói -> AI tự dừng -> Tự động chấm điểm!
-  rec.onend = () => {
-      if (recState[id].active) {
-          stopRecord(id, targetText); 
+  rec.onstart = () => {
+    // Hủy no-speech timer cũ nếu có
+    clearTimeout(state.noSpeechTimer);
+    // Đặt timeout 10 giây: nếu không có final result nào → báo lỗi
+    state.noSpeechTimer = setTimeout(() => {
+      if (state.active && !state.finalTranscript) {
+        // Tự dừng sau 10s không nghe được gì
+        rec.stop();
       }
+    }, 10000);
   };
 
-  rec.onerror = (e) => { 
-      console.warn("Lỗi API Nhận diện:", e.error);
-      recState[id].error = e.error; 
+  rec.onresult = (event) => {
+    // Reset no-speech timer vì đang có dữ liệu
+    clearTimeout(state.noSpeechTimer);
+    state.noSpeechTimer = setTimeout(() => {
+      if (state.active) rec.stop();
+    }, 5000);
+
+    let newFinal = '';
+    let newInterim = '';
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        newFinal += transcript + ' ';
+      } else {
+        newInterim += transcript;
+      }
+    }
+
+    if (newFinal) state.finalTranscript += newFinal;
+    state.interimTranscript = newInterim;
+
+    // Hiển thị transcript tạm thời để user thấy đang nhận diện được
+    const displayText = (state.finalTranscript + state.interimTranscript).trim();
+    if (interim) {
+      interim.innerHTML = displayText
+        ? `<span style="color:var(--terracotta)">🎤 ${displayText}</span>`
+        : '';
+    }
+  };
+
+  rec.onerror = (event) => {
+    clearTimeout(state.noSpeechTimer);
+    console.warn('[SR Error]', event.error);
+
+    // Các lỗi "nhẹ" không dừng session
+    if (event.error === 'no-speech') {
+      // Không nghe thấy — thử lại nếu còn active
+      if (state.active) {
+        // Trên iOS continuous=true, no-speech thường xảy ra liên tục → không làm gì
+        return;
+      }
+    }
+
+    // Lỗi nghiêm trọng
+    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+      state.active = false;
+      btn.classList.remove('recording'); btn.textContent = '🎤'; btn.disabled = false;
+      label.innerHTML = '<strong style="color:var(--coral)">Chưa cấp quyền Micro!</strong><br><span style="font-size:11px">Vào Cài đặt → Trình duyệt → Cho phép Microphone</span>';
+      return;
+    }
+    if (event.error === 'network') {
+      label.innerHTML = '<strong style="color:var(--coral)">Mất kết nối mạng</strong> — cần WiFi để nhận diện giọng nói.';
+    }
+    // Lỗi khác: dừng và chấm điểm với kết quả hiện có
+    if (state.active) {
+      state.active = false;
+      finalizeRecording(id, targetText);
+    }
+  };
+
+  /**
+   * onend: có 2 trường hợp
+   * A) User bấm STOP (active đã = false trước khi onend fire)
+   * B) API tự dừng (continuous=true nhưng im lặng quá lâu / iOS giới hạn)
+   * Cả 2 trường hợp đều gọi finalizeRecording
+   */
+  rec.onend = () => {
+    clearTimeout(state.noSpeechTimer);
+    if (state.active) {
+      // Trường hợp B: API tự dừng — thử restart nếu chưa có kết quả
+      if (!state.finalTranscript && isMobile) {
+        // Trên mobile, thử restart 1 lần để tránh auto-stop sớm
+        try {
+          if (!state._restarted) {
+            state._restarted = true;
+            setTimeout(() => {
+              try { rec.start(); } catch(e) { finalizeRecording(id, targetText); }
+            }, 300);
+            return;
+          }
+        } catch(e) {}
+      }
+      state.active = false;
+      finalizeRecording(id, targetText);
+    }
+    // Trường hợp A: active đã = false, không làm gì thêm
   };
 
   try {
     rec.start();
-    recState[id].recognition = rec;
-  } catch(e) { 
-      console.error(e); 
-      label.innerHTML = '<strong style="color:var(--coral)">Lỗi Micro.</strong> Vui lòng tải lại trang.';
-      return;
+    state.recognition = rec;
+  } catch(e) {
+    console.error('[SR start error]', e);
+    label.innerHTML = '<strong style="color:var(--coral)">Lỗi khởi động Micro.</strong> Tải lại trang và thử lại.';
+    return;
   }
 
-  btn.classList.add('recording'); btn.textContent = '⏹';
-  label.innerHTML = '<strong style="color:var(--coral)">Đang thu âm...</strong> Hãy đọc và ngưng nói để tự chấm điểm';
+  // Update UI → đang ghi
+  btn.classList.add('recording');
+  btn.textContent = '⏹';
+  btn.disabled = false;
+  label.innerHTML = `<span class="rec-status-dot"></span><strong style="color:var(--coral)">Đang nghe...</strong> Nói xong bấm ⏹ để chấm điểm`;
 }
 
 function stopRecord(id, targetText) {
   const state = recState[id];
-  if (!state?.active) return;
+  if (!state || !state.active) return;
 
   state.active = false;
-  const btn = document.getElementById(`${id}-recbtn`);
-  const label = document.getElementById(`${id}-reclabel`);
+  clearTimeout(state.noSpeechTimer);
 
+  // Dừng MediaRecorder
   if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
-      state.mediaRecorder.stop();
+    try { state.mediaRecorder.stop(); } catch(e) {}
   }
   if (state.stream) {
-      state.stream.getTracks().forEach(t => t.stop());
+    state.stream.getTracks().forEach(t => t.stop());
   }
 
-  btn.classList.remove('recording');
-  btn.textContent = '🎤';
-  label.innerHTML = '<strong>Đang chấm điểm...</strong>';
-
+  // Dừng SR — onend sẽ KHÔNG gọi finalizeRecording vì active=false
   if (state.recognition) {
     try { state.recognition.stop(); } catch(e) {}
-
-    // Chờ thêm 500ms để đảm bảo Chrome tải xong kết quả văn bản cuối cùng trước khi báo lỗi
-    setTimeout(() => {
-        if (state.error && state.recognized.length === 0) {
-             let errVi = state.error;
-             if(errVi === 'no-speech') errVi = 'Không nghe thấy tiếng';
-             if(errVi === 'not-allowed') errVi = 'Chưa cấp quyền Micro';
-             if(errVi === 'network') errVi = 'Lỗi mạng Internet';
-             if(errVi === 'aborted') errVi = 'Bị ngắt đột ngột';
-             
-             label.innerHTML = `<strong style="color:var(--coral)">Lỗi: ${errVi}</strong>. Hãy thử lại!`;
-             scoreProunciation(id, targetText); 
-        } else {
-             scoreProunciation(id, targetText);
-        }
-    }, 500);
-  } else {
-    scoreProunciation(id, targetText);
   }
+
+  // Đợi SR flush kết quả cuối (quan trọng trên Android)
+  setTimeout(() => finalizeRecording(id, targetText), 400);
+}
+
+function finalizeRecording(id, targetText) {
+  const state = recState[id];
+  const btn    = document.getElementById(`${id}-recbtn`);
+  const label  = document.getElementById(`${id}-reclabel`);
+  const interim = document.getElementById(`${id}-interim`);
+
+  // Reset button
+  btn.classList.remove('recording');
+  btn.textContent = '🎤';
+  btn.disabled = false;
+  if (interim) interim.textContent = '';
+
+  const transcript = state ? state.finalTranscript.trim() : '';
+
+  if (!transcript) {
+    // Không nhận được gì
+    label.innerHTML = '<strong>Bấm mic</strong> để thử lại';
+    const score = document.getElementById(`${id}-score`);
+    renderScore(score, label, 0, targetText.toLowerCase().split(/\s+/), []);
+    return;
+  }
+
+  label.innerHTML = '<strong>Đang chấm điểm...</strong>';
+  scoreProunciation(id, targetText, transcript);
 }
 
 // ═══════════════════════════════════════════════════════
-//  SCORING LOGIC
+//  SCORING
 // ═══════════════════════════════════════════════════════
-function scoreProunciation(id, targetText) {
-  const label = document.getElementById(`${id}-reclabel`); const badge = document.getElementById(`${id}-score`);
-  const alts = recState[id]?.recognized || []; const tWords = targetText.toLowerCase().replace(/[^\w\s']/g, '').trim().split(/\s+/);
- 
-  if (!alts.length) { renderScore(badge, label, 0, tWords, []); return; }
-  let bestScore = 0, bestMatch = [];
-  alts.forEach(alt => {
-    const aWords = alt.replace(/[^\w\s']/g, '').split(/\s+/);
-    const { score, matches } = wordMatchScore(tWords, aWords);
-    if (score > bestScore) { bestScore = score; bestMatch = matches; }
-  });
-  renderScore(badge, label, bestScore, tWords, bestMatch);
+function scoreProunciation(id, targetText, transcript) {
+  const label  = document.getElementById(`${id}-reclabel`);
+  const badge  = document.getElementById(`${id}-score`);
+  const tWords = targetText.toLowerCase().replace(/[^\w\s']/g, '').trim().split(/\s+/);
+
+  if (!transcript) { renderScore(badge, label, 0, tWords, []); return; }
+
+  const aWords = transcript.toLowerCase().replace(/[^\w\s']/g, '').split(/\s+/);
+  const { score, matches } = wordMatchScore(tWords, aWords);
+  renderScore(badge, label, score, tWords, matches);
 }
 
 function wordMatchScore(tWords, aWords) {
@@ -767,8 +880,10 @@ function norm(w) { return w.toLowerCase().replace(/[^a-z']/g, ''); }
 
 function lev(a, b) {
   const m = a.length, n = b.length;
-  const dp = Array.from({length:m+1}, (_,i) => Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));
-  for (let i=1;i<=m;i++) for (let j=1;j<=n;j++) dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
   return dp[m][n];
 }
 
@@ -778,13 +893,18 @@ function renderScore(badge, label, score, tWords, matches) {
   else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;              tip='Nghe lại và lặp thêm một lần nhé!'; }
   else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;          tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nghe rõ giọng nói!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
-  const wordHTML = matches.length ? '<div class="score-words">'+matches.map(m=>`<span class="score-word ${m.hit?'hit':'miss'}">${m.word}</span>`).join('')+'</div>' : '';
+  const wordHTML = matches.length
+    ? '<div class="score-words">' + matches.map(m => `<span class="score-word ${m.hit?'hit':'miss'}">${m.word}</span>`).join('') + '</div>'
+    : '';
   badge.className = `score-badge show ${tier}`;
   badge.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:18px">${emoji}</span><strong>${msg}</strong></div><div class="score-bar-wrap"><div class="score-bar ${tier}" style="width:${score}%"></div></div><div style="font-size:12px;margin-top:4px;opacity:0.8">${tip}</div>${wordHTML}`;
   label.innerHTML = '<strong>Bấm mic</strong> để thử lại';
 }
 
-function playbackRec(id) { const blob = recState[id]?.blob; if (blob) new Audio(URL.createObjectURL(blob)).play(); }
+function playbackRec(id) {
+  const blob = recState[id]?.blob;
+  if (blob) new Audio(URL.createObjectURL(blob)).play();
+}
 </script>
 </body>
 </html>
