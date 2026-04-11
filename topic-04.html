@@ -339,7 +339,7 @@ async function fetchProgress() {
 }
  
 // ═══════════════════════════════════════════════════════
-//  DATA — TOÀN BỘ 10 NGÀY CỦA TOPIC 04 (UPDATED TITLES)
+//  DATA — TOÀN BỘ 10 NGÀY CỦA TOPIC 04
 // ═══════════════════════════════════════════════════════
 const TOPIC = { num: '04', name: 'Chores & Tidy Up', startDay: 31 }; // Bắt đầu từ Day 31
  
@@ -347,65 +347,281 @@ const DAYS = [
   // Day 1
   {
     title: 'Thử thách dọn dẹp',
-    dialogue: [ /* ... */ ],
-    vocab: [ /* ... */ ],
-    quiz: [ /* ... */ ],
-    dictation: [ /* ... */ ],
-    shadowing: [ /* ... */ ],
+    dialogue: [
+      { speaker: 'Mom', en: "Toys are everywhere! Let's see who can clean up faster!", vn: 'Đồ chơi vương vãi rồi! Xem ai dọn nhanh hơn nào!' },
+      { speaker: 'Child', en: 'Challenge accepted! I will win!', vn: 'Con nhận thử thách! Con sẽ thắng cho xem!' },
+    ],
+    vocab: [
+      { en: 'Everywhere', phonetic: '/ˈevriwer/', speaker: 'Mom', meaning: 'Khắp mọi nơi', synonym: 'all over', synonymVn: 'khắp chốn', collocation: 'toys are everywhere', collocationVn: 'đồ chơi ở khắp mọi nơi', example: '"Look at this room, toys are everywhere!"', exampleVn: '"Nhìn phòng này xem, đồ chơi ở khắp mọi nơi!"' },
+      { en: 'Clean up', phonetic: '/kliːn ʌp/', speaker: 'Mom', meaning: 'Dọn dẹp', synonym: 'tidy up', synonymVn: 'dọn gọn gàng', collocation: 'clean up the room', collocationVn: 'dọn dẹp phòng', example: '"Let\'s clean up your toys before dinner."', exampleVn: '"Cùng dọn dẹp đồ chơi trước giờ ăn tối nhé."' },
+      { en: 'Challenge accepted', phonetic: '/ˈtʃælɪndʒ əkˈseptɪd/', speaker: 'Child', meaning: 'Chấp nhận thử thách', synonym: "I'm in!", synonymVn: 'Con tham gia!', collocation: 'challenge accepted', collocationVn: 'chấp nhận thử thách', example: '"Who can clean up faster? - Challenge accepted!"', exampleVn: '"Ai dọn nhanh hơn nào? - Con nhận thử thách!"' },
+    ],
+    quiz: [
+      { q: '"Everywhere" có nghĩa là gì?', opts: ['Khắp mọi nơi','Trong hộp','Dưới giường','Ngoài sân'], ans: 0, exp: '"Everywhere" dùng để chỉ việc đồ vật bị vứt rải rác khắp nơi trong phòng.' },
+      { q: 'Cụm từ nào mẹ dùng để rủ bé dọn dẹp như một cuộc thi?', opts: ['Go to sleep','Clean up faster','Wash your face','Eat dinner'], ans: 1, exp: '"Let\'s see who can clean up faster!" biến việc dọn dẹp thành một trò chơi thi đua thú vị.' },
+      { q: 'Khi bé nói "Challenge accepted!", bé cảm thấy thế nào?', opts: ['Buồn bã','Hào hứng, muốn chiến thắng','Mệt mỏi','Tức giận'], ans: 1, exp: '"Challenge accepted!" thể hiện sự hào hứng và tinh thần sẵn sàng tham gia trò chơi.' },
+    ],
+    dictation: [
+      { text: 'everywhere', hint: '1 từ · khắp mọi chỗ', hintVn: 'Khắp mọi nơi' },
+      { text: 'clean up', hint: '2 từ · làm cho gọn gàng', hintVn: 'Dọn dẹp' },
+      { text: 'Challenge accepted', hint: '2 từ · câu nói hào hứng nhận lời', hintVn: 'Nhận thử thách' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Toys are everywhere! Let's see who can clean up faster!", vn: 'Đồ chơi vương vãi rồi! Xem ai dọn nhanh hơn nào!' },
+      { speaker: 'Child', en: 'Challenge accepted! I will win!', vn: 'Con nhận thử thách! Con sẽ thắng cho xem!' },
+    ],
   },
+ 
   // Day 2
   {
     title: 'Giờ đi ngủ của đồ chơi',
-    dialogue: [ /* ... */ ],
-    // ... các trường dữ liệu giữ nguyên
+    dialogue: [
+      { speaker: 'Mom', en: "It's clean-up time! Toys are tired and need to sleep too.", vn: 'Đến giờ dọn dẹp rồi! Đồ chơi cũng mệt và cần đi ngủ đấy con.' },
+      { speaker: 'Child', en: 'Goodnight, teddy bear! Into the box!', vn: 'Ngủ ngon nhé gấu bông! Vào hộp thôi!' },
+    ],
+    vocab: [
+      { en: 'Clean-up time', phonetic: '/ˈkliːn ʌp taɪm/', speaker: 'Mom', meaning: 'Giờ dọn dẹp', synonym: 'time to tidy up', synonymVn: 'giờ dọn dẹp', collocation: "it's clean-up time", collocationVn: 'đến giờ dọn dẹp rồi', example: '"Stop playing now, it\'s clean-up time."', exampleVn: '"Dừng chơi thôi con, đến giờ dọn dẹp rồi."' },
+      { en: 'Tired', phonetic: '/ˈtaɪərd/', speaker: 'Mom', meaning: 'Mệt mỏi', synonym: 'exhausted', synonymVn: 'kiệt sức', collocation: 'toys are tired', collocationVn: 'đồ chơi cũng mệt', example: '"The toys played all day, they are tired now."', exampleVn: '"Đồ chơi đã chơi cả ngày, giờ chúng mệt rồi."' },
+      { en: 'Into the box', phonetic: '/ˈɪntu ðə bɑːks/', speaker: 'Child', meaning: 'Vào trong hộp', synonym: 'put away', synonymVn: 'cất đi', collocation: 'put them into the box', collocationVn: 'cất chúng vào hộp', example: '"Put the blocks into the box, please."', exampleVn: '"Cất những khối gỗ vào hộp đi con."' },
+    ],
+    quiz: [
+      { q: 'Mẹ nói đồ chơi cần làm gì?', opts: ['Ăn cơm','Đi tắm','Đi ngủ (sleep)','Đi dạo'], ans: 2, exp: 'Mẹ nhân hóa đồ chơi "need to sleep too" để bé có ý thức cất đồ chơi vào hộp dễ dàng hơn.' },
+      { q: '"Into the box" nghĩa là?', opts: ['Ra ngoài sân','Vào trong hộp','Lên giường','Xuống đất'], ans: 1, exp: '"Into" = vào trong, "box" = cái hộp. Đây là hành động cất đồ chơi gọn gàng.' },
+      { q: 'Bé chào gấu bông thế nào?', opts: ['Good morning!','Goodbye!','Goodnight!','Hello!'], ans: 2, exp: 'Bé nói "Goodnight, teddy bear!" vì đã đến giờ đồ chơi đi ngủ.' },
+    ],
+    dictation: [
+      { text: 'clean-up time', hint: '3 từ · thời gian dọn dẹp', hintVn: 'Giờ dọn dẹp' },
+      { text: 'tired', hint: '1 từ · cảm giác cần nghỉ ngơi', hintVn: 'Mệt mỏi' },
+      { text: 'Into the box', hint: '3 từ · hướng dẫn cất đồ', hintVn: 'Vào trong hộp' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "It's clean-up time! Toys are tired and need to sleep too.", vn: 'Đến giờ dọn dẹp rồi! Đồ chơi cũng mệt và cần đi ngủ đấy con.' },
+      { speaker: 'Child', en: 'Goodnight, teddy bear! Into the box!', vn: 'Ngủ ngon nhé gấu bông! Vào hộp thôi!' },
+    ],
   },
+ 
   // Day 3
   {
     title: 'Tuyển thủ bóng rổ nhí',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: 'Dirty clothes belong in the basket, not on the floor, sweetie.', vn: 'Quần áo bẩn phải để vào rổ, không vứt trên sàn nhà con yêu nhé.' },
+      { speaker: 'Child', en: 'Watch me shoot a basket! Yay!', vn: 'Nhìn con ném bóng rổ này! Hoan hô!' },
+    ],
+    vocab: [
+      { en: 'Dirty clothes', phonetic: '/ˈdɜːrti kloʊðz/', speaker: 'Mom', meaning: 'Quần áo bẩn', synonym: 'laundry', synonymVn: 'đồ cần giặt', collocation: 'put dirty clothes away', collocationVn: 'cất quần áo bẩn đi', example: '"Put your dirty clothes in the washing machine."', exampleVn: '"Để quần áo bẩn của con vào máy giặt nhé."' },
+      { en: 'Basket', phonetic: '/ˈbæskɪt/', speaker: 'Mom', meaning: 'Cái rổ, giỏ', synonym: 'hamper', synonymVn: 'giỏ đựng đồ', collocation: 'laundry basket', collocationVn: 'giỏ đựng quần áo', example: '"Throw your shirt into the basket."', exampleVn: '"Ném áo của con vào giỏ đi nào."' },
+      { en: 'Shoot a basket', phonetic: '/ʃuːt ə ˈbæskɪt/', speaker: 'Child', meaning: 'Ném bóng vào rổ', synonym: 'throw into', synonymVn: 'ném vào', collocation: 'shoot a basket like a pro', collocationVn: 'ném rổ như dân chuyên', example: '"I will shoot a basket with these socks!"', exampleVn: '"Con sẽ ném rổ với đôi tất này!"' },
+    ],
+    quiz: [
+      { q: 'Quần áo bẩn (dirty clothes) cần để ở đâu?', opts: ['On the bed','On the floor','In the basket','On the table'], ans: 2, exp: 'Mẹ nhắc bé phải để quần áo bẩn "in the basket" (vào trong rổ).' },
+      { q: '"Floor" có nghĩa là gì?', opts: ['Cửa sổ','Sàn nhà','Cái bàn','Cái rổ'], ans: 1, exp: '"Floor" là sàn nhà. Mẹ nhắc "not on the floor" - không vứt trên sàn.' },
+      { q: 'Bé biến việc cất đồ bẩn thành trò chơi gì?', opts: ['Đá bóng','Ném bóng rổ (shoot a basket)','Trốn tìm','Bơi lội'], ans: 1, exp: 'Bé ném quần áo vào rổ và nói "Watch me shoot a basket!" rất đáng yêu.' },
+    ],
+    dictation: [
+      { text: 'dirty clothes', hint: '2 từ · đồ cần mang đi giặt', hintVn: 'Quần áo bẩn' },
+      { text: 'basket', hint: '1 từ · vật dụng đựng đồ', hintVn: 'Cái rổ / giỏ' },
+      { text: 'shoot a basket', hint: '3 từ · hành động ném vào rổ', hintVn: 'Ném bóng rổ' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Dirty clothes belong in the basket, not on the floor, sweetie.', vn: 'Quần áo bẩn phải để vào rổ, không vứt trên sàn nhà con yêu nhé.' },
+      { speaker: 'Child', en: 'Watch me shoot a basket! Yay!', vn: 'Nhìn con ném bóng rổ này! Hoan hô!' },
+    ],
   },
+ 
   // Day 4
   {
     title: 'Biệt đội dọn dẹp',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: "Let's work as a team. You wipe the table, and your sister sweeps.", vn: 'Cùng làm việc nhóm nào. Con lau bàn, còn em quét nhà nhé.' },
+      { speaker: 'Child', en: 'Okay, I am a great helper!', vn: 'Vâng ạ, con là người giúp đỡ cừ khôi!' },
+    ],
+    vocab: [
+      { en: 'Work as a team', phonetic: '/wɜːrk æz ə tiːm/', speaker: 'Mom', meaning: 'Làm việc nhóm', synonym: 'collaborate', synonymVn: 'hợp tác', collocation: "let's work as a team", collocationVn: 'cùng làm việc nhóm nhé', example: '"If we work as a team, we will finish faster."', exampleVn: '"Nếu làm việc nhóm, chúng ta sẽ xong nhanh hơn."' },
+      { en: 'Wipe', phonetic: '/waɪp/', speaker: 'Mom', meaning: 'Lau chùi', synonym: 'clean', synonymVn: 'làm sạch', collocation: 'wipe the table', collocationVn: 'lau bàn', example: '"Please wipe the table after eating."', exampleVn: '"Hãy lau bàn sau khi ăn nhé."' },
+      { en: 'Helper', phonetic: '/ˈhelpər/', speaker: 'Child', meaning: 'Người giúp đỡ', synonym: 'assistant', synonymVn: 'trợ lý', collocation: 'a great helper', collocationVn: 'người giúp đỡ tuyệt vời', example: '"You are Mommy\'s little helper!"', exampleVn: '"Con là người giúp việc nhỏ của mẹ!"' },
+    ],
+    quiz: [
+      { q: '"Wipe the table" nghĩa là gì?', opts: ['Quét nhà','Lau bàn','Rửa bát','Tưới cây'], ans: 1, exp: '"Wipe" là lau, "table" là cái bàn.' },
+      { q: 'Em gái (sister) được mẹ giao việc gì?', opts: ['Wipe the table','Sweep (quét nhà)','Sleep','Cry'], ans: 1, exp: 'Mẹ phân công rất công bằng: "You wipe the table, and your sister sweeps."' },
+      { q: 'Bé tự hào gọi mình là gì?', opts: ['A baby','A great helper','A teacher','A student'], ans: 1, exp: 'Bé rất vui vẻ nhận việc và tự gọi mình là "a great helper" (người giúp đỡ cừ khôi).' },
+    ],
+    dictation: [
+      { text: 'work as a team', hint: '4 từ · làm việc cùng nhau', hintVn: 'Làm việc nhóm' },
+      { text: 'wipe', hint: '1 từ · dùng khăn làm sạch', hintVn: 'Lau' },
+      { text: 'helper', hint: '1 từ · người hỗ trợ', hintVn: 'Người giúp đỡ' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Let's work as a team. You wipe the table, and your sister sweeps.", vn: 'Cùng làm việc nhóm nào. Con lau bàn, còn em quét nhà nhé.' },
+      { speaker: 'Child', en: 'Okay, I am a great helper!', vn: 'Vâng ạ, con là người giúp đỡ cừ khôi!' },
+    ],
   },
+ 
   // Day 5
   {
     title: 'Trợ lý nhỏ đắc lực',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: 'Can you get me the broom, please?', vn: 'Lấy hộ mẹ cái chổi với được không con?' },
+      { speaker: 'Child', en: "Where is it, Mom? I can't find it!", vn: 'Nó ở đâu hả mẹ? Con không tìm thấy!' },
+    ],
+    vocab: [
+      { en: 'Get me', phonetic: '/ɡet miː/', speaker: 'Mom', meaning: 'Lấy cho mẹ', synonym: 'bring me', synonymVn: 'mang cho mẹ', collocation: 'get me the broom', collocationVn: 'lấy cho mẹ cái chổi', example: '"Can you get me some water, please?"', exampleVn: '"Con lấy cho mẹ chút nước được không?"' },
+      { en: 'Broom', phonetic: '/bruːm/', speaker: 'Mom', meaning: 'Cái chổi', synonym: 'sweeper', synonymVn: 'dụng cụ quét', collocation: 'sweep with a broom', collocationVn: 'quét bằng chổi', example: '"Use the broom to sweep the floor."', exampleVn: '"Dùng chổi để quét nhà đi con."' },
+      { en: 'Find', phonetic: '/faɪnd/', speaker: 'Child', meaning: 'Tìm thấy', synonym: 'discover, locate', synonymVn: 'phát hiện ra', collocation: "I can't find it", collocationVn: 'Con không tìm thấy nó', example: '"I can\'t find my teddy bear anywhere!"', exampleVn: '"Con không tìm thấy bạn gấu bông đâu cả!"' },
+    ],
+    quiz: [
+      { q: '"Broom" là vật dụng gì?', opts: ['Cái khăn','Cái chổi','Cái giẻ lau','Cái rổ'], ans: 1, exp: '"Broom" là cái chổi, dùng để quét (sweep).' },
+      { q: 'Mẹ dùng mẫu câu nào để nhờ vả lịch sự?', opts: ['Give me!','I want the broom!','Can you get me..., please?','Where is the broom?'], ans: 2, exp: '"Can you... please?" là cách dạy bé nói lời nhờ vả rất lịch sự.' },
+      { q: 'Bé nói "I can\'t find it!" khi nào?', opts: ['Khi đã cất đồ xong','Khi tìm thấy đồ','Khi không nhìn thấy món đồ cần tìm','Khi muốn đi ngủ'], ans: 2, exp: '"Find" là tìm thấy. "Can\'t find" = không thể tìm thấy.' },
+    ],
+    dictation: [
+      { text: 'get me', hint: '2 từ · mang đến cho mẹ', hintVn: 'Lấy cho mẹ' },
+      { text: 'broom', hint: '1 từ · vật dụng để quét', hintVn: 'Cái chổi' },
+      { text: 'find it', hint: '2 từ · nhìn ra vật cần tìm', hintVn: 'Tìm thấy nó' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Can you get me the broom, please?', vn: 'Lấy hộ mẹ cái chổi với được không con?' },
+      { speaker: 'Child', en: "Where is it, Mom? I can't find it!", vn: 'Nó ở đâu hả mẹ? Con không tìm thấy!' },
+    ],
   },
+ 
   // Day 6
   {
     title: 'Đôi giày ngoan ngoãn',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: 'Put your shoes on the rack. Keep them neat!', vn: 'Cất dép lên giá đi con. Xếp cho gọn gàng vào nhé!' },
+      { speaker: 'Child', en: 'Left shoe, right shoe. Nice and tidy!', vn: 'Giày trái, giày phải. Gọn gàng rồi ạ!' },
+    ],
+    vocab: [
+      { en: 'Shoe rack', phonetic: '/ʃuː ræk/', speaker: 'Mom', meaning: 'Giá để giày/dép', synonym: 'shoe stand', synonymVn: 'kệ giày', collocation: 'on the rack', collocationVn: 'trên giá', example: '"Put your boots on the shoe rack, please."', exampleVn: '"Để ủng của con lên giá để giày nhé."' },
+      { en: 'Neat', phonetic: '/niːt/', speaker: 'Mom', meaning: 'Ngăn nắp, cẩn thận', synonym: 'tidy, organized', synonymVn: 'gọn gàng', collocation: 'keep them neat', collocationVn: 'giữ chúng ngăn nắp', example: '"Your room is very neat today!"', exampleVn: '"Hôm nay phòng con rất ngăn nắp!"' },
+      { en: 'Nice and tidy', phonetic: '/naɪs ænd ˈtaɪdi/', speaker: 'Child', meaning: 'Rất gọn gàng (cụm từ cảm thán)', synonym: 'clean and neat', synonymVn: 'sạch sẽ gọn gàng', collocation: 'nice and tidy', collocationVn: 'thật gọn gàng', example: '"Look! The books are nice and tidy."', exampleVn: '"Nhìn này! Sách vở đã rất gọn gàng rồi."' },
+    ],
+    quiz: [
+      { q: '"Shoe rack" là gì?', opts: ['Tủ quần áo','Giá để giày/dép','Cái giường','Hộp đồ chơi'], ans: 1, exp: '"Rack" là cái giá/kệ. "Shoe rack" là kệ để giày.' },
+      { q: '"Left" và "Right" nghĩa là gì?', opts: ['Trên / Dưới','Trong / Ngoài','Trái / Phải','Sáng / Tối'], ans: 2, exp: 'Bé vừa xếp vừa lẩm nhẩm "Left shoe, right shoe" (giày trái, giày phải).' },
+      { q: 'Cụm từ "Nice and tidy!" thể hiện cảm xúc gì?', opts: ['Tự hào vì đã xếp gọn gàng','Buồn chán','Thất vọng','Tức giận'], ans: 0, exp: '"Nice and tidy!" là lời cảm thán đáng yêu khi hoàn thành xong việc dọn dẹp.' },
+    ],
+    dictation: [
+      { text: 'on the rack', hint: '3 từ · vị trí đặt đồ lên kệ', hintVn: 'Trên giá/kệ' },
+      { text: 'neat', hint: '1 từ · có trật tự', hintVn: 'Ngăn nắp' },
+      { text: 'Nice and tidy', hint: '3 từ · mô tả sự gọn gàng', hintVn: 'Gọn gàng sạch sẽ' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Put your shoes on the rack. Keep them neat!', vn: 'Cất dép lên giá đi con. Xếp cho gọn gàng vào nhé!' },
+      { speaker: 'Child', en: 'Left shoe, right shoe. Nice and tidy!', vn: 'Giày trái, giày phải. Gọn gàng rồi ạ!' },
+    ],
   },
+ 
   // Day 7
   {
     title: 'Bài học cẩn thận',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: "Be careful when you wipe the table. Don't spill the water!", vn: 'Cẩn thận khi lau bàn nhé. Đừng làm đổ nước ra đấy!' },
+      { speaker: 'Child', en: "Oops! I'll wipe it up right now.", vn: 'Úi! Con lau khô ngay đây ạ.' },
+    ],
+    vocab: [
+      { en: 'Be careful', phonetic: '/biː ˈkerfəl/', speaker: 'Mom', meaning: 'Cẩn thận nhé', synonym: 'watch out', synonymVn: 'chú ý nhé', collocation: 'be careful with', collocationVn: 'cẩn thận với', example: '"Be careful, the soup is hot!"', exampleVn: '"Cẩn thận nhé, súp nóng đấy!"' },
+      { en: 'Spill', phonetic: '/spɪl/', speaker: 'Mom', meaning: 'Làm đổ (nước, chất lỏng)', synonym: 'drop', synonymVn: 'làm rớt', collocation: 'spill the water', collocationVn: 'làm đổ nước', example: '"Don\'t spill the milk on your shirt."', exampleVn: '"Đừng làm đổ sữa ra áo nhé."' },
+      { en: 'Wipe up', phonetic: '/waɪp ʌp/', speaker: 'Child', meaning: 'Lau khô/lau sạch (chỗ bị bẩn/đổ)', synonym: 'clean up', synonymVn: 'dọn sạch', collocation: 'wipe it up', collocationVn: 'lau sạch nó đi', example: '"I spilled juice, I will wipe it up."', exampleVn: '"Con lỡ làm đổ nước trái cây, con sẽ lau sạch ngay."' },
+    ],
+    quiz: [
+      { q: '"Spill" thường dùng cho vật gì?', opts: ['Đồ chơi','Chất lỏng (nước, sữa...)','Quần áo','Sách vở'], ans: 1, exp: '"Spill" nghĩa là làm tràn, làm đổ chất lỏng ra ngoài.' },
+      { q: 'Mẹ dặn bé điều gì khi lau bàn?', opts: ['Lau thật nhanh','Lau mạnh tay','Cẩn thận (be careful)','Không được lau'], ans: 2, exp: 'Mẹ nhắc "Be careful" để rèn sự cẩn thận cho bé.' },
+      { q: 'Bé nói "Oops!" khi nào?', opts: ['Khi vui mừng','Khi chào hỏi','Khi lỡ làm sai/gây lỗi nhỏ','Khi đi ngủ'], ans: 2, exp: '"Oops!" là thán từ thường bật ra khi vô tình mắc lỗi nhỏ (như làm đổ nước).' },
+    ],
+    dictation: [
+      { text: 'Be careful', hint: '2 từ · lời nhắc nhở an toàn', hintVn: 'Cẩn thận nhé' },
+      { text: 'spill', hint: '1 từ · làm tràn chất lỏng', hintVn: 'Làm đổ' },
+      { text: 'wipe it up', hint: '3 từ · dọn dẹp chỗ ướt', hintVn: 'Lau sạch nó đi' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Be careful when you wipe the table. Don't spill the water!", vn: 'Cẩn thận khi lau bàn nhé. Đừng làm đổ nước ra đấy!' },
+      { speaker: 'Child', en: "Oops! I'll wipe it up right now.", vn: 'Úi! Con lau khô ngay đây ạ.' },
+    ],
   },
+ 
   // Day 8
   {
     title: 'Cho cây uống nước',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: "Let's water the plants. Just a little bit of water!", vn: 'Cùng tưới cây nào. Một chút xíu nước thôi con nhé!' },
+      { speaker: 'Child', en: 'Drink up, little plants! Grow big!', vn: 'Uống nước đi các cây nhỏ! Lớn nhanh nhé!' },
+    ],
+    vocab: [
+      { en: 'Water the plants', phonetic: '/ˈwɔːtər ðə plænts/', speaker: 'Mom', meaning: 'Tưới cây', synonym: 'give water to plants', synonymVn: 'cho cây uống nước', collocation: 'time to water the plants', collocationVn: 'đã đến giờ tưới cây', example: '"Can you help me water the plants in the garden?"', exampleVn: '"Con giúp mẹ tưới cây trong vườn được không?"' },
+      { en: 'A little bit', phonetic: '/ə ˈlɪtl bɪt/', speaker: 'Mom', meaning: 'Một chút xíu', synonym: 'a small amount', synonymVn: 'một lượng nhỏ', collocation: 'just a little bit', collocationVn: 'chỉ một chút thôi', example: '"Put just a little bit of sugar in the tea."', exampleVn: '"Cho một chút xíu đường vào trà thôi nhé."' },
+      { en: 'Grow big', phonetic: '/ɡroʊ bɪɡ/', speaker: 'Child', meaning: 'Lớn lên, phát triển lớn', synonym: 'grow up', synonymVn: 'trưởng thành', collocation: 'grow big and strong', collocationVn: 'lớn nhanh và khỏe mạnh', example: '"Eat your vegetables so you can grow big!"', exampleVn: '"Ăn rau để lớn nhanh nhé con!"' },
+    ],
+    quiz: [
+      { q: 'Trong câu "water the plants", từ "water" đóng vai trò gì?', opts: ['Danh từ (nước uống)','Động từ (hành động tưới)','Tính từ','Trạng từ'], ans: 1, exp: 'Ở đây "water" là động từ, mang ý nghĩa là "hành động tưới nước".' },
+      { q: 'Mẹ nhắc bé tưới bao nhiêu nước?', opts: ['Rất nhiều (a lot)','Một chút xíu (a little bit)','Không tưới giọt nào','Một xô nước'], ans: 1, exp: 'Mẹ nhắc "Just a little bit of water!" để cây không bị úng.' },
+      { q: 'Bé nói cây hãy làm gì?', opts: ['Go to sleep','Drink up! (Uống đi)','Run fast','Fly away'], ans: 1, exp: 'Bé nhân hóa cây rất đáng yêu: "Drink up, little plants!"' },
+    ],
+    dictation: [
+      { text: 'water the plants', hint: '3 từ · chăm sóc cây cối', hintVn: 'Tưới cây' },
+      { text: 'a little bit', hint: '3 từ · số lượng nhỏ', hintVn: 'Một chút xíu' },
+      { text: 'Grow big', hint: '2 từ · phát triển kích thước', hintVn: 'Lớn nhanh/to' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: "Let's water the plants. Just a little bit of water!", vn: 'Cùng tưới cây nào. Một chút xíu nước thôi con nhé!' },
+      { speaker: 'Child', en: 'Drink up, little plants! Grow big!', vn: 'Uống nước đi các cây nhỏ! Lớn nhanh nhé!' },
+    ],
   },
+ 
   // Day 9
   {
     title: 'Gấp đồ giúp mẹ',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: 'Can you help me fold the socks? Find the matching pairs.', vn: 'Con giúp mẹ gấp tất nhé? Tìm các đôi giống nhau nào.' },
+      { speaker: 'Child', en: 'I found two yellow ones!', vn: 'Con tìm thấy hai chiếc màu vàng rồi ạ!' },
+    ],
+    vocab: [
+      { en: 'Fold', phonetic: '/foʊld/', speaker: 'Mom', meaning: 'Gấp (quần áo, giấy)', synonym: 'crease', synonymVn: 'tạo nếp', collocation: 'fold the laundry', collocationVn: 'gấp quần áo', example: '"Teach me how to fold a shirt, Mom."', exampleVn: '"Dạy con cách gấp áo đi mẹ."' },
+      { en: 'Matching pairs', phonetic: '/ˈmætʃɪŋ perz/', speaker: 'Mom', meaning: 'Các đôi giống nhau', synonym: 'identical pairs', synonymVn: 'cặp giống hệt', collocation: 'find matching pairs', collocationVn: 'tìm những đôi giống nhau', example: '"You need to wear matching pairs of socks."', exampleVn: '"Con cần đi tất theo đôi giống nhau nhé."' },
+      { en: 'Yellow ones', phonetic: '/ˈjeloʊ wʌnz/', speaker: 'Child', meaning: 'Những chiếc màu vàng', synonym: 'yellow socks', synonymVn: 'những chiếc tất vàng', collocation: 'two yellow ones', collocationVn: 'hai chiếc màu vàng', example: '"I like the blue car, but he likes the red one."', exampleVn: '"Con thích xe xanh, nhưng bạn ấy thích chiếc màu đỏ." (One/Ones thay thế cho danh từ đã nhắc)' },
+    ],
+    quiz: [
+      { q: '"Fold" nghĩa là hành động gì?', opts: ['Giặt','Phơi','Gấp lại','Là/ủi'], ans: 2, exp: '"Fold" là động từ có nghĩa gấp lại gọn gàng.' },
+      { q: 'Mẹ nhờ bé làm gì với những chiếc tất (socks)?', opts: ['Vứt đi','Tìm các đôi giống nhau (matching pairs)','Đem giặt','Mang đi cho bạn'], ans: 1, exp: 'Trò chơi tìm tất giống nhau giúp bé rèn luyện kỹ năng quan sát và phân loại.' },
+      { q: 'Từ "ones" trong câu của bé thay thế cho từ nào?', opts: ['Bàn tay','Đồ chơi','Chiếc tất (socks)','Màu vàng'], ans: 2, exp: '"Ones" ở đây được dùng để tránh lặp lại từ "socks" (những chiếc tất) ở câu trước.' },
+    ],
+    dictation: [
+      { text: 'fold', hint: '1 từ · xếp đồ lại', hintVn: 'Gấp' },
+      { text: 'matching pairs', hint: '2 từ · 2 vật giống hệt đi liền nhau', hintVn: 'Đôi giống nhau' },
+      { text: 'yellow ones', hint: '2 từ · những chiếc màu vàng', hintVn: 'Những chiếc vàng' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'Can you help me fold the socks? Find the matching pairs.', vn: 'Con giúp mẹ gấp tất nhé? Tìm các đôi giống nhau nào.' },
+      { speaker: 'Child', en: 'I found two yellow ones!', vn: 'Con tìm thấy hai chiếc màu vàng rồi ạ!' },
+    ],
   },
+ 
   // Day 10
   {
     title: 'Ăn mừng thành quả',
-    dialogue: [ /* ... */ ],
-    // ...
+    dialogue: [
+      { speaker: 'Mom', en: 'High five! Our house is so clean and beautiful now.', vn: 'Đập tay nào! Nhà mình giờ sạch và đẹp quá rồi.' },
+      { speaker: 'Child', en: 'We are the best team!', vn: 'Chúng mình là một đội tuyệt nhất!' },
+    ],
+    vocab: [
+      { en: 'High five', phonetic: '/haɪ faɪv/', speaker: 'Mom', meaning: 'Đập tay (ăn mừng)', synonym: 'give me five', synonymVn: 'đập tay nào', collocation: 'give me a high five', collocationVn: 'đập tay với mẹ nào', example: '"We did it! High five!"', exampleVn: '"Chúng ta làm được rồi! Đập tay nào!"' },
+      { en: 'Clean and beautiful', phonetic: '/kliːn ænd ˈbjuːtɪfəl/', speaker: 'Mom', meaning: 'Sạch sẽ và xinh đẹp', synonym: 'spotless and gorgeous', synonymVn: 'không tì vết và lộng lẫy', collocation: 'so clean and beautiful', collocationVn: 'thật sạch và đẹp', example: '"Your drawing is so clean and beautiful."', exampleVn: '"Bức tranh của con thật sạch sẽ và đẹp."' },
+      { en: 'Best team', phonetic: '/best tiːm/', speaker: 'Child', meaning: 'Đội tuyệt nhất', synonym: 'greatest team', synonymVn: 'đội vĩ đại nhất', collocation: 'we are the best team', collocationVn: 'chúng mình là đội tuyệt nhất', example: '"Mommy and me are the best team ever!"', exampleVn: '"Mẹ và con là đội tuyệt nhất trần đời!"' },
+    ],
+    quiz: [
+      { q: '"High five!" thường dùng khi nào?', opts: ['Khi buồn bã','Khi ăn mừng, ghi nhận thành quả','Khi buồn ngủ','Khi đang tức giận'], ans: 1, exp: '"High five!" (Đập tay) là hành động ăn mừng đầy tích cực, khuyến khích tinh thần trẻ.' },
+      { q: 'Cụm "clean and beautiful" miêu tả điều gì?', opts: ['Nhà cửa sau khi dọn dẹp','Bộ quần áo bẩn','Sân vườn nhiều cỏ dại','Bữa ăn'], ans: 0, exp: 'Mẹ khen nhà cửa "so clean and beautiful" (thật sạch và đẹp) để ghi nhận công sức của bé.' },
+      { q: 'Bé cảm nhận thế nào về việc làm chung với mẹ?', opts: ['Khó khăn','Nhàm chán','Tuyệt vời (We are the best team!)','Mệt mỏi'], ans: 2, exp: 'Trẻ sẽ rất thích thú và gắn kết khi xem mẹ và mình là một "đội tuyệt nhất".' },
+    ],
+    dictation: [
+      { text: 'High five', hint: '2 từ · hành động đập tay', hintVn: 'Đập tay' },
+      { text: 'clean', hint: '1 từ · không có bụi bẩn', hintVn: 'Sạch sẽ' },
+      { text: 'best team', hint: '2 từ · đội nhóm xuất sắc nhất', hintVn: 'Đội tuyệt nhất' },
+    ],
+    shadowing: [
+      { speaker: 'Mom', en: 'High five! Our house is so clean and beautiful now.', vn: 'Đập tay nào! Nhà mình giờ sạch và đẹp quá rồi.' },
+      { speaker: 'Child', en: 'We are the best team!', vn: 'Chúng mình là một đội tuyệt nhất!' },
+    ],
   },
 ];
  
