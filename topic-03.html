@@ -410,14 +410,6 @@
   .fs-speak-btn:hover { background:var(--blush); }
   .fs-speak-btn.slow { color:var(--sage-deep); border-color:var(--sage); }
 
-  .fullscript-print-btn {
-    width:100%; padding:13px; border-radius:99px; border:1.5px solid var(--terracotta);
-    background:transparent; color:var(--terracotta);
-    font-size:14px; font-family:'DM Sans',sans-serif; font-weight:500;
-    cursor:pointer; transition:all 0.2s; margin-top:4px;
-  }
-  .fullscript-print-btn:hover { background:var(--blush); }
-
   .fs-pill {
     flex-shrink:0; padding:0 14px; height:44px; border-radius:22px;
     border:1px solid var(--border); background:var(--warm-white);
@@ -428,14 +420,6 @@
   .fs-pill:hover { background:var(--blush); border-color:var(--rose); }
   .fs-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
 
-  @media print {
-    header, .days-nav, .topic-hero, .day-panel, .mode-tabs,
-    .fullscript-print-btn, .fs-speak-btn, .fs-day-header .fs-chevron { display:none !important; }
-    #panel-fullscript { display:block !important; }
-    .fs-dialogue { max-height:none !important; padding:14px 18px 16px !important; }
-    .fs-day-block { break-inside:avoid; }
-    body { background:white; }
-  }
 </style>
 </head>
 <body>
@@ -667,7 +651,6 @@ function buildFullScriptPanel() {
     </div>
     <div class="fullscript-content">
       ${lines}
-      <button class="fullscript-print-btn" onclick="window.print()">🖨️ In toàn bộ kịch bản</button>
     </div>
   </div>`;
 }
@@ -1163,7 +1146,7 @@ function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg=`Xuất sắc! Phát âm rất chuẩn (${score}%)!`; tip='Tuyệt vời – bé sẽ học theo giọng ba/mẹ này!'; }
   else if (score >= 70) { tier='good';      emoji='👍'; msg=`Tốt! Đúng ${score}% từ.`;                 tip='Nghe lại và lặp thêm một lần nhé!'; }
-  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;               tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
+  else if (score >= 40) { tier='ok';        emoji='💪'; msg=`Cố lên! Đúng ${score}% từ.`;                tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nhận được giọng nói. Thử lại!':`Đúng ${score}% — Hãy thử lại!`; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
 
   const wordHTML = matches.length
