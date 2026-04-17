@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Topic 05 – Play Time · Lani Be A Gift</title>
+<title>Topic 06 – Expressing Emotions · Lani Be A Gift</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
  
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -282,9 +282,9 @@
 </header>
  
 <div class="topic-hero">
-  <div class="topic-eyebrow">Topic 05 · 10 ngày</div>
-  <div class="topic-title">⛺ Play <em>Time</em></div>
-  <div class="topic-vn">Chuyến cắm trại trong nhà</div>
+  <div class="topic-eyebrow">Topic 06 · 10 ngày</div>
+  <div class="topic-title">❤️ Expressing <em>Emotions</em></div>
+  <div class="topic-vn">Gọi tên cảm xúc</div>
 </div>
  
 <div class="days-nav" id="daysNav"></div>
@@ -326,8 +326,8 @@ async function fetchProgress() {
     const doc = await db.collection("users").doc(currentUser.uid).get();
     if (doc.exists) {
       userProgress = doc.data();
-      // Topic 05 dùng index 4
-      const daysCompleted = userProgress.progress[4] || 0; 
+      // Topic 06 dùng index 5
+      const daysCompleted = userProgress.progress[5] || 0; 
       for(let i=0; i < daysCompleted; i++) {
         doneDays.push(i);
       }
@@ -340,290 +340,288 @@ async function fetchProgress() {
 }
  
 // ═══════════════════════════════════════════════════════
-//  DATA — TOÀN BỘ 10 NGÀY CỦA TOPIC 05
+//  DATA — TOÀN BỘ 10 NGÀY CỦA TOPIC 06
 // ═══════════════════════════════════════════════════════
-const TOPIC = { num: '05', name: 'Play Time', startDay: 41 }; // Bắt đầu từ Day 41
+const TOPIC = { num: '06', name: 'Expressing Emotions', startDay: 51 }; // Bắt đầu từ Day 51
  
 const DAYS = [
   // Day 1
   {
-    title: 'Ý tưởng cắm trại diệu kỳ',
+    title: 'Tia nắng niềm vui',
     dialogue: [
-      { speaker: 'Mom', en: "What should we play today, kids?", vn: 'Hôm nay ba mẹ con mình chơi gì nhỉ hai đứa?' },
-      { speaker: 'Child', en: "I want cars, but she wants dolls!", vn: 'Con muốn chơi ô tô, nhưng em/chị ấy lại muốn chơi búp bê!' },
-      { speaker: 'Mom', en: "Let’s combine them! A camping trip for everyone!", vn: 'Kết hợp lại nhé! Một chuyến cắm trại cho tất cả!' }
+      { speaker: 'Mom', en: "You look so happy! What's up?", vn: 'Trông con vui thế! Có chuyện gì vui à?' },
+      { speaker: 'Child', en: "I did it! I finished the puzzle!", vn: 'Con làm được rồi! Con đã xếp xong hình rồi ạ!' }
     ],
     vocab: [
-      { en: 'Combine', phonetic: '/kəmˈbaɪn/', speaker: 'Mom', meaning: 'Kết hợp', synonym: 'mix together', synonymVn: 'trộn lẫn', collocation: 'combine them', collocationVn: 'kết hợp chúng lại', example: '"Let’s combine our toys to build a big city."', exampleVn: '"Cùng kết hợp đồ chơi để xây một thành phố lớn nhé."' },
-      { en: 'Camping trip', phonetic: '/ˈkæmpɪŋ trɪp/', speaker: 'Mom', meaning: 'Chuyến cắm trại', synonym: 'outdoor adventure', synonymVn: 'chuyến phiêu lưu ngoài trời', collocation: 'go on a camping trip', collocationVn: 'đi cắm trại', example: '"We are going on an indoor camping trip!"', exampleVn: '"Chúng ta sẽ đi cắm trại trong nhà!"' },
-      { en: 'Everyone', phonetic: '/ˈevriwʌn/', speaker: 'Mom', meaning: 'Tất cả mọi người', synonym: 'everybody', synonymVn: 'mọi người', collocation: 'for everyone', collocationVn: 'dành cho tất cả', example: '"This game is fun for everyone."', exampleVn: '"Trò chơi này vui cho tất cả mọi người."' }
+      { en: 'Happy', phonetic: '/ˈhæpi/', speaker: 'Mom', meaning: 'Vui vẻ, hạnh phúc', synonym: 'joyful', synonymVn: 'hân hoan', collocation: 'look so happy', collocationVn: 'trông rất vui', example: '"You look so happy today!"', exampleVn: '"Hôm nay trông con rất vui!"' },
+      { en: "What's up?", phonetic: '/wʌts ʌp/', speaker: 'Mom', meaning: 'Có chuyện gì thế?', synonym: "what's going on?", synonymVn: 'có chuyện gì đang xảy ra?', collocation: 'hey, what\'s up?', collocationVn: 'này, có chuyện gì thế?', example: '"You are smiling. What\'s up?"', exampleVn: '"Con đang cười kìa. Có chuyện gì vui thế?"' },
+      { en: 'Puzzle', phonetic: '/ˈpʌzl/', speaker: 'Child', meaning: 'Trò chơi xếp hình, câu đố', synonym: 'jigsaw', synonymVn: 'trò chơi ghép mảnh', collocation: 'finish the puzzle', collocationVn: 'xếp xong hình', example: '"Let\'s do a 100-piece puzzle together."', exampleVn: '"Cùng nhau chơi bộ xếp hình 100 mảnh nhé."' }
     ],
     quiz: [
-      { q: 'Hai bé đang tranh cãi về điều gì?', opts: ['Đồ ăn', 'Đồ chơi (cars vs dolls)', 'Chỗ ngủ', 'Quần áo'], ans: 1, exp: 'Một bé muốn chơi ô tô (cars), bé kia muốn chơi búp bê (dolls).' },
-      { q: 'Mẹ đã đưa ra giải pháp gì?', opts: ['Cất hết đồ chơi', 'Mua đồ chơi mới', 'Kết hợp lại (combine them)', 'Ra ngoài chơi'], ans: 2, exp: 'Mẹ đề xuất "combine them" để cả hai có thể chơi cùng nhau vui vẻ.' },
-      { q: '"Camping trip" có nghĩa là gì?', opts: ['Đi tắm biển', 'Đi siêu thị', 'Đi học', 'Chuyến cắm trại'], ans: 3, exp: '"Camping trip" là một chuyến đi cắm trại (dựng lều, nhóm lửa...).' }
+      { q: 'Mẹ hỏi "What\'s up?" để làm gì?', opts: ['Hỏi con đang ở đâu', 'Hỏi xem có chuyện gì vui đang xảy ra', 'Bảo con nhìn lên trời', 'Chào tạm biệt'], ans: 1, exp: '"What\'s up?" là câu hỏi thăm thân mật, ở đây dùng để gợi mở cho bé kể chuyện vui.' },
+      { q: 'Bé reo lên "I did it!" khi nào?', opts: ['Khi làm rơi đồ', 'Khi hoàn thành xong một việc khó', 'Khi đi ngủ', 'Khi buồn bã'], ans: 1, exp: '"I did it!" (Con làm được rồi!) là câu cảm thán đầy tự hào khi bé đạt được thành quả.' },
+      { q: 'Bé vừa hoàn thành xong việc gì?', opts: ['Vẽ tranh', 'Xếp xong hình (puzzle)', 'Ăn cơm', 'Dọn đồ chơi'], ans: 1, exp: 'Bé khoe đã xếp xong trò chơi ghép hình (finished the puzzle).' }
     ],
     dictation: [
-      { text: 'combine', hint: '1 từ · gộp chung lại', hintVn: 'Kết hợp' },
-      { text: 'camping trip', hint: '2 từ · chuyến đi dựng lều', hintVn: 'Chuyến cắm trại' },
-      { text: 'everyone', hint: '1 từ · tất cả mọi người', hintVn: 'Mọi người' }
+      { text: 'happy', hint: '1 từ · cảm giác sung sướng', hintVn: 'Vui vẻ' },
+      { text: "What's up", hint: '2 từ · lời hỏi thăm tình hình', hintVn: 'Có chuyện gì thế' },
+      { text: 'puzzle', hint: '1 từ · trò chơi ghép các mảnh lại', hintVn: 'Trò xếp hình' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "What should we play today, kids?", vn: 'Hôm nay ba mẹ con mình chơi gì nhỉ hai đứa?' },
-      { speaker: 'Child', en: "I want cars, but she wants dolls!", vn: 'Con muốn chơi ô tô, nhưng em/chị ấy lại muốn chơi búp bê!' },
-      { speaker: 'Mom', en: "Let’s combine them! A camping trip for everyone!", vn: 'Kết hợp lại nhé! Một chuyến cắm trại cho tất cả!' }
+      { speaker: 'Mom', en: "You look so happy! What's up?", vn: 'Trông con vui thế! Có chuyện gì vui à?' },
+      { speaker: 'Child', en: "I did it! I finished the puzzle!", vn: 'Con làm được rồi! Con đã xếp xong hình rồi ạ!' }
     ]
   },
 
   // Day 2
   {
-    title: 'Cùng nhau dựng lều',
+    title: 'Cơn mưa giận dữ',
     dialogue: [
-      { speaker: 'Mom', en: "Let's build a tent with this big blanket.", vn: 'Cùng dựng lều bằng cái chăn to này nào.' },
-      { speaker: 'Child', en: "I'll get the pillows!", vn: 'Con sẽ đi lấy gối ạ!' }
+      { speaker: 'Mom', en: "Stop screaming! Use your words, not your lungs.", vn: 'Đừng hét lên nữa! Dùng lời lẽ nói chuyện đi con.' },
+      { speaker: 'Child', en: "But he ruined my tower! I'm so mad!", vn: 'Nhưng em ấy làm đổ tháp của con! Con đang rất giận!' }
     ],
     vocab: [
-      { en: 'Build a tent', phonetic: '/bɪld ə tent/', speaker: 'Mom', meaning: 'Dựng lều', synonym: 'set up a tent', synonymVn: 'dựng lều lên', collocation: 'build a tent together', collocationVn: 'cùng nhau dựng lều', example: '"We can build a tent in the living room."', exampleVn: '"Chúng ta có thể dựng lều trong phòng khách."' },
-      { en: 'Blanket', phonetic: '/ˈblæŋkɪt/', speaker: 'Mom', meaning: 'Cái chăn (mền)', synonym: 'cover', synonymVn: 'tấm đắp', collocation: 'big blanket', collocationVn: 'cái chăn to', example: '"Wrap yourself in a warm blanket."', exampleVn: '"Quấn mình trong một chiếc chăn ấm nhé."' },
-      { en: 'Pillow', phonetic: '/ˈpɪloʊ/', speaker: 'Child', meaning: 'Cái gối', synonym: 'cushion', synonymVn: 'gối tựa', collocation: 'soft pillow', collocationVn: 'cái gối mềm mại', example: '"Put the pillows inside our tent."', exampleVn: '"Đặt những chiếc gối vào trong lều của chúng ta nào."' }
+      { en: 'Scream', phonetic: '/skriːm/', speaker: 'Mom', meaning: 'La hét', synonym: 'yell', synonymVn: 'hét lớn', collocation: 'stop screaming', collocationVn: 'dừng việc la hét lại', example: '"Please don\'t scream in the house."', exampleVn: '"Làm ơn đừng la hét trong nhà nhé."' },
+      { en: 'Ruin', phonetic: '/ˈruːɪn/', speaker: 'Child', meaning: 'Làm hỏng, phá hủy', synonym: 'destroy', synonymVn: 'phá vỡ', collocation: 'ruin my tower', collocationVn: 'làm hỏng tháp của con', example: '"The rain ruined our picnic."', exampleVn: '"Cơn mưa đã làm hỏng chuyến dã ngoại của chúng ta."' },
+      { en: 'Mad', phonetic: '/mæd/', speaker: 'Child', meaning: 'Tức giận', synonym: 'angry', synonymVn: 'cáu giận', collocation: 'so mad', collocationVn: 'rất giận', example: '"I am mad because my toy is broken."', exampleVn: '"Con tức giận vì đồ chơi của con bị hỏng."' }
     ],
     quiz: [
-      { q: 'Mẹ dùng vật dụng gì để dựng lều (build a tent)?', opts: ['Cái gối (pillow)', 'Cái chăn to (big blanket)', 'Cái bàn', 'Tấm thảm'], ans: 1, exp: 'Mẹ rủ dùng "this big blanket" (cái chăn to này) để làm mái lều.' },
-      { q: 'Bé đã xung phong đi lấy món đồ gì?', opts: ['Đồ chơi', 'Sách truyện', 'Cái gối (pillows)', 'Đèn pin'], ans: 2, exp: 'Bé hào hứng nói "I\'ll get the pillows!" để lều thêm êm ái.' },
-      { q: '"I\'ll get..." mang ý nghĩa gì?', opts: ['Con không thích', 'Con sẽ đi lấy...', 'Con đang ăn', 'Con buồn ngủ'], ans: 1, exp: '"I will get..." (Con sẽ lấy) thể hiện sự chủ động giúp đỡ của bé.' }
+      { q: 'Cụm từ "Use your words, not your lungs" khuyên bé điều gì?', opts: ['Hát to lên', 'Nín thở', 'Nói rõ ràng thay vì la hét', 'Đi ngủ'], ans: 2, exp: 'Đây là cách nói rất hay của cha mẹ: Dùng từ ngữ (words) để giải thích, thay vì dùng phổi (lungs) để la hét.' },
+      { q: 'Tại sao bé lại "so mad" (rất giận)?', opts: ['Vì bị mắng', 'Vì đói bụng', 'Vì bị làm đổ tháp (ruined my tower)', 'Vì không được đi chơi'], ans: 2, exp: 'Thành quả xếp tháp bị hỏng khiến bé mất kiểm soát cảm xúc.' },
+      { q: '"Ruin" có nghĩa là gì?', opts: ['Xây dựng', 'Làm hỏng, phá vỡ', 'Bảo vệ', 'Chạy trốn'], ans: 1, exp: '"Ruin" nghĩa là phá hỏng một thứ gì đó đã được tạo ra.' }
     ],
     dictation: [
-      { text: 'build a tent', hint: '3 từ · làm một chỗ trú ẩn', hintVn: 'Dựng lều' },
-      { text: 'blanket', hint: '1 từ · tấm đắp cho ấm', hintVn: 'Cái chăn' },
-      { text: 'pillows', hint: '1 từ · vật dụng kê đầu', hintVn: 'Những cái gối' }
+      { text: 'screaming', hint: '1 từ · hành động la hét (V-ing)', hintVn: 'Đang la hét' },
+      { text: 'ruined', hint: '1 từ · làm hỏng (quá khứ)', hintVn: 'Đã làm hỏng' },
+      { text: 'mad', hint: '1 từ · cảm giác bực tức', hintVn: 'Tức giận' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Let's build a tent with this big blanket.", vn: 'Cùng dựng lều bằng cái chăn to này nào.' },
-      { speaker: 'Child', en: "I'll get the pillows!", vn: 'Con sẽ đi lấy gối ạ!' }
+      { speaker: 'Mom', en: "Stop screaming! Use your words, not your lungs.", vn: 'Đừng hét lên nữa! Dùng lời lẽ nói chuyện đi con.' },
+      { speaker: 'Child', en: "But he ruined my tower! I'm so mad!", vn: 'Nhưng em ấy làm đổ tháp của con! Con đang rất giận!' }
     ]
   },
 
   // Day 3
   {
-    title: 'Đầu bếp nhí trổ tài',
+    title: 'Những đám mây buồn',
     dialogue: [
-      { speaker: 'Mom', en: "We need food for our picnic. Who is the chef?", vn: 'Chúng ta cần đồ ăn cho chuyến dã ngoại. Ai làm đầu bếp đây?' },
-      { speaker: 'Child', en: "I will make peanut butter sandwiches!", vn: 'Con sẽ làm bánh mì bơ đậu phộng ạ!' }
+      { speaker: 'Mom', en: "It’s okay to be sad. Do you want a hug?", vn: 'Buồn cũng không sao đâu. Con có muốn mẹ ôm một cái không?' },
+      { speaker: 'Child', en: "My drawing is ruined...", vn: 'Bức tranh của con hỏng rồi...' }
     ],
     vocab: [
-      { en: 'Picnic', phonetic: '/ˈpɪknɪk/', speaker: 'Mom', meaning: 'Chuyến dã ngoại', synonym: 'outdoor meal', synonymVn: 'bữa ăn ngoài trời', collocation: 'have a picnic', collocationVn: 'tổ chức dã ngoại', example: '"Let’s have a picnic in our blanket tent."', exampleVn: '"Cùng tổ chức dã ngoại trong lều chăn của chúng ta nhé."' },
-      { en: 'Chef', phonetic: '/ʃef/', speaker: 'Mom', meaning: 'Đầu bếp', synonym: 'cook', synonymVn: 'người nấu ăn', collocation: 'the little chef', collocationVn: 'đầu bếp nhí', example: '"You are the best chef in the house!"', exampleVn: '"Con là đầu bếp cừ nhất nhà!"' },
-      { en: 'Peanut butter', phonetic: '/ˈpiːnʌt ˈbʌtər/', speaker: 'Child', meaning: 'Bơ đậu phộng', synonym: 'nut butter', synonymVn: 'bơ hạt', collocation: 'peanut butter sandwich', collocationVn: 'bánh mì bơ đậu phộng', example: '"I love sandwiches made with Sukha peanut butter!"', exampleVn: '"Con thích bánh mì kẹp bơ đậu phộng Sukha!"' }
+      { en: 'Sad', phonetic: '/sæd/', speaker: 'Mom', meaning: 'Buồn bã', synonym: 'unhappy', synonymVn: 'không vui', collocation: 'okay to be sad', collocationVn: 'buồn cũng không sao', example: '"Don\'t be sad, we can fix it."', exampleVn: '"Đừng buồn, chúng ta có thể sửa nó mà."' },
+      { en: 'Hug', phonetic: '/hʌɡ/', speaker: 'Mom', meaning: 'Cái ôm', synonym: 'embrace', synonymVn: 'ôm ấp', collocation: 'want a hug', collocationVn: 'muốn một cái ôm', example: '"Mommy\'s hug makes everything better."', exampleVn: '"Cái ôm của mẹ làm mọi thứ tốt hơn."' },
+      { en: 'Drawing', phonetic: '/ˈdrɔːɪŋ/', speaker: 'Child', meaning: 'Bức tranh (vẽ bằng bút/chì)', synonym: 'sketch', synonymVn: 'bản phác thảo', collocation: 'my drawing', collocationVn: 'bức tranh của con', example: '"Your drawing of the sun is beautiful."', exampleVn: '"Bức tranh vẽ mặt trời của con rất đẹp."' }
     ],
     quiz: [
-      { q: '"Chef" là từ để gọi ai?', opts: ['Người lái xe', 'Đầu bếp', 'Giáo viên', 'Bác sĩ'], ans: 1, exp: '"Chef" là người nấu ăn chính. Mẹ hỏi "Who is the chef?" để khơi gợi sự tham gia của bé.' },
-      { q: 'Mẹ nói chúng ta cần gì cho chuyến dã ngoại (picnic)?', opts: ['Nước uống', 'Thức ăn (food)', 'Trái cây', 'Mũ nón'], ans: 1, exp: 'Mẹ nhắc: "We need food for our picnic." (Chúng ta cần đồ ăn).' },
-      { q: 'Bé dự định làm món gì?', opts: ['Trứng rán', 'Xúc xích', 'Bánh mì bơ đậu phộng', 'Súp'], ans: 2, exp: 'Bé tự tin nhận làm "peanut butter sandwiches" (bánh mì bơ đậu phộng).' }
+      { q: 'Mẹ nói "It’s okay to be sad" để làm gì?', opts: ['Cấm bé khóc', 'Chấp nhận và đồng cảm với cảm xúc của con', 'Chê cười bé', 'Bỏ đi chỗ khác'], ans: 1, exp: 'Được phép buồn là bước đầu tiên để trẻ học cách chữa lành.' },
+      { q: '"Hug" có nghĩa là hành động gì?', opts: ['Đánh đòn', 'Cái ôm', 'Bắt tay', 'Vẫy tay'], ans: 1, exp: '"Hug" (cái ôm) là liều thuốc tinh thần tốt nhất mẹ dành cho bé.' },
+      { q: 'Nguyên nhân khiến bé buồn là gì?', opts: ['Mất đồ chơi', 'Tranh bị hỏng (drawing is ruined)', 'Bị ngã', 'Buồn ngủ'], ans: 1, exp: 'Bức tranh (drawing) mà bé tâm huyết đã bị hỏng.' }
     ],
     dictation: [
-      { text: 'picnic', hint: '1 từ · ăn uống ngoài trời', hintVn: 'Dã ngoại' },
-      { text: 'chef', hint: '1 từ · người nấu ăn', hintVn: 'Đầu bếp' },
-      { text: 'peanut butter', hint: '2 từ · sốt làm từ hạt lạc', hintVn: 'Bơ đậu phộng' }
+      { text: 'sad', hint: '1 từ · cảm xúc ứa nước mắt', hintVn: 'Buồn bã' },
+      { text: 'hug', hint: '1 từ · vòng tay yêu thương', hintVn: 'Cái ôm' },
+      { text: 'drawing', hint: '1 từ · tác phẩm trên giấy', hintVn: 'Bức tranh' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "We need food for our picnic. Who is the chef?", vn: 'Chúng ta cần đồ ăn cho chuyến dã ngoại. Ai làm đầu bếp đây?' },
-      { speaker: 'Child', en: "I will make peanut butter sandwiches!", vn: 'Con sẽ làm bánh mì bơ đậu phộng ạ!' }
+      { speaker: 'Mom', en: "It’s okay to be sad. Do you want a hug?", vn: 'Buồn cũng không sao đâu. Con có muốn mẹ ôm một cái không?' },
+      { speaker: 'Child', en: "My drawing is ruined...", vn: 'Bức tranh của con hỏng rồi...' }
     ]
   },
 
   // Day 4
   {
-    title: 'Bài học chờ đến lượt',
+    title: 'Bóng tối không đáng sợ',
     dialogue: [
-      { speaker: 'Mom', en: "Hey, take turns. We share things in our tent.", vn: 'Này, lần lượt chứ. Trong lều của chúng ta, mọi người phải chia sẻ đồ với nhau.' },
-      { speaker: 'Child', en: "Okay... he can use the flashlight first.", vn: 'Dạ vâng... em/anh ấy có thể dùng đèn pin trước ạ.' }
+      { speaker: 'Mom', en: "Is there a monster under the bed?", vn: 'Có con quái vật nào dưới gầm giường hả?' },
+      { speaker: 'Child', en: "No, but it's too dark. Stay with me?", vn: 'Không ạ, nhưng tối quá. Mẹ ở lại với con nhé?' }
     ],
     vocab: [
-      { en: 'Take turns', phonetic: '/teɪk tɜːrnz/', speaker: 'Mom', meaning: 'Thay phiên nhau, chờ đến lượt', synonym: 'alternate', synonymVn: 'luân phiên', collocation: 'take turns playing', collocationVn: 'luân phiên chơi', example: '"Please take turns on the slide."', exampleVn: '"Hãy luân phiên nhau chơi cầu trượt nhé."' },
-      { en: 'Share', phonetic: '/ʃer/', speaker: 'Mom', meaning: 'Chia sẻ', synonym: 'divide', synonymVn: 'chia phần', collocation: 'share toys', collocationVn: 'chia sẻ đồ chơi', example: '"Good siblings share their toys."', exampleVn: '"Anh chị em ngoan thì chia sẻ đồ chơi cho nhau."' },
-      { en: 'Flashlight', phonetic: '/ˈflæʃlaɪt/', speaker: 'Child', meaning: 'Đèn pin', synonym: 'torch', synonymVn: 'đèn rọi', collocation: 'turn on the flashlight', collocationVn: 'bật đèn pin', example: '"Use the flashlight to make shadow puppets."', exampleVn: '"Dùng đèn pin để làm bóng đổ trên tường nhé."' }
+      { en: 'Monster', phonetic: '/ˈmɑːnstər/', speaker: 'Mom', meaning: 'Quái vật', synonym: 'creature', synonymVn: 'sinh vật đáng sợ', collocation: 'monster under the bed', collocationVn: 'quái vật dưới gầm giường', example: '"Monsters are only in stories."', exampleVn: '"Quái vật chỉ có trong truyện thôi."' },
+      { en: 'Dark', phonetic: '/dɑːrk/', speaker: 'Child', meaning: 'Tối tăm', synonym: 'black', synonymVn: 'thiếu ánh sáng', collocation: 'too dark', collocationVn: 'quá tối', example: '"Turn on the light, it is too dark in here."', exampleVn: '"Bật đèn lên đi, ở đây tối quá."' },
+      { en: 'Stay with me', phonetic: '/steɪ wɪð mi/', speaker: 'Child', meaning: 'Ở lại với con', synonym: 'don\'t leave', synonymVn: 'đừng đi', collocation: 'stay with me tonight', collocationVn: 'đêm nay ở lại với con nhé', example: '"Can you stay with me until I fall asleep?"', exampleVn: '"Mẹ có thể ở lại với con cho đến khi con ngủ không?"' }
     ],
     quiz: [
-      { q: '"Take turns" có ý nghĩa gì trong trò chơi chung?', opts: ['Chơi một mình', 'Chờ đến lượt mình', 'Giành đồ chơi', 'Không chơi nữa'], ans: 1, exp: '"Take turns" là bài học quan trọng về sự kiên nhẫn và chia sẻ.' },
-      { q: 'Vật dụng gì đang được hai anh/chị em nhường nhau?', opts: ['Đèn pin (flashlight)', 'Cái gối', 'Đồ ăn', 'Cái chăn'], ans: 0, exp: 'Bé ngoan ngoãn nhường: "he can use the flashlight first".' },
-      { q: 'Từ "Share" có nghĩa là gì?', opts: ['Chia tay', 'Ghen tị', 'Chia sẻ', 'Cất giấu'], ans: 2, exp: 'Mẹ nhắc "We share things" - Chúng ta chia sẻ đồ đạc với nhau.' }
+      { q: 'Mẹ trêu bé sợ thứ gì dưới gầm giường?', opts: ['Con chuột', 'Quái vật (monster)', 'Bóng tối', 'Đồ chơi'], ans: 1, exp: '"Monster under the bed" là nỗi sợ kinh điển của mọi đứa trẻ.' },
+      { q: 'Thực chất bé đang sợ điều gì?', opts: ['Sợ lạnh', 'Sợ bóng tối (too dark)', 'Sợ đói', 'Sợ quái vật thật'], ans: 1, exp: 'Bé thừa nhận không có quái vật, chỉ là vì phòng quá tối (too dark).' },
+      { q: 'Bé đề nghị mẹ làm gì để an tâm?', opts: ['Bật tivi', 'Hát ru', 'Ở lại cùng bé (Stay with me)', 'Mua kẹo'], ans: 2, exp: '"Stay with me?" là lời thỉnh cầu mẹ nán lại để truyền dũng khí cho bé.' }
     ],
     dictation: [
-      { text: 'take turns', hint: '2 từ · thay phiên, xếp hàng', hintVn: 'Chờ đến lượt' },
-      { text: 'share', hint: '1 từ · cho người khác dùng chung', hintVn: 'Chia sẻ' },
-      { text: 'flashlight', hint: '1 từ · vật phát sáng cầm tay', hintVn: 'Đèn pin' }
+      { text: 'monster', hint: '1 từ · sinh vật tưởng tượng đáng sợ', hintVn: 'Quái vật' },
+      { text: 'dark', hint: '1 từ · không có ánh sáng', hintVn: 'Tối tăm' },
+      { text: 'Stay with me', hint: '3 từ · yêu cầu người khác nán lại', hintVn: 'Ở lại với con' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Hey, take turns. We share things in our tent.", vn: 'Này, lần lượt chứ. Trong lều của chúng ta, mọi người phải chia sẻ đồ với nhau.' },
-      { speaker: 'Child', en: "Okay... he can use the flashlight first.", vn: 'Dạ vâng... em/anh ấy có thể dùng đèn pin trước ạ.' }
+      { speaker: 'Mom', en: "Is there a monster under the bed?", vn: 'Có con quái vật nào dưới gầm giường hả?' },
+      { speaker: 'Child', en: "No, but it's too dark. Stay with me?", vn: 'Không ạ, nhưng tối quá. Mẹ ở lại với con nhé?' }
     ]
   },
 
   // Day 5
   {
-    title: 'Chú hổ con ngộ nghĩnh',
+    title: 'Pin năng lượng cạn kiệt',
     dialogue: [
-      { speaker: 'Mom', en: "Oh, the paint is for drawing the campfire, not your face!", vn: 'Ôi, màu nước là để vẽ lửa trại, không phải để bôi lên mặt đâu con!' },
-      { speaker: 'Child', en: "Oops, I look like a tiger now!", vn: 'Úi, trông con giống một chú hổ rồi!' }
+      { speaker: 'Mom', en: "You’re acting cranky. Are you sleepy?", vn: 'Con đang bắt đầu cáu kỉnh rồi đấy. Buồn ngủ rồi phải không?' },
+      { speaker: 'Child', en: "No! I'm not... (yawns) ...maybe a little.", vn: 'Không! Con không... (ngáp) ...chắc là một chút ạ.' }
     ],
     vocab: [
-      { en: 'Paint', phonetic: '/peɪnt/', speaker: 'Mom', meaning: 'Màu vẽ', synonym: 'color', synonymVn: 'màu sắc', collocation: 'use the paint', collocationVn: 'sử dụng màu vẽ', example: '"Let\'s use the paint to color the sky blue."', exampleVn: '"Cùng dùng màu nước để tô bầu trời xanh nhé."' },
-      { en: 'Campfire', phonetic: '/ˈkæmpfaɪər/', speaker: 'Mom', meaning: 'Lửa trại', synonym: 'bonfire', synonymVn: 'đống lửa lớn', collocation: 'sit around the campfire', collocationVn: 'ngồi quanh lửa trại', example: '"We sing songs around the campfire."', exampleVn: '"Chúng ta hát quanh lửa trại."' },
-      { en: 'Look like', phonetic: '/lʊk laɪk/', speaker: 'Child', meaning: 'Trông giống như', synonym: 'resemble', synonymVn: 'tương đồng', collocation: 'look like a tiger', collocationVn: 'trông giống một con hổ', example: '"With those stripes, you look like a zebra!"', exampleVn: '"Với những cái vằn đó, con trông giống ngựa vằn quá!"' }
+      { en: 'Cranky', phonetic: '/ˈkræŋki/', speaker: 'Mom', meaning: 'Cáu kỉnh, nhăn nhó', synonym: 'grumpy', synonymVn: 'khó ở', collocation: 'acting cranky', collocationVn: 'tỏ ra cáu kỉnh', example: '"Babies get cranky when they are hungry."', exampleVn: '"Em bé trở nên cáu kỉnh khi chúng đói."' },
+      { en: 'Sleepy', phonetic: '/ˈsliːpi/', speaker: 'Mom', meaning: 'Buồn ngủ', synonym: 'drowsy', synonymVn: 'ngái ngủ', collocation: 'feeling sleepy', collocationVn: 'cảm thấy buồn ngủ', example: '"I am so sleepy after a long day of playing."', exampleVn: '"Con rất buồn ngủ sau một ngày dài vui chơi."' },
+      { en: 'A little', phonetic: '/ə ˈlɪtl/', speaker: 'Child', meaning: 'Một chút, hơi hơi', synonym: 'a bit', synonymVn: 'một tẹo', collocation: 'maybe a little', collocationVn: 'chắc là một chút', example: '"Are you tired? - Just a little."', exampleVn: '"Con mệt không? - Chỉ một chút thôi ạ."' }
     ],
     quiz: [
-      { q: 'Mẹ đưa màu nước (paint) cho bé để làm gì?', opts: ['Sơn tường', 'Vẽ lên mặt', 'Vẽ lửa trại (campfire)', 'Vẽ áo'], ans: 2, exp: 'Màu dùng để vẽ bức tranh lửa trại cho chuyến dã ngoại thêm sinh động.' },
-      { q: 'Bé đã lỡ làm gì với màu nước?', opts: ['Làm đổ ra sàn', 'Bôi lên mặt', 'Nuốt phải', 'Giấu đi'], ans: 1, exp: 'Mẹ thốt lên "not your face!" (không phải bôi lên mặt đâu).' },
-      { q: 'Bé tự thấy mình trông giống con vật gì?', opts: ['Con mèo', 'Con gấu', 'Con chó', 'Chú hổ (tiger)'], ans: 3, exp: 'Vì mặt lấm lem màu, bé lém lỉnh nói "I look like a tiger now!"' }
+      { q: '"Cranky" mô tả trạng thái tâm lý nào của trẻ?', opts: ['Vui vẻ', 'Cáu kỉnh, mè nheo khó chịu', 'Sợ hãi', 'Tập trung'], ans: 1, exp: 'Trẻ em thường "cranky" (cáu kỉnh) khi cơ thể mệt mỏi hoặc buồn ngủ.' },
+      { q: 'Hành động (yawns) chứng tỏ điều gì?', opts: ['Bé đang đói', 'Bé đang buồn ngủ (sleepy)', 'Bé đang tức giận', 'Bé đang vui'], ans: 1, exp: '"Yawn" là ngáp, cơ thể bé tự "tố cáo" việc đang rất buồn ngủ.' },
+      { q: 'Cuối cùng bé thừa nhận mức độ buồn ngủ thế nào?', opts: ['Rất nhiều', 'Hoàn toàn không', 'Chắc là một chút (maybe a little)', 'Không biết'], ans: 2, exp: 'Dù ban đầu chối, nhưng bé đành thừa nhận "maybe a little" rất đáng yêu.' }
     ],
     dictation: [
-      { text: 'paint', hint: '1 từ · chất lỏng có màu để tô vẽ', hintVn: 'Màu nước/màu vẽ' },
-      { text: 'campfire', hint: '1 từ · đống lửa đốt ngoài trời', hintVn: 'Lửa trại' },
-      { text: 'look like', hint: '2 từ · có vẻ ngoài tương tự', hintVn: 'Trông giống như' }
+      { text: 'cranky', hint: '1 từ · tính khí khó chịu', hintVn: 'Cáu kỉnh' },
+      { text: 'sleepy', hint: '1 từ · trạng thái thèm nhắm mắt', hintVn: 'Buồn ngủ' },
+      { text: 'maybe', hint: '1 từ · khả năng có thể xảy ra', hintVn: 'Có lẽ/chắc là' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Oh, the paint is for drawing the campfire, not your face!", vn: 'Ôi, màu nước là để vẽ lửa trại, không phải để bôi lên mặt đâu con!' },
-      { speaker: 'Child', en: "Oops, I look like a tiger now!", vn: 'Úi, trông con giống một chú hổ rồi!' }
+      { speaker: 'Mom', en: "You’re acting cranky. Are you sleepy?", vn: 'Con đang bắt đầu cáu kỉnh rồi đấy. Buồn ngủ rồi phải không?' },
+      { speaker: 'Child', en: "No! I'm not... (yawns) ...maybe a little.", vn: 'Không! Con không... (ngáp) ...chắc là một chút ạ.' }
     ]
   },
 
   // Day 6
   {
-    title: 'Khoảng lặng trong rừng',
+    title: 'Lời xin lỗi chân thành',
     dialogue: [
-      { speaker: 'Mom', en: "Mommy needs to work on the laptop for a bit. Can you play quietly in the tent?", vn: 'Mẹ cần làm việc trên máy tính một lát. Hai đứa chơi trong lều giữ trật tự nhé?' },
-      { speaker: 'Child', en: "Shh... We are sleeping in the forest.", vn: 'Suỵt... Tụi con đang ngủ trong rừng ạ.' }
+      { speaker: 'Mom', en: "You hurt your sister's feelings. What should you say?", vn: 'Con làm em buồn rồi đấy. Con nên nói gì nào?' },
+      { speaker: 'Child', en: "I'm sorry. I didn't mean to.", vn: 'Con xin lỗi. Con không cố ý đâu ạ.' }
     ],
     vocab: [
-      { en: 'Laptop', phonetic: '/ˈlæptɑːp/', speaker: 'Mom', meaning: 'Máy tính xách tay', synonym: 'computer', synonymVn: 'máy tính', collocation: 'work on the laptop', collocationVn: 'làm việc trên máy tính', example: '"Mommy is typing on her laptop."', exampleVn: '"Mẹ đang gõ phím trên máy tính."' },
-      { en: 'Quietly', phonetic: '/ˈkwaɪətli/', speaker: 'Mom', meaning: 'Một cách yên lặng, trật tự', synonym: 'silently', synonymVn: 'lặng lẽ', collocation: 'play quietly', collocationVn: 'chơi ngoan/yên lặng', example: '"Please read your book quietly."', exampleVn: '"Hãy đọc sách thật trật tự nhé."' },
-      { en: 'Forest', phonetic: '/ˈfɔːrɪst/', speaker: 'Child', meaning: 'Khu rừng', synonym: 'woods', synonymVn: 'rừng cây', collocation: 'sleeping in the forest', collocationVn: 'ngủ trong rừng', example: '"Many animals live in the deep forest."', exampleVn: '"Nhiều loài động vật sống trong khu rừng sâu."' }
+      { en: 'Hurt feelings', phonetic: '/hɜːrt ˈfiːlɪŋz/', speaker: 'Mom', meaning: 'Làm tổn thương cảm xúc, làm ai buồn', synonym: 'upset someone', synonymVn: 'làm ai khó chịu', collocation: 'hurt her feelings', collocationVn: 'làm cô ấy buồn', example: '"Name-calling can hurt people\'s feelings."', exampleVn: '"Gọi bằng biệt danh xấu có thể làm tổn thương người khác."' },
+      { en: 'Sorry', phonetic: '/ˈsɔːri/', speaker: 'Child', meaning: 'Xin lỗi', synonym: 'apologetic', synonymVn: 'hối lỗi', collocation: 'say sorry', collocationVn: 'nói lời xin lỗi', example: '"Say sorry to your friend, please."', exampleVn: '"Hãy nói xin lỗi bạn đi con."' },
+      { en: 'Mean to', phonetic: '/miːn tu/', speaker: 'Child', meaning: 'Cố ý, có ý định (thường dùng dạng phủ định)', synonym: 'intend to', synonymVn: 'chủ đích', collocation: 'didn\'t mean to', collocationVn: 'không cố ý', example: '"I broke the cup, but I didn\'t mean to."', exampleVn: '"Con làm vỡ cốc, nhưng con không cố ý đâu."' }
     ],
     quiz: [
-      { q: 'Mẹ nhờ bé làm gì để mẹ làm việc?', opts: ['Ra ngoài sân chơi', 'Ngủ trưa', 'Chơi yên lặng trong lều (play quietly)', 'Xem tivi'], ans: 2, exp: 'Mẹ nhờ "Can you play quietly in the tent?" để có không gian tập trung.' },
-      { q: 'Từ "Shh..." thể hiện hành động gì?', opts: ['Hát to', 'Yêu cầu giữ im lặng', 'Đang ăn', 'Sợ hãi'], ans: 1, exp: '"Shh" là âm thanh tự nhiên của trẻ khi muốn nhắc ai đó giữ trật tự.' },
-      { q: 'Các bé tưởng tượng mình đang ngủ ở đâu?', opts: ['Trong ô tô', 'Trên mây', 'Trong rừng (in the forest)', 'Ngoài biển'], ans: 2, exp: 'Các bé nhập tâm vào trò chơi: "We are sleeping in the forest."' }
+      { q: '"Hurt feelings" nghĩa là gì?', opts: ['Làm đau tay', 'Làm hỏng đồ', 'Làm tổn thương cảm xúc, làm buồn lòng', 'Làm ngã'], ans: 2, exp: '"Hurt" là đau/tổn thương, "feelings" là cảm xúc.' },
+      { q: 'Khi làm sai, bé cần nói gì?', opts: ['I don\'t know', 'I\'m sorry', 'Thank you', 'Goodbye'], ans: 1, exp: 'Mẹ rèn cho bé thói quen nhận lỗi: "I\'m sorry".' },
+      { q: 'Câu "I didn\'t mean to" dùng để giải thích điều gì?', opts: ['Con cố tình làm thế', 'Con không thích', 'Con không cố ý', 'Con quên mất'], ans: 2, exp: '"Mean to" là có chủ đích. Dạng phủ định nghĩa là hành động đó xảy ra ngoài ý muốn.' }
     ],
     dictation: [
-      { text: 'laptop', hint: '1 từ · máy vi tính gấp lại được', hintVn: 'Máy tính xách tay' },
-      { text: 'quietly', hint: '1 từ · không gây tiếng động ồn ào', hintVn: 'Yên lặng' },
-      { text: 'forest', hint: '1 từ · nơi có nhiều cây cối, thú hoang', hintVn: 'Khu rừng' }
+      { text: 'feelings', hint: '1 từ (số nhiều) · cảm xúc bên trong', hintVn: 'Cảm xúc/tình cảm' },
+      { text: 'sorry', hint: '1 từ · lời nhận lỗi', hintVn: 'Xin lỗi' },
+      { text: 'mean to', hint: '2 từ · có chủ đích làm gì', hintVn: 'Cố ý' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Mommy needs to work on the laptop for a bit. Can you play quietly in the tent?", vn: 'Mẹ cần làm việc trên máy tính một lát. Hai đứa chơi trong lều giữ trật tự nhé?' },
-      { speaker: 'Child', en: "Shh... We are sleeping in the forest.", vn: 'Suỵt... Tụi con đang ngủ trong rừng ạ.' }
+      { speaker: 'Mom', en: "You hurt your sister's feelings. What should you say?", vn: 'Con làm em buồn rồi đấy. Con nên nói gì nào?' },
+      { speaker: 'Child', en: "I'm sorry. I didn't mean to.", vn: 'Con xin lỗi. Con không cố ý đâu ạ.' }
     ]
   },
 
   // Day 7
   {
-    title: 'Lắng nghe tiếng rừng xanh',
+    title: 'Món quà bất ngờ',
     dialogue: [
-      { speaker: 'Mom', en: "No iPad now, sweeties. We are in the forest, remember?", vn: 'Không có máy tính bảng lúc này đâu con yêu. Mình đang ở trong rừng mà, nhớ không?' },
-      { speaker: 'Child', en: "Let's listen to the birds outside instead!", vn: 'Vậy chúng mình cùng lắng nghe tiếng chim bên ngoài nhé!' }
+      { speaker: 'Mom', en: "Guess what? We’re going to the park!", vn: 'Đoán xem nào? Nhà mình sẽ đi công viên đấy!' },
+      { speaker: 'Child', en: "Seriously? Awesome!", vn: 'Thật không ạ? Tuyệt quá!' }
     ],
     vocab: [
-      { en: 'Remember', phonetic: '/rɪˈmembər/', speaker: 'Mom', meaning: 'Nhớ, nhớ lại', synonym: 'recall', synonymVn: 'hồi tưởng', collocation: 'remember the rules', collocationVn: 'nhớ các quy định', example: '"Do you remember where we put the toys?"', exampleVn: '"Con có nhớ chúng ta để đồ chơi ở đâu không?"' },
-      { en: 'Listen to', phonetic: '/ˈlɪsn tu/', speaker: 'Child', meaning: 'Lắng nghe', synonym: 'hear attentively', synonymVn: 'chú ý nghe', collocation: 'listen to the birds', collocationVn: 'lắng nghe tiếng chim', example: '"Listen to the rain falling on the roof."', exampleVn: '"Hãy lắng nghe tiếng mưa rơi trên mái nhà."' },
-      { en: 'Instead', phonetic: '/ɪnˈsted/', speaker: 'Child', meaning: 'Thay vào đó', synonym: 'as an alternative', synonymVn: 'để thay thế', collocation: 'do this instead', collocationVn: 'làm việc này thay vào đó', example: '"No TV today. Let\'s read a book instead."', exampleVn: '"Hôm nay không tivi. Thay vào đó mình đọc sách nhé."' }
+      { en: 'Guess what', phonetic: '/ɡes wʌt/', speaker: 'Mom', meaning: 'Đoán xem nào (dùng để gợi sự tò mò)', synonym: 'you know what', synonymVn: 'con biết gì không', collocation: 'guess what happened', collocationVn: 'đoán xem chuyện gì xảy ra', example: '"Guess what? Grandma is coming today!"', exampleVn: '"Đoán xem nào? Hôm nay bà ngoại sẽ đến đấy!"' },
+      { en: 'Seriously', phonetic: '/ˈsɪriəsli/', speaker: 'Child', meaning: 'Thật không? Nghiêm túc chứ?', synonym: 'really', synonymVn: 'thật á', collocation: 'are you seriously?', collocationVn: 'mẹ nói thật chứ?', example: '"We are eating pizza. - Seriously? Yay!"', exampleVn: '"Chúng ta sẽ ăn pizza. - Thật không ạ? Hoan hô!"' },
+      { en: 'Awesome', phonetic: '/ˈɔːsəm/', speaker: 'Child', meaning: 'Tuyệt vời', synonym: 'amazing, great', synonymVn: 'rất đỉnh', collocation: 'look awesome', collocationVn: 'trông rất tuyệt', example: '"This new slide is awesome!"', exampleVn: '"Cầu trượt mới này tuyệt quá!"' }
     ],
     quiz: [
-      { q: 'Mẹ đã nhắc nhở điều gì không được dùng trong "rừng"?', opts: ['Đèn pin', 'iPad (máy tính bảng)', 'Thức ăn', 'Đồ chơi'], ans: 1, exp: '"No iPad now" - quy tắc cai nghiện thiết bị điện tử khi đang chơi dã ngoại.' },
-      { q: '"Remember" nghĩa là gì?', opts: ['Quên rồi', 'Ghi nhớ, nhớ lại', 'Tưởng tượng', 'Ngủ gật'], ans: 1, exp: 'Mẹ hỏi "remember?" để nhắc nhở bé đang đóng vai ở trong rừng.' },
-      { q: 'Thay vì xem iPad, bé rủ làm gì?', opts: ['Khóc nhè', 'Đi ngủ', 'Nghe tiếng chim hót (listen to the birds)', 'Vẽ tranh'], ans: 2, exp: 'Bé chuyển hướng rất ngoan: "Let\'s listen to the birds outside instead!"' }
+      { q: 'Mẹ dùng cụm "Guess what?" để làm gì?', opts: ['Hỏi bài tập', 'Gây sự chú ý, tạo bất ngờ', 'Trách mắng', 'Xin lỗi'], ans: 1, exp: 'Đây là câu cửa miệng tự nhiên của người bản xứ khi sắp báo một tin vui.' },
+      { q: 'Cả nhà sắp đi đâu?', opts: ['Đi ngủ', 'Đi siêu thị', 'Đi công viên (to the park)', 'Đi tắm'], ans: 2, exp: 'Mẹ tiết lộ kế hoạch: "We’re going to the park!"' },
+      { q: 'Từ "Awesome!" thể hiện cảm xúc gì của bé?', opts: ['Sợ hãi', 'Bình thường', 'Rất phấn khích, tuyệt vời', 'Buồn bã'], ans: 2, exp: '"Awesome" là từ cảm thán phổ biến thể hiện sự phấn khích tột độ.' }
     ],
     dictation: [
-      { text: 'remember', hint: '1 từ · gợi lại trong trí óc', hintVn: 'Nhớ lại' },
-      { text: 'listen to', hint: '2 từ · chú ý bằng tai', hintVn: 'Lắng nghe' },
-      { text: 'instead', hint: '1 từ · lựa chọn một việc khác', hintVn: 'Thay vào đó' }
+      { text: 'Guess what', hint: '2 từ · lời gợi ý bất ngờ', hintVn: 'Đoán xem nào' },
+      { text: 'Seriously', hint: '1 từ · hỏi lại xem có đùa không', hintVn: 'Thật không/nghiêm túc chứ' },
+      { text: 'Awesome', hint: '1 từ · khen ngợi xuất sắc', hintVn: 'Tuyệt quá' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "No iPad now, sweeties. We are in the forest, remember?", vn: 'Không có máy tính bảng lúc này đâu con yêu. Mình đang ở trong rừng mà, nhớ không?' },
-      { speaker: 'Child', en: "Let's listen to the birds outside instead!", vn: 'Vậy chúng mình cùng lắng nghe tiếng chim bên ngoài nhé!' }
+      { speaker: 'Mom', en: "Guess what? We’re going to the park!", vn: 'Đoán xem nào? Nhà mình sẽ đi công viên đấy!' },
+      { speaker: 'Child', en: "Seriously? Awesome!", vn: 'Thật không ạ? Tuyệt quá!' }
     ]
   },
 
   // Day 8
   {
-    title: 'Chơi trong chánh niệm',
+    title: 'Thổi bay cơn giận',
     dialogue: [
-      { speaker: 'Mom', en: "Close your eyes. Breathe in... What do you hear in our forest?", vn: 'Nhắm mắt lại nào. Hít vào... Các con nghe thấy âm thanh gì trong khu rừng của chúng ta?' },
-      { speaker: 'Child', en: "I hear the wind... and my breathing.", vn: 'Con nghe thấy tiếng gió... và tiếng hơi thở của con ạ.' }
+      { speaker: 'Mom', en: "You're very angry. Let’s blow away the fire!", vn: 'Con đang rất giận. Cùng thổi bay ngọn lửa này nào!' },
+      { speaker: 'Child', en: "(Deep breath) I'm blowing it out!", vn: 'Hít sâu... Con đang thổi nó đi đây ạ!' }
     ],
     vocab: [
-      { en: 'Close your eyes', phonetic: '/kloʊz jʊr aɪz/', speaker: 'Mom', meaning: 'Nhắm mắt lại', synonym: 'shut your eyes', synonymVn: 'khép mắt lại', collocation: 'close your eyes tightly', collocationVn: 'nhắm chặt mắt', example: '"Close your eyes and make a wish!"', exampleVn: '"Nhắm mắt lại và ước một điều đi nào!"' },
-      { en: 'Breathe in', phonetic: '/briːð ɪn/', speaker: 'Mom', meaning: 'Hít vào', synonym: 'inhale', synonymVn: 'hít khí vào', collocation: 'breathe in deeply', collocationVn: 'hít vào thật sâu', example: '"Breathe in the fresh morning air."', exampleVn: '"Hãy hít vào bầu không khí trong lành của buổi sáng."' },
-      { en: 'Breathing', phonetic: '/ˈbriːðɪŋ/', speaker: 'Child', meaning: 'Tiếng thở, sự hô hấp', synonym: 'respiration', synonymVn: 'sự hít thở', collocation: 'listen to your breathing', collocationVn: 'lắng nghe nhịp thở của bạn', example: '"Her breathing is slow and calm."', exampleVn: '"Nhịp thở của cô ấy chậm rãi và bình tĩnh."' }
+      { en: 'Angry', phonetic: '/ˈæŋɡri/', speaker: 'Mom', meaning: 'Tức giận', synonym: 'mad, upset', synonymVn: 'bực bội', collocation: 'feel very angry', collocationVn: 'cảm thấy rất giận', example: '"It\'s normal to feel angry sometimes."', exampleVn: '"Đôi khi cảm thấy tức giận là chuyện bình thường."' },
+      { en: 'Blow away', phonetic: '/bloʊ əˈweɪ/', speaker: 'Mom', meaning: 'Thổi bay đi', synonym: 'blow out', synonymVn: 'thổi tắt', collocation: 'blow away the fire', collocationVn: 'thổi bay ngọn lửa', example: '"Blow away the dandelion seeds."', exampleVn: '"Thổi bay những hạt hoa bồ công anh đi nào."' },
+      { en: 'Deep breath', phonetic: '/diːp breθ/', speaker: 'Child', meaning: 'Hơi thở sâu', synonym: 'long breath', synonymVn: 'hơi thở dài', collocation: 'take a deep breath', collocationVn: 'hít một hơi thật sâu', example: '"Take a deep breath to calm down."', exampleVn: '"Hít một hơi sâu để bình tĩnh lại nhé."' }
     ],
     quiz: [
-      { q: '"Breathe in" là hành động gì?', opts: ['Thở ra', 'Hắt hơi', 'Hít vào', 'Ngáp'], ans: 2, exp: 'Đây là bài tập thở chánh niệm nhỏ gọn mẹ hướng dẫn cho con.' },
-      { q: 'Khi nhắm mắt lại (close your eyes), mẹ bảo bé làm gì tiếp theo?', opts: ['Ngủ luôn', 'Lắng nghe xem có âm thanh gì', 'Hát một bài', 'Chạy ra ngoài'], ans: 1, exp: 'Mẹ hỏi "What do you hear...?" để con tập trung thính giác.' },
-      { q: 'Bé đã nghe được những âm thanh gì?', opts: ['Tiếng ô tô', 'Tiếng tivi', 'Tiếng gió và tiếng thở (wind and breathing)', 'Tiếng mưa'], ans: 2, exp: 'Sự tĩnh lặng giúp bé cảm nhận được thiên nhiên và chính cơ thể mình.' }
+      { q: 'Trò chơi "blow away the fire" thực chất là phương pháp gì?', opts: ['Học vẽ', 'Bài tập hít thở sâu để hạ hỏa', 'Trò chơi thổi nến', 'Nhóm lửa'], ans: 1, exp: 'Mẹ hình tượng hóa cơn giận là ngọn lửa (fire) để dạy con kỹ năng thở sâu (deep breath) điều hòa cảm xúc.' },
+      { q: 'Cụm "Deep breath" nghĩa là gì?', opts: ['Thở gấp', 'Hát to', 'Hít thở sâu', 'Ho sặc sụa'], ans: 2, exp: '"Deep" là sâu, "breath" là hơi thở.' },
+      { q: 'Sau khi hít sâu, bé làm gì?', opts: ['Khóc tiếp', 'Thổi ngọn lửa tưởng tượng đi (blowing it out)', 'Đánh mẹ', 'Chạy đi'], ans: 1, exp: 'Bé hợp tác làm theo lời mẹ: "I\'m blowing it out!"' }
     ],
     dictation: [
-      { text: 'Close your eyes', hint: '3 từ · hành động khép mí mắt', hintVn: 'Nhắm mắt lại' },
-      { text: 'Breathe in', hint: '2 từ · đưa không khí vào phổi', hintVn: 'Hít vào' },
-      { text: 'breathing', hint: '1 từ · quá trình hô hấp', hintVn: 'Tiếng thở' }
+      { text: 'angry', hint: '1 từ · trạng thái nóng nảy', hintVn: 'Tức giận' },
+      { text: 'blow away', hint: '2 từ · dùng hơi tống đi', hintVn: 'Thổi bay' },
+      { text: 'Deep breath', hint: '2 từ · hít khí mạnh vào phổi', hintVn: 'Hơi thở sâu' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Close your eyes. Breathe in... What do you hear in our forest?", vn: 'Nhắm mắt lại nào. Hít vào... Các con nghe thấy âm thanh gì trong khu rừng của chúng ta?' },
-      { speaker: 'Child', en: "I hear the wind... and my breathing.", vn: 'Con nghe thấy tiếng gió... và tiếng hơi thở của con ạ.' }
+      { speaker: 'Mom', en: "You're very angry. Let’s blow away the fire!", vn: 'Con đang rất giận. Cùng thổi bay ngọn lửa này nào!' },
+      { speaker: 'Child', en: "(Deep breath) I'm blowing it out!", vn: 'Hít sâu... Con đang thổi nó đi đây ạ!' }
     ]
   },
 
   // Day 9
   {
-    title: 'Lời hẹn 5 phút cuối',
+    title: 'Vòng tay yêu thương',
     dialogue: [
-      { speaker: 'Mom', en: "Five more minutes until we pack up the tent!", vn: 'Còn 5 phút nữa là chúng ta phải thu dọn lều nhé!' },
-      { speaker: 'Child', en: "Just let us finish our picnic, please!", vn: 'Cho tụi con ăn xong bữa dã ngoại đã mẹ ơi!' }
+      { speaker: 'Mom', en: "I'll always be here for you, no matter what.", vn: 'Dù có chuyện gì mẹ cũng vẫn luôn ở đây với con.' },
+      { speaker: 'Child', en: "I feel much better now, Mommy.", vn: 'Giờ con thấy dễ chịu hơn nhiều rồi mẹ ơi.' }
     ],
     vocab: [
-      { en: 'Five more minutes', phonetic: '/faɪv mɔːr ˈmɪnɪts/', speaker: 'Mom', meaning: 'Thêm 5 phút nữa', synonym: 'a little longer', synonymVn: 'lâu thêm chút nữa', collocation: 'only five more minutes', collocationVn: 'chỉ 5 phút nữa thôi', example: '"Five more minutes until bedtime!"', exampleVn: '"Còn 5 phút nữa là đến giờ đi ngủ nhé!"' },
-      { en: 'Pack up', phonetic: '/pæk ʌp/', speaker: 'Mom', meaning: 'Thu dọn, dọn dẹp', synonym: 'put away', synonymVn: 'cất đi', collocation: 'pack up the toys', collocationVn: 'thu dọn đồ chơi', example: '"It\'s time to pack up and go home."', exampleVn: '"Đến giờ thu dọn và về nhà rồi."' },
-      { en: 'Finish', phonetic: '/ˈfɪnɪʃ/', speaker: 'Child', meaning: 'Kết thúc, hoàn thành', synonym: 'complete', synonymVn: 'hoàn tất', collocation: 'finish the meal', collocationVn: 'ăn xong bữa', example: '"Finish your milk, please."', exampleVn: '"Hãy uống cạn sữa đi con."' }
+      { en: 'Always', phonetic: '/ˈɔːlweɪz/', speaker: 'Mom', meaning: 'Luôn luôn', synonym: 'forever', synonymVn: 'mãi mãi', collocation: 'always be here', collocationVn: 'luôn ở đây', example: '"I will always love you."', exampleVn: '"Mẹ sẽ luôn luôn yêu con."' },
+      { en: 'No matter what', phonetic: '/noʊ ˈmætər wʌt/', speaker: 'Mom', meaning: 'Bất kể chuyện gì xảy ra', synonym: 'whatever happens', synonymVn: 'dù sao đi nữa', collocation: 'love you no matter what', collocationVn: 'yêu con vô điều kiện', example: '"I am your mom, no matter what."', exampleVn: '"Mẹ là mẹ của con, bất kể chuyện gì xảy ra."' },
+      { en: 'Feel better', phonetic: '/fiːl ˈbetər/', speaker: 'Child', meaning: 'Cảm thấy dễ chịu hơn, tốt hơn', synonym: 'recover', synonymVn: 'hồi phục', collocation: 'feel much better', collocationVn: 'cảm thấy tốt hơn nhiều', example: '"Do you feel better after the hug?"', exampleVn: '"Con có thấy dễ chịu hơn sau cái ôm không?"' }
     ],
     quiz: [
-      { q: 'Cụm từ "Five more minutes" thường dùng khi nào?', opts: ['Báo thức dậy', 'Thông báo thời gian chuẩn bị kết thúc', 'Khi bắt đầu chơi', 'Khi đang ăn'], ans: 1, exp: 'Đây là câu rào trước rất tốt để trẻ chuẩn bị tâm lý dừng cuộc chơi, không bị hụt hẫng.' },
-      { q: '"Pack up" có nghĩa là hành động gì?', opts: ['Trải ra', 'Mua sắm', 'Thu dọn cất đi', 'Bứt phá'], ans: 2, exp: 'Mẹ nhắc chuẩn bị thu dọn lều (pack up the tent).' },
-      { q: 'Bé xin thêm thời gian để hoàn thành việc gì?', opts: ['Vẽ xong tranh', 'Ăn xong bữa dã ngoại (finish our picnic)', 'Đọc xong sách', 'Chơi xong ô tô'], ans: 1, exp: 'Bé nài nỉ xin ăn nốt đồ ăn giả vờ trong lúc chơi dã ngoại.' }
+      { q: 'Câu nói của mẹ mang lại điều gì cho bé?', opts: ['Sự sợ hãi', 'Sự an tâm, khẳng định tình yêu vô điều kiện', 'Sự hoang mang', 'Sự mệt mỏi'], ans: 1, exp: '"I\'ll always be here... no matter what" là liều thuốc tinh thần mạnh mẽ nhất của cha mẹ.' },
+      { q: '"No matter what" có nghĩa là gì?', opts: ['Không có gì', 'Bất kể chuyện gì xảy ra', 'Có chuyện gì thế', 'Đừng lo lắng'], ans: 1, exp: 'Được dùng để nhấn mạnh sự chắc chắn, không thay đổi dù hoàn cảnh thế nào.' },
+      { q: 'Cảm xúc của bé sau khi nghe mẹ nói là gì?', opts: ['Tức giận hơn', 'Thấy buồn hơn', 'Dễ chịu hơn nhiều (feel much better)', 'Muốn đi ngủ'], ans: 2, exp: 'Nhờ vòng tay của mẹ, bé "feel much better now".' }
     ],
     dictation: [
-      { text: 'Five more minutes', hint: '3 từ · thêm một lượng thời gian ngắn', hintVn: '5 phút nữa' },
-      { text: 'pack up', hint: '2 từ · thu gọn đồ đạc', hintVn: 'Thu dọn' },
-      { text: 'finish', hint: '1 từ · làm cho xong việc gì', hintVn: 'Hoàn thành' }
+      { text: 'always', hint: '1 từ · không bao giờ thay đổi', hintVn: 'Luôn luôn' },
+      { text: 'no matter what', hint: '3 từ · vô điều kiện', hintVn: 'Bất kể chuyện gì' },
+      { text: 'feel better', hint: '2 từ · trạng thái tâm lý tích cực lên', hintVn: 'Cảm thấy tốt hơn' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "Five more minutes until we pack up the tent!", vn: 'Còn 5 phút nữa là chúng ta phải thu dọn lều nhé!' },
-      { speaker: 'Child', en: "Just let us finish our picnic, please!", vn: 'Cho tụi con ăn xong bữa dã ngoại đã mẹ ơi!' }
+      { speaker: 'Mom', en: "I'll always be here for you, no matter what.", vn: 'Dù có chuyện gì mẹ cũng vẫn luôn ở đây với con.' },
+      { speaker: 'Child', en: "I feel much better now, Mommy.", vn: 'Giờ con thấy dễ chịu hơn nhiều rồi mẹ ơi.' }
     ]
   },
 
   // Day 10
   {
-    title: 'Những nhà thám hiểm tài ba',
+    title: 'Làm chủ trái tim',
     dialogue: [
-      { speaker: 'Mom', en: "What a fun camping trip! You two are the best campers.", vn: 'Thật là một chuyến cắm trại vui vẻ! Hai đứa là những người cắm trại tuyệt nhất.' },
-      { speaker: 'Child', en: "Let's do it again tomorrow, Mommy!", vn: 'Ngày mai mình lại chơi tiếp nhé mẹ!' }
+      { speaker: 'Mom', en: "Take a deep breath. You can handle this!", vn: 'Hít một hơi thật sâu nào. Con làm được mà!' },
+      { speaker: 'Child', en: "Breathe in... breathe out... I'm okay now.", vn: 'Hít vào... thở ra... Con ổn rồi ạ.' }
     ],
     vocab: [
-      { en: 'Fun', phonetic: '/fʌn/', speaker: 'Mom', meaning: 'Vui vẻ', synonym: 'enjoyable', synonymVn: 'thú vị', collocation: 'what a fun game', collocationVn: 'thật là một trò chơi vui', example: '"Learning English is so much fun!"', exampleVn: '"Học tiếng Anh thật là vui!"' },
-      { en: 'Camper', phonetic: '/ˈkæmpər/', speaker: 'Mom', meaning: 'Người đi cắm trại', synonym: 'explorer', synonymVn: 'nhà thám hiểm', collocation: 'the best campers', collocationVn: 'những người cắm trại tuyệt nhất', example: '"The little campers slept deeply in the tent."', exampleVn: '"Những người đi cắm trại nhí ngủ rất say trong lều."' },
-      { en: 'Tomorrow', phonetic: '/təˈmɔːroʊ/', speaker: 'Child', meaning: 'Ngày mai', synonym: 'the next day', synonymVn: 'ngày hôm sau', collocation: 'do it again tomorrow', collocationVn: 'ngày mai làm lại nhé', example: '"See you tomorrow at school!"', exampleVn: '"Hẹn gặp lại bạn vào ngày mai ở trường!"' }
+      { en: 'Handle', phonetic: '/ˈhændl/', speaker: 'Mom', meaning: 'Xử lý, giải quyết', synonym: 'deal with', synonymVn: 'đương đầu', collocation: 'handle this', collocationVn: 'giải quyết việc này', example: '"It\'s hard, but I know you can handle it."', exampleVn: '"Khó đấy, nhưng mẹ biết con xử lý được mà."' },
+      { en: 'Breathe out', phonetic: '/briːð aʊt/', speaker: 'Child', meaning: 'Thở ra', synonym: 'exhale', synonymVn: 'đẩy khí ra', collocation: 'breathe in, breathe out', collocationVn: 'hít vào, thở ra', example: '"Breathe out slowly to relax."', exampleVn: '"Thở ra chậm rãi để thư giãn nhé."' },
+      { en: 'Okay', phonetic: '/oʊˈkeɪ/', speaker: 'Child', meaning: 'Ổn, tốt', synonym: 'fine, alright', synonymVn: 'bình an', collocation: 'I\'m okay', collocationVn: 'con ổn', example: '"Don\'t worry, everything is okay."', exampleVn: '"Đừng lo, mọi chuyện đều ổn cả."' }
     ],
     quiz: [
-      { q: 'Cấu trúc "What a..." (Vd: What a fun camping trip!) dùng để làm gì?', opts: ['Hỏi đường', 'Cảm thán, khen ngợi', 'Xin lỗi', 'Chào tạm biệt'], ans: 1, exp: 'Đây là câu cảm thán. Mẹ dùng để tổng kết lại buổi chơi thật vui.' },
-      { q: '"Camper" là danh từ chỉ ai?', opts: ['Máy tính bảng', 'Ngôi nhà', 'Người đi cắm trại', 'Đầu bếp'], ans: 2, exp: '"Camp" là cắm trại, thêm "er" thành người cắm trại.' },
-      { q: 'Trẻ đã thể hiện cảm xúc gì qua câu cuối cùng?', opts: ['Muốn chơi tiếp vào ngày mai (tomorrow)', 'Buồn chán', 'Mệt mỏi muốn đi ngủ', 'Tức giận'], ans: 0, exp: 'Vì trò chơi quá vui nên bé háo hức hẹn mẹ "Let\'s do it again tomorrow!"' }
+      { q: 'Cụm từ "You can handle this!" dùng để làm gì?', opts: ['Khích lệ sự tự tin của trẻ', 'Trách mắng trẻ', 'Nhờ trẻ làm việc nhà', 'Dọa trẻ'], ans: 0, exp: '"Handle" là xử lý. Mẹ đang trao niềm tin rằng trẻ hoàn toàn có thể tự làm chủ tình huống.' },
+      { q: 'Trái nghĩa với "Breathe in" (hít vào) là từ gì?', opts: ['Sleep', 'Eat', 'Breathe out (thở ra)', 'Run'], ans: 2, exp: 'Nhịp điệu "Breathe in... breathe out..." giúp cơ thể lấy lại cân bằng.' },
+      { q: 'Trạng thái cuối cùng của bé trong Topic cảm xúc là gì?', opts: ['Vẫn đang khóc', 'Đã tự trấn an và ổn định (I\'m okay now)', 'Đang giận dữ', 'Đang buồn'], ans: 1, exp: 'Bé đã học được cách tự điều hòa và khẳng định "I\'m okay now".' }
     ],
     dictation: [
-      { text: 'fun', hint: '1 từ · cảm giác vui sướng', hintVn: 'Vui vẻ' },
-      { text: 'campers', hint: '1 từ (số nhiều) · những người đi dã ngoại', hintVn: 'Người đi cắm trại' },
-      { text: 'tomorrow', hint: '1 từ · ngày tiếp theo', hintVn: 'Ngày mai' }
+      { text: 'handle', hint: '1 từ · đương đầu, giải quyết', hintVn: 'Xử lý' },
+      { text: 'breathe out', hint: '2 từ · đẩy không khí khỏi phổi', hintVn: 'Thở ra' },
+      { text: 'okay', hint: '1 từ · trạng thái bình thường/an toàn', hintVn: 'Ổn' }
     ],
     shadowing: [
-      { speaker: 'Mom', en: "What a fun camping trip! You two are the best campers.", vn: 'Thật là một chuyến cắm trại vui vẻ! Hai đứa là những người cắm trại tuyệt nhất.' },
-      { speaker: 'Child', en: "Let's do it again tomorrow, Mommy!", vn: 'Ngày mai mình lại chơi tiếp nhé mẹ!' }
+      { speaker: 'Mom', en: "Take a deep breath. You can handle this!", vn: 'Hít một hơi thật sâu nào. Con làm được mà!' },
+      { speaker: 'Child', en: "Breathe in... breathe out... I'm okay now.", vn: 'Hít vào... thở ra... Con ổn rồi ạ.' }
     ]
   }
 ];
@@ -651,11 +649,11 @@ async function finishDay(i, btnElement) {
   if (!currentUser) return;
   
   const currentGlobalDay = i + 1; 
-  // Topic 05 index là 4
-  const savedProgress = userProgress.progress[4] || 0;
+  // Topic 06 index là 5
+  const savedProgress = userProgress.progress[5] || 0;
  
   if (currentGlobalDay > savedProgress) {
-    userProgress.progress[4] = currentGlobalDay;
+    userProgress.progress[5] = currentGlobalDay;
   }
  
   const today = new Date();
