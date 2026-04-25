@@ -92,14 +92,35 @@
   .section-title { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-muted); padding: 0 24px; margin: 32px 0 16px; font-weight: 700; }
 
   /* FOOTER STYLING */
-  footer {
-    padding: 40px 24px;
-    text-align: center;
-    font-size: 11px;
-    color: var(--ink-muted);
-    line-height: 1.8;
-    letter-spacing: 0.5px;
-  }
+  footer { padding: 40px 24px; text-align: center; font-size: 11px; color: var(--ink-muted); line-height: 1.8; letter-spacing: 0.5px; }
+
+  /* ── PREMIUM MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.3s; }
+  .modal-overlay.show { display: flex; opacity: 1; }
+  .modal-content { background: var(--warm-white); border-radius: var(--radius); width: 100%; max-width: 400px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform 0.3s; }
+  .modal-overlay.show .modal-content { transform: translateY(0); }
+  .modal-header { background: var(--terracotta); color: white; padding: 24px; text-align: center; }
+  .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; }
+  .modal-header p { font-size: 14px; opacity: 0.9; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .modal-body { padding: 24px; text-align: center; }
+  
+  .pricing-box { background: var(--sunny-light); border: 1px dashed #E2B93B; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 20px; color: #8A6A00; }
+  .price-tag { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--terracotta); }
+  .price-note { font-size: 12px; font-style: italic; opacity: 0.8; }
+  .old-price { text-decoration: line-through; font-size: 16px; color: var(--ink-muted); margin-left: 8px; }
+  
+  .qr-section img { width: 180px; height: 180px; border-radius: 8px; border: 1px solid var(--border); padding: 4px; background: white; margin: 0 auto 16px; display: block; }
+  .bank-info { font-size: 14px; background: var(--cream); padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 20px; border: 1px solid var(--border); }
+  .bank-info strong { color: var(--terra-deep); }
+  .copy-text { font-family: 'DM Mono', monospace; background: white; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); user-select: all; cursor: copy; }
+  
+  .confirm-btn { width: 100%; padding: 16px; background: var(--terracotta); color: white; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: 0.2s; }
+  .confirm-btn:hover { background: var(--terra-deep); }
+  .confirm-btn:disabled { background: var(--ink-muted); cursor: not-allowed; }
+
+  #success-message { display: none; padding: 40px 24px; text-align: center; }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
 </style>
 </head>
 <body>
@@ -187,6 +208,51 @@
     © Lani · Be A Gift · Loving Languages<br>
     All rights reserved 2026
   </footer>
+</div>
+
+<div id="premium-modal" class="modal-overlay">
+  <div class="modal-content" id="modal-payment-view">
+    <button class="modal-close" onclick="closePremiumModal()">✕</button>
+    <div class="modal-header">
+      <h2>Mở khóa Trọn bộ!</h2>
+      <p>110 ngày nuôi dưỡng tình yêu ngôn ngữ</p>
+    </div>
+    
+    <div class="modal-body">
+      <div class="pricing-box">
+        <div id="price-display">
+          </div>
+      </div>
+
+      <div class="qr-section">
+        <img src="image_ff131c.png" alt="Mã QR Thanh Toán VPBank">
+      </div>
+
+      <div class="bank-info">
+        <div style="margin-bottom: 8px;">Ngân hàng: <strong>VPBank</strong></div>
+        <div style="margin-bottom: 8px;">Chủ TK: <strong>TRAN THANH HUYEN</strong></div>
+        <div style="margin-bottom: 8px;">Số TK: <strong>888829081996</strong></div>
+        <div style="margin-top: 12px; font-size: 12px; color: var(--ink-muted);">Nội dung chuyển khoản (Bấm để copy):</div>
+        <div class="copy-text" id="transfer-syntax" title="Bấm để copy">LANI ...</div>
+      </div>
+
+      <button class="confirm-btn" id="confirm-transfer-btn" onclick="submitUpgradeRequest()">
+        Mình đã chuyển khoản xong!
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-content" id="modal-success-view" style="display: none;">
+    <button class="modal-close" style="color: var(--ink);" onclick="closePremiumModal()">✕</button>
+    <div id="success-message" style="display: block;">
+      <div class="success-icon">💌</div>
+      <h2 style="font-family: 'Playfair Display'; color: var(--terracotta); margin-bottom: 12px;">Cảm ơn bạn!</h2>
+      <p style="color: var(--ink-muted); font-size: 15px; line-height: 1.5;">
+        Yêu cầu nâng cấp của bạn đã được ghi nhận. Lani sẽ kiểm tra và mở khóa tài khoản cho hai mẹ con trong ít phút tới nhé!
+      </p>
+      <button class="auth-btn" style="margin-top: 24px;" onclick="closePremiumModal()">Đóng cửa sổ</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -307,7 +373,7 @@ function goToTopic(id, url) {
   if (id === 0 || isWhitelisted) {
     window.location.href = url;
   } else {
-    alert("Khóa học dành riêng cho học viên của Lani. Nhắn Lani để được mở khóa nhé! ❤️");
+    openPremiumModal();
   }
 }
 
@@ -335,6 +401,81 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+
+/* ── QUẢN LÝ PREMIUM MODAL ── */
+function openPremiumModal() {
+  const modal = document.getElementById('premium-modal');
+  const priceDisplay = document.getElementById('price-display');
+  const transferSyntax = document.getElementById('transfer-syntax');
+  const currentUser = firebase.auth().currentUser;
+  
+  const userEmail = currentUser ? currentUser.email : "Email-cua-ban";
+  transferSyntax.textContent = `LANI ${userEmail}`;
+  
+  const deadline = new Date('2026-05-01T23:59:59');
+  const today = new Date();
+  
+  if (today <= deadline) {
+    priceDisplay.innerHTML = `
+      <div style="font-size: 12px; text-transform: uppercase; font-weight: bold;">Ưu đãi Early Bird (trước 02/05)</div>
+      <span class="price-tag">110.000đ</span>
+      <span class="old-price">330.000đ</span>
+      <div class="price-note">Chỉ 1.000đ / ngày học</div>
+    `;
+  } else {
+    priceDisplay.innerHTML = `
+      <div style="font-size: 12px; text-transform: uppercase; font-weight: bold;">Gói Hành Trình Trọn Vẹn</div>
+      <span class="price-tag">330.000đ</span>
+      <div class="price-note">110 ngày tương tác chất lượng</div>
+    `;
+  }
+
+  document.getElementById('modal-payment-view').style.display = 'block';
+  document.getElementById('modal-success-view').style.display = 'none';
+  document.getElementById('confirm-transfer-btn').disabled = false;
+  document.getElementById('confirm-transfer-btn').textContent = "Mình đã chuyển khoản xong!";
+
+  modal.classList.add('show');
+}
+
+function closePremiumModal() {
+  document.getElementById('premium-modal').classList.remove('show');
+}
+
+async function submitUpgradeRequest() {
+  const btn = document.getElementById('confirm-transfer-btn');
+  const currentUser = firebase.auth().currentUser;
+  
+  if (!currentUser) return;
+
+  btn.disabled = true;
+  btn.textContent = "Đang gửi yêu cầu...";
+
+  try {
+    await db.collection("pending_upgrades").add({
+      email: currentUser.email,
+      uid: currentUser.uid,
+      requestTime: firebase.firestore.FieldValue.serverTimestamp(),
+      status: "chưa duyệt"
+    });
+
+    document.getElementById('modal-payment-view').style.display = 'none';
+    document.getElementById('modal-success-view').style.display = 'block';
+    
+  } catch (error) {
+    console.error("Lỗi:", error);
+    btn.disabled = false;
+    btn.textContent = "Có lỗi xảy ra, thử lại nhé!";
+  }
+}
+
+document.getElementById('transfer-syntax').addEventListener('click', function() {
+  navigator.clipboard.writeText(this.textContent);
+  const originalColor = this.style.backgroundColor;
+  this.style.backgroundColor = 'var(--sage-light)';
+  setTimeout(() => { this.style.backgroundColor = originalColor; }, 300);
+});
+
 </script>
 </body>
 </html>
