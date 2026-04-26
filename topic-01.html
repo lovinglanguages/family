@@ -493,7 +493,6 @@ const TEST_QUESTIONS = [
   { vn: "Giờ đi rửa mặt và làm cho tỉnh táo nào.", en: "Go wash your face and freshen up" },
   { vn: "Bây giờ, chúng ta hãy thay bộ đồ ngủ đó ra nhé.", en: "Now let's get changed out of those pajamas" }
 ];
-
 // ═══════════════════════════════════════════════════════
 //  FIREBASE & KHỞI TẠO
 // ═══════════════════════════════════════════════════════
@@ -506,7 +505,7 @@ const firebaseConfig = {
   appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -516,7 +515,6 @@ let doneDays = [];
 let TOPIC = { num: '01', name: 'Morning Routine', startDay: 1 };
 let DAYS = CHUNK_DATA; 
 
-// STATE: Thiết lập hiển thị tab Thử thách ngay khi tải trang xong
 let currentView = 'test'; 
 let isPostTestMode = false;
 let currentDay = 0;
@@ -542,7 +540,7 @@ async function fetchProgress() {
       for (let i = 0; i < daysCompleted; i++) doneDays.push(i);
     }
     renderPanels();
-    openTest(false); // Mở Pre-test làm mặc định theo luồng mới
+    openTest(false); 
   } catch (error) {
     console.error("Lỗi tải tiến độ:", error);
   }
@@ -555,15 +553,12 @@ function renderNav() {
   const nav = document.getElementById('daysNav');
   nav.innerHTML = '';
   
-  // 1. Nút Thử thách đầu tiên
   const preTestActive = currentView === 'test' && !isPostTestMode;
-  nav.innerHTML += `<button class="special-pill${preTestActive ? ' active' : ''}" onclick="openTest(false)">🎯 Challenge</button>`;
+  nav.innerHTML += `<button class="special-pill${preTestActive ? ' active' : ''}" onclick="openTest(false)">🎯 Thử thách</button>`;
 
-  // 2. Nút Full Script thứ hai
   const fsActive = currentView === 'fullscript';
   nav.innerHTML += `<button class="special-pill${fsActive ? ' active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
 
-  // 3. Các Day 1-10
   DAYS.forEach((d, i) => {
     const globalDay = i + 1;
     const isDone = doneDays.includes(i);
@@ -572,10 +567,9 @@ function renderNav() {
     nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})"><span class="day-pill-num">${globalDay}</span>${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}</button>`;
   });
 
-  // 4. Bài thi cuối khoá (Nếu làm xong Day 10)
   if (doneDays.includes(9)) {
     const postTestActive = currentView === 'test' && isPostTestMode;
-    nav.innerHTML += `<button class="special-pill${postTestActive ? ' active' : ''}" style="border-color:var(--sage);color:var(--sage-deep);" onclick="openTest(true)">🏆 Review Challenge</button>`;
+    nav.innerHTML += `<button class="special-pill${postTestActive ? ' active' : ''}" style="border-color:var(--sage);color:var(--sage-deep);" onclick="openTest(true)">🏆 Thi Cuối khóa</button>`;
   }
 }
 
@@ -587,14 +581,14 @@ function openTest(isPost) {
   document.getElementById('panel-test').classList.add('active');
   renderNav();
   
-  document.getElementById('test-main-title').innerHTML = isPost ? "🏆 Xem lại thử thách" : "🎯 Thử thách đầu vào";
+  document.getElementById('test-main-title').innerHTML = isPost ? "🏆 Bài Thi Cuối Khóa" : "🎯 Thử thách đầu vào";
   document.getElementById('test-main-desc').innerHTML = isPost 
     ? "Chúc mừng ba mẹ đã đi đến cuối chặng đường! Cùng xem lại 3 câu tiếng Việt của ngày đầu tiên, giờ chắc chắn ba mẹ sẽ bật phản xạ ngay lập tức." 
     : "Ba mẹ dịch thử 3 câu sau sang tiếng Anh nhé. Đừng lo nếu bị 'bí' từ vựng, sau 10 ngày học, mọi thứ sẽ dễ như ăn kẹo!";
   
   renderTestQuestions();
   const nav = document.getElementById('daysNav');
-  nav.firstElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  if(nav.firstElementChild) nav.firstElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
 function openFullScript() {
@@ -624,7 +618,7 @@ function openDay(i) {
   renderNav();
   
   const nav = document.getElementById('daysNav');
-  const pillIndex = i + 2; // Offset cho tab Test và Full Script
+  const pillIndex = i + 2; 
   const pill = nav.children[pillIndex];
   if (pill) pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
@@ -662,11 +656,10 @@ function renderTestQuestions() {
         <div style="font-family:'Playfair Display',serif; font-size:18px; color:var(--terracotta);">Gửi lời nhắn cho Lani Admin</div>
         <div style="font-size:13px; color:var(--ink-muted); margin-bottom:10px;">Cảm nhận của ba mẹ sau 10 ngày học Topic 1 là gì?</div>
         <textarea class="fb-textarea" id="user-feedback-text" placeholder="Nhập phản hồi của bạn..."></textarea>
-        <button class="test-btn" style="background:var(--terracotta); color:white; width:100%;" onclick="submitFeedback()">📤 Gửi Feedback</button>
+        <button class="test-btn" style="background:var(--terracotta); color:white; width:100%; cursor:pointer;" onclick="submitFeedback()">📤 Gửi Feedback</button>
       </div>
     `;
   } else {
-    // Nếu là Pre-test, thêm nút chuyển sang Full Script ở dưới cùng
     html += `
       <button class="finish-btn" style="background:var(--terracotta);" onclick="openFullScript()">Bắt đầu khám phá Full Script 👉</button>
     `;
@@ -875,8 +868,16 @@ function renderDictItem(i) {
     return;
   }
   const item = items[state.idx]; state.attempts = 0;
-  document.getElementById(`dict-body-${i}`).innerHTML = `<div class="dict-card"><div class="dict-hint">${item.hint}</div><button class="play-btn" onclick="speak('${item.text}', 0.75)">▶</button><input class="dict-input" id="dinput-${i}" type="text" placeholder="Gõ từ bạn nghe..." oninput="checkDict(${i})"></div><div class="quiz-fb" id="dfb-${i}"></div><button class="quiz-next" id="dnext-${i}" onclick="dictState[${i}].idx++; renderDictItem(${i})" disabled>Tiếp theo →</button>`;
+  document.getElementById(`dict-body-${i}`).innerHTML = `<div class="dict-card"><div class="dict-hint">${item.hint}</div><button class="play-btn" onclick="playDict(${i}, '${item.text.replace(/'/g, "\\'")}')" id="dplay-${i}">▶</button><input class="dict-input" id="dinput-${i}" type="text" placeholder="Gõ từ bạn nghe..." oninput="checkDict(${i})"></div><div class="quiz-fb" id="dfb-${i}"></div><button class="quiz-next" id="dnext-${i}" onclick="dictState[${i}].idx++; renderDictItem(${i})" disabled>Tiếp theo →</button>`;
 }
+
+function playDict(i, text) {
+  const btn = document.getElementById(`dplay-${i}`);
+  if(btn) btn.classList.add('playing');
+  speak(text, 0.75);
+  setTimeout(() => { if(btn) btn.classList.remove('playing'); }, 2000);
+}
+
 function checkDict(i) {
   const inp = document.getElementById(`dinput-${i}`); const val = inp.value.trim().toLowerCase();
   const ans = DAYS[i].dictation[dictState[i].idx].text.toLowerCase();
@@ -949,6 +950,18 @@ function lev(a, b) {
   for (let i=1; i<=m; i++) for (let j=1; j<=n; j++) dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
   return dp[m][n];
 }
+
+// ═══════════════════════════════════════════════════════
+// HÀM XỬ LÝ UPSELL POPUP
+// ═══════════════════════════════════════════════════════
+function closeUpsellModal() {
+  document.getElementById('upsellModal').classList.remove('show');
+  // Lưu ý: Không nhảy trang nữa, chỉ ẩn đi để user ở lại màn hình Post-test
+}
+
+function goToDashboardToUpgrade() {
+  localStorage.setItem('triggerUpgrade', 'true');
+  window.location.href = 'lani-be-a-gift.html';
+}
 </script>
-</body>
-</html>
+ 
