@@ -557,7 +557,7 @@ function renderNav() {
   
   // 1. Nút Thử thách đầu tiên
   const preTestActive = currentView === 'test' && !isPostTestMode;
-  nav.innerHTML += `<button class="special-pill${preTestActive ? ' active' : ''}" onclick="openTest(false)">🎯 Thử thách</button>`;
+  nav.innerHTML += `<button class="special-pill${preTestActive ? ' active' : ''}" onclick="openTest(false)">🎯 Challenge</button>`;
 
   // 2. Nút Full Script thứ hai
   const fsActive = currentView === 'fullscript';
