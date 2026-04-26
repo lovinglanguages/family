@@ -393,26 +393,72 @@ let dictState = {};
 let currentView = 'day';
  
 async function finishDay(i, btnElement) {
-  if (btnElement) btnElement.style.display = 'none';
-  if (!doneDays.includes(i)) doneDays.push(i);
-  document.getElementById(`done-${i}`).classList.add('show');
+  // Ẩn nút hoàn thành
+  if(btnElement) btnElement.style.display = 'none';
+
+  if (!doneDays.includes(i)) {
+    doneDays.push(i);
+  }
+  
+  // Hiện banner nhỏ chúc mừng (nhưng sẽ KHÔNG hiện ở ngày 10)
+  if (i < 9) {
+      document.getElementById(`done-${i}`).classList.add('show');
+      document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
+  }
   renderNav();
-  document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
+
   if (!currentUser) return;
+  
   const currentGlobalDay = i + 1;
   const savedProgress = userProgress.progress[0] || 0;
-  if (currentGlobalDay > savedProgress) userProgress.progress[0] = currentGlobalDay;
-  const today = new Date(); today.setHours(0,0,0,0);
+
+  // 1. Lưu tiến độ
+  if (currentGlobalDay > savedProgress) {
+    userProgress.progress[0] = currentGlobalDay;
+  }
+
+  // 2. Logic tính streak
+  const today = new Date();
+  today.setHours(0,0,0,0);
   const todayTime = today.getTime();
   const lastActiveTime = userProgress.lastActiveTime || 0;
   const oneDay = 86400000;
-  if (lastActiveTime === 0) { userProgress.streak = 1; userProgress.lastActiveTime = todayTime; }
-  else {
+
+  if (lastActiveTime === 0) {
+    userProgress.streak = 1;
+    userProgress.lastActiveTime = todayTime;
+  } else {
     const diffDays = Math.round((todayTime - lastActiveTime) / oneDay);
-    if (diffDays === 1) { userProgress.streak = (userProgress.streak || 0) + 1; userProgress.lastActiveTime = todayTime; }
-    else if (diffDays > 1) { userProgress.streak = 1; userProgress.lastActiveTime = todayTime; }
+    if (diffDays === 1) {
+      userProgress.streak = (userProgress.streak || 0) + 1;
+      userProgress.lastActiveTime = todayTime;
+    } else if (diffDays > 1) {
+      userProgress.streak = 1;
+      userProgress.lastActiveTime = todayTime;
+    }
   }
+
+  // Ghi lên Firebase
   await db.collection("users").doc(currentUser.uid).set(userProgress, { merge: true });
+
+  // CRO: NẾU LÀ NGÀY 10 (i === 9) -> BẬT POP-UP TỐT NGHIỆP & CHỐT SALE
+  if (i === 9) {
+      setTimeout(() => {
+          document.getElementById('upsellModal').classList.add('show');
+      }, 500); // Trễ 0.5s để tạo cảm giác bất ngờ
+  }
+}
+
+// ── CÁC HÀM BỔ TRỢ CHO POP-UP UPSELL ──
+function closeUpsellModal() {
+    document.getElementById('upsellModal').classList.remove('show');
+    window.location.href = 'lani-be-a-gift.html'; // Đẩy về Dashboard
+}
+
+function goToDashboardToUpgrade() {
+    // Lưu lệnh nâng cấp vào trình duyệt để Dashboard tự động bật bảng thanh toán
+    localStorage.setItem('triggerUpgrade', 'true');
+    window.location.href = 'lani-be-a-gift.html'; 
 }
  
 function renderNav() {
