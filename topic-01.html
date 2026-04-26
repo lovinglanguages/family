@@ -338,42 +338,6 @@
 <div class="days-nav" id="daysNav"></div>
 <div id="panels"></div>
 
-<!-- Topic Role-play Modal -->
-<div id="topicRpModal" class="trp-overlay">
-  <div class="trp-header">
-    <div class="trp-title">🎭 Role-play · Morning Routine</div>
-    <button class="trp-close" onclick="closeTopicRolePlay()">✕ Đóng</button>
-  </div>
-  <div class="trp-body" id="trp-body">
-    <!-- Setup screen -->
-    <div id="trp-setup" class="rp-setup" style="margin-bottom:0">
-      <div class="rp-setup-title">Hội thoại tổng hợp 10 ngày 🌟</div>
-      <div class="rp-setup-sub">Bạn đã học xong toàn bộ Morning Routine!<br>Giờ hãy thử đóng vai và thực hành toàn bộ hội thoại — không nhìn gợi ý.</div>
-      <div class="rp-role-row">
-        <div class="rp-role-btn" id="trp-role-mom" onclick="trpSelectRole('mom')">
-          <div class="rp-role-emoji">👩</div>
-          <div class="rp-role-name">Ba / Mẹ</div>
-          <div class="rp-role-desc">Nói lời của Mom</div>
-        </div>
-        <div class="rp-role-btn" id="trp-role-child" onclick="trpSelectRole('child')">
-          <div class="rp-role-emoji">🧒</div>
-          <div class="rp-role-name">Bé</div>
-          <div class="rp-role-desc">Nói lời của Child</div>
-        </div>
-      </div>
-      <button class="rp-start-btn" id="trp-start-btn" onclick="trpStart()">Bắt đầu →</button>
-    </div>
-    <!-- Chat area -->
-    <div id="trp-game" style="display:none; flex-direction:column; gap:0; flex:1;">
-      <div style="background:var(--blush); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:16px; font-size:12px; color:var(--ink-muted); text-align:center;">
-        Gõ câu của bạn · App sẽ đọc lời nhân vật kia 🎤
-      </div>
-      <div id="trp-chat" class="rp-chat"></div>
-      <div id="trp-input-wrap"></div>
-    </div>
-  </div>
-</div>
-
 <div id="upsellModal" class="upsell-overlay">
   <div class="upsell-card">
     <div class="upsell-icon">🎉</div>
@@ -502,7 +466,7 @@ async function finishDay(i, btnElement) {
   if (i === 9) {
     document.getElementById(`done-${i}`).classList.add('show');
     document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => { document.getElementById('upsellModal').classList.add('show'); }, 2500);
+    setTimeout(() => { document.getElementById('upsellModal').classList.add('show'); }, 1000);
   }
 }
 
@@ -625,7 +589,41 @@ function buildPanel(day, i, globalDay) {
     </div>
     <div class="mode-content" id="mode-${i}-quiz"><div id="quiz-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-dictation"><div id="dict-body-${i}"></div></div>
-    <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}${i === 9 ? `<div class="done-banner day10-banner" id="done-${i}"><div class="done-banner-title">🏆 Chúc mừng! Bạn đã hoàn thành Topic 01!</div><div class="done-banner-sub">10 ngày · Morning Routine · Cả nhà thật tuyệt vời!</div><button class="rp-launch-btn" onclick="openTopicRolePlay()">🎭 Thử Role-play tổng hợp cả Topic</button></div>` : `<div class="done-banner" id="done-${i}"><div class="done-banner-title">🌟 Tuyệt vời!</div><div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div></div>`}<button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button></div>
+    <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}${i === 9 ? buildTopicRolePlayHTML() : ''}<div class="done-banner" id="done-${i}"><div class="done-banner-title">${i === 9 ? '🏆 Chúc mừng hoàn thành Topic 01!' : '🌟 Tuyệt vời!'}</div><div class="done-banner-sub">${i === 9 ? '10 ngày · Morning Routine · Cả nhà thật tuyệt vời!' : `Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!`}</div></div><button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button></div>
+  </div>`;
+}
+
+function buildTopicRolePlayHTML() {
+  return `<div id="topic-rp-section" style="margin-bottom:16px;">
+    <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <div style="padding:16px 18px 14px;border-bottom:1px solid var(--border);background:var(--blush);">
+        <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--terracotta);margin-bottom:4px;">Bước tiếp theo</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);">🎭 Role-play tổng hợp</div>
+        <div style="font-size:13px;color:var(--ink-muted);margin-top:3px;">Đóng vai và thực hành toàn bộ 10 ngày hội thoại</div>
+      </div>
+      <div style="padding:14px 18px;">
+        <div id="trp-setup-inline">
+          <div style="font-size:13px;color:var(--ink-muted);margin-bottom:14px;line-height:1.6;">Chọn vai của bạn — app sẽ đọc lời nhân vật kia. Bạn gõ câu trả lời.</div>
+          <div class="rp-role-row" style="margin-bottom:12px;">
+            <div class="rp-role-btn" id="trp-role-mom" onclick="trpSelectRole('mom')">
+              <div class="rp-role-emoji">👩</div>
+              <div class="rp-role-name">Ba / Mẹ</div>
+              <div class="rp-role-desc">Nói lời của Mom</div>
+            </div>
+            <div class="rp-role-btn" id="trp-role-child" onclick="trpSelectRole('child')">
+              <div class="rp-role-emoji">🧒</div>
+              <div class="rp-role-name">Bé</div>
+              <div class="rp-role-desc">Nói lời của Child</div>
+            </div>
+          </div>
+          <button class="rp-start-btn" id="trp-start-btn" onclick="trpStart()">Bắt đầu hội thoại →</button>
+        </div>
+        <div id="trp-game" style="display:none;">
+          <div id="trp-chat" class="rp-chat"></div>
+          <div id="trp-input-wrap"></div>
+        </div>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -1029,22 +1027,6 @@ function renderScore(badge, label, score, tWords, matches) {
 // ═══════════════════════════════════════════════════════
 let trpState = { role: null, allLines: [], step: 0, score: 0, total: 0 };
 
-function openTopicRolePlay() {
-  document.getElementById('topicRpModal').classList.add('show');
-  // Reset setup
-  document.getElementById('trp-setup').style.display = 'block';
-  document.getElementById('trp-game').style.display = 'none';
-  document.getElementById('trp-role-mom').classList.remove('selected');
-  document.getElementById('trp-role-child').classList.remove('selected');
-  document.getElementById('trp-start-btn').classList.remove('ready');
-  trpState = { role: null, allLines: [], step: 0, score: 0, total: 0 };
-}
-
-function closeTopicRolePlay() {
-  window.speechSynthesis?.cancel();
-  document.getElementById('topicRpModal').classList.remove('show');
-}
-
 function trpSelectRole(role) {
   trpState.role = role;
   document.getElementById('trp-role-mom').classList.toggle('selected', role === 'mom');
@@ -1063,8 +1045,8 @@ function trpStart() {
   trpState.step = 0;
   trpState.score = 0;
 
-  document.getElementById('trp-setup').style.display = 'none';
-  document.getElementById('trp-game').style.display = 'flex';
+  document.getElementById('trp-setup-inline').style.display = 'none';
+  document.getElementById('trp-game').style.display = 'block';
   document.getElementById('trp-chat').innerHTML = '';
   document.getElementById('trp-input-wrap').innerHTML = '';
 
@@ -1229,7 +1211,14 @@ function trpShowDone() {
 }
 
 function trpRestart() {
-  openTopicRolePlay();
+  trpState = { role: null, allLines: [], step: 0, score: 0, total: 0 };
+  document.getElementById('trp-setup-inline').style.display = 'block';
+  document.getElementById('trp-game').style.display = 'none';
+  document.getElementById('trp-chat').innerHTML = '';
+  document.getElementById('trp-input-wrap').innerHTML = '';
+  document.getElementById('trp-role-mom').classList.remove('selected');
+  document.getElementById('trp-role-child').classList.remove('selected');
+  document.getElementById('trp-start-btn').classList.remove('ready');
 }
 
 function playbackRec(id) {
