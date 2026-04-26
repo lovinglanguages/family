@@ -372,7 +372,6 @@
 
 <div id="ob-wrapper">
 
-  <!-- Top bar -->
   <div class="ob-topbar">
     <div class="ob-dots">
       <div class="ob-dot active" id="dot0"></div>
@@ -383,15 +382,12 @@
     <button class="ob-skip" id="skip-btn" onclick="skipOnboarding()">Bỏ qua</button>
   </div>
 
-  <!-- Progress bar -->
   <div class="ob-progress">
     <div class="ob-progress-fill" id="ob-bar" style="width:25%"></div>
   </div>
 
-  <!-- Slides -->
   <div class="ob-slides">
 
-    <!-- Slide 0: Welcome -->
     <div class="ob-slide active" id="slide-0">
       <div class="slide-icon" style="background:#FAE8DC;">🏡</div>
       <div class="slide-title">Chào mừng đến với<br><em>Lani · Be A Gift</em></div>
@@ -402,27 +398,26 @@
       </div>
     </div>
 
-    <!-- Slide 1: 5 Activities -->
     <div class="ob-slide" id="slide-1">
       <div class="slide-icon" style="background:#EBF3EC;">📋</div>
       <div class="slide-title">5 hoạt động mỗi ngày<br><em>đơn giản & hiệu quả</em></div>
       <div class="slide-sub">Không cần chuẩn bị — mở ra và học cùng nhau!</div>
       <div class="act-list">
         <div class="act-row">
-          <span class="act-emoji">📇</span>
-          <div class="act-info">
-            <div class="act-name">Flashcard</div>
-            <div class="act-desc">Lật thẻ — ghi nhớ từ mới</div>
-          </div>
-          <span class="act-time">~2 phút</span>
-        </div>
-        <div class="act-row">
           <span class="act-emoji">📖</span>
           <div class="act-info">
             <div class="act-name">Từ vựng</div>
-            <div class="act-desc">Đọc hiểu sâu — phát âm chuẩn</div>
+            <div class="act-desc">Đọc hiểu sâu — nạp từ mới bản xứ</div>
           </div>
           <span class="act-time">~3 phút</span>
+        </div>
+        <div class="act-row">
+          <span class="act-emoji">📇</span>
+          <div class="act-info">
+            <div class="act-name">Flashcard</div>
+            <div class="act-desc">Lật thẻ — kiểm tra trí nhớ nhanh</div>
+          </div>
+          <span class="act-time">~2 phút</span>
         </div>
         <div class="act-row">
           <span class="act-emoji">❓</span>
@@ -451,7 +446,6 @@
       </div>
     </div>
 
-    <!-- Slide 2: Streak -->
     <div class="ob-slide" id="slide-2">
       <div class="slide-icon" style="background:#FFF0E8;">🔥</div>
       <div class="slide-title">Học đều mỗi ngày<br><em>streak của cả nhà!</em></div>
@@ -505,7 +499,6 @@
       </div>
     </div>
 
-    <!-- Slide 3: Ready -->
     <div class="ob-slide" id="slide-3">
       <div class="slide-icon" style="background:#E8F0FA;">🎓</div>
       <div class="slide-title">Sẵn sàng rồi!<br><em>Hôm nay học Day 1</em></div>
@@ -515,11 +508,11 @@
         <div class="ready-label">Hôm nay bạn sẽ học</div>
         <div class="ready-item">
           <div class="ri-dot"></div>
-          <span>📇 Flashcard — lật thẻ ghi nhớ từ mới</span>
+          <span>📖 Từ vựng — nạp từ mới & phát âm chuẩn</span>
         </div>
         <div class="ready-item">
           <div class="ri-dot"></div>
-          <span>📖 Từ vựng — phát âm chuẩn & nghĩa đầy đủ</span>
+          <span>📇 Flashcard — lật thẻ ôn tập trí nhớ</span>
         </div>
         <div class="ready-item">
           <div class="ri-dot"></div>
@@ -531,14 +524,13 @@
         </div>
         <div class="ready-item">
           <div class="ri-dot"></div>
-          <span>🎤 Shadowing — hội thoại với ba/mẹ</span>
+          <span>🎤 Shadowing — thực hành nói cùng bé</span>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom -->
   <div class="ob-bottom">
     <button class="ob-btn" id="ob-main-btn" onclick="nextSlide()">Bắt đầu →</button>
     <div class="ob-hint" id="ob-hint">Chỉ hiển thị một lần · Topic 01 miễn phí</div>
@@ -559,7 +551,7 @@
 
   const hints = [
     'Chỉ hiển thị một lần · Topic 01 miễn phí',
-    'Thiết kế bởi giáo viên tiếng Anh',
+    'Thiết kế bởi thợ xây cầu tình yêu ngôn ngữ Lani',
     'Dựa trên phương pháp spaced repetition',
     ''
   ];
