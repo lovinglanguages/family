@@ -575,7 +575,7 @@ function renderNav() {
   // 4. Bài thi cuối khoá (Nếu làm xong Day 10)
   if (doneDays.includes(9)) {
     const postTestActive = currentView === 'test' && isPostTestMode;
-    nav.innerHTML += `<button class="special-pill${postTestActive ? ' active' : ''}" style="border-color:var(--sage);color:var(--sage-deep);" onclick="openTest(true)">🏆 Thi Cuối khóa</button>`;
+    nav.innerHTML += `<button class="special-pill${postTestActive ? ' active' : ''}" style="border-color:var(--sage);color:var(--sage-deep);" onclick="openTest(true)">🏆 Review Challenge</button>`;
   }
 }
 
@@ -587,7 +587,7 @@ function openTest(isPost) {
   document.getElementById('panel-test').classList.add('active');
   renderNav();
   
-  document.getElementById('test-main-title').innerHTML = isPost ? "🏆 Bài Thi Cuối Khóa" : "🎯 Thử thách đầu vào";
+  document.getElementById('test-main-title').innerHTML = isPost ? "🏆 Xem lại thử thách" : "🎯 Thử thách đầu vào";
   document.getElementById('test-main-desc').innerHTML = isPost 
     ? "Chúc mừng ba mẹ đã đi đến cuối chặng đường! Cùng xem lại 3 câu tiếng Việt của ngày đầu tiên, giờ chắc chắn ba mẹ sẽ bật phản xạ ngay lập tức." 
     : "Ba mẹ dịch thử 3 câu sau sang tiếng Anh nhé. Đừng lo nếu bị 'bí' từ vựng, sau 10 ngày học, mọi thứ sẽ dễ như ăn kẹo!";
