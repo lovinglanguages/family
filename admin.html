@@ -2,82 +2,190 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard · Lani Be A Gift</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <style>
-    :root { --sage: #4A7259; --cream: #FBF7F0; --terracotta: #C9764A; --border: rgba(44,36,22,0.12); }
-    body { font-family: 'DM Sans', sans-serif; background: var(--cream); padding: 20px; color: #2C2416; }
-    .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; border: 1px solid var(--border); }
-    .card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
-    .btn { background: var(--sage); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    .btn:disabled { background: #ccc; }
+    :root { 
+        --sage: #4A7259; --sage-light: #C8DDD0; 
+        --cream: #FBF7F0; --terracotta: #C9764A; 
+        --ink: #2C2416; --border: rgba(44,36,22,0.12); 
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); padding: 20px; color: var(--ink); line-height: 1.5; }
+    .container { max-width: 700px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    h1 { font-family: 'Playfair Display', serif; color: var(--terracotta); text-align: center; margin-bottom: 24px; }
+    
+    /* Giao diện đăng nhập */
+    #auth-section { text-align: center; padding: 40px 20px; }
+    .google-btn { display: inline-flex; align-items: center; gap: 10px; background: white; color: var(--ink); border: 1px solid var(--border); padding: 12px 24px; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 15px; transition: all 0.2s; }
+    .google-btn:hover { background: #f9f9f9; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    
+    /* Giao diện danh sách */
     #admin-panel { display: none; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--cream); padding-bottom: 10px; }
+    .logout-btn { font-size: 13px; color: var(--ink); background: var(--cream); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+    .logout-btn:hover { background: #eee; }
+    
+    .card { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: #fafafa; }
+    .email-text { font-weight: 700; font-size: 16px; color: var(--ink); }
+    .time-text { font-size: 12px; color: #888; margin-top: 4px; }
+    .approve-btn { background: var(--sage); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: 'DM Sans', sans-serif; }
+    .approve-btn:hover { background: #3b5c47; }
+    .approve-btn:disabled { background: #ccc; cursor: not-allowed; }
+    .empty-msg { text-align: center; color: #888; padding: 30px; font-style: italic; }
 </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="color: var(--terracotta); text-align: center;">Quản trị viên Lani</h1>
+        <h1>Quản trị viên Lani</h1>
         
-        <div id="auth-section" style="text-align: center; padding: 40px;">
-            <p>Vui lòng đăng nhập để xác thực quyền Admin.</p>
-            <button class="btn" onclick="login()">Đăng nhập bằng Google</button>
+        <div id="auth-section">
+            <p style="margin-bottom: 20px; color: #666;">Vui lòng đăng nhập để xác thực quyền Admin.</p>
+            <button class="google-btn" onclick="login()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google">
+                Đăng nhập bằng Google
+            </button>
         </div>
 
         <div id="admin-panel">
-            <h3>Danh sách chờ duyệt nâng cấp</h3>
+            <div class="header-row">
+                <h3 style="margin: 0;">Yêu cầu chờ mở khóa</h3>
+                <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+            </div>
             <div id="request-list"></div>
         </div>
     </div>
 
 <script>
-    const firebaseConfig = { /* Cấu hình của bạn */ };
+    // 1. DÁN CẤU HÌNH FIREBASE CỦA BẠN VÀO ĐÂY 
+    // (Lấy từ project dailyenglish-aca50 của bạn)
+    const firebaseConfig = {
+        apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
+        authDomain: "dailyenglish-aca50.firebaseapp.com",
+        projectId: "dailyenglish-aca50",
+        storageBucket: "dailyenglish-aca50.firebasestorage.app",
+        messagingSenderId: "876041668209",
+        appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
+    };
+    
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    
+    // 2. UID QUẢN TRỊ VIÊN DUY NHẤT (Chính là tài khoản Google của bạn)
     const ADMIN_UID = '2FcsFSsvXKUGmbj7Ax5ZeJPJX863';
 
+    // 3. KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP
     auth.onAuthStateChanged(user => {
-        if (user && user.uid === ADMIN_UID) {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-            loadPending();
-        } else if (user) {
-            alert("Tài khoản không có quyền Admin!");
-            auth.signOut();
+        const authSection = document.getElementById('auth-section');
+        const adminPanel = document.getElementById('admin-panel');
+
+        if (user) {
+            if (user.uid === ADMIN_UID) {
+                // Đúng Admin -> Hiện bảng điều khiển
+                authSection.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loadPending();
+            } else {
+                // Sai tài khoản -> Cảnh báo và tự động đăng xuất
+                alert("Tài khoản này không có quyền Admin! Vui lòng dùng đúng email quản trị.");
+                auth.signOut();
+            }
+        } else {
+            // Chưa đăng nhập
+            authSection.style.display = 'block';
+            adminPanel.style.display = 'none';
         }
     });
 
+    // 4. HÀM ĐĂNG NHẬP / ĐĂNG XUẤT
     function login() {
-        auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    }
-
-    async function loadPending() {
-        const container = document.getElementById('request-list');
-        const snap = await db.collection("pending_upgrades").where("status", "==", "chưa duyệt").get();
-        container.innerHTML = snap.empty ? '<p>Tất cả đã được xử lý!</p>' : '';
-        snap.forEach(doc => {
-            const d = doc.data();
-            container.innerHTML += `
-                <div class="card" id="row-${doc.id}">
-                    <div><strong>${d.email}</strong><br><small>${d.requestTime?.toDate().toLocaleString()}</small></div>
-                    <button class="btn" onclick="approve('${doc.id}', '${d.email}')">Duyệt Mở Khóa</button>
-                </div>`;
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).catch(error => {
+            console.error("Lỗi đăng nhập:", error);
+            alert("Không thể đăng nhập. Hãy đảm bảo bạn đã thêm tên miền Vercel vào danh sách Authorized Domains trong Firebase nhé!");
         });
     }
 
-    async function approve(id, email) {
+    function logout() {
+        auth.signOut();
+    }
+
+    // 5. TẢI DANH SÁCH YÊU CẦU
+    async function loadPending() {
+        const container = document.getElementById('request-list');
+        container.innerHTML = '<p class="empty-msg">Đang tải dữ liệu...</p>';
+
+        try {
+            const snap = await db.collection("pending_upgrades")
+                                 .where("status", "==", "chưa duyệt")
+                                 .orderBy("requestTime", "asc")
+                                 .get();
+                                 
+            if (snap.empty) {
+                container.innerHTML = '<p class="empty-msg">🎉 Tuyệt vời! Hiện tại không có đơn hàng nào đang chờ.</p>';
+                return;
+            }
+
+            container.innerHTML = ''; // Xóa chữ Đang tải
+            snap.forEach(doc => {
+                const d = doc.data();
+                const timeStr = d.requestTime ? d.requestTime.toDate().toLocaleString('vi-VN') : 'Không xác định';
+                
+                container.innerHTML += `
+                    <div class="card" id="row-${doc.id}">
+                        <div>
+                            <div class="email-text">${d.email}</div>
+                            <div class="time-text">Gửi lúc: ${timeStr}</div>
+                        </div>
+                        <button class="approve-btn" id="btn-${doc.id}" onclick="approve('${doc.id}', '${d.email}')">Duyệt & Mở khóa</button>
+                    </div>`;
+            });
+        } catch (error) {
+            console.error("Lỗi tải dữ liệu:", error);
+            container.innerHTML = '<p class="empty-msg" style="color: red;">Lỗi tải dữ liệu! Vui lòng kiểm tra lại kết nối mạng hoặc Firebase Rules.</p>';
+        }
+    }
+
+    // 6. XỬ LÝ DUYỆT ĐƠN
+    async function approve(docId, email) {
+        const btn = document.getElementById(`btn-${docId}`);
+        btn.disabled = true;
+        btn.textContent = "Đang xử lý...";
+
         try {
             const cleanEmail = email.toLowerCase().trim();
+            
+            // B1: Ghi email vào Whitelist
             await db.collection("whitelist").doc(cleanEmail).set({
                 email: cleanEmail,
                 approvedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            await db.collection("pending_upgrades").doc(id).update({ status: "đã duyệt" });
-            document.getElementById(`row-${id}`).remove();
-            alert("Thành công!");
-        } catch (e) { alert("Lỗi: " + e.message); }
+            
+            // B2: Cập nhật trạng thái yêu cầu
+            await db.collection("pending_upgrades").doc(docId).update({ 
+                status: "đã duyệt",
+                approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            // B3: Xóa thẻ khỏi giao diện
+            document.getElementById(`row-${docId}`).remove();
+            
+            // Nếu hết sạch đơn, hiện thông báo
+            const remaining = document.querySelectorAll('.card').length;
+            if (remaining === 0) {
+                document.getElementById('request-list').innerHTML = '<p class="empty-msg">🎉 Tuyệt vời! Tất cả đơn hàng đã được duyệt.</p>';
+            }
+
+        } catch (e) { 
+            console.error(e);
+            alert("Lỗi khi duyệt: " + e.message);
+            btn.disabled = false;
+            btn.textContent = "Duyệt & Mở khóa";
+        }
     }
 </script>
 </body>
