@@ -174,7 +174,7 @@
   .score-badge { display:none; margin-top:10px; padding:12px 16px; border-radius:var(--radius-sm); font-size:13px; line-height:1.6; }
   .score-badge.show { display:block; }
   .score-badge.excellent { background:#EAF3DE; border:1px solid #7A9E87; color:#27500A; }
-  .score-badge.good      { background:var(--sunny-light); border:1px solid var(--sunny); color:#7A5A00; }
+  .score-badge.good     { background:var(--sunny-light); border:1px solid var(--sunny); color:#7A5A00; }
   .score-badge.ok        { background:var(--sky-light); border:1px solid var(--sky); color:#185FA5; }
   .score-badge.retry     { background:var(--coral-light); border:1px solid var(--coral); color:#7A2E1A; }
   .score-bar-wrap { height:6px; background:rgba(44,36,22,0.1); border-radius:99px; margin:8px 0 4px; overflow:hidden; }
@@ -466,7 +466,7 @@ async function finishDay(i, btnElement) {
   if (i === 9) {
     document.getElementById(`done-${i}`).classList.add('show');
     document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => { document.getElementById('upsellModal').classList.add('show'); }, 1000);
+    // Đã bỏ lệnh setTimeout gọi Upsell Modal ở đây để người dùng làm Role-play trước
   }
 }
 
@@ -1013,7 +1013,7 @@ function lev(a, b) {
 function renderScore(badge, label, score, tWords, matches) {
   let tier, emoji, msg, tip;
   if (score >= 90)      { tier='excellent'; emoji='🌟'; msg='Xuất sắc! Phát âm chuẩn (' + score + '%)!'; tip='Tuyệt vời'; }
-  else if (score >= 70) { tier='good';      emoji='👍'; msg='Tốt! Đúng ' + score + '% từ.';             tip='Nghe lại và lặp thêm một lần nhé!'; }
+  else if (score >= 70) { tier='good';      emoji='👍'; msg='Tốt! Đúng ' + score + '% từ.';              tip='Nghe lại và lặp thêm một lần nhé!'; }
   else if (score >= 40) { tier='ok';        emoji='💪'; msg='Cố lên! Đúng ' + score + '% từ.';         tip='Nghe chậm → lặp từng từ → nói cả câu.'; }
   else                  { tier='retry';     emoji='🔄'; msg=score===0?'Chưa nghe rõ giọng nói!':'Đúng ' + score + '% — Hãy thử lại!'; tip='Bấm ▶ Nghe chậm rồi bắt chước từng từ.'; }
   const wordHTML = matches.length ? '<div class="score-words">' + matches.map(m => '<span class="score-word ' + (m.hit?'hit':'miss') + '">' + m.word + '</span>').join('') + '</div>' : '';
@@ -1204,7 +1204,7 @@ function trpShowDone() {
       </div>
       <div style="display:flex;gap:8px;margin-top:4px;">
         <button class="rp-restart-btn" style="flex:1" onclick="trpRestart()">🔄 Thử lại — đổi vai</button>
-        <button class="rp-restart-btn" style="flex:1;background:var(--terracotta);color:white;border-color:var(--terracotta)" onclick="closeTopicRolePlay()">✓ Xong</button>
+        <button class="rp-restart-btn" style="flex:1;background:var(--terracotta);color:white;border-color:var(--terracotta)" onclick="finishTopicRolePlay()">✓ Hoàn thành Topic</button>
       </div>
     </div>`;
   document.getElementById('trp-input-wrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1224,6 +1224,18 @@ function trpRestart() {
 function playbackRec(id) {
   const blob = recState[id]?.blob;
   if (blob) new Audio(URL.createObjectURL(blob)).play();
+}
+
+// Hàm mới để xử lý khi người dùng hoàn thành Role-play
+function finishTopicRolePlay() {
+  // Đảm bảo tiến độ Day 10 đã được lưu vào Firebase
+  const finishBtn = document.getElementById('finish-btn-9');
+  if (finishBtn && finishBtn.style.display !== 'none') {
+    finishDay(9, finishBtn);
+  }
+  
+  // Hiển thị màn hình chúc mừng & Upsell
+  document.getElementById('upsellModal').classList.add('show');
 }
 </script>
 </body>
