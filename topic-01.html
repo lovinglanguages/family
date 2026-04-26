@@ -282,20 +282,6 @@
   .rp-restart-btn { padding:10px 24px; border-radius:99px; border:1px solid var(--sage); background:white; color:var(--sage-deep); font-size:13px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s; }
   .rp-restart-btn:hover { background:var(--sage-light); }
 
-  /* Day 10 graduation banner */
-  .day10-banner { background: linear-gradient(135deg, var(--blush) 0%, var(--sage-light) 100%); border: 2px solid var(--terracotta); }
-  .day10-banner .done-banner-title { font-size: 22px; color: var(--terracotta); }
-  .rp-launch-btn { display: inline-block; margin-top: 14px; padding: 12px 28px; border-radius: 99px; border: none; background: var(--terracotta); color: white; font-size: 15px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-  .rp-launch-btn:hover { background: var(--terra-deep); transform: translateY(-2px); }
-
-  /* Topic Role-play Modal */
-  .trp-overlay { position: fixed; inset: 0; background: var(--cream); z-index: 3000; display: none; flex-direction: column; }
-  .trp-overlay.show { display: flex; }
-  .trp-header { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 20px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .trp-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--terracotta); }
-  .trp-close { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; color: var(--ink-muted); background: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-  .trp-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 0; }
-
   .upsell-overlay { position: fixed; inset: 0; background: rgba(44, 36, 22, 0.7); backdrop-filter: blur(5px); z-index: 4000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.4s ease; padding: 20px; }
   .upsell-overlay.show { opacity: 1; visibility: visible; }
   .upsell-card { background: var(--warm-white); width: 100%; max-width: 420px; border-radius: 20px; padding: 40px 24px; text-align: center; position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 50px rgba(0,0,0,0.15); border: 2px solid var(--rose); }
@@ -344,8 +330,8 @@
     <div class="upsell-title">Chúc mừng bạn và bé!</div>
     <div class="upsell-desc">Bạn và bé đã xuất sắc hoàn thành 10 ngày của thói quen Morning Routine. Sự kiên trì của bạn thật đáng tự hào!</div>
     <div class="upsell-stats">
-      <div class="stat-box"><strong>30+</strong><span>Từ vựng mới</span></div>
-      <div class="stat-box"><strong>10</strong><span>Mẫu câu</span></div>
+      <div class="stat-box"><strong>30+</strong><span>Cụm từ mới</span></div>
+      <div class="stat-box"><strong>10</strong><span>Ngày liên tục</span></div>
     </div>
     <div class="upsell-pitch">
       <strong>Hành trình chỉ mới bắt đầu! 🚀</strong><br>
@@ -358,6 +344,264 @@
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════
+//  DỮ LIỆU BÀI HỌC THEO PHƯƠNG PHÁP CHUNKING (CỤM TỪ)
+//  Sử dụng dữ liệu tĩnh này để bạn test ngay lập tức 
+//  mà chưa cần cập nhật Firebase Firestore.
+// ═══════════════════════════════════════════════════════
+const CHUNK_DATA = [
+  {
+    title: "Wake up!",
+    dialogue: [
+      { speaker: "Mom", en: "Good morning! Time to wake up, sleepyhead.", vn: "Chào buổi sáng! Đến lúc dậy rồi, sâu lười của mẹ." },
+      { speaker: "Child", en: "Five more minutes, mommy...", vn: "Cho con ngủ 5 phút nữa nha mẹ..." },
+      { speaker: "Mom", en: "Let's stretch your arms. Up, up, up!", vn: "Cùng vươn vai nào. Lên, lên, lên!" }
+    ],
+    vocab: [
+      { en: "Time to wake up", phonetic: "/taɪm tʊ weɪk ʌp/", meaning: "Đến lúc thức dậy", example: "It's 7 AM. Time to wake up!", exampleVn: "7 giờ sáng rồi. Đến lúc thức dậy!" },
+      { en: "Sleepyhead", phonetic: "/ˈsliːpihed/", meaning: "Sâu lười / Người ngái ngủ", example: "Come on, sleepyhead!", exampleVn: "Thôi nào, đồ sâu lười!" },
+      { en: "Stretch your arms", phonetic: "/stretʃ jɔːr ɑːrmz/", meaning: "Vươn vai / Vươn tay", example: "Let's stretch your arms up high.", exampleVn: "Cùng vươn tay lên cao nào." }
+    ],
+    quiz: [
+      { q: "Khi muốn gọi con dậy, ba mẹ dùng cụm từ nào?", opts: ["Time to go to bed", "Time to wake up", "Time to eat"], ans: 1, exp: "'Time to wake up' nghĩa là đến giờ thức dậy rồi." },
+      { q: "Cụm từ nào dùng để khuyến khích bé vươn vai buổi sáng?", opts: ["Stretch your arms", "Brush your teeth", "Wash your face"], ans: 0, exp: "'Stretch your arms' là vươn vai/tay ra." }
+    ],
+    dictation: [
+      { text: "Time to wake up", hint: "Đến lúc thức dậy", hintVn: "4 từ, bắt đầu bằng T" },
+      { text: "Sleepyhead", hint: "Sâu ngủ", hintVn: "1 từ, bắt đầu bằng S" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Time to wake up, sleepyhead.", vn: "Đến lúc dậy rồi, sâu lười của mẹ." },
+      { speaker: "Mom", en: "Let's stretch your arms.", vn: "Cùng vươn vai nào." }
+    ]
+  },
+  {
+    title: "Potty time",
+    dialogue: [
+      { speaker: "Mom", en: "Do you need to go to the potty?", vn: "Con có cần đi vệ sinh không?" },
+      { speaker: "Child", en: "Yes, mommy.", vn: "Dạ có mẹ." },
+      { speaker: "Mom", en: "Don't forget to flush the toilet and wash your hands.", vn: "Đừng quên xả nước và rửa tay nhé." }
+    ],
+    vocab: [
+      { en: "Go to the potty", phonetic: "/ɡoʊ tʊ ðə ˈpɑːti/", meaning: "Đi vệ sinh (cho bé)", example: "Let's go to the potty.", exampleVn: "Cùng đi vệ sinh nào." },
+      { en: "Flush the toilet", phonetic: "/flʌʃ ðə ˈtɔɪlət/", meaning: "Xả nước bồn cầu", example: "Always flush the toilet.", exampleVn: "Luôn nhớ xả nước bồn cầu nhé." },
+      { en: "Wash your hands", phonetic: "/wɑːʃ jɔːr hændz/", meaning: "Rửa tay", example: "Wash your hands with soap.", exampleVn: "Rửa tay với xà phòng nào." }
+    ],
+    quiz: [
+      { q: "Hỏi xem con có cần đi vệ sinh không, ta dùng cụm nào?", opts: ["Go to sleep?", "Go to the potty?", "Go to play?"], ans: 1, exp: "Trẻ em thường dùng từ 'potty' để chỉ việc đi vệ sinh." },
+      { q: "Hành động xả nước sau khi đi vệ sinh tiếng Anh là gì?", opts: ["Wash your hands", "Flush the toilet", "Brush your teeth"], ans: 1, exp: "Flush là xả nước, toilet là bồn cầu." }
+    ],
+    dictation: [
+      { text: "Go to the potty", hint: "Đi vệ sinh", hintVn: "4 từ, bắt đầu bằng G" },
+      { text: "Flush the toilet", hint: "Xả nước", hintVn: "3 từ, bắt đầu bằng F" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Do you need to go to the potty?", vn: "Con có cần đi vệ sinh không?" },
+      { speaker: "Mom", en: "Don't forget to flush the toilet.", vn: "Đừng quên xả nước nhé." }
+    ]
+  },
+  {
+    title: "Brush your teeth",
+    dialogue: [
+      { speaker: "Mom", en: "Time to brush your teeth.", vn: "Đến giờ đánh răng rồi." },
+      { speaker: "Child", en: "Here is my toothbrush.", vn: "Bàn chải của con đây." },
+      { speaker: "Mom", en: "Brush up and down, then spit it out.", vn: "Chải lên và xuống, sau đó nhổ ra nhé." }
+    ],
+    vocab: [
+      { en: "Brush your teeth", phonetic: "/brʌʃ jɔːr tiːθ/", meaning: "Đánh răng", example: "Time to brush your teeth.", exampleVn: "Đến giờ đánh răng rồi." },
+      { en: "Up and down", phonetic: "/ʌp ənd daʊn/", meaning: "Lên và xuống", example: "Brush up and down.", exampleVn: "Chải răng lên và xuống." },
+      { en: "Spit it out", phonetic: "/spɪt ɪt aʊt/", meaning: "Nhổ ra", example: "Now, spit it out in the sink.", exampleVn: "Bây giờ, nhổ ra bồn rửa mặt nhé." }
+    ],
+    quiz: [
+      { q: "Nhắc nhở bé đánh răng, ba mẹ dùng cụm từ nào?", opts: ["Wash your face", "Brush your teeth", "Comb your hair"], ans: 1, exp: "Brush là chải, teeth là những chiếc răng." },
+      { q: "Sau khi đánh răng xong, nhắc bé nhổ bọt ra ta nói sao?", opts: ["Drink it", "Spit it out", "Swallow it"], ans: 1, exp: "'Spit it out' nghĩa là nhổ nó ra." }
+    ],
+    dictation: [
+      { text: "Brush your teeth", hint: "Đánh răng", hintVn: "3 từ, bắt đầu bằng B" },
+      { text: "Spit it out", hint: "Nhổ ra", hintVn: "3 từ, bắt đầu bằng S" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Time to brush your teeth.", vn: "Đến giờ đánh răng rồi." },
+      { speaker: "Mom", en: "Brush up and down, then spit it out.", vn: "Chải lên và xuống, sau đó nhổ ra nhé." }
+    ]
+  },
+  {
+    title: "Wash your face",
+    dialogue: [
+      { speaker: "Mom", en: "Let's wash your face. Close your eyes.", vn: "Cùng rửa mặt nào. Nhắm mắt lại nhé." },
+      { speaker: "Child", en: "It's cold!", vn: "Lạnh quá mẹ ơi!" },
+      { speaker: "Mom", en: "Here is the towel. Dry your face.", vn: "Khăn đây. Lau khô mặt nào." }
+    ],
+    vocab: [
+      { en: "Wash your face", phonetic: "/wɑːʃ jɔːr feɪs/", meaning: "Rửa mặt", example: "Let's wash your face.", exampleVn: "Cùng rửa mặt nào." },
+      { en: "Close your eyes", phonetic: "/kloʊz jɔːr aɪz/", meaning: "Nhắm mắt lại", example: "Close your eyes so the soap doesn't get in.", exampleVn: "Nhắm mắt lại để xà phòng không vào mắt nhé." },
+      { en: "Dry your face", phonetic: "/draɪ jɔːr feɪs/", meaning: "Lau khô mặt", example: "Use the towel to dry your face.", exampleVn: "Dùng khăn để lau khô mặt nhé." }
+    ],
+    quiz: [
+      { q: "Cụm từ nào dùng để bảo bé nhắm mắt lại khi rửa mặt?", opts: ["Open your eyes", "Close your eyes", "Touch your nose"], ans: 1, exp: "Close là đóng/nhắm, eyes là đôi mắt." },
+      { q: "Lau khô mặt bằng khăn thì dùng cụm từ nào?", opts: ["Wash your face", "Wet your face", "Dry your face"], ans: 2, exp: "Dry vừa là tính từ (khô) vừa là động từ (làm khô/lau khô)." }
+    ],
+    dictation: [
+      { text: "Wash your face", hint: "Rửa mặt", hintVn: "3 từ, bắt đầu bằng W" },
+      { text: "Dry your face", hint: "Lau khô mặt", hintVn: "3 từ, bắt đầu bằng D" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Let's wash your face.", vn: "Cùng rửa mặt nào." },
+      { speaker: "Mom", en: "Here is the towel. Dry your face.", vn: "Khăn đây. Lau khô mặt nào." }
+    ]
+  },
+  {
+    title: "Getting dressed",
+    dialogue: [
+      { speaker: "Mom", en: "Time to get dressed. Take off your pajamas.", vn: "Đến giờ thay đồ rồi. Cởi đồ ngủ ra nào." },
+      { speaker: "Child", en: "I want the blue shirt.", vn: "Con muốn chiếc áo màu xanh dương." },
+      { speaker: "Mom", en: "Okay, put on your shirt. You look great!", vn: "Được rồi, mặc áo vào đi. Con trông tuyệt lắm!" }
+    ],
+    vocab: [
+      { en: "Get dressed", phonetic: "/ɡet drest/", meaning: "Mặc quần áo / Thay đồ", example: "Time to get dressed for school.", exampleVn: "Đến giờ thay đồ đi học rồi." },
+      { en: "Take off", phonetic: "/teɪk ɔːf/", meaning: "Cởi ra (quần áo, giày dép)", example: "Take off your pajamas.", exampleVn: "Cởi đồ ngủ ra nào." },
+      { en: "Put on", phonetic: "/pʊt ɑːn/", meaning: "Mặc vào / Mang vào", example: "Put on your shirt.", exampleVn: "Mặc áo vào đi con." }
+    ],
+    quiz: [
+      { q: "Muốn nói 'Mặc áo vào', mẹ dùng cụm từ nào?", opts: ["Take off your shirt", "Put on your shirt", "Wash your shirt"], ans: 1, exp: "'Put on' có nghĩa là mặc vào người." },
+      { q: "Hành động cởi quần áo ngủ ra gọi là gì?", opts: ["Take off your pajamas", "Put on your pajamas", "Buy new pajamas"], ans: 0, exp: "'Take off' là cởi ra." }
+    ],
+    dictation: [
+      { text: "Take off", hint: "Cởi ra", hintVn: "2 từ, bắt đầu bằng T" },
+      { text: "Put on", hint: "Mặc vào", hintVn: "2 từ, bắt đầu bằng P" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Time to get dressed. Take off your pajamas.", vn: "Đến giờ thay đồ rồi. Cởi đồ ngủ ra nào." },
+      { speaker: "Mom", en: "Put on your shirt. You look great!", vn: "Mặc áo vào đi. Con trông tuyệt lắm!" }
+    ]
+  },
+  {
+    title: "Make the bed",
+    dialogue: [
+      { speaker: "Mom", en: "Let's make the bed together.", vn: "Cùng nhau gấp chăn màn nào." },
+      { speaker: "Child", en: "I will fold the blanket.", vn: "Con sẽ gấp chăn." },
+      { speaker: "Mom", en: "Good job! Put the pillow here.", vn: "Làm tốt lắm! Đặt gối ở đây nhé." }
+    ],
+    vocab: [
+      { en: "Make the bed", phonetic: "/meɪk ðə bed/", meaning: "Dọn dẹp giường / Gấp chăn màn", example: "I make the bed every morning.", exampleVn: "Tôi dọn giường mỗi sáng." },
+      { en: "Fold the blanket", phonetic: "/foʊld ðə ˈblæŋkɪt/", meaning: "Gấp chăn", example: "Can you fold the blanket?", exampleVn: "Con gấp chăn được không?" },
+      { en: "Put the pillow", phonetic: "/pʊt ðə ˈpɪloʊ/", meaning: "Đặt gối (vị trí)", example: "Put the pillow here.", exampleVn: "Đặt gối ở đây nhé." }
+    ],
+    quiz: [
+      { q: "Cụm từ chỉ việc dọn dẹp giường ngủ gọn gàng buổi sáng?", opts: ["Sleep on the bed", "Make the bed", "Jump on the bed"], ans: 1, exp: "'Make the bed' là cụm từ cố định chỉ việc dọn giường." },
+      { q: "Gấp chiếc chăn lại thì nói tiếng Anh thế nào?", opts: ["Fold the blanket", "Wash the blanket", "Hide the blanket"], ans: 0, exp: "'Fold' là gấp lại." }
+    ],
+    dictation: [
+      { text: "Make the bed", hint: "Dọn giường", hintVn: "3 từ, bắt đầu bằng M" },
+      { text: "Fold the blanket", hint: "Gấp chăn", hintVn: "3 từ, bắt đầu bằng F" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Let's make the bed together.", vn: "Cùng nhau gấp chăn màn nào." },
+      { speaker: "Mom", en: "Put the pillow here.", vn: "Đặt gối ở đây nhé." }
+    ]
+  },
+  {
+    title: "Brush your hair",
+    dialogue: [
+      { speaker: "Mom", en: "Your hair is messy. Let me brush your hair.", vn: "Tóc con rối quá. Để mẹ chải tóc cho con." },
+      { speaker: "Child", en: "Ouch! Be gentle, please.", vn: "Á! Mẹ nhẹ tay thôi ạ." },
+      { speaker: "Mom", en: "Sit still, please. All done! Look in the mirror.", vn: "Ngồi yên nào. Xong rồi! Nhìn vào gương xem." }
+    ],
+    vocab: [
+      { en: "Brush your hair", phonetic: "/brʌʃ jɔːr her/", meaning: "Chải tóc", example: "I will brush your hair.", exampleVn: "Mẹ sẽ chải tóc cho con." },
+      { en: "Sit still", phonetic: "/sɪt stɪl/", meaning: "Ngồi yên", example: "Sit still, please.", exampleVn: "Vui lòng ngồi yên." },
+      { en: "Look in the mirror", phonetic: "/lʊk ɪn ðə ˈmɪrər/", meaning: "Nhìn vào gương", example: "Look in the mirror, you are beautiful.", exampleVn: "Nhìn vào gương xem, con rất xinh." }
+    ],
+    quiz: [
+      { q: "Khi con cứ ngọ nguậy lúc chải tóc, mẹ dùng cụm từ nào?", opts: ["Run away", "Sit still", "Stand up"], ans: 1, exp: "'Sit still' nghĩa là ngồi im, không nhúc nhích." },
+      { q: "Bảo con tự ngắm mình trong gương thì nói sao?", opts: ["Look in the mirror", "Look at the window", "Look at the book"], ans: 0, exp: "'Mirror' là chiếc gương." }
+    ],
+    dictation: [
+      { text: "Sit still", hint: "Ngồi yên", hintVn: "2 từ, bắt đầu bằng S" },
+      { text: "Look in the mirror", hint: "Nhìn vào gương", hintVn: "4 từ, bắt đầu bằng L" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Let me brush your hair.", vn: "Để mẹ chải tóc cho con." },
+      { speaker: "Mom", en: "Sit still, please. Look in the mirror.", vn: "Ngồi yên nào. Nhìn vào gương xem." }
+    ]
+  },
+  {
+    title: "Breakfast Time",
+    dialogue: [
+      { speaker: "Mom", en: "Time for breakfast! We have bread and eggs.", vn: "Đến giờ ăn sáng rồi! Mình có bánh mì và trứng." },
+      { speaker: "Child", en: "Yummy! Can I have some milk?", vn: "Ngon quá! Cho con xin ít sữa nhé?" },
+      { speaker: "Mom", en: "Sure. Drink your milk and take a big bite.", vn: "Được chứ. Uống sữa và cắn một miếng to nào." }
+    ],
+    vocab: [
+      { en: "Time for breakfast", phonetic: "/taɪm fɔːr ˈbrekfəst/", meaning: "Đến giờ ăn sáng", example: "Wash your hands, it's time for breakfast.", exampleVn: "Rửa tay đi, đến giờ ăn sáng rồi." },
+      { en: "Drink your milk", phonetic: "/drɪŋk jɔːr mɪlk/", meaning: "Uống sữa của con đi", example: "Drink your milk, it's good for you.", exampleVn: "Uống sữa đi, nó tốt cho con." },
+      { en: "Take a big bite", phonetic: "/teɪk ə bɪɡ baɪt/", meaning: "Cắn một miếng to", example: "Take a big bite of the sandwich.", exampleVn: "Cắn một miếng to bánh sandwich nào." }
+    ],
+    quiz: [
+      { q: "Nhắc bé uống sữa, mẹ dùng cụm từ nào?", opts: ["Eat your milk", "Drink your milk", "Spill your milk"], ans: 1, exp: "Sữa là chất lỏng nên dùng động từ 'Drink' (uống)." },
+      { q: "Khuyến khích bé cắn một miếng thức ăn to, ta nói:", opts: ["Take a big bite", "Take a small sip", "Close your mouth"], ans: 0, exp: "'Bite' là miếng cắn." }
+    ],
+    dictation: [
+      { text: "Time for breakfast", hint: "Giờ ăn sáng", hintVn: "3 từ, bắt đầu bằng T" },
+      { text: "Take a big bite", hint: "Cắn một miếng to", hintVn: "4 từ, bắt đầu bằng T" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Time for breakfast! We have bread and eggs.", vn: "Đến giờ ăn sáng rồi! Mình có bánh mì và trứng." },
+      { speaker: "Mom", en: "Drink your milk and take a big bite.", vn: "Uống sữa và cắn một miếng to nào." }
+    ]
+  },
+  {
+    title: "Put on your shoes",
+    dialogue: [
+      { speaker: "Mom", en: "We are almost ready. Put on your shoes.", vn: "Mình sắp xong rồi. Mang giày vào nào." },
+      { speaker: "Child", en: "Which foot is this for?", vn: "Chiếc này cho chân nào ạ?" },
+      { speaker: "Mom", en: "That is the right foot. Let me tie your shoelaces.", vn: "Đó là chân phải. Để mẹ buộc dây giày cho con." }
+    ],
+    vocab: [
+      { en: "Put on your shoes", phonetic: "/pʊt ɑːn jɔːr ʃuːz/", meaning: "Mang giày vào", example: "Hurry up and put on your shoes.", exampleVn: "Nhanh lên và mang giày vào nào." },
+      { en: "Which foot", phonetic: "/wɪtʃ fʊt/", meaning: "Chân nào", example: "Which foot goes in here?", exampleVn: "Chân nào cho vào đây?" },
+      { en: "Tie your shoelaces", phonetic: "/taɪ jɔːr ˈʃuːleɪsɪz/", meaning: "Buộc dây giày", example: "Let me help you tie your shoelaces.", exampleVn: "Để mẹ giúp con buộc dây giày." }
+    ],
+    quiz: [
+      { q: "Bảo bé đi giày vào chân, mẹ nói cụm từ nào?", opts: ["Take off your shoes", "Put on your shoes", "Wash your shoes"], ans: 1, exp: "'Put on' nghĩa là mang vào, mặc vào." },
+      { q: "Hành động buộc dây giày tiếng Anh gọi là gì?", opts: ["Cut your shoelaces", "Tie your shoelaces", "Hide your shoelaces"], ans: 1, exp: "'Tie' nghĩa là buộc, thắt lại." }
+    ],
+    dictation: [
+      { text: "Put on your shoes", hint: "Mang giày vào", hintVn: "4 từ, bắt đầu bằng P" },
+      { text: "Tie your shoelaces", hint: "Buộc dây giày", hintVn: "3 từ, bắt đầu bằng T" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "We are almost ready. Put on your shoes.", vn: "Mình sắp xong rồi. Mang giày vào nào." },
+      { speaker: "Mom", en: "That is the right foot. Let me tie your shoelaces.", vn: "Đó là chân phải. Để mẹ buộc dây giày cho con." }
+    ]
+  },
+  {
+    title: "Ready to go",
+    dialogue: [
+      { speaker: "Mom", en: "Are you ready? Grab your backpack.", vn: "Con sẵn sàng chưa? Lấy balo đi nào." },
+      { speaker: "Child", en: "I have my backpack. Let's go!", vn: "Con có balo rồi. Đi thôi!" },
+      { speaker: "Mom", en: "Hold my hand. Have a good day at school!", vn: "Nắm tay mẹ. Chúc con một ngày ở trường thật vui!" }
+    ],
+    vocab: [
+      { en: "Grab your backpack", phonetic: "/ɡræb jɔːr ˈbækpæk/", meaning: "Lấy balo của con đi", example: "Grab your backpack, the bus is here.", exampleVn: "Lấy balo đi, xe buýt đến rồi." },
+      { en: "Hold my hand", phonetic: "/hoʊld maɪ hænd/", meaning: "Nắm tay mẹ/ba", example: "Hold my hand when crossing the street.", exampleVn: "Nắm tay mẹ khi sang đường nhé." },
+      { en: "Have a good day", phonetic: "/hæv ə ɡʊd deɪ/", meaning: "Chúc một ngày tốt lành", example: "Have a good day at school!", exampleVn: "Chúc con đi học vui vẻ!" }
+    ],
+    quiz: [
+      { q: "Khi ra khỏi nhà, mẹ nhắc bé mang theo balo bằng cụm từ nào?", opts: ["Drop your backpack", "Grab your backpack", "Open your backpack"], ans: 1, exp: "'Grab' có nghĩa là chộp lấy, mang theo nhanh chóng." },
+      { q: "Dặn bé nắm tay mẹ khi đi bộ, mẹ dùng cụm từ:", opts: ["Hold my hand", "Let go of my hand", "Wash my hand"], ans: 0, exp: "'Hold' là cầm, nắm lấy." }
+    ],
+    dictation: [
+      { text: "Grab your backpack", hint: "Lấy balo", hintVn: "3 từ, bắt đầu bằng G" },
+      { text: "Hold my hand", hint: "Nắm tay mẹ", hintVn: "3 từ, bắt đầu bằng H" }
+    ],
+    shadowing: [
+      { speaker: "Mom", en: "Are you ready? Grab your backpack.", vn: "Con sẵn sàng chưa? Lấy balo đi nào." },
+      { speaker: "Mom", en: "Hold my hand. Have a good day at school!", vn: "Nắm tay mẹ. Chúc con một ngày đi học thật vui!" }
+    ]
+  }
+];
+
 // ═══════════════════════════════════════════════════════
 //  FIREBASE CONFIG & AUTH
 // ═══════════════════════════════════════════════════════
@@ -385,30 +629,14 @@ auth.onAuthStateChanged(async (user) => {
     window.location.href = 'lani-be-a-gift.html';
   } else {
     currentUser = user;
-    await fetchLessonData();
-    if (DAYS && DAYS.length > 0) {
-      await fetchProgress();
-      document.getElementById('loading-overlay').style.display = 'none';
-    } else {
-      document.getElementById('spinner-icon').style.display = 'none';
-      document.getElementById('loading-text').innerHTML = "Chưa có dữ liệu bài học!<br><span style='font-size:12px'>Vui lòng kiểm tra lại Firestore (topics > topic01)</span>";
-      document.getElementById('loading-text').style.color = "var(--coral)";
-    }
+    
+    // GÁN DỮ LIỆU TĨNH CHUNKING VÀO BIẾN DAYS
+    DAYS = CHUNK_DATA; 
+    
+    await fetchProgress();
+    document.getElementById('loading-overlay').style.display = 'none';
   }
 });
-
-async function fetchLessonData() {
-  try {
-    const docRef = db.collection("topics").doc("topic01");
-    const docSnap = await docRef.get();
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      DAYS = data.days || [];
-    }
-  } catch (error) {
-    console.error("Lỗi tải dữ liệu bài học:", error);
-  }
-}
 
 async function fetchProgress() {
   try {
@@ -420,7 +648,7 @@ async function fetchProgress() {
     }
     renderPanels();
     renderNav();
-    openFullScript(); // <-- Mặc định mở Full Script khi vừa tải xong dữ liệu
+    openFullScript(); // Mặc định mở Full Script khi vừa tải xong dữ liệu
   } catch (error) {
     console.error("Lỗi tải tiến độ:", error);
   }
@@ -429,7 +657,7 @@ async function fetchProgress() {
 // ═══════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════
-let currentView = 'fullscript'; // <-- Đặt trạng thái ban đầu là fullscript thay vì day
+let currentView = 'fullscript'; 
 let currentDay = 0;
 let fcIdx = {}, fcFlipped = {};
 let quizState = {};
@@ -484,7 +712,6 @@ function renderNav() {
   const nav = document.getElementById('daysNav');
   nav.innerHTML = '';
   
-  // <-- Đưa nút Full Script lên đầu tiên
   const fsActive = currentView === 'fullscript';
   nav.innerHTML += `<button class="fs-pill${fsActive ? ' active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
 
@@ -506,7 +733,7 @@ function openDay(i) {
   currentDay = i;
   renderNav();
   const nav = document.getElementById('daysNav');
-  const pill = nav.children[i + 1]; // +1 vì Full Script đã chiếm vị trí index 0
+  const pill = nav.children[i + 1];
   if (pill) pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
@@ -571,7 +798,6 @@ function buildFullScriptPanel() {
 
 function buildPanel(day, i, globalDay) {
   const dlHTML = day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('');
-  // <-- Bỏ active mặc định ở đây để nhường chỗ cho Full Script
   return `<div class="day-panel" id="panel-${i}">
     <div class="day-header"><div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div><div class="day-title">${day.title}</div><div class="day-dialogue-preview">${dlHTML}</div></div>
     <div class="mode-tabs" id="tabs-${i}">
@@ -667,9 +893,6 @@ function initDay(i) {
   updateFlashcard(i); renderQuiz(i); renderDict(i);
 }
 
-// ═══════════════════════════════════════════════════════
-//  FIX 1 — FLASHCARD: lấy từ vocab[], hiển thị phonetic
-// ═══════════════════════════════════════════════════════
 function updateFlashcard(i) {
   const cards = DAYS[i].vocab;
   const idx = fcIdx[i];
@@ -687,9 +910,6 @@ function flipCard(i) { fcFlipped[i] = !fcFlipped[i]; document.getElementById(`fc
 function fcNext(i) { if (fcIdx[i] < DAYS[i].vocab.length - 1) { fcIdx[i]++; updateFlashcard(i); } }
 function fcPrev(i) { if (fcIdx[i] > 0) { fcIdx[i]--; updateFlashcard(i); } }
 
-// ═══════════════════════════════════════════════════════
-//  FIX 3 — QUIZ: score summary + retry wrong
-// ═══════════════════════════════════════════════════════
 function renderQuiz(i) {
   quizState[i] = { idx: 0, answered: false, score: 0, wrong: [], retryMode: false, retryList: [] };
   renderQuizQuestion(i);
@@ -761,9 +981,6 @@ function retryWrongQuiz(i) {
   renderQuizQuestion(i);
 }
 
-// ═══════════════════════════════════════════════════════
-//  FIX 2 — DICTATION: hint sau 3 lần sai + xem đáp án
-// ═══════════════════════════════════════════════════════
 function renderDict(i) {
   dictState[i] = { idx: 0, playing: false, attempts: 0 };
   renderDictItem(i);
@@ -1040,7 +1257,6 @@ function trpSelectRole(role) {
 
 function trpStart() {
   if (!trpState.role) return;
-  // Gom toàn bộ dialogue của 10 ngày
   trpState.allLines = DAYS.flatMap((day, di) =>
     day.dialogue.map(l => ({ ...l, dayNum: di + 1 }))
   );
@@ -1072,7 +1288,6 @@ function trpAdvance() {
     trpAddBotBubble(line);
     speak(line.en, 0.85);
     trpState.step++;
-    // Nếu dòng tiếp theo cũng là bot thì tự chạy tiếp
     const nextLine = allLines[trpState.step];
     const delay = nextLine && nextLine.speaker !== userSpeaker ? 1800 : 1600;
     setTimeout(() => trpAdvance(), delay);
@@ -1230,12 +1445,8 @@ function playbackRec(id) {
   if (blob) new Audio(URL.createObjectURL(blob)).play();
 }
 
-// Hàm mới để xử lý khi người dùng hoàn thành Role-play
 function finishTopicRolePlay() {
-  // Bắt buộc gọi hàm lưu tiến độ Day 10 (index là 9)
   finishDay(9, null);
-  
-  // Hiển thị màn hình chúc mừng & Popup Upsell
   document.getElementById('upsellModal').classList.add('show');
 }
 </script>
