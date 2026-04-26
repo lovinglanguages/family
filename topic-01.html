@@ -229,6 +229,59 @@
   .fs-pill:hover { background:var(--blush); border-color:var(--rose); }
   .fs-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
 
+  /* ── ROLE-PLAY ── */
+  .rp-setup { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; text-align:center; }
+  .rp-setup-title { font-family:'Playfair Display',serif; font-size:18px; color:var(--ink); margin-bottom:6px; }
+  .rp-setup-sub { font-size:13px; color:var(--ink-muted); margin-bottom:20px; line-height:1.6; }
+  .rp-role-row { display:flex; gap:10px; margin-bottom:0; }
+  .rp-role-btn { flex:1; padding:16px 12px; border-radius:var(--radius); border:2px solid var(--border); background:var(--cream); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+  .rp-role-btn:hover { border-color:var(--rose); background:var(--blush); }
+  .rp-role-btn.selected { border-color:var(--terracotta); background:var(--blush); }
+  .rp-role-emoji { font-size:28px; margin-bottom:6px; }
+  .rp-role-name { font-size:14px; font-weight:500; color:var(--ink); }
+  .rp-role-desc { font-size:11px; color:var(--ink-muted); margin-top:3px; }
+  .rp-start-btn { width:100%; padding:14px; border-radius:99px; border:none; background:var(--terracotta); color:white; font-size:15px; font-family:'DM Sans',sans-serif; font-weight:500; cursor:pointer; margin-top:16px; transition:all 0.2s; opacity:0.4; pointer-events:none; }
+  .rp-start-btn.ready { opacity:1; pointer-events:all; }
+  .rp-start-btn.ready:hover { background:var(--terra-deep); }
+
+  .rp-chat { display:flex; flex-direction:column; gap:0; }
+  .rp-bubble-wrap { display:flex; flex-direction:column; margin-bottom:14px; }
+  .rp-bubble-wrap.user { align-items:flex-end; }
+  .rp-bubble-wrap.bot  { align-items:flex-start; }
+  .rp-speaker-label { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--ink-muted); margin-bottom:4px; padding:0 4px; }
+  .rp-bubble { max-width:85%; padding:12px 16px; border-radius:14px; font-size:14px; line-height:1.6; }
+  .rp-bubble.bot  { background:var(--warm-white); border:1px solid var(--border); border-bottom-left-radius:4px; color:var(--ink); }
+  .rp-bubble.user { background:var(--terracotta); color:white; border-bottom-right-radius:4px; }
+  .rp-bubble .rp-vn { font-size:12px; opacity:0.7; font-style:italic; margin-top:4px; }
+  .rp-bubble-btns { display:flex; gap:6px; margin-top:6px; padding:0 2px; }
+  .rp-listen-btn { padding:4px 10px; border-radius:99px; border:1px solid var(--border); background:var(--warm-white); font-size:11px; color:var(--ink-muted); cursor:pointer; font-family:'DM Sans',sans-serif; }
+  .rp-listen-btn:hover { background:var(--blush); }
+
+  .rp-input-area { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-top:4px; }
+  .rp-prompt { font-size:12px; color:var(--ink-muted); margin-bottom:10px; font-style:italic; }
+  .rp-prompt strong { color:var(--terracotta); font-style:normal; }
+  .rp-input-row { display:flex; gap:8px; align-items:flex-end; }
+  .rp-input { flex:1; padding:11px 14px; border-radius:var(--radius-sm); border:1.5px solid var(--border); font-size:14px; font-family:'DM Sans',sans-serif; color:var(--ink); background:var(--cream); outline:none; resize:none; line-height:1.5; transition:border-color 0.2s; }
+  .rp-input:focus { border-color:var(--terracotta); }
+  .rp-send-btn { width:44px; height:44px; border-radius:50%; border:none; background:var(--terracotta); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; }
+  .rp-send-btn:hover { background:var(--terra-deep); }
+  .rp-send-btn:disabled { opacity:0.35; cursor:default; }
+  .rp-hint-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .rp-hint-btn { padding:5px 12px; border-radius:99px; border:1px solid var(--border); background:var(--cream); font-size:12px; color:var(--ink-muted); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+  .rp-hint-btn:hover { background:var(--blush); color:var(--ink); }
+
+  .rp-feedback { padding:10px 14px; border-radius:var(--radius-sm); font-size:13px; margin-top:10px; display:none; }
+  .rp-feedback.show { display:block; }
+  .rp-feedback.correct { background:var(--sage-light); color:var(--sage-deep); border:1px solid var(--sage); }
+  .rp-feedback.close   { background:var(--sunny-light); color:#7A5A00; border:1px solid var(--sunny); }
+  .rp-feedback.wrong   { background:var(--coral-light); color:#7A2E1A; border:1px solid var(--coral); }
+
+  .rp-done { background:var(--sage-light); border:1px solid var(--sage); border-radius:var(--radius); padding:20px; text-align:center; margin-top:8px; }
+  .rp-done-title { font-family:'Playfair Display',serif; font-size:18px; color:var(--sage-deep); margin-bottom:6px; }
+  .rp-done-sub { font-size:13px; color:var(--sage-deep); margin-bottom:14px; }
+  .rp-restart-btn { padding:10px 24px; border-radius:99px; border:1px solid var(--sage); background:white; color:var(--sage-deep); font-size:13px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s; }
+  .rp-restart-btn:hover { background:var(--sage-light); }
+
   .upsell-overlay { position: fixed; inset: 0; background: rgba(44, 36, 22, 0.7); backdrop-filter: blur(5px); z-index: 4000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.4s ease; padding: 20px; }
   .upsell-overlay.show { opacity: 1; visibility: visible; }
   .upsell-card { background: var(--warm-white); width: 100%; max-width: 420px; border-radius: 20px; padding: 40px 24px; text-align: center; position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 50px rgba(0,0,0,0.15); border: 2px solid var(--rose); }
@@ -502,13 +555,15 @@ function buildPanel(day, i, globalDay) {
   return `<div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
     <div class="day-header"><div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div><div class="day-title">${day.title}</div><div class="day-dialogue-preview">${dlHTML}</div></div>
     <div class="mode-tabs" id="tabs-${i}">
-     <button class="mode-tab active" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
-<button class="mode-tab" onclick="switchMode(${i},'flashcard',this)">📇 Flashcard</button>
+      <button class="mode-tab active" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
+      <button class="mode-tab" onclick="switchMode(${i},'flashcard',this)">📇 Flashcard</button>
       <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">❓ Quiz</button>
       <button class="mode-tab" onclick="switchMode(${i},'dictation',this)">✍️ Dictation</button>
       <button class="mode-tab" onclick="switchMode(${i},'shadowing',this)">🎤 Shadowing</button>
+      <button class="mode-tab" onclick="switchMode(${i},'roleplay',this)">🎭 Role-play</button>
     </div>
-<div class="mode-content" id="mode-${i}-flashcard">
+    <div class="mode-content active" id="mode-${i}-vocab">${buildVocabHTML(day.vocab, i)}</div>
+    <div class="mode-content" id="mode-${i}-flashcard">
       <p class="section-note">Bấm vào thẻ để xem nghĩa ✨</p>
       <div class="fc-wrap"><div class="fc" id="fc-${i}" onclick="flipCard(${i})">
         <div class="fc-front"><div class="fc-en" id="fc-en-${i}"></div><div class="fc-speaker" id="fc-spk-${i}"></div><div class="fc-hint">👆 Bấm để xem nghĩa</div></div>
@@ -517,10 +572,10 @@ function buildPanel(day, i, globalDay) {
       <div class="fc-nav"><button class="fc-btn" onclick="fcPrev(${i})">←</button><div class="fc-count" id="fc-count-${i}"></div><button class="fc-btn" onclick="fcNext(${i})">→</button></div>
       <div style="text-align:center;margin-top:18px;"><button class="speak-btn" onclick="speak(document.getElementById('fc-en-${i}').textContent)">🔊 Nghe</button></div>
     </div>
-  <div class="mode-content active" id="mode-${i}-vocab">${buildVocabHTML(day.vocab, i)}</div>
     <div class="mode-content" id="mode-${i}-quiz"><div id="quiz-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-dictation"><div id="dict-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}<div class="done-banner" id="done-${i}"><div class="done-banner-title">🌟 Tuyệt vời!</div><div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div></div><button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button></div>
+    <div class="mode-content" id="mode-${i}-roleplay">${buildRolePlayHTML(day, i)}</div>
   </div>`;
 }
 
@@ -917,6 +972,238 @@ function renderScore(badge, label, score, tWords, matches) {
   badge.className = 'score-badge show ' + tier;
   badge.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:18px">' + emoji + '</span><strong>' + msg + '</strong></div><div class="score-bar-wrap"><div class="score-bar ' + tier + '" style="width:' + score + '%"></div></div><div style="font-size:12px;margin-top:4px;opacity:0.8">' + tip + '</div>' + wordHTML;
   label.innerHTML = '<strong>Bấm mic</strong> để thử lại';
+}
+
+// ═══════════════════════════════════════════════════════
+//  ROLE-PLAY
+// ═══════════════════════════════════════════════════════
+let rpState = {}; // { dayIdx: { role, step, score, total } }
+
+function buildRolePlayHTML(day, i) {
+  return `<div id="rp-${i}">
+    <div class="rp-setup" id="rp-setup-${i}">
+      <div class="rp-setup-title">🎭 Chọn vai của bạn</div>
+      <div class="rp-setup-sub">App sẽ đọc lời nhân vật kia.<br>Bạn gõ lời của nhân vật mình chọn.</div>
+      <div class="rp-role-row">
+        <div class="rp-role-btn" id="rp-role-mom-${i}" onclick="selectRole(${i},'mom')">
+          <div class="rp-role-emoji">👩</div>
+          <div class="rp-role-name">Ba / Mẹ</div>
+          <div class="rp-role-desc">${day.dialogue.find(l=>l.speaker==='Mom')?.en.substring(0,25) || 'Vai người lớn'}...</div>
+        </div>
+        <div class="rp-role-btn" id="rp-role-child-${i}" onclick="selectRole(${i},'child')">
+          <div class="rp-role-emoji">🧒</div>
+          <div class="rp-role-name">Bé</div>
+          <div class="rp-role-desc">${day.dialogue.find(l=>l.speaker==='Child')?.en.substring(0,25) || 'Vai em bé'}...</div>
+        </div>
+      </div>
+      <button class="rp-start-btn" id="rp-start-${i}" onclick="startRolePlay(${i})">Bắt đầu hội thoại →</button>
+    </div>
+    <div id="rp-game-${i}" style="display:none">
+      <div class="rp-chat" id="rp-chat-${i}"></div>
+      <div id="rp-input-area-${i}"></div>
+    </div>
+  </div>`;
+}
+
+function selectRole(i, role) {
+  rpState[i] = rpState[i] || {};
+  rpState[i].role = role;
+  document.getElementById(`rp-role-mom-${i}`).classList.toggle('selected', role === 'mom');
+  document.getElementById(`rp-role-child-${i}`).classList.toggle('selected', role === 'child');
+  document.getElementById(`rp-start-${i}`).classList.add('ready');
+}
+
+function startRolePlay(i) {
+  const state = rpState[i];
+  if (!state?.role) return;
+  const dialogue = DAYS[i].dialogue;
+  state.step = 0;
+  state.score = 0;
+  state.total = dialogue.filter(l => getUserSpeaker(i) === l.speaker).length;
+
+  document.getElementById(`rp-setup-${i}`).style.display = 'none';
+  document.getElementById(`rp-game-${i}`).style.display = 'block';
+  document.getElementById(`rp-chat-${i}`).innerHTML = '';
+
+  rpAdvance(i);
+}
+
+function getUserSpeaker(i) {
+  return rpState[i].role === 'mom' ? 'Mom' : 'Child';
+}
+
+function rpAdvance(i) {
+  const dialogue = DAYS[i].dialogue;
+  const state = rpState[i];
+  const userSpeaker = getUserSpeaker(i);
+
+  // Nếu hết dialogue → done
+  if (state.step >= dialogue.length) {
+    rpShowDone(i);
+    return;
+  }
+
+  const line = dialogue[state.step];
+
+  if (line.speaker !== userSpeaker) {
+    // Bot nói — thêm bubble bot, auto đọc, rồi chuyển sang lượt user
+    rpAddBotBubble(i, line);
+    speak(line.en, 0.85);
+    state.step++;
+    // Nếu dòng tiếp theo là bot tiếp, tiếp tục tự động sau 1.5s
+    if (state.step < dialogue.length && dialogue[state.step].speaker !== userSpeaker) {
+      setTimeout(() => rpAdvance(i), 1800);
+    } else {
+      setTimeout(() => rpAdvance(i), 1600);
+    }
+  } else {
+    // Lượt user — hiện input
+    rpShowInput(i, line);
+  }
+}
+
+function rpAddBotBubble(i, line) {
+  const chat = document.getElementById(`rp-chat-${i}`);
+  const isBot = true;
+  const safeEn = line.en.replace(/'/g, "\\'");
+  const wrap = document.createElement('div');
+  wrap.className = 'rp-bubble-wrap bot';
+  wrap.innerHTML = `
+    <div class="rp-speaker-label">${line.speaker === 'Mom' ? '👩 Ba/Mẹ' : '🧒 Bé'}</div>
+    <div class="rp-bubble bot">
+      ${line.en}
+      <div class="rp-vn">${line.vn}</div>
+    </div>
+    <div class="rp-bubble-btns">
+      <button class="rp-listen-btn" onclick="speak('${safeEn}', 0.85)">🔊 Nghe</button>
+      <button class="rp-listen-btn" onclick="speak('${safeEn}', 0.6)">🐢 Chậm</button>
+    </div>`;
+  chat.appendChild(wrap);
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function rpAddUserBubble(i, text) {
+  const chat = document.getElementById(`rp-chat-${i}`);
+  const userSpeaker = getUserSpeaker(i);
+  const wrap = document.createElement('div');
+  wrap.className = 'rp-bubble-wrap user';
+  wrap.innerHTML = `
+    <div class="rp-speaker-label">${userSpeaker === 'Mom' ? '👩 Bạn (Ba/Mẹ)' : '🧒 Bạn (Bé)'}</div>
+    <div class="rp-bubble user">${text}</div>`;
+  chat.appendChild(wrap);
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function rpShowInput(i, line) {
+  const area = document.getElementById(`rp-input-area-${i}`);
+  const userSpeaker = getUserSpeaker(i);
+  const label = userSpeaker === 'Mom' ? '👩 Lượt của Ba/Mẹ' : '🧒 Lượt của Bé';
+  area.innerHTML = `
+    <div class="rp-input-area">
+      <div class="rp-prompt">✏️ <strong>${label}</strong> — Gõ câu trả lời của bạn</div>
+      <div class="rp-input-row">
+        <textarea class="rp-input" id="rp-inp-${i}" rows="2" placeholder="Gõ câu của bạn ở đây..." oninput="rpInputChange(${i})" onkeydown="rpKeyDown(event,${i})"></textarea>
+        <button class="rp-send-btn" id="rp-send-${i}" onclick="rpSubmit(${i})" disabled>↑</button>
+      </div>
+      <div class="rp-hint-row">
+        <button class="rp-hint-btn" onclick="rpHint(${i},'first')">💡 Gợi ý chữ đầu</button>
+        <button class="rp-hint-btn" onclick="rpHint(${i},'full')">👁 Xem câu mẫu</button>
+      </div>
+      <div class="rp-feedback" id="rp-fb-${i}"></div>
+    </div>`;
+}
+
+function rpInputChange(i) {
+  const val = document.getElementById(`rp-inp-${i}`)?.value.trim();
+  const btn = document.getElementById(`rp-send-${i}`);
+  if (btn) btn.disabled = !val;
+}
+
+function rpKeyDown(e, i) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rpSubmit(i); }
+}
+
+function rpSubmit(i) {
+  const inp = document.getElementById(`rp-inp-${i}`);
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+
+  const state = rpState[i];
+  const line = DAYS[i].dialogue[state.step];
+  const ans = line.en.toLowerCase().replace(/[^\w\s']/g, '').trim();
+  const typed = val.toLowerCase().replace(/[^\w\s']/g, '').trim();
+
+  // Score check
+  const dist = lev(ans, typed);
+  const maxLen = Math.max(ans.length, typed.length);
+  const similarity = 1 - dist / maxLen;
+
+  const fb = document.getElementById(`rp-fb-${i}`);
+  let feedbackClass, feedbackText;
+
+  if (similarity >= 0.85) {
+    feedbackClass = 'correct';
+    feedbackText = '🎉 Chính xác! Tuyệt vời!';
+    state.score++;
+  } else if (similarity >= 0.6) {
+    feedbackClass = 'close';
+    feedbackText = '👍 Gần đúng rồi! Câu mẫu: <em>"' + line.en + '"</em>';
+  } else {
+    feedbackClass = 'wrong';
+    feedbackText = '❌ Chưa khớp. Câu mẫu: <em>"' + line.en + '"</em>';
+  }
+
+  // Hiện feedback
+  fb.className = 'rp-feedback show ' + feedbackClass;
+  fb.innerHTML = feedbackText;
+
+  // Thêm bubble user
+  rpAddUserBubble(i, val);
+
+  // Ẩn input area
+  document.getElementById(`rp-input-area-${i}`).innerHTML = '';
+
+  // Chuyển bước tiếp
+  state.step++;
+  setTimeout(() => rpAdvance(i), 1200);
+}
+
+function rpHint(i, type) {
+  const state = rpState[i];
+  const line = DAYS[i].dialogue[state.step];
+  const fb = document.getElementById(`rp-fb-${i}`);
+  if (!fb) return;
+  if (type === 'first') {
+    const hint = line.en.split(' ').map(w => w[0] + '_'.repeat(Math.max(0, w.length-1))).join(' ');
+    fb.className = 'rp-feedback show close';
+    fb.innerHTML = '💡 Gợi ý: <strong>' + hint + '</strong>';
+  } else {
+    fb.className = 'rp-feedback show close';
+    fb.innerHTML = '👁 Câu mẫu: <em>"' + line.en + '"</em><div style="font-size:12px;margin-top:4px;opacity:0.8">' + line.vn + '</div>';
+    speak(line.en, 0.85);
+  }
+}
+
+function rpShowDone(i) {
+  const state = rpState[i];
+  const pct = Math.round(state.score / (state.total || 1) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 70 ? '🌟' : '💪';
+  document.getElementById(`rp-input-area-${i}`).innerHTML = `
+    <div class="rp-done">
+      <div class="rp-done-title">${emoji} Hội thoại hoàn thành!</div>
+      <div class="rp-done-sub">Bạn gõ đúng ${state.score}/${state.total} câu (${pct}%)</div>
+      <button class="rp-restart-btn" onclick="restartRolePlay(${i})">🔄 Thử lại — đổi vai</button>
+    </div>`;
+}
+
+function restartRolePlay(i) {
+  rpState[i] = {};
+  document.getElementById(`rp-setup-${i}`).style.display = 'block';
+  document.getElementById(`rp-game-${i}`).style.display = 'none';
+  document.getElementById(`rp-role-mom-${i}`).classList.remove('selected');
+  document.getElementById(`rp-role-child-${i}`).classList.remove('selected');
+  document.getElementById(`rp-start-${i}`).classList.remove('ready');
 }
 
 function playbackRec(id) {
