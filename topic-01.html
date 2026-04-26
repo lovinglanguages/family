@@ -420,6 +420,7 @@ async function fetchProgress() {
     }
     renderPanels();
     renderNav();
+    openFullScript(); // <-- Mặc định mở Full Script khi vừa tải xong dữ liệu
   } catch (error) {
     console.error("Lỗi tải tiến độ:", error);
   }
@@ -428,11 +429,11 @@ async function fetchProgress() {
 // ═══════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════
+let currentView = 'fullscript'; // <-- Đặt trạng thái ban đầu là fullscript thay vì day
 let currentDay = 0;
 let fcIdx = {}, fcFlipped = {};
 let quizState = {};
 let dictState = {};
-let currentView = 'day';
 
 async function finishDay(i, btnElement) {
   if (btnElement) btnElement.style.display = 'none';
@@ -482,6 +483,11 @@ function goToDashboardToUpgrade() {
 function renderNav() {
   const nav = document.getElementById('daysNav');
   nav.innerHTML = '';
+  
+  // <-- Đưa nút Full Script lên đầu tiên
+  const fsActive = currentView === 'fullscript';
+  nav.innerHTML += `<button class="fs-pill${fsActive ? ' active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
+
   DAYS.forEach((d, i) => {
     const globalDay = TOPIC.startDay + i;
     const isDone = doneDays.includes(i);
@@ -489,8 +495,6 @@ function renderNav() {
     const cls = isActive ? 'day-pill active' : isDone ? 'day-pill done' : 'day-pill';
     nav.innerHTML += `<button class="${cls}" onclick="openDay(${i})"><span class="day-pill-num">${globalDay}</span>${isDone && !isActive ? '<span class="day-pill-check">✓</span>' : ''}</button>`;
   });
-  const fsActive = currentView === 'fullscript';
-  nav.innerHTML += `<button class="fs-pill${fsActive ? ' active' : ''}" onclick="openFullScript()">📜 Full Script</button>`;
 }
 
 function openDay(i) {
@@ -502,7 +506,7 @@ function openDay(i) {
   currentDay = i;
   renderNav();
   const nav = document.getElementById('daysNav');
-  const pill = nav.children[i];
+  const pill = nav.children[i + 1]; // +1 vì Full Script đã chiếm vị trí index 0
   if (pill) pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
@@ -519,7 +523,7 @@ function openFullScript() {
   }
   renderNav();
   const nav = document.getElementById('daysNav');
-  nav.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  nav.firstElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
 function toggleFsDay(i) {
@@ -567,7 +571,8 @@ function buildFullScriptPanel() {
 
 function buildPanel(day, i, globalDay) {
   const dlHTML = day.dialogue.map(l => `<div class="dialogue-line"><strong>${l.speaker}:</strong> ${l.en}<div class="vn">${l.vn}</div></div>`).join('');
-  return `<div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
+  // <-- Bỏ active mặc định ở đây để nhường chỗ cho Full Script
+  return `<div class="day-panel" id="panel-${i}">
     <div class="day-header"><div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div><div class="day-title">${day.title}</div><div class="day-dialogue-preview">${dlHTML}</div></div>
     <div class="mode-tabs" id="tabs-${i}">
       <button class="mode-tab active" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
