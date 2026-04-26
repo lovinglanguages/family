@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard · Lani Be A Gift</title>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<style>
+    :root { --sage: #4A7259; --cream: #FBF7F0; --terracotta: #C9764A; --border: rgba(44,36,22,0.12); }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); padding: 20px; color: #2C2416; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; border: 1px solid var(--border); }
+    .card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
+    .btn { background: var(--sage); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .btn:disabled { background: #ccc; }
+    #admin-panel { display: none; }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: var(--terracotta); text-align: center;">Quản trị viên Lani</h1>
+        
+        <div id="auth-section" style="text-align: center; padding: 40px;">
+            <p>Vui lòng đăng nhập để xác thực quyền Admin.</p>
+            <button class="btn" onclick="login()">Đăng nhập bằng Google</button>
+        </div>
+
+        <div id="admin-panel">
+            <h3>Danh sách chờ duyệt nâng cấp</h3>
+            <div id="request-list"></div>
+        </div>
+    </div>
+
+<script>
+    const firebaseConfig = { /* Cấu hình của bạn */ };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const ADMIN_UID = '2FcsFSsvXKUGmbj7Ax5ZeJPJX863';
+
+    auth.onAuthStateChanged(user => {
+        if (user && user.uid === ADMIN_UID) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            loadPending();
+        } else if (user) {
+            alert("Tài khoản không có quyền Admin!");
+            auth.signOut();
+        }
+    });
+
+    function login() {
+        auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    }
+
+    async function loadPending() {
+        const container = document.getElementById('request-list');
+        const snap = await db.collection("pending_upgrades").where("status", "==", "chưa duyệt").get();
+        container.innerHTML = snap.empty ? '<p>Tất cả đã được xử lý!</p>' : '';
+        snap.forEach(doc => {
+            const d = doc.data();
+            container.innerHTML += `
+                <div class="card" id="row-${doc.id}">
+                    <div><strong>${d.email}</strong><br><small>${d.requestTime?.toDate().toLocaleString()}</small></div>
+                    <button class="btn" onclick="approve('${doc.id}', '${d.email}')">Duyệt Mở Khóa</button>
+                </div>`;
+        });
+    }
+
+    async function approve(id, email) {
+        try {
+            const cleanEmail = email.toLowerCase().trim();
+            await db.collection("whitelist").doc(cleanEmail).set({
+                email: cleanEmail,
+                approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            await db.collection("pending_upgrades").doc(id).update({ status: "đã duyệt" });
+            document.getElementById(`row-${id}`).remove();
+            alert("Thành công!");
+        } catch (e) { alert("Lỗi: " + e.message); }
+    }
+</script>
+</body>
+</html>
