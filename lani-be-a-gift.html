@@ -33,15 +33,12 @@
 
   /* ── AUTH BOX ── */
   .auth-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .auth-box { background: var(--warm-white); padding: 32px 24px; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 360px; text-align: center; box-shadow: 0 8px 24px rgba(44,36,22,0.05); }
+  .auth-box { background: var(--warm-white); padding: 40px 24px; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 360px; text-align: center; box-shadow: 0 8px 24px rgba(44,36,22,0.05); }
   .auth-title { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--ink); margin-bottom: 8px; }
-  .auth-sub { font-size: 14px; color: var(--ink-muted); margin-bottom: 24px; }
-  .auth-input { width: 100%; padding: 14px; margin-bottom: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--cream); outline: none; font-size: 15px; font-family: 'DM Sans', sans-serif; }
-  .auth-input:focus { border-color: var(--terracotta); }
+  .auth-sub { font-size: 15px; color: var(--ink-muted); margin-bottom: 32px; }
   .auth-btn { width: 100%; padding: 14px; background: var(--terracotta); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: 0.2s; margin-bottom: 12px; }
-  .auth-btn:hover { background: var(--terra-deep); }
-  .google-btn { background: white; color: var(--ink); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; gap: 10px; }
-  .auth-toggle { font-size: 13px; color: var(--terracotta); margin-top: 16px; cursor: pointer; font-weight: 500; }
+  .google-btn { background: white; color: var(--ink); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; padding: 16px; transition: all 0.2s ease;}
+  .google-btn:hover { background: #f9f9f9; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   #auth-error { font-size: 13px; color: #d32f2f; margin-top: 12px; min-height: 1.5em; }
 
   /* ── DASHBOARD UI ── */
@@ -136,19 +133,11 @@
       <div class="auth-title">Lani · Be A Gift</div>
       <div class="auth-sub" id="auth-subtitle">Chào mừng bạn đến với Loving Languages</div>
       
-      <input type="email" id="auth-email" class="auth-input" placeholder="Email của bạn">
-      <input type="password" id="auth-password" class="auth-input" placeholder="Mật khẩu">
-      
-      <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Đăng nhập</button>
-      
-      <div style="margin: 10px 0; color: var(--ink-muted); font-size: 12px;">— HOẶC —</div>
-      
       <button class="auth-btn google-btn" onclick="loginWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Tiếp tục với Google
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Tiếp tục với Google
       </button>
 
       <div id="auth-error"></div>
-      <div class="auth-toggle" onclick="toggleAuthMode()" id="auth-toggle-text">Chưa có tài khoản? Đăng ký ngay</div>
     </div>
   </div>
 </div>
@@ -285,7 +274,6 @@ const TOPICS_INFO = [
   { id: 10, num: '11', name: 'Bedtime Routine', vn: 'Ngủ ngon nhé', icon: '🌙', url: 'topic-11.html' },
 ];
 
-let isLoginMode = true;
 let isWhitelisted = false;
 
 auth.onAuthStateChanged(async (user) => {
@@ -310,22 +298,7 @@ async function checkWhitelist(email) {
 async function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   try { await auth.signInWithPopup(provider); } 
-  catch (e) { document.getElementById('auth-error').textContent = "Lỗi kết nối Google."; }
-}
-
-function toggleAuthMode() {
-  isLoginMode = !isLoginMode;
-  document.getElementById('auth-submit-btn').textContent = isLoginMode ? "Đăng nhập" : "Đăng ký";
-  document.getElementById('auth-toggle-text').textContent = isLoginMode ? "Chưa có tài khoản? Đăng ký ngay" : "Đã có tài khoản? Đăng nhập";
-}
-
-async function handleAuth() {
-  const email = document.getElementById('auth-email').value;
-  const password = document.getElementById('auth-password').value;
-  try {
-    if (isLoginMode) await auth.signInWithEmailAndPassword(email, password);
-    else await auth.createUserWithEmailAndPassword(email, password);
-  } catch (e) { document.getElementById('auth-error').textContent = "Thông tin không chính xác."; }
+  catch (e) { document.getElementById('auth-error').textContent = "Lỗi kết nối Google. Vui lòng thử lại."; }
 }
 
 function logout() { auth.signOut(); }
