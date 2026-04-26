@@ -224,6 +224,44 @@
   .fs-pill { flex-shrink:0; padding:0 14px; height:44px; border-radius:22px; border:1px solid var(--border); background:var(--warm-white); font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:5px; font-family:'DM Sans',sans-serif; color:var(--ink-muted); white-space:nowrap; }
   .fs-pill:hover { background:var(--blush); border-color:var(--rose); }
   .fs-pill.active { background:var(--terracotta); color:white; border-color:var(--terracotta); }
+ /* ── UPSELL MODAL (CRO TỐI ƯU CHUYỂN ĐỔI) ── */
+.upsell-overlay {
+  position: fixed; inset: 0; background: rgba(44, 36, 22, 0.7);
+  backdrop-filter: blur(5px); z-index: 4000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: all 0.4s ease; padding: 20px;
+}
+.upsell-overlay.show { opacity: 1; visibility: visible; }
+.upsell-card {
+  background: var(--warm-white); width: 100%; max-width: 420px;
+  border-radius: 20px; padding: 40px 24px; text-align: center;
+  position: relative; transform: scale(0.95) translateY(20px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 15px 50px rgba(0,0,0,0.15); border: 2px solid var(--rose);
+}
+.upsell-overlay.show .upsell-card { transform: scale(1) translateY(0); }
+
+.upsell-icon { font-size: 50px; margin-bottom: 10px; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-15px);} 60% {transform: translateY(-7px);} }
+
+.upsell-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--terracotta); margin-bottom: 8px; line-height: 1.2; }
+.upsell-desc { font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.6; }
+
+.upsell-stats { display: flex; justify-content: center; gap: 15px; margin-bottom: 24px; }
+.stat-box { background: var(--blush); padding: 12px; border-radius: 12px; flex: 1; border: 1px solid var(--rose); }
+.stat-box strong { display: block; font-size: 20px; color: var(--terra-deep); font-family: 'Playfair Display', serif; }
+.stat-box span { font-size: 11px; color: var(--ink-muted); text-transform: uppercase; }
+
+.upsell-pitch { background: var(--sage-light); padding: 16px; border-radius: 12px; margin-bottom: 24px; color: var(--sage-deep); font-size: 13.5px; border: 1px dashed var(--sage); }
+
+.upsell-btn {
+  width: 100%; padding: 16px; border-radius: 99px; border: none;
+  background: var(--terracotta); color: white; font-size: 16px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 4px 15px rgba(201, 118, 74, 0.3);
+}
+.upsell-btn:hover { background: var(--terra-deep); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201, 118, 74, 0.4); }
+.upsell-close { margin-top: 16px; font-size: 13px; color: var(--ink-muted); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif;}
 </style>
 </head>
 <body>
