@@ -36,15 +36,15 @@
   .auth-box { background: var(--warm-white); padding: 40px 24px; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 360px; text-align: center; box-shadow: 0 8px 24px rgba(44,36,22,0.05); }
   .auth-title { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--ink); margin-bottom: 8px; }
   .auth-sub { font-size: 15px; color: var(--ink-muted); margin-bottom: 32px; }
-  .auth-btn { width: 100%; padding: 14px; background: var(--terracotta); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: 0.2s; margin-bottom: 12px; }
-  .google-btn { background: white; color: var(--ink); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; padding: 16px; transition: all 0.2s ease;}
-  .google-btn:hover { background: #f9f9f9; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  #auth-error { font-size: 13px; color: #d32f2f; margin-top: 12px; min-height: 1.5em; }
+  .google-btn { width: 100%; background: white; color: var(--ink); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 15px; font-family: 'DM Sans', sans-serif; padding: 16px; cursor: pointer; transition: all 0.2s ease;}
+  .google-btn:hover { background: #f9f9f9; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  #auth-error { font-size: 13px; color: #d32f2f; margin-top: 16px; min-height: 1.5em; }
 
   /* ── DASHBOARD UI ── */
   header { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .logo { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--terracotta); }
-  .logout-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
+  .logout-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; transition: 0.2s; }
+  .logout-btn:hover { background: var(--cream); }
   
   .hero { background: var(--warm-white); padding: 40px 24px 20px; text-align: center; }
   .hero h1 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--ink); line-height: 1.2; }
@@ -68,7 +68,9 @@
 
   .topics-grid { padding: 0 24px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .topic-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; cursor: pointer; transition: all 0.25s; position: relative; }
-  .topic-card.locked { opacity: 0.6; filter: grayscale(0.8); cursor: not-allowed; }
+  .topic-card:hover { border-color: var(--terracotta); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(44,36,22,0.05); }
+  .topic-card.locked { opacity: 0.6; filter: grayscale(0.8); cursor: not-allowed; pointer-events: auto; }
+  .topic-card.locked:hover { border-color: var(--border); transform: none; box-shadow: none; }
   .topic-icon { font-size: 28px; margin-bottom: 10px; display: block; }
   .topic-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
   .topic-vn { font-size: 11px; color: var(--ink-muted); font-style: italic; }
@@ -81,7 +83,7 @@
   .lb-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 16px; }
   .lb-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .lb-item:last-child { border-bottom: none; }
-  .lb-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; margin-right: 12px; font-weight: 600; font-size: 14px; }
+  .lb-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; margin-right: 12px; font-weight: 600; font-size: 14px; color: var(--terra-deep); }
   .lb-info { flex: 1; }
   .lb-name { font-size: 14px; font-weight: 600; }
   .lb-streak { font-size: 13px; font-weight: 600; color: #A07000; }
@@ -99,7 +101,8 @@
   .modal-header { background: var(--terracotta); color: white; padding: 24px; text-align: center; }
   .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; }
   .modal-header p { font-size: 14px; opacity: 0.9; }
-  .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: 0.2s;}
+  .modal-close:hover { background: rgba(255,255,255,0.4); }
   .modal-body { padding: 24px; text-align: center; }
   
   .pricing-box { background: var(--sunny-light); border: 1px dashed #E2B93B; border-radius: var(--radius-sm); padding: 12px; margin-bottom: 20px; color: #8A6A00; }
@@ -107,10 +110,11 @@
   .price-note { font-size: 12px; font-style: italic; opacity: 0.8; }
   .old-price { text-decoration: line-through; font-size: 16px; color: var(--ink-muted); margin-left: 8px; }
   
-  .qr-section img { width: 180px; height: 180px; border-radius: 8px; border: 1px solid var(--border); padding: 4px; background: white; margin: 0 auto 16px; display: block; }
+  .qr-section img { width: 180px; height: 180px; border-radius: 8px; border: 1px solid var(--border); padding: 4px; background: white; margin: 0 auto 16px; display: block; object-fit: contain; }
   .bank-info { font-size: 14px; background: var(--cream); padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 20px; border: 1px solid var(--border); }
   .bank-info strong { color: var(--terra-deep); }
-  .copy-text { font-family: 'DM Mono', monospace; background: white; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); user-select: all; cursor: copy; }
+  .copy-text { font-family: 'DM Mono', monospace; background: white; padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border); user-select: none; cursor: pointer; transition: all 0.3s ease; display: block; margin-top: 4px;}
+  .copy-text:active { transform: scale(0.98); }
   
   .confirm-btn { width: 100%; padding: 16px; background: var(--terracotta); color: white; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: 0.2s; }
   .confirm-btn:hover { background: var(--terra-deep); }
@@ -133,8 +137,9 @@
       <div class="auth-title">Lani · Be A Gift</div>
       <div class="auth-sub" id="auth-subtitle">Chào mừng bạn đến với Loving Languages</div>
       
-      <button class="auth-btn google-btn" onclick="loginWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Tiếp tục với Google
+      <button class="google-btn" onclick="loginWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google Logo"> 
+        Tiếp tục với Google
       </button>
 
       <div id="auth-error"></div>
@@ -214,7 +219,7 @@
       </div>
 
       <div class="qr-section">
-        <img src="image_ff131c.png" alt="Mã QR Thanh Toán VPBank">
+        <img id="dynamic-qr" src="" alt="Mã QR Thanh Toán VPBank">
       </div>
 
       <div class="bank-info">
@@ -222,7 +227,7 @@
         <div style="margin-bottom: 8px;">Chủ TK: <strong>TRAN THANH HUYEN</strong></div>
         <div style="margin-bottom: 8px;">Số TK: <strong>888829081996</strong></div>
         <div style="margin-top: 12px; font-size: 12px; color: var(--ink-muted);">Nội dung chuyển khoản (Bấm để copy):</div>
-        <div class="copy-text" id="transfer-syntax" title="Bấm để copy">English Family ...</div>
+        <div class="copy-text" id="transfer-syntax" title="Bấm để copy">LANI ...</div>
       </div>
 
       <button class="confirm-btn" id="confirm-transfer-btn" onclick="submitUpgradeRequest()">
@@ -232,14 +237,14 @@
   </div>
 
   <div class="modal-content" id="modal-success-view" style="display: none;">
-    <button class="modal-close" style="color: var(--ink);" onclick="closePremiumModal()">✕</button>
+    <button class="modal-close" style="color: var(--ink); background: var(--border);" onclick="closePremiumModal()">✕</button>
     <div id="success-message" style="display: block;">
       <div class="success-icon">💌</div>
-      <h2 style="font-family: 'Playfair Display'; color: var(--terracotta); margin-bottom: 12px;">Cảm ơn bạn!</h2>
+      <h2 style="font-family: 'Playfair Display'; color: var(--terracotta); margin-bottom: 12px;">Đang chờ duyệt...</h2>
       <p style="color: var(--ink-muted); font-size: 15px; line-height: 1.5;">
-        Yêu cầu nâng cấp của bạn đã được ghi nhận. Lani sẽ kiểm tra và mở khóa tài khoản cho mình sớm nhé. Mình cũng có thể gởi tin tới zalo của Lani 0779 166 981 nếu sau 1 ngày chuyển khoản mà chưa thấy được nâng cấp!
+        Yêu cầu nâng cấp của bạn đã được ghi nhận. Lani sẽ kiểm tra và mở khóa tài khoản cho mình sớm nhé. Mình cũng có thể nhắn tin tới Zalo của Lani <strong style="color: var(--terra-deep);">0779 166 981</strong> nếu cần hỗ trợ ngay!
       </p>
-      <button class="auth-btn" style="margin-top: 24px;" onclick="closePremiumModal()">Đóng cửa sổ</button>
+      <button class="confirm-btn" style="margin-top: 24px;" onclick="closePremiumModal()">Đóng cửa sổ</button>
     </div>
   </div>
 </div>
@@ -275,11 +280,19 @@ const TOPICS_INFO = [
 ];
 
 let isWhitelisted = false;
+let isPendingUpgrade = false;
 
+// KIỂM TRA TRẠNG THÁI LOGIN
 auth.onAuthStateChanged(async (user) => {
   const loading = document.getElementById('loading-overlay');
   if (user) {
     await checkWhitelist(user.email);
+    
+    // Nếu chưa được duyệt mở khóa, kiểm tra xem họ đã từng bấm xin nâng cấp chưa (Chống spam)
+    if (!isWhitelisted) {
+      await checkPendingStatus(user.uid);
+    }
+
     await loadUserData(user);
     showScreen('screen-dashboard');
   } else {
@@ -295,10 +308,28 @@ async function checkWhitelist(email) {
   } catch (e) { isWhitelisted = false; }
 }
 
+// KIỂM TRA YÊU CẦU ĐANG CHỜ DUYỆT (CHỐNG SPAM)
+async function checkPendingStatus(uid) {
+  try {
+    const pendingSnap = await db.collection("pending_upgrades")
+                                .where("uid", "==", uid)
+                                .where("status", "==", "chưa duyệt")
+                                .get();
+    isPendingUpgrade = !pendingSnap.empty; 
+  } catch (e) {
+    isPendingUpgrade = false;
+  }
+}
+
 async function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  try { await auth.signInWithPopup(provider); } 
-  catch (e) { document.getElementById('auth-error').textContent = "Lỗi kết nối Google. Vui lòng thử lại."; }
+  try { 
+    document.getElementById('auth-error').textContent = "Đang kết nối...";
+    await auth.signInWithPopup(provider); 
+  } 
+  catch (e) { 
+    document.getElementById('auth-error').textContent = "Đăng nhập bị hủy hoặc lỗi kết nối. Thử lại nhé!"; 
+  }
 }
 
 function logout() { auth.signOut(); }
@@ -375,20 +406,34 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
-/* ── QUẢN LÝ PREMIUM MODAL ── */
+/* ── QUẢN LÝ PREMIUM MODAL & VIETQR ── */
 function openPremiumModal() {
   const modal = document.getElementById('premium-modal');
+  
+  // NẾU ĐÃ GỬI YÊU CẦU RỒI -> CHỈ HIỆN MÀN HÌNH CHỜ DUYỆT (CHỐNG SPAM)
+  if (isPendingUpgrade) {
+    document.getElementById('modal-payment-view').style.display = 'none';
+    document.getElementById('modal-success-view').style.display = 'block';
+    modal.classList.add('show');
+    return;
+  }
+
   const priceDisplay = document.getElementById('price-display');
   const transferSyntax = document.getElementById('transfer-syntax');
+  const qrImage = document.getElementById('dynamic-qr');
   const currentUser = firebase.auth().currentUser;
   
-  const userEmail = currentUser ? currentUser.email : "Email-cua-ban";
-  transferSyntax.textContent = `LANI ${userEmail}`;
+  // RÚT GỌN EMAIL
+  const userEmail = currentUser ? currentUser.email.split('@')[0] : "user";
+  const transferContent = `LANI ${userEmail}`;
+  transferSyntax.textContent = transferContent;
   
   const deadline = new Date('2026-05-01T23:59:59');
   const today = new Date();
+  let amountToPay = 0;
   
   if (today <= deadline) {
+    amountToPay = 110000;
     priceDisplay.innerHTML = `
       <div style="font-size: 12px; text-transform: uppercase; font-weight: bold;">Ưu đãi Early Bird (trước 02/05)</div>
       <span class="price-tag">110.000đ</span>
@@ -396,12 +441,21 @@ function openPremiumModal() {
       <div class="price-note">Chỉ 1.000đ / ngày học</div>
     `;
   } else {
+    amountToPay = 330000;
     priceDisplay.innerHTML = `
       <div style="font-size: 12px; text-transform: uppercase; font-weight: bold;">Gói Hành Trình Trọn Vẹn</div>
       <span class="price-tag">330.000đ</span>
       <div class="price-note">110 ngày tương tác chất lượng</div>
     `;
   }
+
+  // TẠO MÃ QR ĐỘNG VIETQR
+  const bankId = "vpbank"; 
+  const accountNo = "888829081996";
+  const accountName = encodeURIComponent("TRAN THANH HUYEN"); 
+  const encodedTransferContent = encodeURIComponent(transferContent); 
+  
+  qrImage.src = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.png?amount=${amountToPay}&addInfo=${encodedTransferContent}&accountName=${accountName}`;
 
   document.getElementById('modal-payment-view').style.display = 'block';
   document.getElementById('modal-success-view').style.display = 'none';
@@ -432,6 +486,9 @@ async function submitUpgradeRequest() {
       status: "chưa duyệt"
     });
 
+    // Cập nhật biến để lần sau mở lên chỉ hiện bảng chờ duyệt
+    isPendingUpgrade = true; 
+
     document.getElementById('modal-payment-view').style.display = 'none';
     document.getElementById('modal-success-view').style.display = 'block';
     
@@ -442,11 +499,31 @@ async function submitUpgradeRequest() {
   }
 }
 
+// XỬ LÝ HIỆU ỨNG NÚT COPY
 document.getElementById('transfer-syntax').addEventListener('click', function() {
-  navigator.clipboard.writeText(this.textContent);
-  const originalColor = this.style.backgroundColor;
+  const originalText = this.getAttribute('data-original') || this.textContent;
+  
+  if (this.textContent === 'Đã copy ✔️') return; // Không làm gì nếu đang hiện chữ copy
+
+  navigator.clipboard.writeText(originalText);
+  this.setAttribute('data-original', originalText);
+  
+  // Đổi style báo hiệu thành công
+  const originalBg = this.style.backgroundColor;
   this.style.backgroundColor = 'var(--sage-light)';
-  setTimeout(() => { this.style.backgroundColor = originalColor; }, 300);
+  this.style.color = 'var(--sage-deep)';
+  this.style.fontWeight = 'bold';
+  this.style.textAlign = 'center';
+  this.textContent = 'Đã copy ✔️';
+
+  // Trả lại style cũ sau 2 giây
+  setTimeout(() => { 
+    this.style.backgroundColor = originalBg; 
+    this.style.color = 'inherit';
+    this.style.fontWeight = 'normal';
+    this.style.textAlign = 'left';
+    this.textContent = originalText;
+  }, 2000);
 });
 
 </script>
