@@ -502,13 +502,13 @@ function buildPanel(day, i, globalDay) {
   return `<div class="day-panel${i === 0 ? ' active' : ''}" id="panel-${i}">
     <div class="day-header"><div class="day-num-label">Day ${globalDay} · Topic ${TOPIC.num}</div><div class="day-title">${day.title}</div><div class="day-dialogue-preview">${dlHTML}</div></div>
     <div class="mode-tabs" id="tabs-${i}">
-      <button class="mode-tab active" onclick="switchMode(${i},'flashcard',this)">📇 Flashcard</button>
-      <button class="mode-tab" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
+     <button class="mode-tab active" onclick="switchMode(${i},'vocab',this)">📖 Từ vựng</button>
+<button class="mode-tab" onclick="switchMode(${i},'flashcard',this)">📇 Flashcard</button>
       <button class="mode-tab" onclick="switchMode(${i},'quiz',this)">❓ Quiz</button>
       <button class="mode-tab" onclick="switchMode(${i},'dictation',this)">✍️ Dictation</button>
       <button class="mode-tab" onclick="switchMode(${i},'shadowing',this)">🎤 Shadowing</button>
     </div>
-    <div class="mode-content active" id="mode-${i}-flashcard">
+<div class="mode-content" id="mode-${i}-flashcard">
       <p class="section-note">Bấm vào thẻ để xem nghĩa ✨</p>
       <div class="fc-wrap"><div class="fc" id="fc-${i}" onclick="flipCard(${i})">
         <div class="fc-front"><div class="fc-en" id="fc-en-${i}"></div><div class="fc-speaker" id="fc-spk-${i}"></div><div class="fc-hint">👆 Bấm để xem nghĩa</div></div>
@@ -517,7 +517,7 @@ function buildPanel(day, i, globalDay) {
       <div class="fc-nav"><button class="fc-btn" onclick="fcPrev(${i})">←</button><div class="fc-count" id="fc-count-${i}"></div><button class="fc-btn" onclick="fcNext(${i})">→</button></div>
       <div style="text-align:center;margin-top:18px;"><button class="speak-btn" onclick="speak(document.getElementById('fc-en-${i}').textContent)">🔊 Nghe</button></div>
     </div>
-    <div class="mode-content" id="mode-${i}-vocab">${buildVocabHTML(day.vocab, i)}</div>
+  <div class="mode-content active" id="mode-${i}-vocab">${buildVocabHTML(day.vocab, i)}</div>
     <div class="mode-content" id="mode-${i}-quiz"><div id="quiz-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-dictation"><div id="dict-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}<div class="done-banner" id="done-${i}"><div class="done-banner-title">🌟 Tuyệt vời!</div><div class="done-banner-sub">Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!</div></div><button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button></div>
