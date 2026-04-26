@@ -466,7 +466,6 @@ async function finishDay(i, btnElement) {
   if (i === 9) {
     document.getElementById(`done-${i}`).classList.add('show');
     document.getElementById(`done-${i}`).scrollIntoView({ behavior: 'smooth' });
-    // Đã bỏ lệnh setTimeout gọi Upsell Modal ở đây để người dùng làm Role-play trước
   }
 }
 
@@ -589,7 +588,7 @@ function buildPanel(day, i, globalDay) {
     </div>
     <div class="mode-content" id="mode-${i}-quiz"><div id="quiz-body-${i}"></div></div>
     <div class="mode-content" id="mode-${i}-dictation"><div id="dict-body-${i}"></div></div>
-    <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}${i === 9 ? buildTopicRolePlayHTML() : ''}<div class="done-banner" id="done-${i}"><div class="done-banner-title">${i === 9 ? '🏆 Chúc mừng hoàn thành Topic 01!' : '🌟 Tuyệt vời!'}</div><div class="done-banner-sub">${i === 9 ? '10 ngày · Morning Routine · Cả nhà thật tuyệt vời!' : `Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!`}</div></div><button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button></div>
+    <div class="mode-content" id="mode-${i}-shadowing"><p class="section-note">Nghe – bắt chước – tự tin nói cùng con 🎤</p>${buildShadowHTML(day.shadowing, i)}${i === 9 ? buildTopicRolePlayHTML() : ''}<div class="done-banner" id="done-${i}"><div class="done-banner-title">${i === 9 ? '🏆 Chúc mừng hoàn thành Topic 01!' : '🌟 Tuyệt vời!'}</div><div class="done-banner-sub">${i === 9 ? '10 ngày · Morning Routine · Cả nhà thật tuyệt vời!' : `Bạn đã hoàn thành Day ${globalDay}. Tiến độ đã được lưu lại!`}</div></div>${i === 9 ? '' : `<button class="finish-btn" id="finish-btn-${i}" onclick="finishDay(${i}, this)">✅ Hoàn thành ngày học!</button>`}</div>
   </div>`;
 }
 
@@ -1228,13 +1227,10 @@ function playbackRec(id) {
 
 // Hàm mới để xử lý khi người dùng hoàn thành Role-play
 function finishTopicRolePlay() {
-  // Đảm bảo tiến độ Day 10 đã được lưu vào Firebase
-  const finishBtn = document.getElementById('finish-btn-9');
-  if (finishBtn && finishBtn.style.display !== 'none') {
-    finishDay(9, finishBtn);
-  }
+  // Bắt buộc gọi hàm lưu tiến độ Day 10 (index là 9)
+  finishDay(9, null);
   
-  // Hiển thị màn hình chúc mừng & Upsell
+  // Hiển thị màn hình chúc mừng & Popup Upsell
   document.getElementById('upsellModal').classList.add('show');
 }
 </script>
