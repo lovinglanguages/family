@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lani · Be A Gift — Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --cream-dark: #F0EAE0;
+    --terracotta: #C97A50;
+    --terra-light: #FAE8DC;
+    --terra-deep: #A85F38;
+    --sage: #7A9E7E;
+    --sage-light: #EBF3EC;
+    --ink: #2C2420;
+    --ink-mid: #4A3F38;
+    --ink-muted: #7A6E65;
+    --ink-faint: #A89E92;
+    --border: #E8E0D5;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  /* ── WRAPPER ── */
+  #ob-wrapper {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--cream);
+  }
+
+  /* ── TOP BAR ── */
+  .ob-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 8px;
+    flex-shrink: 0;
+  }
+
+  .ob-dots {
+    display: flex;
+    gap: 7px;
+  }
+
+  .ob-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .ob-dot.active {
+    background: var(--terracotta);
+    transform: scale(1.15);
+  }
+
+  .ob-skip {
+    font-size: 13px;
+    color: var(--ink-faint);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    padding: 4px 2px;
+    letter-spacing: 0.2px;
+  }
+
+  .ob-skip:hover { color: var(--ink-muted); }
+
+  /* ── SLIDES CONTAINER ── */
+  .ob-slides {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ob-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 24px 0;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+
+  .ob-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+
+  .ob-slide.out {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  /* ── SLIDE CONTENT ── */
+  .slide-icon {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    margin: 12px auto 18px;
+    flex-shrink: 0;
+  }
+
+  .slide-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .slide-title em {
+    color: var(--terracotta);
+    font-style: italic;
+  }
+
+  .slide-sub {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.65;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* SLIDE 1 — quote */
+  .ob-quote {
+    background: var(--white);
+    border-radius: 14px;
+    border-left: 3px solid var(--terracotta);
+    border-top: 0.5px solid var(--border);
+    border-right: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    padding: 16px 18px;
+    margin-top: 4px;
+  }
+
+  .ob-quote p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+
+  .ob-quote span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* SLIDE 2 — activities */
+  .act-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .act-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    animation: slideIn 0.4s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .act-row:nth-child(1) { animation-delay: 0.05s; }
+  .act-row:nth-child(2) { animation-delay: 0.12s; }
+  .act-row:nth-child(3) { animation-delay: 0.19s; }
+  .act-row:nth-child(4) { animation-delay: 0.26s; }
+  .act-row:nth-child(5) { animation-delay: 0.33s; }
+
+  .act-emoji { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+  .act-info { flex: 1; }
+  .act-name { font-size: 13.5px; font-weight: 500; color: var(--ink-mid); }
+  .act-desc { font-size: 12px; color: var(--ink-faint); margin-top: 1px; }
+
+  .act-time {
+    font-size: 11px; font-weight: 500;
+    color: var(--terracotta);
+    background: var(--terra-light);
+    padding: 3px 8px;
+    border-radius: 99px;
+    flex-shrink: 0;
+  }
+
+  /* SLIDE 3 — streak */
+  .streak-row {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin: 8px 0 16px;
+  }
+
+  .s-day {
+    width: 38px; height: 48px;
+    border-radius: 10px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px;
+  }
+
+  .s-day .d-num { font-size: 10px; font-weight: 500; }
+  .s-day .d-ico { font-size: 16px; }
+
+  .s-day.done { background: var(--terracotta); }
+  .s-day.done .d-num { color: rgba(255,255,255,0.8); }
+  .s-day.done .d-ico { color: #fff; }
+
+  .s-day.today {
+    background: var(--terra-light);
+    border: 1.5px solid var(--terracotta);
+  }
+  .s-day.today .d-num { color: var(--terracotta); }
+
+  .s-day.rest {
+    background: var(--cream-dark);
+    border: 0.5px solid var(--border);
+  }
+  .s-day.rest .d-num { color: var(--ink-faint); }
+  .s-day.rest .d-ico { font-size: 14px; color: var(--ink-faint); }
+
+  .ob-info-box {
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+
+  .ob-info-box .info-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+
+  .ob-info-box .info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13.5px;
+    color: var(--ink-mid);
+  }
+
+  .ob-info-box .info-row:last-child { border-bottom: none; }
+
+  /* SLIDE 4 — ready */
+  .ready-card {
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 4px;
+  }
+
+  .ready-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+
+  .ready-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13.5px;
+    color: var(--ink-mid);
+  }
+
+  .ready-item:last-child { border-bottom: none; }
+
+  .ready-item .ri-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    flex-shrink: 0;
+  }
+
+  /* ── BOTTOM ── */
+  .ob-bottom {
+    padding: 16px 24px 32px;
+    flex-shrink: 0;
+  }
+
+  .ob-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--terracotta);
+    color: #fff;
+    border: none;
+    border-radius: 99px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .ob-btn:hover { background: var(--terra-deep); }
+  .ob-btn:active { transform: scale(0.985); }
+
+  .ob-hint {
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .ob-progress {
+    height: 2px;
+    background: var(--border);
+    margin: 0 24px;
+    border-radius: 99px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .ob-progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+</style>
+</head>
+<body>
+
+<div id="ob-wrapper">
+
+  <!-- Top bar -->
+  <div class="ob-topbar">
+    <div class="ob-dots">
+      <div class="ob-dot active" id="dot0"></div>
+      <div class="ob-dot" id="dot1"></div>
+      <div class="ob-dot" id="dot2"></div>
+      <div class="ob-dot" id="dot3"></div>
+    </div>
+    <button class="ob-skip" id="skip-btn" onclick="skipOnboarding()">Bỏ qua</button>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="ob-progress">
+    <div class="ob-progress-fill" id="ob-bar" style="width:25%"></div>
+  </div>
+
+  <!-- Slides -->
+  <div class="ob-slides">
+
+    <!-- Slide 0: Welcome -->
+    <div class="ob-slide active" id="slide-0">
+      <div class="slide-icon" style="background:#FAE8DC;">🏡</div>
+      <div class="slide-title">Chào mừng đến với<br><em>Lani · Be A Gift</em></div>
+      <div class="slide-sub">Mỗi ngày 15 phút — ba/mẹ và bé<br>cùng học tiếng Anh qua hội thoại thực tế.</div>
+      <div class="ob-quote">
+        <p>"The best gift you can give your child is your time, your attention, and your words."</p>
+        <span>— Lani · Be A Gift · Loving Languages</span>
+      </div>
+    </div>
+
+    <!-- Slide 1: 5 Activities -->
+    <div class="ob-slide" id="slide-1">
+      <div class="slide-icon" style="background:#EBF3EC;">📋</div>
+      <div class="slide-title">5 hoạt động mỗi ngày<br><em>đơn giản & hiệu quả</em></div>
+      <div class="slide-sub">Không cần chuẩn bị — mở ra và học cùng nhau!</div>
+      <div class="act-list">
+        <div class="act-row">
+          <span class="act-emoji">📇</span>
+          <div class="act-info">
+            <div class="act-name">Flashcard</div>
+            <div class="act-desc">Lật thẻ — ghi nhớ từ mới</div>
+          </div>
+          <span class="act-time">~2 phút</span>
+        </div>
+        <div class="act-row">
+          <span class="act-emoji">📖</span>
+          <div class="act-info">
+            <div class="act-name">Từ vựng</div>
+            <div class="act-desc">Đọc hiểu sâu — phát âm chuẩn</div>
+          </div>
+          <span class="act-time">~3 phút</span>
+        </div>
+        <div class="act-row">
+          <span class="act-emoji">❓</span>
+          <div class="act-info">
+            <div class="act-name">Quiz</div>
+            <div class="act-desc">Kiểm tra nhanh — biết ngay kết quả</div>
+          </div>
+          <span class="act-time">~3 phút</span>
+        </div>
+        <div class="act-row">
+          <span class="act-emoji">✍️</span>
+          <div class="act-info">
+            <div class="act-name">Dictation</div>
+            <div class="act-desc">Nghe & gõ lại — luyện chính tả</div>
+          </div>
+          <span class="act-time">~4 phút</span>
+        </div>
+        <div class="act-row">
+          <span class="act-emoji">🎤</span>
+          <div class="act-info">
+            <div class="act-name">Shadowing</div>
+            <div class="act-desc">Bắt chước phát âm — học hội thoại</div>
+          </div>
+          <span class="act-time">~3 phút</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Streak -->
+    <div class="ob-slide" id="slide-2">
+      <div class="slide-icon" style="background:#FFF0E8;">🔥</div>
+      <div class="slide-title">Học đều mỗi ngày<br><em>streak của cả nhà!</em></div>
+      <div class="slide-sub">10 ngày · 1 chủ đề · Thói quen nhỏ — kết quả lớn.</div>
+
+      <div class="streak-row">
+        <div class="s-day done">
+          <div class="d-ico">✓</div>
+          <div class="d-num">T2</div>
+        </div>
+        <div class="s-day done">
+          <div class="d-ico">✓</div>
+          <div class="d-num">T3</div>
+        </div>
+        <div class="s-day done">
+          <div class="d-ico">✓</div>
+          <div class="d-num">T4</div>
+        </div>
+        <div class="s-day today">
+          <div class="d-ico">⭐</div>
+          <div class="d-num">T5</div>
+        </div>
+        <div class="s-day rest">
+          <div class="d-ico">🔒</div>
+          <div class="d-num">T6</div>
+        </div>
+        <div class="s-day rest">
+          <div class="d-ico">🔒</div>
+          <div class="d-num">T7</div>
+        </div>
+        <div class="s-day rest">
+          <div class="d-ico">🔒</div>
+          <div class="d-num">CN</div>
+        </div>
+      </div>
+
+      <div class="ob-info-box">
+        <div class="info-label">Khoa học nói gì</div>
+        <div class="info-row">
+          <span>🧠</span>
+          <span>15 phút/ngày hiệu quả hơn 2 tiếng/tuần</span>
+        </div>
+        <div class="info-row">
+          <span>🔁</span>
+          <span>Ôn lại đúng thời điểm giúp nhớ lâu gấp 5×</span>
+        </div>
+        <div class="info-row">
+          <span>👨‍👩‍👧</span>
+          <span>Học cùng ba/mẹ tạo động lực gấp đôi cho bé</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Ready -->
+    <div class="ob-slide" id="slide-3">
+      <div class="slide-icon" style="background:#E8F0FA;">🎓</div>
+      <div class="slide-title">Sẵn sàng rồi!<br><em>Hôm nay học Day 1</em></div>
+      <div class="slide-sub">Chủ đề đầu tiên: <strong style="color:var(--terracotta)">Morning Routine</strong><br>Cùng bé bắt đầu buổi sáng bằng tiếng Anh!</div>
+
+      <div class="ready-card">
+        <div class="ready-label">Hôm nay bạn sẽ học</div>
+        <div class="ready-item">
+          <div class="ri-dot"></div>
+          <span>📇 Flashcard — lật thẻ ghi nhớ từ mới</span>
+        </div>
+        <div class="ready-item">
+          <div class="ri-dot"></div>
+          <span>📖 Từ vựng — phát âm chuẩn & nghĩa đầy đủ</span>
+        </div>
+        <div class="ready-item">
+          <div class="ri-dot"></div>
+          <span>❓ Quiz — 5 câu kiểm tra nhanh</span>
+        </div>
+        <div class="ready-item">
+          <div class="ri-dot"></div>
+          <span>✍️ Dictation — luyện nghe & chính tả</span>
+        </div>
+        <div class="ready-item">
+          <div class="ri-dot"></div>
+          <span>🎤 Shadowing — hội thoại với ba/mẹ</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom -->
+  <div class="ob-bottom">
+    <button class="ob-btn" id="ob-main-btn" onclick="nextSlide()">Bắt đầu →</button>
+    <div class="ob-hint" id="ob-hint">Chỉ hiển thị một lần · Topic 01 miễn phí</div>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const TOTAL = 4;
+
+  const btnLabels = [
+    'Bắt đầu →',
+    'Tiếp theo →',
+    'Tiếp theo →',
+    'Vào học Day 1 →'
+  ];
+
+  const hints = [
+    'Chỉ hiển thị một lần · Topic 01 miễn phí',
+    'Thiết kế bởi giáo viên tiếng Anh',
+    'Dựa trên phương pháp spaced repetition',
+    ''
+  ];
+
+  function goTo(n) {
+    const prev = document.getElementById('slide-' + current);
+    prev.classList.remove('active');
+    prev.classList.add('out');
+    setTimeout(() => prev.classList.remove('out'), 400);
+
+    current = n;
+
+    const next = document.getElementById('slide-' + current);
+    next.classList.add('active');
+
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.getElementById('dot' + i);
+      d.classList.toggle('active', i === current);
+    }
+
+    const pct = ((current + 1) / TOTAL) * 100;
+    document.getElementById('ob-bar').style.width = pct + '%';
+
+    document.getElementById('ob-main-btn').textContent = btnLabels[current];
+    document.getElementById('ob-hint').textContent = hints[current];
+
+    if (current === TOTAL - 1) {
+      document.getElementById('skip-btn').style.visibility = 'hidden';
+    }
+  }
+
+  function nextSlide() {
+    if (current < TOTAL - 1) {
+      goTo(current + 1);
+    } else {
+      finishOnboarding();
+    }
+  }
+
+  function skipOnboarding() {
+    finishOnboarding();
+  }
+
+  function finishOnboarding() {
+    localStorage.setItem('lani_onboarded', 'true');
+    // ── ĐỔI ĐƯỜNG DẪN NÀY sang trang học của bạn ──
+    window.location.href = 'topic-01.html';
+  }
+
+  // Nếu đã onboard rồi → redirect thẳng
+  if (localStorage.getItem('lani_onboarded')) {
+    window.location.href = 'topic-01.html';
+  }
+</script>
+</body>
+</html>
