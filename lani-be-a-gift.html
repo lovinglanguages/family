@@ -295,6 +295,19 @@ auth.onAuthStateChanged(async (user) => {
 
     await loadUserData(user);
     showScreen('screen-dashboard');
+    // 👇 CHÈN ĐOẠN CODE "HỨNG" TÍN HIỆU TỪ DAY 10 VÀO ĐÂY 👇
+    if (localStorage.getItem('triggerUpgrade') === 'true') {
+        // 1. Xóa tín hiệu đi để những lần sau vào app không bị bật pop-up vô duyên
+        localStorage.removeItem('triggerUpgrade'); 
+        
+        // 2. Chờ nửa giây cho giao diện Dashboard load đẹp đẽ rồi bung bảng mã QR ra
+        setTimeout(() => {
+            if (!isWhitelisted && !isPendingUpgrade) {
+                openPremiumModal(); 
+            }
+        }, 500);
+    }
+    // 👆 KẾT THÚC ĐOẠN CODE CHÈN THÊM 👆
   } else {
     showScreen('screen-auth');
   }
