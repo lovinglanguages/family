@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Loving English Garden - Topic 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
+      authDomain: "dailyenglish-aca50.firebaseapp.com",
+      projectId: "dailyenglish-aca50",
+      storageBucket: "dailyenglish-aca50.firebasestorage.app",
+      messagingSenderId: "876041668209",
+      appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    window.db = db;
+    window.storage = storage;
+    window.auth = auth;
+
+    // KIỂM TRA ĐĂNG NHẬP
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'index.html'; // Nếu chưa login thì đá về trang chủ
+      } else {
+        const docRef = doc(db, "whitelist", user.email.toLowerCase().trim());
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+          alert("Email của bạn không có quyền truy cập!");
+          window.location.href = 'index.html';
+        }
+      }
+    });
+
+    // HÀM NỘP BÀI LÊN FIREBASE
+    window.submitResult = async (type, day, answer, blob = null) => {
+      try {
+        let audioUrl = null;
+        
+        // Nếu có file ghi âm thì upload lên Storage trước
+        if (blob) {
+          const fileName = `audios/${auth.currentUser.email}_T1_D${day}_${Date.now()}.mp3`;
+          const storageRef = ref(storage, fileName);
+          await uploadBytes(storageRef, blob);
+          audioUrl = await getDownloadURL(storageRef);
+        }
+
+        // Lưu vào Firestore collection 'results'
+        await addDoc(collection(db, "results"), {
+          email: auth.currentUser.email,
+          topic: 1,
+          day: day,
+          type: type, // 'typing' hoặc 'speaking'
+          answer: answer,
+          audioUrl: audioUrl,
+          timestamp: serverTimestamp()
+        });
+        console.log("Đã nộp bài cho giáo viên!");
+      } catch (e) {
+        console.error("Lỗi nộp bài:", e);
+      }
+    };
+  </script>
+
+  <style>
+    :root{
+      --beige:#F5F0E8;--beige2:#EDE6D6;--warm:#D4C5A9;--wood:#8B6F4E;--wood-light:#C4956A;
+      --green:#5C8A5E;--green-light:#89B48B;--green-pale:#D4E8D5;
+      --yellow:#E8C547;--yellow-pale:#FDF3C0;
+      --text:#3D2B1F;--text-mid:#6B4E3D;--text-soft:#9B7E6F;
+      --sunrise:#F4A261;--drop:#4A90D9;--drop-light:#A8D4F5;
+      --card-r:16px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    
+    body {
+      font-family:'Nunito',sans-serif;background:var(--beige);color:var(--text);min-height:100vh;
+      -webkit-user-select: none; user-select: none;
+    }
+    input { -webkit-user-select: text; user-select: text; outline:none; font-family:'Nunito',sans-serif;}
+    
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(245,240,232,0.97);border-bottom:1px solid var(--warm);position:sticky;top:0;z-index:99}
+    .logo{font-family:'Lora',serif;font-size:18px;color:var(--wood);font-weight:600;text-decoration:none}
+    .logo span{color:var(--green)}
+    .nav-right{display:flex;align-items:center;gap:10px}
+    .back-btn{background:transparent;border:1px solid var(--warm);border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:'Nunito',sans-serif;text-decoration:none; transition:all 0.2s}
+    .back-btn:hover{background:var(--beige2)}
+    
+    .main-wrap{max-width:700px;margin:0 auto;padding:24px 18px 60px}
+    .topic-title{text-align:center;font-family:'Lora',serif;font-size:28px;color:var(--wood);font-weight:600;margin-bottom:8px}
+    .topic-sub{text-align:center;font-size:16px;color:var(--text-soft);margin-bottom:24px}
+
+    /* GRID MENU 4 MỤC */
+    .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    @media (max-width: 480px) { .menu-grid{grid-template-columns:1fr;} }
+    .m-item{background:#fff;border:2px solid var(--beige2);border-radius:var(--card-r);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+    .m-item:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 20px rgba(92,138,94,.1)}
+    .m-ico{font-size:42px;margin-bottom:12px}
+    .m-name{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--wood);margin-bottom:6px}
+    .m-desc{font-size:14px;color:var(--text-mid)}
+
+    .view-section{display:none; background:#fff; border-radius:20px; padding:24px; border:1px solid var(--beige2); margin-top:16px;}
+    .sec-title{font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--wood);border-bottom:2px dashed var(--warm);padding-bottom:10px;margin-bottom:20px}
+    
+    .list-item{padding:16px 0;border-bottom:1px solid var(--beige2)}
+    .li-en{font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px; display:flex; align-items:center; flex-wrap:wrap; gap:8px;}
+    .li-vn{font-size:16px;color:var(--text-soft);margin-bottom:6px}
+    .li-struct{background:#fff;border:1px solid var(--green-light);color:var(--green);padding:14px;border-radius:12px;font-size:15px;margin-top:10px;line-height:1.6}
+    .audio-btn-sm{cursor:pointer; background:var(--beige2); padding:4px 10px; border-radius:8px; font-size:13px; font-weight:700;}
+
+    .day-tabs{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;margin-bottom:24px}
+    .d-tab{padding:10px 18px;background:var(--beige);border:1px solid var(--warm);border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;}
+    .d-tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+    
+    .fc-scene{perspective:900px;margin:10px 0 28px;cursor:pointer}
+    .fc-inner{width:100%;min-height:220px;position:relative;transform-style:preserve-3d;transition:transform .55s}
+    .fc-inner.flipped{transform:rotateY(180deg)}
+    .fc-face{position:absolute;width:100%;min-height:220px;backface-visibility:hidden;border-radius:20px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    .fc-front{background:var(--green-pale);border:2px solid var(--green-light)}
+    .fc-back{background:var(--wood);color:#fff;transform:rotateY(180deg)}
+    .fc-en{font-family:'Lora',serif;font-size:32px;font-weight:600;margin-bottom:12px;color:var(--wood)}
+    
+    .type-box{background:var(--yellow-pale);border-radius:16px;padding:24px;text-align:center;margin-bottom:28px;border:1px solid var(--yellow)}
+    .type-input{width:100%;padding:14px;border:2px solid var(--warm);border-radius:12px;font-size:16px;margin:14px 0;}
+    .btn-action{background:var(--green);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-weight:700;cursor:pointer;}
+    .btn-sec{background:var(--beige2);border:1px solid var(--warm);padding:12px 24px;border-radius:12px;font-weight:700;cursor:pointer;}
+
+    .mic-wrap{text-align:center;padding:24px 16px;background:var(--beige);border-radius:16px;border:1px dashed var(--warm)}
+    .mic-btn{width:72px;height:72px;border-radius:50%;border:none;cursor:pointer;background:var(--sunrise);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+    .mic-btn.active{background:#E24B4A;animation:pmic 1.1s infinite}
+    @keyframes pmic{0%,100%{box-shadow:0 0 0 0 rgba(226,75,74,.4)}50%{box-shadow:0 0 0 18px rgba(226,75,74,0)}}
+    
+    .chal-item{background:var(--beige);border:1px solid var(--warm);border-radius:16px;padding:20px;margin-bottom:14px}
+    .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+    .m-card-gm{padding:16px 12px;border-radius:12px;border:2px solid var(--warm);background:#fff;font-size:16px;cursor:pointer;font-weight:700;text-align:center;}
+    .m-card-gm.sel{border-color:var(--green);background:var(--green-pale);}
+    .m-card-gm.mat{background:var(--green);color:#fff;pointer-events:none}
+  </style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="logo">🌱 Loving English <span>Garden</span></div>
+  <div class="nav-right">
+    <button class="back-btn" onclick="goBack()">← Quay lại</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="topic-title">Topic 1: Good Morning! ☀️</div>
+  <div class="topic-sub">Chào ngày mới năng động cùng bé</div>
+
+  <div id="viewMenu" class="menu-grid">
+    <div class="m-item" onclick="openView('Vocab')"><div class="m-ico">📋</div><div class="m-name">Vocab List</div><div class="m-desc">Danh sách câu</div></div>
+    <div class="m-item" onclick="openView('Daily')"><div class="m-ico">📅</div><div class="m-name">Học Theo Ngày</div><div class="m-desc">Flashcard & Luyện tập</div></div>
+    <div class="m-item" onclick="openView('Structure')"><div class="m-ico">🧩</div><div class="m-name">Key Structure</div><div class="m-desc">Cấu trúc câu</div></div>
+    <div class="m-item" onclick="openView('Challenge')"><div class="m-ico">🏆</div><div class="m-name">Challenge</div><div class="m-desc">Vượt ải 10 câu</div></div>
+  </div>
+
+  <div id="viewVocab" class="view-section">
+    <div class="sec-title">📋 Danh sách câu</div>
+    <div id="vocabListContainer"></div>
+  </div>
+
+  <div id="viewDaily" class="view-section">
+    <div class="sec-title">📅 Luyện tập ngày <span id="lblDay">1</span></div>
+    <div class="day-tabs" id="dayTabsContainer"></div>
+    
+    <div class="fc-scene">
+      <div class="fc-inner" id="theFC" onclick="this.classList.toggle('flipped')">
+        <div class="fc-face fc-front">
+          <div class="fc-en" id="dEn">—</div>
+          <div id="dPron" style="font-weight:700; color:var(--text-soft)">—</div>
+          <div style="margin-top:15px">
+            <button class="btn-sec" onclick="playAudio(document.getElementById('dEn').textContent, 1.0); event.stopPropagation();">🔊 Nghe</button>
+          </div>
+        </div>
+        <div class="fc-face fc-back">
+          <div id="dVn" style="font-size:24px; font-weight:700">—</div>
+          <div id="dNote" style="margin-top:15px; font-size:14px; opacity:0.8">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-box">
+      <h3 style="margin-bottom:10px">Nghe & Gõ lại</h3>
+      <input type="text" id="dTypeInput" class="type-input" placeholder="Nhập câu tiếng Anh...">
+      <button class="btn-action" onclick="checkDailyType()">Nộp bài ✓</button>
+      <div id="dTypeRes" style="margin-top:10px; font-weight:800"></div>
+    </div>
+
+    <div class="mic-wrap">
+      <h3>Luyện nói</h3>
+      <button class="mic-btn" id="dMicBtn" onclick="toggleDailyMic()">🎙️</button>
+      <div id="dMicLbl">Bấm để ghi âm</div>
+      <audio id="dAudioPlayer" controls style="display:none; margin-top:10px"></audio>
+    </div>
+  </div>
+
+  <div id="viewStructure" class="view-section">
+    <div class="sec-title">🧩 Cấu trúc câu</div>
+    <div id="structListContainer"></div>
+  </div>
+
+  <div id="viewChallenge" class="view-section">
+    <div class="sec-title">🏆 Vượt ải Challenge</div>
+    <div id="chalListContainer"></div>
+    <div id="matchGameArea">
+        <h3 style="margin-top:20px">Ghép câu</h3>
+        <div class="match-grid">
+            <div id="mgEnCol"></div>
+            <div id="mgVnCol"></div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CURRICULUM = [
+  {day:1, en:"Good morning, sweetie!", vn:"Chào buổi sáng, con yêu!", pron:"/gʊd ˈmɔːrnɪŋ, ˈswiːti/", note:"Flap T /r/ nghe như âm 'd' nhẹ.", struct:"Good + [thời gian]!", structEg:"Good afternoon!", exTask:"Dịch: Chào buổi tối, con yêu!", exAns:"Good evening, sweetie!"},
+  {day:2, en:"Time to wake up!", vn:"Đến giờ thức dậy rồi!", pron:"/taɪm tu weɪk ʌp/", note:"Nối âm /k/ với /ʌ/.", struct:"Time to + [Động từ]", structEg:"Time to eat!", exTask:"Dịch: Đến giờ đi ngủ rồi!", exAns:"Time to sleep!"},
+  {day:3, en:"Rise and shine!", vn:"Dậy đi nào, tỏa sáng thôi!", pron:"/raɪz ænd ʃaɪn/", note:"Giảm 'and' thành /ən/.", struct:"Câu gọi thức dậy", structEg:"Rise and shine!", exTask:"Dịch: Dậy đi nào!", exAns:"Rise and shine!"},
+  {day:4, en:"Did you sleep well?", vn:"Con ngủ ngon không?", pron:"/dɪd ju sliːp wɛl/", note:"Nối 'did' + 'you'.", struct:"Did you + [V] + well?", structEg:"Did you eat well?", exTask:"Dịch: Con chơi vui không?", exAns:"Did you play well?"},
+  {day:5, en:"It's a beautiful day today!", vn:"Hôm nay thật đẹp trời!", pron:"/ɪts ə ˈbjuːtɪfəl deɪ/", note:"Nối âm liền mạch.", struct:"It's a + [Adj] + day!", structEg:"It's a sunny day!", exTask:"Dịch: Hôm nay là một ngày mưa!", exAns:"It's a rainy day today!"},
+  {day:6, en:"Come on, open your eyes.", vn:"Nào, mở mắt ra đi.", pron:"/kʌm ɒn, ˈoʊpən aɪz/", note:"Giảm 'your' thành /jər/.", struct:"Open your + [Body part]", structEg:"Open your book!", exTask:"Dịch: Nào, mở miệng ra.", exAns:"Come on, open your mouth."},
+  {day:7, en:"Don't go back to sleep!", vn:"Đừng ngủ lại nữa mà!", pron:"/doʊnt ɡoʊ bæk tu sliːp/", note:"Âm tắc /k/.", struct:"Don't + [V]", structEg:"Don't run!", exTask:"Dịch: Đừng khóc!", exAns:"Don't cry!"},
+  {day:8, en:"Let's make the bed.", vn:"Cùng dọn giường nào.", pron:"/lɛts meɪk ðə bɛd/", note:"Âm /d/ bật nhẹ.", struct:"Let's + [V]", structEg:"Let's play!", exTask:"Dịch: Cùng ăn nào.", exAns:"Let's eat."},
+  {day:9, en:"Go wash your face.", vn:"Đi rửa mặt đi con.", pron:"/ɡoʊ wɒʃ jʊər feɪs/", note:"Âm /ʃ/ chu môi.", struct:"Go + [V]", structEg:"Go brush your teeth!", exTask:"Dịch: Đi rửa tay đi con.", exAns:"Go wash your hands."},
+  {day:10, en:"Are you ready for breakfast?", vn:"Sẵn sàng ăn sáng chưa?", pron:"/ɑːr ju ˈrɛdi/", note:"'for' giảm âm.", struct:"Ready for + [N]?", structEg:"Ready for school?", exTask:"Dịch: Sẵn sàng ăn trưa chưa?", exAns:"Are you ready for lunch?"}
+];
+
+let currentView = 'Menu';
+let currentDay = 1;
+
+// --- AUDIO ---
+function playAudio(text, rate = 1.0) {
+  window.speechSynthesis.cancel();
+  let u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  window.speechSynthesis.speak(u);
+}
+
+// --- RECORDING ---
+let mediaRecorder;
+let audioChunks = [];
+async function startRecording(onStopCallback) {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream);
+  audioChunks = [];
+  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+    onStopCallback(blob);
+    stream.getTracks().forEach(t => t.stop());
+  };
+  mediaRecorder.start();
+}
+
+// --- NAVIGATION ---
+function goBack() { currentView === 'Menu' ? window.location.href = 'index.html' : openView('Menu'); }
+function openView(v) {
+  currentView = v;
+  document.getElementById('viewMenu').style.display = 'none';
+  document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
+  if(v === 'Menu') document.getElementById('viewMenu').style.display = 'grid';
+  else {
+    document.getElementById('view' + v).style.display = 'block';
+    if(v==='Vocab') buildVocab();
+    if(v==='Daily') buildDaily();
+    if(v==='Structure') buildStructure();
+    if(v==='Challenge') buildChallenge();
+  }
+}
+
+// --- BUILDERS ---
+function buildVocab() {
+  document.getElementById('vocabListContainer').innerHTML = CURRICULUM.map(d => `
+    <div class="list-item">
+      <b>Ngày ${d.day}</b>
+      <div class="li-en">${d.en} <span class="audio-btn-sm" onclick="playAudio('${d.en.replace(/'/g,"")}')">🔊</span></div>
+      <div class="li-vn">${d.vn}</div>
+    </div>
+  `).join('');
+}
+
+function buildDaily() {
+  const tabs = document.getElementById('dayTabsContainer');
+  tabs.innerHTML = CURRICULUM.map(d => `<div class="d-tab ${d.day === currentDay ? 'active' : ''}" onclick="selectDay(${d.day})">Ngày ${d.day}</div>`).join('');
+  loadDay();
+}
+function selectDay(d) { currentDay = d; buildDaily(); }
+function loadDay() {
+  const d = CURRICULUM[currentDay-1];
+  document.getElementById('lblDay').innerText = currentDay;
+  document.getElementById('dEn').innerText = d.en;
+  document.getElementById('dPron').innerText = d.pron;
+  document.getElementById('dVn').innerText = d.vn;
+  document.getElementById('dNote').innerText = d.note;
+  document.getElementById('dTypeInput').value = '';
+  document.getElementById('dTypeRes').innerText = '';
+  document.getElementById('dAudioPlayer').style.display = 'none';
+}
+
+function checkDailyType() {
+  const d = CURRICULUM[currentDay-1];
+  const inp = document.getElementById('dTypeInput').value.trim().toLowerCase().replace(/[.!?,]/g,"");
+  const target = d.en.toLowerCase().replace(/[.!?,]/g,"");
+  if(inp === target) {
+    document.getElementById('dTypeRes').innerHTML = "<span style='color:green'>✅ Chính xác! Bài đã nộp.</span>";
+    window.submitResult('typing', currentDay, d.en); // TỰ ĐỘNG NỘP BÀI GÕ
+  } else {
+    document.getElementById('dTypeRes').innerHTML = "<span style='color:red'>❌ Chưa đúng, thử lại nhé.</span>";
+  }
+}
+
+let isRec = false;
+async function toggleDailyMic() {
+  const btn = document.getElementById('dMicBtn');
+  if(!isRec) {
+    await startRecording(blob => {
+      const url = URL.createObjectURL(blob);
+      document.getElementById('dAudioPlayer').src = url;
+      document.getElementById('dAudioPlayer').style.display = 'block';
+      window.submitResult('speaking', currentDay, CURRICULUM[currentDay-1].en, blob); // TỰ ĐỘNG NỘP BÀI NÓI
+    });
+    isRec = true; btn.classList.add('active'); document.getElementById('dMicLbl').innerText = "Đang ghi... (Bấm dừng)";
+  } else {
+    mediaRecorder.stop(); isRec = false; btn.classList.remove('active'); document.getElementById('dMicLbl').innerText = "Đã gửi! Ghi âm lại?";
+  }
+}
+
+function buildStructure() {
+    document.getElementById('structListContainer').innerHTML = CURRICULUM.map((d,i) => `
+        <div class="list-item" style="background:#f9f9f9; padding:15px; border-radius:12px; margin-bottom:10px">
+            <div style="color:var(--green); font-weight:800">${d.en}</div>
+            <div class="li-struct"><b>Cấu trúc:</b> ${d.struct}</div>
+            <div style="margin-top:10px">
+                <div>Dịch: ${d.exTask}</div>
+                <input type="text" id="ex_${i}" class="type-input" style="padding:8px" placeholder="Gõ đáp án...">
+                <button class="btn-action" onclick="checkEx(${i})">Kiểm tra</button>
+                <div id="res_${i}" style="font-weight:700; margin-top:5px"></div>
+            </div>
+        </div>
+    `).join('');
+}
+function checkEx(i) {
+    const inp = document.getElementById('ex_'+i).value.trim().toLowerCase().replace(/[.!?,]/g,"");
+    const target = CURRICULUM[i].exAns.toLowerCase().replace(/[.!?,]/g,"");
+    const res = document.getElementById('res_'+i);
+    if(inp === target) {
+        res.innerHTML = "✅ Đúng!"; res.style.color = "green";
+        window.submitResult('structure_test', i+1, CURRICULUM[i].exAns);
+    } else {
+        res.innerHTML = "❌ Đáp án: " + CURRICULUM[i].exAns; res.style.color = "red";
+    }
+}
+
+function buildChallenge() {
+    document.getElementById('chalListContainer').innerHTML = CURRICULUM.map((d,i) => `
+        <div class="chal-item">
+            <div>Ngày ${d.day}: ${d.vn}</div>
+            <input type="text" class="type-input" placeholder="Gõ tiếng Anh..." onchange="if(this.value.toLowerCase().includes('${d.en.toLowerCase().split(' ')[0]}')) window.submitResult('challenge', ${d.day}, this.value)">
+        </div>
+    `).join('');
+}
+
+function finishTopic() { alert("Hoàn thành! Kết quả đã được tổng hợp gửi cho Giáo viên."); window.location.href="index.html"; }
+
+</script>
+</body>
+</html>
