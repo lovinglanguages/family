@@ -50,7 +50,9 @@
         
         // Nếu có file ghi âm, đẩy lên Storage trước
         if (blob) {
-          const fileName = `audios/${window.currentUserEmail}_T1_D${day}_${Date.now()}.mp3`;
+          // Xử lý đuôi file động nhằm tương thích tốt với iOS (Safari) và Android/PC
+          const extension = blob.type.includes('mp4') ? 'm4a' : 'webm';
+          const fileName = `audios/${window.currentUserEmail}_T1_D${day}_${Date.now()}.${extension}`;
           const storageRef = ref(storage, fileName);
           await uploadBytes(storageRef, blob);
           audioUrl = await getDownloadURL(storageRef);
@@ -389,8 +391,10 @@ async function startRecording(onStopCallback) {
     audioChunks = [];
     mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
     mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-      onStopCallback(URL.createObjectURL(audioBlob), audioBlob); // Trả về cả URL và file Blob
+      // Nhận định dạng gốc của trình duyệt/thiết bị để tránh bị hỏng file âm thanh khi lưu trữ
+      const mimeType = mediaRecorder.mimeType || 'audio/webm';
+      const audioBlob = new Blob(audioChunks, { type: mimeType });
+      onStopCallback(URL.createObjectURL(audioBlob), audioBlob); 
       stream.getTracks().forEach(track => track.stop());
     };
     mediaRecorder.start();
@@ -593,6 +597,7 @@ function switchGameTab(gameId) {
 function loadGame1() {
   const data = getTargetData();
   window.g1Target = data.en;
+  window.g1Day = data.day; // Lưu lại day tương ứng để nộp bài chuẩn khi trộn câu ở Challenge
   document.getElementById('g1VnText').textContent = "Ý nghĩa: " + data.vn;
   document.getElementById('g1Res').innerHTML = "";
   document.getElementById('g1AnsBox').innerHTML = "";
@@ -616,8 +621,13 @@ function loadGame1() {
 function checkGame1() {
   let userSentence = Array.from(document.getElementById('g1AnsBox').childNodes).map(n => n.textContent).join(" ");
   if(userSentence === window.g1Target) {
-    document.getElementById('g1Res').innerHTML = '<span style="color:var(--green)">🎉 Hoàn hảo! Bạn xếp đúng rồi!</span>';
+    document.getElementById('g1Res').innerHTML = '<span style="color:var(--green)">🎉 Hoàn hảo! Kết quả đã tự động nộp cho cô giáo.</span>';
     playAudio(window.g1Target);
+    
+    // TỰ ĐỘNG NỘP BÀI GAME 1 VỀ FIREBASE
+    if(window.submitResult) {
+      window.submitResult('game1_unscramble', window.g1Day, "Hoàn thành đúng: " + userSentence);
+    }
   } else {
     document.getElementById('g1Res').innerHTML = '<span style="color:#E24B4A">❌ Sai thứ tự, chạm vào từ phía trên để xếp lại nhé.</span>';
   }
@@ -653,7 +663,16 @@ function loadGame2() {
       if(selEn.textContent === selVn.dataset.target) {
         selEn.className = 'm-card-gm mat'; selVn.className = 'm-card-gm mat'; matched++; playAudio(selEn.textContent);
         selEn = null; selVn = null;
-        if(matched === 5) document.getElementById('game2Res').innerHTML = '<span style="color:var(--green)">🎉 Tuyệt vời! Ghép đúng hết rồi!</span>';
+        
+        if(matched === 5) {
+          document.getElementById('game2Res').innerHTML = '<span style="color:var(--green)">🎉 Tuyệt vời! Ghép đúng hết và bài làm đã được gửi đi!</span>';
+          
+          // TỰ ĐỘNG NỘP BÀI GAME 2 VỀ FIREBASE
+          if(window.submitResult) {
+            let activeDayContext = currentGameMode === 'daily' ? currentDay : 0; // 0 ám chỉ làm tổng hợp ở màn Challenge
+            window.submitResult('game2_match', activeDayContext, "Hoàn thành trọn vẹn cặp 5 từ nối");
+          }
+        }
       } else {
         setTimeout(() => { selEn.classList.remove('sel'); selVn.classList.remove('sel'); selEn = null; selVn = null; }, 500);
       }
@@ -693,8 +712,13 @@ function loadGame3() {
     btn.onclick = () => {
       if(opt === correctWordClean) {
         btn.style.background = 'var(--green)'; btn.style.color = '#fff';
-        document.getElementById('g3Res').innerHTML = '<span style="color:var(--green)">✅ Chính xác!</span>';
+        document.getElementById('g3Res').innerHTML = '<span style="color:var(--green)">✅ Chính xác! Bài đã được gửi đi.</span>';
         document.getElementById('g3Sentence').textContent = window.g3CorrectData.en; playAudio(window.g3CorrectData.en);
+        
+        // TỰ ĐỘNG NỘP BÀI GAME 3 VỀ FIREBASE
+        if(window.submitResult) {
+          window.submitResult('game3_fill_blank', window.g3CorrectData.day, "Điền từ đúng: " + correctWordClean + " trong câu '" + window.g3CorrectData.en + "'");
+        }
       } else {
         btn.style.background = '#E24B4A'; btn.style.color = '#fff';
         document.getElementById('g3Res').innerHTML = '<span style="color:#E24B4A">❌ Sai rồi, thử lại nhé!</span>';
@@ -708,6 +732,7 @@ function loadGame3() {
 function loadGame4() {
   const data = getTargetData();
   window.g4CorrectEn = data.en;
+  window.g4Day = data.day;
   let others = [...CURRICULUM].filter(x => x.day !== data.day).sort(() => Math.random() - 0.5).slice(0, 2);
   let options = [data.en, others[0].en, others[1].en].sort(() => Math.random() - 0.5);
   
@@ -719,7 +744,12 @@ function loadGame4() {
     btn.onclick = () => {
       if(opt === window.g4CorrectEn) {
         btn.style.background = 'var(--green)'; btn.style.color = '#fff';
-        document.getElementById('g4Res').innerHTML = '<span style="color:var(--green)">✅ Tai tinh quá!</span>';
+        document.getElementById('g4Res').innerHTML = '<span style="color:var(--green)">✅ Tai tinh quá! Kết quả đã ghi nhận thành công.</span>';
+        
+        // TỰ ĐỘNG NỘP BÀI GAME 4 VỀ FIREBASE
+        if(window.submitResult) {
+          window.submitResult('game4_listen', window.g4Day, "Nghe & lựa chọn đúng câu: " + window.g4CorrectEn);
+        }
       } else {
         btn.style.background = '#E24B4A'; btn.style.color = '#fff';
         document.getElementById('g4Res').innerHTML = '<span style="color:#E24B4A">❌ Bấm loa nghe kỹ lại nhé!</span>';
