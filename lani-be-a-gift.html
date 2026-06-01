@@ -2,13 +2,14 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
   <title>Loving English Garden - Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
@@ -19,57 +20,69 @@
       appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
     };
 
-    // Khởi tạo Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // 2. DANH SÁCH WHITELIST (Nhập các Gmail được phép truy cập vào đây)
-    const ALLOWED_EMAILS = [
-      "huyentisu96@gmail.com", // Ví dụ tài khoản của bạn
-      "thanhhuyen.40k9@gmail.com",
-      "hocvien2@gmail.com"
-    ];
+    // KIỂM TRA WHITELIST TRÊN FIRESTORE
+    async function checkWhitelist(email) {
+      try {
+        const docRef = doc(db, "whitelist", email.toLowerCase().trim());
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists();
+      } catch (e) {
+        console.error("Lỗi kiểm tra database:", e);
+        return false;
+      }
+    }
 
-    // Gắn hàm ra window để gọi từ HTML
+    // ĐĂNG NHẬP GOOGLE
     window.loginWithGoogle = async () => {
       const errBox = document.getElementById('loginError');
+      const btn = document.querySelector('.google-btn');
       errBox.style.display = 'none';
-      
+      btn.innerText = "Đang kiểm tra...";
+
       try {
         const result = await signInWithPopup(auth, provider);
         const userEmail = result.user.email;
+        const isAllowed = await checkWhitelist(userEmail);
         
-        // Kiểm tra Whitelist
-        if (ALLOWED_EMAILS.includes(userEmail)) {
-          // Thành công
+        if (isAllowed) {
           document.getElementById('loginOverlay').style.opacity = '0';
           setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 400);
           document.getElementById('userEmailDisplay').textContent = userEmail;
         } else {
-          // Thất bại: Không có trong whitelist -> Đăng xuất luôn
           await signOut(auth);
-          errBox.textContent = "Email này chưa được cấp quyền truy cập Vườn!";
+          errBox.textContent = "Email này chưa có trong danh sách được phép vào Vườn!";
           errBox.style.display = 'block';
+          btn.innerHTML = `<span>Đăng nhập lại bằng Google</span>`;
         }
       } catch (error) {
-        console.error("Lỗi đăng nhập:", error);
-        errBox.textContent = "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.";
+        errBox.textContent = "Lỗi kết nối. Vui lòng thử lại!";
         errBox.style.display = 'block';
+        btn.innerText = "Đăng nhập bằng Google";
       }
     };
 
+    // ĐĂNG XUẤT
     window.logout = async () => {
       await signOut(auth);
-      document.getElementById('loginOverlay').style.display = 'flex';
-      document.getElementById('loginOverlay').style.opacity = '1';
+      location.reload();
     };
 
-    // Tự động kiểm tra trạng thái đăng nhập khi load trang
-    onAuthStateChanged(auth, (user) => {
-      if (user && ALLOWED_EMAILS.includes(user.email)) {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('userEmailDisplay').textContent = user.email;
+    // THEO DÕI TRẠNG THÁI ĐĂNG NHẬP
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const isAllowed = await checkWhitelist(user.email);
+        if (isAllowed) {
+          document.getElementById('loginOverlay').style.display = 'none';
+          document.getElementById('userEmailDisplay').textContent = user.email;
+        } else {
+          await signOut(auth);
+          document.getElementById('loginOverlay').style.display = 'flex';
+        }
       } else {
         document.getElementById('loginOverlay').style.display = 'flex';
         document.getElementById('loginOverlay').style.opacity = '1';
@@ -82,20 +95,29 @@
       --beige:#F5F0E8;--beige2:#EDE6D6;--warm:#D4C5A9;--wood:#8B6F4E;--green:#5C8A5E;
       --drop:#4A90D9;--drop-light:#A8D4F5;--text:#3D2B1F;--text-soft:#9B7E6F;--card-r:16px;
     }
-    *{margin:0;padding:0;box-sizing:border-box}
     
+    /* CHỐNG COPY VÀ BÔI ĐEN */
+    *{
+      margin:0;padding:0;box-sizing:border-box;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
     body{
       font-family:'Nunito',sans-serif;background:var(--beige);color:var(--text);min-height:100vh;
-      -webkit-user-select: none; -ms-user-select: none; user-select: none;
+      overflow-x: hidden;
     }
 
     .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(245,240,232,0.97);border-bottom:1px solid var(--warm);position:sticky;top:0;z-index:99}
-    .logo{font-family:'Lora',serif;font-size:20px;color:var(--wood);font-weight:600;cursor:pointer}
+    .logo{font-family:'Lora',serif;font-size:20px;color:var(--wood);font-weight:600;}
     .logo span{color:var(--green)}
     .nav-right{display:flex;align-items:center;gap:12px}
     .drops-pill{display:flex;align-items:center;gap:6px;background:var(--drop-light);border:1px solid var(--drop);border-radius:20px;padding:5px 12px;font-size:15px;font-weight:700;color:var(--drop)}
     
-    .btn-logout {background: transparent; border: 1px solid var(--warm); color: var(--text-soft); padding: 5px 12px; border-radius: 12px; font-family: 'Nunito'; font-weight: 700; cursor: pointer; transition: all 0.2s;}
+    .btn-logout {background: transparent; border: 1px solid var(--warm); color: var(--text-soft); padding: 6px 14px; border-radius: 12px; font-family: 'Nunito'; font-weight: 700; cursor: pointer; transition: all 0.2s;}
     .btn-logout:hover {background: var(--beige2); color: var(--text);}
     .user-info {font-size: 13px; font-weight: 700; color: var(--wood); display: none;}
 
@@ -114,7 +136,7 @@
     
     .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
     .t-card{background:#fff;border:1px solid var(--beige2);border-radius:var(--card-r);overflow:hidden;cursor:pointer;transition:all .18s;text-decoration:none;color:inherit;display:block;}
-    .t-card:hover{border-color:var(--warm);transform:translateY(-2px)}
+    .t-card:hover{border-color:var(--warm);transform:translateY(-2px);box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
     .t-card.t-active{border:2px solid var(--drop)}
     .t-card.t-locked{opacity:.65;cursor:default;pointer-events:none;}
     .t-thumb{height:100px;display:flex;align-items:center;justify-content:center;position:relative}
@@ -126,64 +148,64 @@
     .t-body{padding:14px}
     .t-vn{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4}
     .t-en{font-size:14px;color:var(--text-soft);font-style:italic;margin-bottom:10px;line-height:1.4}
-    .t-badge{display:inline-block;font-size:12px;font-weight:700;border-radius:20px;padding:4px 10px;margin-bottom:10px}
+    .t-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:4px 10px;margin-bottom:10px}
     .b-done{background:#EAF3DE;color:#27500A}.b-active{background:#E6F1FB;color:#0C447C}.b-locked{background:#F1EFE8;color:#5F5E5A}
     
-    .t-progress-info {font-size:13px;color:var(--text-soft);}
-    .t-progress-pct {font-size:13px;font-weight:700;color:var(--text-soft);}
+    .t-progress-info {font-size:12px;color:var(--text-soft);}
+    .t-progress-pct {font-size:12px;font-weight:700;color:var(--text-soft);}
     .t-bar-wrap{height:6px;background:var(--beige2);border-radius:4px;overflow:hidden;margin-top:6px;}
     .t-bar-fill{height:100%;border-radius:4px;transition:width .4s}
 
-    /* GIAO DIỆN ĐĂNG NHẬP SỬA LẠI CHO GOOGLE LOGIN */
+    /* OVERLAY ĐĂNG NHẬP GOOGLE */
     .login-overlay{position:fixed;inset:0;background:var(--beige);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.4s}
     .login-box{background:#fff;padding:40px 28px;border-radius:24px;box-shadow:0 10px 40px rgba(139,111,78,0.15);text-align:center;max-width:400px;width:90%;border:1px solid var(--beige2)}
     .login-plant{font-size:56px; margin-bottom:12px}
     .login-title{font-family:'Lora', serif; color:var(--wood); margin-bottom: 8px; font-size:26px}
-    .login-sub {font-size:15px; color:var(--text-soft); margin-bottom: 28px;}
+    .login-sub {font-size:15px; color:var(--text-soft); margin-bottom: 32px;}
     
-    /* Nút Google mới */
-    .google-btn{width:100%;background:#fff;color:var(--text);border:2px solid var(--beige2);padding:14px;border-radius:14px;font-weight:700;font-size:16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;}
+    .google-btn{width:100%;background:#fff;color:var(--text);border:2px solid var(--beige2);padding:14px;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:12px;}
     .google-btn:hover{border-color:var(--drop); background:var(--drop-light); color:var(--drop);}
-    .google-icon{width:20px; height:20px;}
+    .google-icon{width:22px; height:22px;}
 
-    .error-msg{color:#E24B4A;font-size:14px;font-weight:600;display:none;margin-top:16px;animation:shake 0.3s}
+    .error-msg{color:#E24B4A;font-size:14px;font-weight:700;display:none;margin-top:20px;padding:12px;background:#FDECEA;border-radius:10px;animation:shake 0.3s}
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
+    /* CSS CHO LAPTOP (SIÊU TO) */
     @media (min-width: 1024px) {
-      .home-wrap{max-width:1100px; padding:40px 20px;}
-      .nav{padding: 20px 40px;}
-      .logo{font-size:32px;}
-      .drops-pill{font-size:18px; padding:8px 18px;}
-      .user-info{display: block; margin-right: 10px;}
+      .home-wrap{max-width:1200px; padding:40px 20px;}
+      .nav{padding: 24px 60px;}
+      .logo{font-size:36px;}
+      .drops-pill{font-size:20px; padding:10px 24px;}
+      .user-info{display: block; margin-right: 15px; font-size: 16px;}
+      .btn-logout {font-size: 16px; padding: 8px 20px;}
       
-      .hero-plant{font-size:80px;}
-      .hero-title{font-size:46px; margin-bottom: 12px;}
-      .hero-sub{font-size:22px;}
+      .hero-plant{font-size:100px;}
+      .hero-title{font-size:54px; margin-bottom: 16px;}
+      .hero-sub{font-size:24px;}
       
-      .stat-box{padding: 24px;}
-      .stat-num{font-size:44px;}
-      .stat-lbl{font-size:16px; font-weight: 700; margin-top: 8px;}
+      .stat-box{padding: 32px;}
+      .stat-num{font-size:56px;}
+      .stat-lbl{font-size:18px; font-weight: 700; margin-top: 10px;}
       
-      .section-lbl{font-size:24px; margin-bottom:24px; margin-top:16px;}
-      .topic-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px;}
-      .t-thumb{height: 140px;}
-      .t-emoji{font-size: 64px;}
-      .t-num{width: 34px; height: 34px; font-size: 18px; top: 14px; left: 14px;}
-      .t-star{width: 16px; height: 16px;}
+      .section-lbl{font-size:28px; margin-bottom:32px; margin-top:20px;}
+      .topic-grid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:30px;}
+      .t-thumb{height: 160px;}
+      .t-emoji{font-size: 80px;}
+      .t-num{width: 40px; height: 40px; font-size: 20px; top: 16px; left: 16px;}
       
-      .t-body{padding: 20px;}
-      .t-vn{font-size:24px; margin-bottom: 6px;}
-      .t-en{font-size:18px; margin-bottom: 14px;}
-      .t-badge{font-size:15px; padding: 6px 14px; margin-bottom: 14px;}
+      .t-body{padding: 28px;}
+      .t-vn{font-size:28px; margin-bottom: 8px;}
+      .t-en{font-size:20px; margin-bottom: 18px;}
+      .t-badge{font-size:14px; padding: 8px 18px;}
       
-      .t-progress-info {font-size:16px;}
-      .t-progress-pct {font-size:16px;}
-      .t-bar-wrap{height:8px; margin-top:8px;}
+      .t-progress-info {font-size:18px;}
+      .t-progress-pct {font-size:18px;}
+      .t-bar-wrap{height:10px;}
 
-      .login-box{max-width: 500px; padding: 50px 40px;}
-      .login-plant{font-size: 70px;}
-      .login-title{font-size: 34px;}
-      .google-btn{font-size: 18px; padding: 16px;}
+      .login-box{max-width: 500px; padding: 60px 40px;}
+      .login-plant{font-size: 80px;}
+      .login-title{font-size: 38px;}
+      .google-btn{font-size: 20px; padding: 18px;}
     }
   </style>
 </head>
@@ -191,9 +213,9 @@
 
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
-    <div class="login-plant">🌱</div>
-    <h2 class="login-title">Loving English Garden</h2>
-    <div class="login-sub">Đăng nhập để vào lớp học</div>
+    <div class="login-plant">🌳</div>
+    <h1 class="login-title">Loving English Garden</h1>
+    <p class="login-sub">Chào mừng gia đình quay trở lại vườn!</p>
     
     <button class="google-btn" onclick="loginWithGoogle()">
       <svg class="google-icon" viewBox="0 0 24 24">
@@ -220,33 +242,54 @@
 
 <div class="home-wrap">
   <div class="home-hero">
-    <div class="hero-plant" id="heroPlant">🌱</div>
+    <div class="hero-plant" id="heroPlant">🌳</div>
     <div class="hero-title">Vườn Tiếng Anh</div>
-    <div class="hero-sub">100 ngày · 10 chủ đề · Cả gia đình cùng học</div>
+    <div class="hero-sub">Hành trình 100 ngày cùng bé tỏa sáng</div>
   </div>
   
   <div class="stats-row">
     <div class="stat-box"><div class="stat-num" id="sDays">0</div><div class="stat-lbl">Ngày xong</div></div>
-    <div class="stat-box"><div class="stat-num" id="sDrops">0</div><div class="stat-lbl">Giọt nước 💧</div></div>
+    <div class="stat-box"><div class="stat-num" id="sDrops">0</div><div class="stat-lbl">Nước 💧</div></div>
     <div class="stat-box"><div class="stat-num" id="sStreak">1</div><div class="stat-lbl">Chuỗi 🔥</div></div>
     <div class="stat-box"><div class="stat-num" id="sPct" style="color:#639922">0%</div><div class="stat-lbl">Tiến độ</div></div>
   </div>
   
-  <div class="section-lbl">Lộ Trình 100 Ngày</div>
+  <div class="section-lbl">Lộ Trình Học Tập</div>
   <div class="topic-grid" id="topicGrid"></div>
 </div>
 
 <script>
-// --- CHỨC NĂNG BẢO MẬT ---
-document.addEventListener('contextmenu', event => event.preventDefault());
+// ==========================================
+// 1. CHỨC NĂNG BẢO MẬT (ANTI-COPY/RIGHT CLICK)
+// ==========================================
+document.addEventListener('contextmenu', event => event.preventDefault()); // Khóa chuột phải
+
 document.addEventListener('keydown', function(e) {
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) {
+  // Khóa F12
+  if (e.keyCode === 123) { e.preventDefault(); return false; }
+  
+  // Khóa Ctrl+Shift+I (Inspect)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
+  
+  // Khóa Ctrl+U (View Source)
+  if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
+  
+  // Khóa Ctrl+S (Save page)
+  if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
+  
+  // Khóa Ctrl+C / Ctrl+V / Ctrl+X
+  if ((e.ctrlKey || e.metaKey) && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
     e.preventDefault();
+    return false;
   }
 });
-document.addEventListener('copy', event => event.preventDefault());
 
-// --- DATA VÀ HIỂN THỊ DASHBOARD ---
+// Chống kéo thả hình ảnh/văn bản
+document.addEventListener('dragstart', e => e.preventDefault());
+
+// ==========================================
+// 2. DỮ LIỆU CHỦ ĐỀ
+// ==========================================
 const TOPICS = [
   {id:1,emoji:"👋",vn:"Chào nhau buổi sáng",en:"Good morning routines",color:"#EF9F27",days:"1–10",progress:0,stars:0,status:"active"},
   {id:2,emoji:"🪥",vn:"Vệ sinh cá nhân, răng miệng",en:"Personal hygiene & teeth",color:"#5DCAA5",days:"11–20",progress:0,stars:0,status:"locked"},
