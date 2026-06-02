@@ -165,7 +165,7 @@
 
         html += `
           <tr>
-            <td style="font-weight:700; color:var(--wood); word-break: break-all;">${item.email || '-'}</td>
+            <td style="font-weight:700; color:var(--wood); word-break: break-all;">${item.nickname || item.email || '-'}</td>
             <td style="text-align: center; font-weight: 800;">${item.day || '-'}</td>
             <td>${item.topic || '-'}</td>
             <td style="line-height: 1.5;">${answerContent}</td>
@@ -191,9 +191,11 @@
         filteredData = filteredData.filter(item => String(item.day) === dayInput);
       }
 
+      // Đã cập nhật để lọc theo cả nickname và email
       if (nameInput) {
         filteredData = filteredData.filter(item => 
-          item.email && item.email.toLowerCase().includes(nameInput)
+          (item.email && item.email.toLowerCase().includes(nameInput)) ||
+          (item.nickname && item.nickname.toLowerCase().includes(nameInput))
         );
       }
 
@@ -229,7 +231,9 @@
         const userData = await getUserData(user.email);
         if (userData) {
           window.currentUserRole = userData.role || "student";
-          document.getElementById('userEmailDisplay').textContent = user.email;
+          
+          // Ưu tiên hiển thị nickname, nếu không có mới hiển thị email
+          document.getElementById('userEmailDisplay').textContent = userData.nickname || user.email;
           document.getElementById('userEmailDisplay').style.display = 'block';
           
           const progress = await getUserProgress(user.email);
