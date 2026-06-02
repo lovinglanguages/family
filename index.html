@@ -103,7 +103,7 @@
       }
     }
 
-    // 4. XEM BÀI LÀM HỌC VIÊN (DÀNH CHO GIÁO VIÊN)
+    // 4. XEM BÀI LÀM HỌC VIÊN (DÀNH CHO TUTOR)
     window.loadStudentResults = async () => {
       const list = document.getElementById('resultsList');
       list.innerHTML = "<p style='padding:20px; color:var(--text-soft);'>Loading data... / Đang tải dữ liệu...</p>";
@@ -141,7 +141,7 @@
             <thead>
               <tr>
                 <th style="width: 20%">Student / Học viên</th>
-                <th style="width: 10%; text-align: center;">Day / Ngày</th>
+                <th style="width: 10%; text-align: center;">Day / Bài</th>
                 <th style="width: 15%">Topic / Chủ đề</th>
                 <th style="width: 25%">Submission / Bài làm</th>
                 <th style="width: 20%">Audio / Ghi âm</th>
@@ -179,16 +179,45 @@
       list.innerHTML = html;
     };
 
-    window.filterByDay = () => {
+    // Hàm lọc tổng hợp (Lọc kết hợp nhiều điều kiện)
+    window.applyFilters = () => {
       const dayInput = document.getElementById('filterDayInput').value.trim();
-      if (!dayInput) return window.renderTable(allStudentResults);
-      
-      const filteredData = allStudentResults.filter(item => String(item.day) === dayInput);
+      const nameInput = document.getElementById('filterNameInput').value.trim().toLowerCase();
+      const dateInput = document.getElementById('filterDateInput').value; 
+
+      let filteredData = allStudentResults;
+
+      if (dayInput) {
+        filteredData = filteredData.filter(item => String(item.day) === dayInput);
+      }
+
+      if (nameInput) {
+        filteredData = filteredData.filter(item => 
+          item.email && item.email.toLowerCase().includes(nameInput)
+        );
+      }
+
+      if (dateInput) {
+        filteredData = filteredData.filter(item => {
+          if (!item.timestamp) return false;
+          
+          const itemDate = item.timestamp.toDate();
+          const year = itemDate.getFullYear();
+          const month = String(itemDate.getMonth() + 1).padStart(2, '0');
+          const day = String(itemDate.getDate()).padStart(2, '0');
+          const formattedDate = `${year}-${month}-${day}`;
+
+          return formattedDate === dateInput;
+        });
+      }
+
       window.renderTable(filteredData);
     };
 
     window.clearFilter = () => {
       document.getElementById('filterDayInput').value = '';
+      document.getElementById('filterNameInput').value = '';
+      document.getElementById('filterDateInput').value = '';
       window.renderTable(allStudentResults);
     };
 
@@ -257,7 +286,7 @@
     
     .section-lbl { font-size:16px; font-weight:800; color:var(--text-soft); margin-bottom:16px; text-transform:uppercase; letter-spacing: 0.5px; }
 
-    /* TEACHER AREA & TABLE */
+    /* TUTOR AREA & TABLE */
     #teacherArea { background:#fff; padding:24px; border-radius:24px; border:2px solid var(--green); margin-bottom:32px; }
     .teacher-controls { display:flex; gap:15px; margin-bottom:20px; align-items:center; flex-wrap:wrap; background:var(--beige); padding:15px; border-radius:12px; }
     .t-btn { padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; border:none; color:#fff; transition:0.2s; }
@@ -376,15 +405,17 @@
   </div>
 
   <div id="teacherArea" style="display:none">
-    <h2 style="font-family:'Lora'; color:var(--green); margin-bottom:15px; font-size: 22px;">Teacher's Corner / Góc Giáo Viên 👩‍🏫</h2>
+    <h2 style="font-family:'Lora'; color:var(--green); margin-bottom:15px; font-size: 22px;">Tutor's Corner / Góc Quản Lý 👩‍🏫</h2>
     
     <div class="teacher-controls">
       <button class="t-btn btn-sync" onclick="loadStudentResults()">🔄 Refresh Data / Tải lại</button>
       
       <div class="filter-group">
         <span style="font-weight: 800; color: var(--wood); font-size: 14px;">Filter by / Lọc:</span>
-        <input type="number" id="filterDayInput" class="filter-input" placeholder="Day / Ngày">
-        <button class="t-btn btn-filter" onclick="filterByDay()">🔍 Apply / Lọc</button>
+        <input type="number" id="filterDayInput" class="filter-input" placeholder="Day / Bài">
+        <input type="text" id="filterNameInput" class="filter-input" placeholder="Email / Tên" style="width:140px;">
+        <input type="date" id="filterDateInput" class="filter-input" style="width:130px;">
+        <button class="t-btn btn-filter" onclick="applyFilters()">🔍 Apply / Lọc</button>
         <button class="t-btn btn-clear" onclick="clearFilter()">❌ Clear / Bỏ</button>
       </div>
     </div>
