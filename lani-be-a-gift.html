@@ -26,6 +26,7 @@
     const provider = new GoogleAuthProvider();
 
     let currentUserRole = "student";
+    let allStudentResults = []; // Biến lưu trữ toàn bộ dữ liệu để lọc
 
     // 1. KIỂM TRA WHITELIST & ROLE
     async function getUserData(email) {
@@ -80,33 +81,89 @@
     // 3. XEM BÀI LÀM HỌC VIÊN (DÀNH CHO GIÁO VIÊN)
     window.loadStudentResults = async () => {
       const list = document.getElementById('resultsList');
-      list.innerHTML = "<p style='padding:20px'>Đang lấy dữ liệu...</p>";
+      list.innerHTML = "<p style='padding:20px'>Đang tải dữ liệu từ máy chủ...</p>";
       
       try {
         const q = query(collection(db, "results"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
-        list.innerHTML = "";
         
         if(querySnapshot.empty) {
           list.innerHTML = "<p style='padding:20px'>Chưa có học viên nào nộp bài.</p>";
           return;
         }
 
+        // Lưu vào mảng tạm để dùng cho bộ lọc
+        allStudentResults = [];
         querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          list.innerHTML += `
-            <div class="result-card">
-              <div style="font-weight:800; color:var(--wood)">${data.email}</div>
-              <div style="font-size:14px; margin:5px 0">Chủ đề ${data.topic} - Ngày ${data.day}</div>
-              <div class="result-content">${data.answer || "Bài tập ghi âm"}</div>
-              ${data.audioUrl ? `<audio controls src="${data.audioUrl}" style="margin-top:10px; width:100%; height:35px"></audio>` : ""}
-              <div style="font-size:11px; color:var(--text-soft); margin-top:8px">${data.timestamp?.toDate().toLocaleString() || "Vừa xong"}</div>
-            </div>
-          `;
+          allStudentResults.push(doc.data());
         });
+
+        window.renderTable(allStudentResults);
       } catch (e) {
         list.innerHTML = "<p style='color:red; padding:20px'>Lỗi bảo mật hoặc bạn không có quyền xem.</p>";
       }
+    };
+
+    // Hàm vẽ bảng dữ liệu
+    window.renderTable = (data) => {
+      const list = document.getElementById('resultsList');
+      if (data.length === 0) {
+        list.innerHTML = "<p style='padding:20px'>Không tìm thấy kết quả phù hợp.</p>";
+        return;
+      }
+
+      let html = `
+        <div class="table-responsive">
+          <table class="teacher-table">
+            <thead>
+              <tr>
+                <th style="width: 25%">Email Học viên</th>
+                <th style="width: 10%; text-align: center;">Ngày</th>
+                <th style="width: 15%">Chủ đề</th>
+                <th style="width: 25%">Nội dung bài làm</th>
+                <th style="width: 15%">Ghi âm</th>
+                <th style="width: 10%">Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      data.forEach(item => {
+        const timeStr = item.timestamp?.toDate().toLocaleString() || "Vừa xong";
+        const audioTag = item.audioUrl ? `<audio controls src="${item.audioUrl}" class="table-audio"></audio>` : "<span style='color: #999; font-style: italic;'>Không có</span>";
+        
+        html += `
+          <tr>
+            <td style="font-weight:700; color:var(--wood)">${item.email || '-'}</td>
+            <td style="text-align: center; font-weight: 800;">${item.day || '-'}</td>
+            <td>${item.topic || '-'}</td>
+            <td>${item.answer || '-'}</td>
+            <td>${audioTag}</td>
+            <td style="font-size:12px; color:var(--text-soft)">${timeStr}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      list.innerHTML = html;
+    };
+
+    // Hàm Lọc theo Ngày
+    window.filterByDay = () => {
+      const dayInput = document.getElementById('filterDayInput').value.trim();
+      if (!dayInput) {
+        window.renderTable(allStudentResults); // Trả về toàn bộ nếu không nhập gì
+        return;
+      }
+      
+      const filteredData = allStudentResults.filter(item => String(item.day) === dayInput);
+      window.renderTable(filteredData);
+    };
+
+    // Hàm Bỏ lọc
+    window.clearFilter = () => {
+      document.getElementById('filterDayInput').value = '';
+      window.renderTable(allStudentResults);
     };
 
     window.logout = () => { signOut(auth); location.reload(); };
@@ -164,16 +221,44 @@
     
     .section-lbl{font-size:16px;font-weight:700;color:var(--text-soft);margin-bottom:16px;text-transform:uppercase}
 
-    /* TEACHER AREA */
+    /* TEACHER AREA & TABLE */
     #teacherArea {
       background: #fff; padding: 24px; border-radius: 24px; border: 2px solid var(--green); margin-bottom: 30px;
     }
-    .result-card {
-      background: var(--beige); padding: 16px; border-radius: 16px; margin-bottom: 12px; border: 1px solid var(--beige2);
+    
+    /* Giao diện bộ lọc */
+    .teacher-controls {
+      display: flex; gap: 15px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; background: var(--beige); padding: 15px; border-radius: 12px;
     }
-    .result-content {
-      font-style: italic; background: #fff; padding: 10px; border-radius: 10px; border-left: 4px solid var(--green); margin-top: 5px;
+    .t-btn {
+      padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; color: #fff;
     }
+    .btn-sync { background: var(--green); }
+    .btn-filter { background: var(--drop); }
+    .btn-clear { background: #E24B4A; }
+    
+    .filter-group {
+      display: flex; align-items: center; gap: 10px; border-left: 2px solid var(--warm); padding-left: 15px;
+    }
+    .filter-input {
+      padding: 8px 12px; border-radius: 8px; border: 1px solid var(--warm); width: 100px; font-family: 'Nunito'; outline: none;
+    }
+
+    /* Giao diện bảng */
+    .table-responsive {
+      max-height: 500px; overflow-y: auto; overflow-x: auto; border: 1px solid var(--beige2); border-radius: 12px;
+    }
+    .teacher-table {
+      width: 100%; border-collapse: collapse; min-width: 800px;
+    }
+    .teacher-table th {
+      background: var(--green); color: #fff; padding: 14px; text-align: left; position: sticky; top: 0; z-index: 2; font-family: 'Lora';
+    }
+    .teacher-table td {
+      padding: 14px; border-bottom: 1px solid var(--beige2); vertical-align: middle; font-size: 14px; -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; /* Cho phép bôi đen text trong bảng để giáo viên tiện đọc/copy lỗi nếu cần */
+    }
+    .teacher-table tr:hover { background: var(--beige); }
+    .table-audio { width: 100%; max-width: 200px; height: 35px; outline: none; }
 
     .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
     .t-card{background:#fff;border:1px solid var(--beige2);border-radius:var(--card-r);overflow:hidden;text-decoration:none;color:inherit;display:block;}
@@ -256,11 +341,20 @@
 
   <div id="teacherArea" style="display:none">
     <h2 style="font-family:'Lora'; color:var(--green); margin-bottom:15px">Góc Giáo Viên 👩‍🏫</h2>
-    <button onclick="loadStudentResults()" style="background:var(--green); color:#fff; border:none; padding:14px 24px; border-radius:12px; font-weight:800; cursor:pointer">
-      🔄 Cập nhật bài làm học viên
-    </button>
-    <div id="resultsList" style="margin-top:20px; max-height: 500px; overflow-y: auto;">
-      <p style="color:var(--text-soft)">Bấm nút để xem kết quả học tập.</p>
+    
+    <div class="teacher-controls">
+      <button class="t-btn btn-sync" onclick="loadStudentResults()">🔄 Lấy dữ liệu mới</button>
+      
+      <div class="filter-group">
+        <span style="font-weight: 700; color: var(--wood);">Lọc theo:</span>
+        <input type="number" id="filterDayInput" class="filter-input" placeholder="Ngày (VD: 1)">
+        <button class="t-btn btn-filter" onclick="filterByDay()">🔍 Lọc</button>
+        <button class="t-btn btn-clear" onclick="clearFilter()">❌ Bỏ lọc</button>
+      </div>
+    </div>
+
+    <div id="resultsList">
+      <p style="color:var(--text-soft)">Bấm "Lấy dữ liệu mới" để xem kết quả học tập.</p>
     </div>
   </div>
   
