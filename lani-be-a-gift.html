@@ -25,8 +25,9 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    let currentUserRole = "student";
-    let allStudentResults = []; // Biến lưu trữ toàn bộ dữ liệu để lọc
+    // Khai báo biến role dạng global (window) để bên ngoài có thể đọc được
+    window.currentUserRole = "student";
+    let allStudentResults = []; 
 
     // 1. KIỂM TRA WHITELIST & ROLE
     async function getUserData(email) {
@@ -55,7 +56,7 @@
         const userData = await getUserData(result.user.email);
         
         if (userData) {
-          currentUserRole = userData.role || "student";
+          window.currentUserRole = userData.role || "student";
           enterGarden();
         } else {
           await signOut(auth);
@@ -73,8 +74,13 @@
     function enterGarden() {
       document.getElementById('loginOverlay').style.opacity = '0';
       setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 400);
-      if (currentUserRole === "teacher") {
+      
+      // Nếu là giáo viên thì hiển thị khu vực giáo viên và mở khóa quyền copy
+      if (window.currentUserRole === "teacher") {
         document.getElementById('teacherArea').style.display = 'block';
+        document.body.classList.add('is-teacher'); // Thêm class mở khóa copy cho giáo viên
+      } else {
+        document.body.classList.remove('is-teacher');
       }
     }
 
@@ -92,7 +98,6 @@
           return;
         }
 
-        // Lưu vào mảng tạm để dùng cho bộ lọc
         allStudentResults = [];
         querySnapshot.forEach((doc) => {
           allStudentResults.push(doc.data());
@@ -152,10 +157,9 @@
     window.filterByDay = () => {
       const dayInput = document.getElementById('filterDayInput').value.trim();
       if (!dayInput) {
-        window.renderTable(allStudentResults); // Trả về toàn bộ nếu không nhập gì
+        window.renderTable(allStudentResults);
         return;
       }
-      
       const filteredData = allStudentResults.filter(item => String(item.day) === dayInput);
       window.renderTable(filteredData);
     };
@@ -172,7 +176,7 @@
       if (user) {
         const userData = await getUserData(user.email);
         if (userData) {
-          currentUserRole = userData.role || "student";
+          window.currentUserRole = userData.role || "student";
           document.getElementById('userEmailDisplay').textContent = user.email;
           enterGarden();
         } else {
@@ -190,11 +194,18 @@
       --drop:#4A90D9;--drop-light:#A8D4F5;--text:#3D2B1F;--text-soft:#9B7E6F;--card-r:16px;
     }
     
-    /* CHỐNG COPY TUYỆT ĐỐI */
-    *{
-      margin:0;padding:0;box-sizing:border-box;
+    /* CHỐNG COPY MẶC ĐỊNH CHO TOÀN TRANG (Sẽ bị bỏ qua nếu là giáo viên) */
+    body:not(.is-teacher) * {
       -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
       -webkit-touch-callout: none;
+    }
+    /* Đảm bảo ô input luôn nhập được */
+    input, textarea {
+      -webkit-user-select: auto !important; -moz-user-select: auto !important; -ms-user-select: auto !important; user-select: auto !important;
+    }
+    
+    *{
+      margin:0;padding:0;box-sizing:border-box;
     }
 
     body{
@@ -255,7 +266,7 @@
       background: var(--green); color: #fff; padding: 14px; text-align: left; position: sticky; top: 0; z-index: 2; font-family: 'Lora';
     }
     .teacher-table td {
-      padding: 14px; border-bottom: 1px solid var(--beige2); vertical-align: middle; font-size: 14px; -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; /* Cho phép bôi đen text trong bảng để giáo viên tiện đọc/copy lỗi nếu cần */
+      padding: 14px; border-bottom: 1px solid var(--beige2); vertical-align: middle; font-size: 14px;
     }
     .teacher-table tr:hover { background: var(--beige); }
     .table-audio { width: 100%; max-width: 200px; height: 35px; outline: none; }
@@ -364,12 +375,21 @@
 
 <script>
 // --- ANTI-COPY SECURITY ---
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault(); // F12 & Inspect
-  if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 86)) e.preventDefault(); // Ctrl+U, S, C, V
+// Khóa các thao tác trừ khi role hiện tại là 'teacher'
+document.addEventListener('contextmenu', e => {
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
 });
-document.addEventListener('dragstart', e => e.preventDefault());
+
+document.addEventListener('keydown', e => {
+  if (window.currentUserRole !== 'teacher') {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault(); // F12 & Inspect
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 86)) e.preventDefault(); // Ctrl+U, S, C, V
+  }
+});
+
+document.addEventListener('dragstart', e => {
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+});
 
 // --- TOPICS DATA ---
 const TOPICS = [
