@@ -604,6 +604,9 @@ function buildDaily() {
   document.getElementById('dayTabsContainer').innerHTML = CURRICULUM.map(d => `<div class="d-tab ${d.day===currentDay?'active':''}" onclick="selectDay(${d.day})">Day ${d.day}</div>`).join('');
   let d = CURRICULUM[currentDay - 1];
   
+  // Hiển thị lại tab "6. Ghi âm" khi ở chế độ Daily
+  document.getElementById('tabGame6').style.display = 'inline-block';
+
   document.getElementById('theFC').classList.remove('flipped');
   document.getElementById('dEn').textContent = d.en;
   document.getElementById('dPron').textContent = d.pron;
@@ -620,6 +623,9 @@ function selectDay(day) { currentDay = day; buildDaily(); }
 
 // --- XÂY DỰNG MỤC CHALLENGE (HIỂN THỊ CÂU ĐỂ GHI ÂM TỔNG HỢP) ---
 function buildChallenge() {
+  // Ẩn tab "6. Ghi âm" trong Game Center khi ở phần Challenge
+  document.getElementById('tabGame6').style.display = 'none';
+
   document.getElementById('chalListContainer').innerHTML = CURRICULUM.map(d => `
     <div class="chal-item">
       <div class="chal-head">Day ${d.day}: ${d.vn}</div>
