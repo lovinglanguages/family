@@ -1,327 +1,462 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lani – Be A Gift · Loving Languages</title>
-<meta name="description" content="Tiếng Anh Gia Đình – Cùng ba mẹ đồng hành học tiếng Anh cùng con mỗi ngày.">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --cream: #FBF7F0;
-    --warm-white: #FFFCF7;
-    --blush: #F5E6D8;
-    --rose: #E8C4A8;
-    --terracotta: #C9764A;
-    --terra-deep: #A0552E;
-    --sage: #7A9E87;
-    --sage-light: #C8DDD0;
-    --sage-deep: #4A7259;
-    --ink: #2C2416;
-    --ink-soft: #5C4E3A;
-    --ink-muted: #8C7E6A;
-    --border: rgba(44,36,22,0.12);
-    --radius: 16px;
-    --radius-sm: 10px;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    font-family:'DM Sans',sans-serif;
-    background:var(--cream);
-    color:var(--ink);
-    min-height:100vh;
-    overflow-x:hidden;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+  <title>Loving English Garden - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  /* ── HERO ── */
-  .hero {
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:40px 24px 60px;
-    text-align:center;
-    position:relative;
-    overflow:hidden;
-  }
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
+      authDomain: "dailyenglish-aca50.firebaseapp.com",
+      projectId: "dailyenglish-aca50",
+      storageBucket: "dailyenglish-aca50.firebasestorage.app",
+      messagingSenderId: "876041668209",
+      appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
+    };
 
-  /* Soft background circles */
-  .hero::before {
-    content:'';
-    position:absolute; top:-80px; right:-60px;
-    width:320px; height:320px; border-radius:50%;
-    background:radial-gradient(circle, rgba(201,118,74,0.12) 0%, transparent 70%);
-    pointer-events:none;
-  }
-  .hero::after {
-    content:'';
-    position:absolute; bottom:-60px; left:-60px;
-    width:260px; height:260px; border-radius:50%;
-    background:radial-gradient(circle, rgba(122,158,135,0.14) 0%, transparent 70%);
-    pointer-events:none;
-  }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-  /* Logo */
-  .logo-wrap { margin-bottom:32px; }
-  .logo-text {
-    font-family:'Playfair Display',serif;
-    font-size:36px;
-    color:var(--terracotta);
-    letter-spacing:-0.5px;
-  }
-  .logo-text em { font-style:italic; }
-  .logo-sub {
-    font-size:12px;
-    letter-spacing:3px;
-    text-transform:uppercase;
-    color:var(--ink-muted);
-    margin-top:4px;
-  }
+    window.currentUserRole = "student";
+    let allStudentResults = []; 
 
-  /* Avatar */
-  .avatar-wrap {
-    width:88px; height:88px; border-radius:50%;
-    background:var(--blush);
-    border:3px solid var(--rose);
-    display:flex; align-items:center; justify-content:center;
-    margin:0 auto 20px;
-    font-family:'Playfair Display',serif;
-    font-size:36px;
-    color:var(--terracotta);
-  }
+    // 1. KIỂM TRA WHITELIST (Danh sách học viên/giáo viên được phép)
+    async function getUserData(email) {
+      try {
+        const docRef = doc(db, "whitelist", email.toLowerCase().trim());
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return docSnap.data();
+        }
+        return null;
+      } catch (e) {
+        console.error("Lỗi xác thực:", e);
+        return null;
+      }
+    }
 
-  /* Headline */
-  .headline {
-    font-family:'Playfair Display',serif;
-    font-size:32px;
-    line-height:1.2;
-    color:var(--ink);
-    margin-bottom:10px;
-    max-width:340px;
-  }
-  .headline em { color:var(--terracotta); font-style:italic; }
+    // 2. LẤY DỮ LIỆU ĐIỂM THƯỞNG (Giọt nước)
+    async function getUserProgress(email) {
+      try {
+        const docRef = doc(db, "users", email.toLowerCase().trim());
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return docSnap.data();
+        }
+        return { drops: 0 }; // Nếu học viên mới tinh, trả về 0
+      } catch (e) {
+        console.error("Lỗi lấy tiến độ:", e);
+        return { drops: 0 };
+      }
+    }
 
-  .tagline {
-    font-size:14px;
-    color:var(--ink-muted);
-    line-height:1.7;
-    max-width:320px;
-    margin:0 auto 28px;
-  }
+    // Cập nhật giao diện điểm thưởng
+    function updateDropsUI(drops) {
+      document.getElementById('navDrops').textContent = drops || 0;
+      document.getElementById('sDrops').textContent = drops || 0;
+    }
 
-  /* Stats row */
-  .stats {
-    display:flex; gap:28px; justify-content:center;
-    margin-bottom:36px; flex-wrap:wrap;
-  }
-  .stat { text-align:center; }
-  .stat-num {
-    font-family:'Playfair Display',serif;
-    font-size:30px;
-    color:var(--terracotta);
-    line-height:1;
-  }
-  .stat-lbl { font-size:12px; color:var(--ink-muted); margin-top:3px; }
+    // 3. ĐĂNG NHẬP GOOGLE
+    window.loginWithGoogle = async () => {
+      const errBox = document.getElementById('loginError');
+      const btn = document.querySelector('.google-btn');
+      errBox.style.display = 'none';
+      btn.innerText = "Đang kiểm tra...";
 
-  /* CTA button */
-  .cta-btn {
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:16px 36px;
-    background:var(--terracotta);
-    color:white;
-    border-radius:99px;
-    font-size:16px;
-    font-weight:500;
-    font-family:'DM Sans',sans-serif;
-    text-decoration:none;
-    transition:all 0.25s;
-    margin-bottom:16px;
-  }
-  .cta-btn:hover { background:var(--terra-deep); transform:translateY(-2px); box-shadow:0 8px 24px rgba(201,118,74,0.25); }
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const email = result.user.email;
+        const userData = await getUserData(email);
+        
+        if (userData) {
+          window.currentUserRole = userData.role || "student";
+          
+          // Lấy điểm thưởng và hiển thị
+          const progress = await getUserProgress(email);
+          updateDropsUI(progress.drops);
+          
+          enterGarden();
+        } else {
+          await signOut(auth);
+          errBox.textContent = "Email này không có trong danh sách được cấp quyền!";
+          errBox.style.display = 'block';
+          btn.innerHTML = `<span>Đăng nhập lại bằng Google</span>`;
+        }
+      } catch (error) {
+        errBox.textContent = "Lỗi kết nối. Thử lại sau!";
+        errBox.style.display = 'block';
+        btn.innerText = "Đăng nhập bằng Google";
+      }
+    };
 
-  .cta-hint { font-size:12px; color:var(--ink-muted); margin-bottom:40px; }
+    function enterGarden() {
+      document.getElementById('loginOverlay').style.opacity = '0';
+      setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 400);
+      
+      // Nếu là giáo viên thì hiển thị khu vực giáo viên và mở khóa quyền copy
+      if (window.currentUserRole === "teacher") {
+        document.getElementById('teacherArea').style.display = 'block';
+        document.body.classList.add('is-teacher'); 
+      } else {
+        document.body.classList.remove('is-teacher');
+      }
+    }
 
-  /* Feature pills */
-  .features {
-    display:flex; flex-wrap:wrap; gap:8px;
-    justify-content:center;
-    max-width:360px;
-    margin:0 auto 44px;
-  }
-  .feature-pill {
-    padding:6px 14px;
-    border-radius:99px;
-    border:1px solid var(--border);
-    background:var(--warm-white);
-    font-size:12px;
-    color:var(--ink-soft);
-  }
+    // 4. XEM BÀI LÀM HỌC VIÊN (DÀNH CHO GIÁO VIÊN)
+    window.loadStudentResults = async () => {
+      const list = document.getElementById('resultsList');
+      list.innerHTML = "<p style='padding:20px'>Đang tải dữ liệu từ máy chủ...</p>";
+      
+      try {
+        const q = query(collection(db, "results"), orderBy("timestamp", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        if(querySnapshot.empty) {
+          list.innerHTML = "<p style='padding:20px'>Chưa có học viên nào nộp bài.</p>";
+          return;
+        }
 
-  /* Quote */
-  .quote-block {
-    background:var(--warm-white);
-    border-left:3px solid var(--terracotta);
-    border-radius:0 var(--radius-sm) var(--radius-sm) 0;
-    padding:16px 20px;
-    text-align:left;
-    max-width:360px;
-    width:100%;
-    margin:0 auto 40px;
-  }
-  .quote-en {
-    font-family:'Playfair Display',serif;
-    font-style:italic;
-    font-size:14px;
-    color:var(--ink-soft);
-    line-height:1.6;
-    margin-bottom:6px;
-  }
-  .quote-vn {
-    font-size:12px;
-    color:var(--ink-muted);
-    line-height:1.5;
-  }
+        allStudentResults = [];
+        querySnapshot.forEach((doc) => {
+          allStudentResults.push(doc.data());
+        });
 
-  /* Social links */
-  .socials {
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    width:100%;
-    max-width:320px;
-    margin:0 auto 16px;
-  }
-  .social-link {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:11px 16px;
-    border-radius:var(--radius-sm);
-    border:1px solid var(--border);
-    background:var(--warm-white);
-    font-size:13px;
-    color:var(--ink-soft);
-    text-decoration:none;
-    transition:all 0.2s;
-  }
-  .social-link:hover { transform:translateX(4px); }
-  .social-link.fb:hover { background:#E8F0FE; border-color:#A8C0F8; color:#1a56db; }
-  .social-link.yt:hover { background:#FEE8E8; border-color:#F8A8A8; color:#cc0000; }
-  .social-link.tt:hover { background:#E8FAF8; border-color:#A8EAE4; color:#00897b; }
+        window.renderTable(allStudentResults);
+      } catch (e) {
+        list.innerHTML = "<p style='color:red; padding:20px'>Lỗi bảo mật hoặc bạn không có quyền xem.</p>";
+      }
+    };
 
-  .social-icon {
-    width:30px; height:30px; border-radius:8px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:13px; font-weight:700; flex-shrink:0;
-  }
-  .social-link.fb .social-icon { background:#E8F0FE; color:#1a56db; }
-  .social-link.yt .social-icon { background:#FEE8E8; color:#cc0000; }
-  .social-link.tt .social-icon { background:#E8FAF8; color:#00897b; }
+    // Hàm vẽ bảng dữ liệu cho giáo viên
+    window.renderTable = (data) => {
+      const list = document.getElementById('resultsList');
+      if (data.length === 0) {
+        list.innerHTML = "<p style='padding:20px'>Không tìm thấy kết quả phù hợp.</p>";
+        return;
+      }
 
-  .footer-note {
-    font-size:11px;
-    color:var(--ink-muted);
-    margin-top:24px;
-    padding-bottom:24px;
-    opacity:0.7;
-  }
+      let html = `
+        <div class="table-responsive">
+          <table class="teacher-table">
+            <thead>
+              <tr>
+                <th style="width: 25%">Email Học viên</th>
+                <th style="width: 10%; text-align: center;">Ngày</th>
+                <th style="width: 15%">Chủ đề</th>
+                <th style="width: 25%">Nội dung bài làm</th>
+                <th style="width: 15%">Ghi âm</th>
+                <th style="width: 10%">Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
 
-  /* Fade-in animation */
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(18px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  .fade-1 { animation:fadeUp 0.6s ease both; }
-  .fade-2 { animation:fadeUp 0.6s 0.1s ease both; }
-  .fade-3 { animation:fadeUp 0.6s 0.2s ease both; }
-  .fade-4 { animation:fadeUp 0.6s 0.3s ease both; }
-  .fade-5 { animation:fadeUp 0.6s 0.4s ease both; }
-  .fade-6 { animation:fadeUp 0.6s 0.5s ease both; }
-</style>
+      data.forEach(item => {
+        const timeStr = item.timestamp?.toDate().toLocaleString() || "Vừa xong";
+        const audioTag = item.audioUrl ? `<audio controls src="${item.audioUrl}" class="table-audio"></audio>` : "<span style='color: #999; font-style: italic;'>Không có</span>";
+        
+        // Tạo link bấm trực tiếp nếu học viên dán link Vocaroo vào phần Answer
+        let answerContent = item.answer || '-';
+        if (answerContent.includes("voca.ro")) {
+           const link = answerContent.match(/(https?:\/\/[^\s]+)/g);
+           if(link) answerContent += `<br><a href="${link[0]}" target="_blank" style="color:var(--drop); font-weight:bold; font-size:12px;">Mở link nghe ↗</a>`;
+        }
+
+        html += `
+          <tr>
+            <td style="font-weight:700; color:var(--wood)">${item.email || '-'}</td>
+            <td style="text-align: center; font-weight: 800;">${item.day || '-'}</td>
+            <td>${item.topic || '-'}</td>
+            <td>${answerContent}</td>
+            <td>${audioTag}</td>
+            <td style="font-size:12px; color:var(--text-soft)">${timeStr}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table></div>`;
+      list.innerHTML = html;
+    };
+
+    // Hàm Lọc theo Ngày
+    window.filterByDay = () => {
+      const dayInput = document.getElementById('filterDayInput').value.trim();
+      if (!dayInput) {
+        window.renderTable(allStudentResults);
+        return;
+      }
+      const filteredData = allStudentResults.filter(item => String(item.day) === dayInput);
+      window.renderTable(filteredData);
+    };
+
+    // Hàm Bỏ lọc
+    window.clearFilter = () => {
+      document.getElementById('filterDayInput').value = '';
+      window.renderTable(allStudentResults);
+    };
+
+    window.logout = () => { signOut(auth); location.reload(); };
+
+    // 5. THEO DÕI TRẠNG THÁI ĐĂNG NHẬP
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userData = await getUserData(user.email);
+        if (userData) {
+          window.currentUserRole = userData.role || "student";
+          document.getElementById('userEmailDisplay').textContent = user.email;
+          document.getElementById('userEmailDisplay').style.display = 'block';
+          
+          // Lấy điểm thưởng và hiển thị
+          const progress = await getUserProgress(user.email);
+          updateDropsUI(progress.drops);
+
+          enterGarden();
+        } else {
+          await signOut(auth);
+        }
+      } else {
+        document.getElementById('loginOverlay').style.display = 'flex';
+      }
+    });
+  </script>
+
+  <style>
+    :root{
+      --beige:#F5F0E8;--beige2:#EDE6D6;--warm:#D4C5A9;--wood:#8B6F4E;--green:#5C8A5E;
+      --drop:#4A90D9;--drop-light:#A8D4F5;--text:#3D2B1F;--text-soft:#9B7E6F;--card-r:16px;
+    }
+    
+    /* CHỐNG COPY MẶC ĐỊNH CHO TOÀN TRANG (Sẽ bị bỏ qua nếu là giáo viên) */
+    body:not(.is-teacher) * {
+      -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+      -webkit-touch-callout: none;
+    }
+    /* Đảm bảo ô input luôn nhập được */
+    input, textarea {
+      -webkit-user-select: auto !important; -moz-user-select: auto !important; -ms-user-select: auto !important; user-select: auto !important;
+    }
+    
+    *{ margin:0;padding:0;box-sizing:border-box; }
+
+    body{
+      font-family:'Nunito',sans-serif;background:var(--beige);color:var(--text);
+      min-height:100vh; overflow-x: hidden;
+    }
+
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(245,240,232,0.97);border-bottom:1px solid var(--warm);position:sticky;top:0;z-index:99}
+    .logo{font-family:'Lora',serif;font-size:20px;color:var(--wood);font-weight:600;}
+    .nav-right{display:flex;align-items:center;gap:12px}
+    .drops-pill{display:flex;align-items:center;gap:6px;background:var(--drop-light);border:1px solid var(--drop);border-radius:20px;padding:5px 12px;font-size:15px;font-weight:700;color:var(--drop)}
+    
+    .btn-logout {background: transparent; border: 1px solid var(--warm); color: var(--text-soft); padding: 6px 14px; border-radius: 12px; font-weight: 700; cursor: pointer;}
+
+    .home-wrap{padding:24px 20px 60px;max-width:900px;margin:0 auto}
+    .home-hero{text-align:center;padding:28px 0 24px}
+    .hero-plant{font-size:64px;margin-bottom:10px}
+    .hero-title{font-family:'Lora',serif;font-size:28px;color:var(--wood);font-weight:600;}
+    
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+    .stat-box{background:#fff;border:1px solid var(--beige2);border-radius:var(--card-r);padding:16px 12px;text-align:center}
+    .stat-num{font-size:24px;font-weight:800;color:var(--wood)}
+    .stat-lbl{font-size:10px;color:var(--text-soft);text-transform:uppercase;margin-top:4px}
+    
+    .section-lbl{font-size:16px;font-weight:700;color:var(--text-soft);margin-bottom:16px;text-transform:uppercase}
+
+    /* TEACHER AREA & TABLE */
+    #teacherArea {
+      background: #fff; padding: 24px; border-radius: 24px; border: 2px solid var(--green); margin-bottom: 30px;
+    }
+    
+    .teacher-controls { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; background: var(--beige); padding: 15px; border-radius: 12px; }
+    .t-btn { padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; color: #fff; }
+    .btn-sync { background: var(--green); }
+    .btn-filter { background: var(--drop); }
+    .btn-clear { background: #E24B4A; }
+    
+    .filter-group { display: flex; align-items: center; gap: 10px; border-left: 2px solid var(--warm); padding-left: 15px; }
+    .filter-input { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--warm); width: 100px; font-family: 'Nunito'; outline: none; }
+
+    .table-responsive { max-height: 500px; overflow-y: auto; overflow-x: auto; border: 1px solid var(--beige2); border-radius: 12px; }
+    .teacher-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+    .teacher-table th { background: var(--green); color: #fff; padding: 14px; text-align: left; position: sticky; top: 0; z-index: 2; font-family: 'Lora'; }
+    .teacher-table td { padding: 14px; border-bottom: 1px solid var(--beige2); vertical-align: middle; font-size: 14px; }
+    .teacher-table tr:hover { background: var(--beige); }
+    .table-audio { width: 100%; max-width: 200px; height: 35px; outline: none; }
+
+    .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+    .t-card{background:#fff;border:1px solid var(--beige2);border-radius:var(--card-r);overflow:hidden;text-decoration:none;color:inherit;display:block;}
+    .t-card.t-locked{opacity:.65;pointer-events:none;}
+    .t-thumb{height:100px;display:flex;align-items:center;justify-content:center;position:relative}
+    .t-emoji{font-size: 44px;}
+    .t-stars{position:absolute;bottom:8px;right:10px;display:flex;gap:2px}
+    .t-star{width:12px;height:12px}
+    
+    .t-body{padding:14px}
+    .t-vn{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .t-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:4px 10px;margin-bottom:10px}
+    .b-active{background:#E6F1FB;color:#0C447C}.b-locked{background:#F1EFE8;color:#5F5E5A}
+    
+    .t-bar-wrap{height:6px;background:var(--beige2);border-radius:4px;overflow:hidden;margin-top:6px;}
+    .t-bar-fill{height:100%;border-radius:4px;width:0;background:var(--warm)}
+
+    /* GOOGLE LOGIN OVERLAY */
+    .login-overlay{position:fixed;inset:0;background:var(--beige);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.4s}
+    .login-box{background:#fff;padding:40px 28px;border-radius:24px;box-shadow:0 10px 40px rgba(139,111,78,0.15);text-align:center;max-width:400px;width:90%;}
+    .google-btn{width:100%;background:#fff;color:var(--text);border:2px solid var(--beige2);padding:14px;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px}
+    .error-msg{color:#E24B4A;font-size:14px;font-weight:700;display:none;margin-top:20px;padding:12px;background:#FDECEA;border-radius:10px;}
+
+    /* LAPTOP ADAPTATION */
+    @media (min-width: 1024px) {
+      .home-wrap{max-width:1200px;}
+      .nav{padding: 24px 60px;}
+      .logo{font-size:36px;}
+      .hero-plant{font-size:100px;}
+      .hero-title{font-size:54px;}
+      .stat-num{font-size:56px;}
+      .stat-lbl{font-size:14px;}
+      .section-lbl{font-size:24px;}
+      .topic-grid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:30px;}
+      .t-thumb{height: 160px;} .t-emoji{font-size: 80px;}
+      .t-body{padding: 28px;} .t-vn{font-size:28px;}
+      .login-box{max-width: 500px; padding: 60px 40px;}
+      .login-title{font-size: 38px;}
+    }
+  </style>
 </head>
 <body>
 
-<div class="hero">
-
-  <!-- Logo -->
-  <div class="logo-wrap fade-1">
-    <div class="logo-text"><em>Lani</em> · Be A Gift</div>
-    <div class="logo-sub">Loving Languages</div>
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-plant">🌳</div>
+    <h1 class="login-title" style="font-family:'Lora'; color:var(--wood)">Loving English Garden</h1>
+    <p style="color:var(--text-soft); margin-top:10px">Chào mừng bạn trở lại vườn!</p>
+    
+    <button class="google-btn" onclick="loginWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+      Đăng nhập bằng Google
+    </button>
+    <div class="error-msg" id="loginError"></div>
   </div>
-
-  <!-- Avatar -->
-  <div class="avatar-wrap fade-2">L</div>
-
-  <!-- Headline -->
-  <h1 class="headline fade-2">
-    Tiếng Anh Gia Đình<br>
-    <em>Cùng nuôi dưỡng tình yêu tiếng Anh!</em>
-  </h1>
-
-  <p class="tagline fade-2">
-    Digital Creator · English Tutor<br>
-    Sharing joyful and inspiring ways to learn English and love languages.
-  </p>
-
-  <!-- Stats -->
-  <div class="stats fade-3">
-    <div class="stat">
-      <div class="stat-num">11</div>
-      <div class="stat-lbl">Chủ đề</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">110</div>
-      <div class="stat-lbl">Ngày học</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">5</div>
-      <div class="stat-lbl">Hoạt động/ngày</div>
-    </div>
-  </div>
-
-  <!-- Feature pills -->
-  <div class="features fade-3">
-    <span class="feature-pill">📖 Từ vựng</span>
-    <span class="feature-pill">📇 Flashcard</span>
-    <span class="feature-pill">❓ Quiz</span>
-    <span class="feature-pill">✍️ Dictation</span>
-    <span class="feature-pill">🎤 Shadowing</span>
-    <span class="feature-pill">📜 Full Script</span>
-  </div>
-
-  <!-- CTA -->
-  <a class="cta-btn fade-4" href="onboarding.html">
-    Bắt đầu hành trình →
-  </a>
-
-  <!-- Quote -->
-  <div class="quote-block fade-5">
-    <div class="quote-en">"The best gift you can give your child is your time, your attention, and your words."</div>
-    <div class="quote-vn">"Món quà tuyệt vời nhất ba mẹ có thể trao cho con chính là thời gian, sự hiện diện và những ngôn từ yêu thương."</div>
-  </div>
-
-  <!-- Social -->
-  <div class="socials fade-6">
-    <a class="social-link fb" href="https://fb.com/beagifttotheworld" target="_blank">
-      <div class="social-icon">f</div>
-      fb.com/beagifttotheworld
-    </a>
-    <a class="social-link yt" href="https://youtube.com/@beagifttotheworld" target="_blank">
-      <div class="social-icon">▶</div>
-      youtube.com/@beagifttotheworld
-    </a>
-    <a class="social-link tt" href="https://tiktok.com/@lanibeagift" target="_blank">
-      <div class="social-icon">♪</div>
-      tiktok.com/@lanibeagift
-    </a>
-  </div>
-
-  <p class="footer-note fade-6">© Lani · Be A Gift · Loving Languages All rights reserved 2026 </p>
-
 </div>
 
+<div class="nav">
+  <div class="logo">🌱 Loving English Garden</div>
+  <div class="nav-right">
+    <div id="userEmailDisplay" style="font-size:14px; font-weight:700; color:var(--wood); display:none"></div>
+    <div class="drops-pill">💧 <span id="navDrops">0</span></div>
+    <button class="btn-logout" onclick="logout()">Thoát</button>
+  </div>
+</div>
+
+<div class="home-wrap">
+  <div class="home-hero">
+    <div class="hero-plant">🌳</div>
+    <div class="hero-title">Vườn Tiếng Anh</div>
+    <p style="color:var(--text-soft)">100 ngày cùng con chinh phục Anh ngữ</p>
+  </div>
+  
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num" id="sDays">1</div><div class="stat-lbl">Ngày Xong</div></div>
+    <div class="stat-box"><div class="stat-num" id="sDrops">0</div><div class="stat-lbl">Nước 💧</div></div>
+    <div class="stat-box"><div class="stat-num" id="sStreak">1</div><div class="stat-lbl">Chuỗi 🔥</div></div>
+    <div class="stat-box"><div class="stat-num" id="sPct" style="color:var(--green)">1%</div><div class="stat-lbl">Tiến Độ</div></div>
+  </div>
+
+  <div id="teacherArea" style="display:none">
+    <h2 style="font-family:'Lora'; color:var(--green); margin-bottom:15px">Góc Giáo Viên 👩‍🏫</h2>
+    
+    <div class="teacher-controls">
+      <button class="t-btn btn-sync" onclick="loadStudentResults()">🔄 Lấy dữ liệu mới</button>
+      
+      <div class="filter-group">
+        <span style="font-weight: 700; color: var(--wood);">Lọc theo:</span>
+        <input type="number" id="filterDayInput" class="filter-input" placeholder="Ngày (VD: 1)">
+        <button class="t-btn btn-filter" onclick="filterByDay()">🔍 Lọc</button>
+        <button class="t-btn btn-clear" onclick="clearFilter()">❌ Bỏ lọc</button>
+      </div>
+    </div>
+
+    <div id="resultsList">
+      <p style="color:var(--text-soft)">Bấm "Lấy dữ liệu mới" để xem kết quả học tập.</p>
+    </div>
+  </div>
+  
+  <div class="section-lbl">Lộ Trình 100 Ngày</div>
+  <div class="topic-grid" id="topicGrid"></div>
+</div>
+
+<script>
+// --- ANTI-COPY SECURITY TỐI ĐA ---
+// Thêm tham số 'true' (Capture Phase) để chặn sự kiện từ cấp cao nhất
+document.addEventListener('contextmenu', e => {
+  if (window.currentUserRole !== 'teacher') {
+    e.preventDefault(); 
+  }
+}, true);
+
+document.addEventListener('keydown', e => {
+  if (window.currentUserRole !== 'teacher') {
+    // Chặn F12 & Inspect (Ctrl + Shift + I)
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
+      e.preventDefault();
+    }
+    // Chặn Copy, View Source, Save (Ctrl + C, U, S, V)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 86)) {
+      e.preventDefault();
+    }
+  }
+}, true);
+
+document.addEventListener('dragstart', e => {
+  if (window.currentUserRole !== 'teacher') {
+    e.preventDefault();
+  }
+}, true);
+
+// --- TOPICS DATA ---
+const TOPICS = [
+  {id:1,emoji:"👋",vn:"Chào buổi sáng",color:"#EF9F27",status:"active"},
+  {id:2,emoji:"🪥",vn:"Vệ sinh cá nhân",color:"#5DCAA5",status:"locked"},
+  {id:3,emoji:"👗",vn:"Quần áo",color:"#ED93B1",status:"locked"},
+  {id:4,emoji:"🍽️",vn:"Trên bàn ăn",color:"#85B7EB",status:"locked"},
+  {id:5,emoji:"🧼",vn:"Rửa tay",color:"#97C459",status:"locked"},
+  {id:6,emoji:"🛝",vn:"Công viên",color:"#F0997B",status:"locked"},
+  {id:7,emoji:"🧸",vn:"Dọn đồ chơi",color:"#9FE1CB",status:"locked"},
+  {id:8,emoji:"🛁",vn:"Tắm rửa",color:"#AFA9EC",status:"locked"},
+  {id:9,emoji:"📖",vn:"Kể chuyện",color:"#85B7EB",status:"locked"},
+  {id:10,emoji:"🌙",vn:"Chúc ngủ ngon",color:"#D4537E",status:"locked"},
+];
+
+function renderHome(){
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = '';
+  TOPICS.forEach(t => {
+    const locked = t.status==='locked';
+    const card = document.createElement('a');
+    card.href = locked ? '#' : `topic${t.id}.html`; 
+    card.className = `t-card ${locked ? 't-locked' : ''}`;
+    card.innerHTML = `
+      <div class="t-thumb" style="background:${t.color}22">
+        <span class="t-emoji">${t.emoji}</span>
+        <div class="t-stars">${Array(5).fill(`<svg class="t-star" viewBox="0 0 10 10"><path d="M5 1l1.2 2.5L9 4l-2 1.9.5 2.7L5 7.3 2.5 8.6 3 5.9 1 4l2.8-.5z" fill="#D3D1C7"/></svg>`).join('')}</div>
+      </div>
+      <div class="t-body">
+        <div class="t-vn">${t.vn}</div>
+        <span class="t-badge ${t.status==='active'?'b-active':'b-locked'}">${t.status==='active'?'Đang học':'Chưa mở'}</span>
+        <div class="t-bar-wrap"><div class="t-bar-fill"></div></div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+renderHome();
+</script>
 </body>
 </html>
