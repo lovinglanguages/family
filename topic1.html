@@ -24,6 +24,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    window.currentUserRole = "student"; // Mặc định là học viên
+
     // Kiểm tra đăng nhập và whitelist
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -36,7 +38,8 @@
           alert("Email không có quyền truy cập! / Unauthorized email!");
           window.location.href = 'index.html';
         } else {
-          window.currentUserEmail = user.email; // Lưu email để dùng lúc nộp bài
+          window.currentUserEmail = user.email.toLowerCase().trim(); // Lưu email chuẩn hóa
+          window.currentUserRole = docSnap.data().role || "student"; // Nhận diện giáo viên/học viên
         }
       }
     });
@@ -59,14 +62,14 @@
         // 2. Tính toán điểm Giọt nước theo độ khó
         let dropsToEarn = 5; 
         if (type === 'speaking_challenge_link_topic1') {
-          dropsToEarn = 50; // Thử thách 10 câu
+          dropsToEarn = 50; 
         } else if (type.includes('record') || type.includes('structure')) {
-          dropsToEarn = 15; // Viết và Ghi âm
+          dropsToEarn = 15; 
         } else if (type === 'game2_match') {
-          dropsToEarn = 10; // Nối từ
+          dropsToEarn = 10; 
         }
 
-        // 3. Cập nhật vào tài khoản học viên
+        // 3. Cập nhật vào tài khoản học viên (Bảng users)
         if (userEmail !== "guest@example.com") {
           const userRef = doc(db, "users", userEmail);
           await setDoc(userRef, {
@@ -75,7 +78,7 @@
           }, { merge: true });
         }
 
-        // 4. Kích hoạt hiệu ứng chúc mừng (nếu thành công)
+        // 4. Kích hoạt hiệu ứng chúc mừng
         if (window.showCelebration) {
           window.showCelebration(dropsToEarn);
         }
@@ -99,8 +102,8 @@
     }
     *{margin:0;padding:0;box-sizing:border-box}
     
-    body { font-family:'Nunito',sans-serif;background:var(--beige);color:var(--text);min-height:100vh; -webkit-user-select:none; user-select:none; }
-    input { -webkit-user-select:text; user-select:text; outline:none; font-family:'Nunito',sans-serif;}
+    body { font-family:'Nunito',sans-serif;background:var(--beige);color:var(--text);min-height:100vh; overflow-x: hidden; }
+    input { outline:none; font-family:'Nunito',sans-serif;}
     
     /* NAV & MENU */
     .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(245,240,232,0.97);border-bottom:1px solid var(--warm);position:sticky;top:0;z-index:99}
@@ -219,18 +222,9 @@
       z-index: 9998;
       animation: flyUp linear forwards;
     }
-    @keyframes bounceIn {
-      0% { top: -60px; opacity: 0; }
-      100% { top: 20px; opacity: 1; }
-    }
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-    @keyframes flyUp {
-      0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; }
-    }
+    @keyframes bounceIn { 0% { top: -60px; opacity: 0; } 100% { top: 20px; opacity: 1; } }
+    @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes flyUp { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; } }
 
   </style>
 </head>
@@ -404,17 +398,34 @@
 </div>
 
 <script>
+// --- ANTI-COPY SECURITY ---
+// Khóa chuột phải, khóa bôi đen, khóa kéo thả với quyền cấp cao nhất (Capture phase)
+document.addEventListener('contextmenu', e => {
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+}, true);
+
+document.addEventListener('keydown', e => {
+  if (window.currentUserRole !== 'teacher') {
+    // Chặn F12 & Inspect
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault();
+    // Chặn Ctrl+C, Ctrl+S, Ctrl+U, Ctrl+V
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 86)) e.preventDefault();
+  }
+}, true);
+
+document.addEventListener('dragstart', e => {
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+}, true);
+
 // ==========================================
 // HIỆU ỨNG CHÚC MỪNG MẸ & BÉ
 // ==========================================
 window.showCelebration = (dropsEarned) => {
-  // 1. Tạo Popup thông báo dễ thương
+  // 1. Tạo Popup thông báo
   const popup = document.createElement('div');
   popup.className = 'cute-popup';
   popup.innerHTML = `🎉 Giỏi quá! Bé nhận được <b>+${dropsEarned} 💧</b>`;
   document.body.appendChild(popup);
-
-  // Xóa popup sau 4 giây
   setTimeout(() => { popup.remove(); }, 4000);
 
   // 2. Tạo hiệu ứng mưa Giọt nước bay lên
@@ -425,7 +436,6 @@ window.showCelebration = (dropsEarned) => {
     drop.style.left = Math.random() * 95 + 'vw';
     drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
     document.body.appendChild(drop);
-    // Xóa phần tử giọt nước sau khi bay xong
     setTimeout(() => { drop.remove(); }, 3000);
   }
 };
