@@ -9,7 +9,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
@@ -44,14 +44,42 @@
     // Hàm nộp bài toàn cục
     window.submitResult = async (type, day, answer) => {
       try {
+        const userEmail = window.currentUserEmail || "guest@example.com";
+
+        // 1. Lưu lịch sử làm bài vào bảng "results"
         await addDoc(collection(db, "results"), {
-          email: window.currentUserEmail || "guest@example.com",
+          email: userEmail,
           topic: 1,
           day: day,
           type: type,
           answer: answer,
           timestamp: serverTimestamp()
         });
+
+        // 2. Tính toán điểm Giọt nước theo độ khó
+        let dropsToEarn = 5; 
+        if (type === 'speaking_challenge_link_topic1') {
+          dropsToEarn = 50; // Thử thách 10 câu
+        } else if (type.includes('record') || type.includes('structure')) {
+          dropsToEarn = 15; // Viết và Ghi âm
+        } else if (type === 'game2_match') {
+          dropsToEarn = 10; // Nối từ
+        }
+
+        // 3. Cập nhật vào tài khoản học viên
+        if (userEmail !== "guest@example.com") {
+          const userRef = doc(db, "users", userEmail);
+          await setDoc(userRef, {
+            drops: increment(dropsToEarn),
+            lastActive: serverTimestamp()
+          }, { merge: true });
+        }
+
+        // 4. Kích hoạt hiệu ứng chúc mừng (nếu thành công)
+        if (window.showCelebration) {
+          window.showCelebration(dropsToEarn);
+        }
+
         return true;
       } catch (e) {
         console.error("Lỗi nộp bài / Submission error:", e);
@@ -162,6 +190,47 @@
     .option-btn:hover { background: var(--green-pale); border-color: var(--green); }
     .audio-big-btn { width: 80px; height: 80px; border-radius: 50%; background: var(--drop); color: #fff; border: none; font-size: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 0 var(--drop-light); }
     .audio-big-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--drop-light); }
+
+    /* HIỆU ỨNG CHÚC MỪNG (CELEBRATION) */
+    .cute-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 3px solid var(--drop);
+      color: var(--drop);
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(74, 144, 217, 0.25);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.5s 3.5s forwards;
+    }
+    .flying-drop {
+      position: fixed;
+      bottom: -30px;
+      font-size: 28px;
+      z-index: 9998;
+      animation: flyUp linear forwards;
+    }
+    @keyframes bounceIn {
+      0% { top: -60px; opacity: 0; }
+      100% { top: 20px; opacity: 1; }
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes flyUp {
+      0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; }
+    }
 
   </style>
 </head>
@@ -336,7 +405,33 @@
 
 <script>
 // ==========================================
-// DỮ LIỆU CURRICULUM (Cập nhật với đa dạng câu ứng dụng)
+// HIỆU ỨNG CHÚC MỪNG MẸ & BÉ
+// ==========================================
+window.showCelebration = (dropsEarned) => {
+  // 1. Tạo Popup thông báo dễ thương
+  const popup = document.createElement('div');
+  popup.className = 'cute-popup';
+  popup.innerHTML = `🎉 Giỏi quá! Bé nhận được <b>+${dropsEarned} 💧</b>`;
+  document.body.appendChild(popup);
+
+  // Xóa popup sau 4 giây
+  setTimeout(() => { popup.remove(); }, 4000);
+
+  // 2. Tạo hiệu ứng mưa Giọt nước bay lên
+  for (let i = 0; i < 20; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'flying-drop';
+    drop.innerText = '💧';
+    drop.style.left = Math.random() * 95 + 'vw';
+    drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+    document.body.appendChild(drop);
+    // Xóa phần tử giọt nước sau khi bay xong
+    setTimeout(() => { drop.remove(); }, 3000);
+  }
+};
+
+// ==========================================
+// DỮ LIỆU CURRICULUM (Cập nhật Day 9 mới)
 // ==========================================
 const CURRICULUM = [
   {
@@ -388,10 +483,10 @@ const CURRICULUM = [
     exAns: ["Let's make the bed.", "Let's eat.", "Let's play."]
   },
   {
-    day: 9, en: "Go wash your face.", vn: "Đi rửa mặt đi con.", pron: "/ɡoʊ wɒʃ jʊər feɪs/", note: "Âm /ʃ/ trong 'wash' chu môi.", struct: "Go + [Động từ nguyên mẫu / Bare infinitive]",
-    structEg: ["Go wash your face. (Đi rửa mặt đi.)", "Go brush your teeth. (Đi đánh răng đi.)", "Go wash your hands. (Đi rửa tay đi.)"],
-    exTask: ["Dịch/Translate: Đi rửa mặt đi con.", "Dịch/Translate: Đi đánh răng đi con.", "Dịch/Translate: Đi rửa tay đi con."],
-    exAns: ["Go wash your face.", "Go brush your teeth.", "Go wash your hands."]
+    day: 9, en: "Stretch your arms up high!", vn: "🤸 Vươn tay lên cao nào!", pron: "/strɛtʃ jʊər ɑːrmz ʌp haɪ/", note: "Âm /tʃ/ trong 'stretch' bật mạnh, từ 'arms' có âm /z/ ở cuối.", struct: "Stretch your + [Bộ phận cơ thể/Body part] + [hướng/direction]!",
+    structEg: ["Stretch your arms up high! (Vươn tay lên cao!)", "Stretch your legs out! (Duỗi chân ra!)", "Stretch your back! (Vươn lưng nào!)"],
+    exTask: ["Dịch/Translate: Vươn tay lên cao nào!", "Dịch/Translate: Duỗi chân ra!", "Dịch/Translate: Vươn lưng nào!"],
+    exAns: ["Stretch your arms up high!", "Stretch your legs out!", "Stretch your back!"]
   },
   {
     day: 10, en: "Are you ready for breakfast?", vn: "Con sẵn sàng ăn sáng chưa?", pron: "/ɑːr ju ˈrɛdi fɔːr ˈbrɛkfəst/", note: "'for' giảm âm thành /fər/.", struct: "Are you ready for + [Danh từ/Noun]?",
