@@ -27,13 +27,13 @@
     // Kiểm tra đăng nhập và whitelist
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        alert("Vui lòng đăng nhập để vào lớp học!");
+        alert("Vui lòng đăng nhập để vào lớp học! / Please log in to enter the class!");
         window.location.href = 'index.html';
       } else {
         const docRef = doc(db, "whitelist", user.email.toLowerCase().trim());
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) {
-          alert("Email không có quyền truy cập!");
+          alert("Email không có quyền truy cập! / Unauthorized email!");
           window.location.href = 'index.html';
         } else {
           window.currentUserEmail = user.email; // Lưu email để dùng lúc nộp bài
@@ -54,7 +54,7 @@
         });
         return true;
       } catch (e) {
-        console.error("Lỗi nộp bài:", e);
+        console.error("Lỗi nộp bài / Submission error:", e);
         return false;
       }
     };
@@ -96,7 +96,7 @@
 
     /* VIEWS */
     .view-section{display:none; background:#fff; border-radius:20px; padding:24px; border:1px solid var(--beige2); margin-top:16px;}
-    .sec-title{font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--wood);border-bottom:2px dashed var(--warm);padding-bottom:10px;margin-bottom:20px}
+    .sec-title{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--wood);border-bottom:2px dashed var(--warm);padding-bottom:10px;margin-bottom:20px}
     
     /* MỤC LIST */
     .list-item{padding:16px 0;border-bottom:1px solid var(--beige2)}
@@ -170,56 +170,56 @@
 <div class="nav">
   <div class="logo">🌱 Loving English <span>Garden</span></div>
   <div class="nav-right">
-    <button class="back-btn" id="btnBack" onclick="goBack()">← Quay lại</button>
+    <button class="back-btn" id="btnBack" onclick="goBack()">← Quay lại / Back</button>
   </div>
 </div>
 
 <div class="main-wrap">
   <div class="topic-title">Topic 1: Good Morning! ☀️</div>
-  <div class="topic-sub">Chào ngày mới năng động cùng bé</div>
+  <div class="topic-sub">Chào ngày mới năng động cùng bé / Start a dynamic new day with your child</div>
 
   <div id="viewMenu" class="menu-grid">
     <div class="m-item" onclick="openView('Vocab')">
       <div class="m-ico">📋</div>
       <div class="m-name">Vocab List</div>
-      <div class="m-desc">Danh sách 10 câu trọng tâm</div>
+      <div class="m-desc">Danh sách 10 câu trọng tâm / Top 10 core sentences</div>
     </div>
     <div class="m-item" onclick="openView('Daily')">
       <div class="m-ico">📅</div>
-      <div class="m-name">Học Theo Ngày</div>
-      <div class="m-desc">Từ vựng, Cấu trúc & Game</div>
+      <div class="m-name">Daily Learning</div>
+      <div class="m-desc">Từ vựng, Cấu trúc & Game / Vocab, Structure & Games</div>
     </div>
     <div class="m-item" onclick="openView('Challenge')" style="grid-column: 1 / -1;">
       <div class="m-ico">🏆</div>
       <div class="m-name">Challenge</div>
-      <div class="m-desc">Test tổng hợp & Nộp bài ghi âm</div>
+      <div class="m-desc">Test tổng hợp & Nộp bài ghi âm / Final Test & Submit Recording</div>
     </div>
   </div>
 
   <div id="viewVocab" class="view-section">
-    <div class="sec-title">📋 Danh sách câu (Vocab List)</div>
+    <div class="sec-title">📋 Danh sách câu / Vocab List</div>
     <div id="vocabListContainer"></div>
   </div>
 
   <div id="viewDaily" class="view-section">
-    <div class="sec-title">📅 Luyện tập theo ngày</div>
+    <div class="sec-title">📅 Luyện tập theo ngày / Daily Practice</div>
     <div class="day-tabs" id="dayTabsContainer"></div>
     
     <div>
-      <h3 style="font-size:18px;color:var(--text);margin-bottom:12px">1. Học từ vựng (Flashcard)</h3>
+      <h3 style="font-size:18px;color:var(--text);margin-bottom:12px">1. Học từ vựng / Vocabulary (Flashcard)</h3>
       <div class="fc-scene">
         <div class="fc-inner" id="theFC" onclick="document.getElementById('theFC').classList.toggle('flipped')">
           <div class="fc-face fc-front">
-            <div style="font-size:13px;opacity:.8;margin-bottom:12px;color:var(--text-mid);text-transform:uppercase;font-weight:700">Tiếng Anh · Bấm thẻ để lật</div>
+            <div style="font-size:13px;opacity:.8;margin-bottom:12px;color:var(--text-mid);text-transform:uppercase;font-weight:700">Tiếng Anh · Bấm thẻ để lật / English · Tap to flip</div>
             <div class="fc-en" id="dEn">—</div>
             <div class="fc-pron" id="dPron">—</div>
             <div style="display:flex; gap:10px; justify-content:center; margin-top:8px;">
-              <button class="btn-sec" style="padding:8px 16px;font-size:14px;background:#fff" onclick="playAudio(document.getElementById('dEn').textContent, 1.0); event.stopPropagation();">🔊 Đọc chuẩn</button>
-              <button class="btn-sec" style="padding:8px 16px;font-size:14px;background:#fff;border-color:var(--drop);color:var(--drop)" onclick="playAudio(document.getElementById('dEn').textContent, 0.7); event.stopPropagation();">🐢 Đọc chậm</button>
+              <button class="btn-sec" style="padding:8px 16px;font-size:14px;background:#fff" onclick="playAudio(document.getElementById('dEn').textContent, 1.0); event.stopPropagation();">🔊 Đọc chuẩn / Normal</button>
+              <button class="btn-sec" style="padding:8px 16px;font-size:14px;background:#fff;border-color:var(--drop);color:var(--drop)" onclick="playAudio(document.getElementById('dEn').textContent, 0.7); event.stopPropagation();">🐢 Đọc chậm / Slow</button>
             </div>
           </div>
           <div class="fc-face fc-back">
-            <div style="font-size:13px;opacity:.7;margin-bottom:12px;text-transform:uppercase;font-weight:700">Nghĩa tiếng Việt</div>
+            <div style="font-size:13px;opacity:.7;margin-bottom:12px;text-transform:uppercase;font-weight:700">Nghĩa tiếng Việt / Vietnamese Meaning</div>
             <div class="fc-vn" id="dVn">—</div>
             <div id="dNote" style="font-size:15px;opacity:0.95;margin-top:16px;background:rgba(0,0,0,0.15);padding:10px 16px;border-radius:12px;line-height:1.5">—</div>
           </div>
@@ -227,10 +227,10 @@
       </div>
 
       <div id="dailyStructureBlock" style="margin-bottom: 28px; background:var(--beige); padding:16px; border-radius:16px; border:1px solid var(--warm);">
-        <h3 style="font-size:18px;color:var(--wood);margin-bottom:12px">2. Cấu trúc câu</h3>
+        <h3 style="font-size:18px;color:var(--wood);margin-bottom:12px">2. Cấu trúc câu / Sentence Structure</h3>
         <div class="li-struct" style="margin-top:0;">
-          <b>Cấu trúc:</b> <span id="dStruct">—</span><br><br>
-          <b>Các ví dụ ứng dụng:</b> <div id="dStructEg" style="font-style:italic; margin-top:8px; line-height:1.8;">—</div>
+          <b>Cấu trúc / Structure:</b> <span id="dStruct">—</span><br><br>
+          <b>Các ví dụ ứng dụng / Applied examples:</b> <div id="dStructEg" style="font-style:italic; margin-top:8px; line-height:1.8;">—</div>
         </div>
       </div>
 
@@ -242,15 +242,15 @@
     <div id="challengeGameHolder"></div>
 
     <div style="background:#fff; padding:24px; border-radius:20px; border:1px solid var(--beige2); margin-top:20px">
-      <div class="sec-title">🏆 Ghi âm 10 Câu (Vượt ải cuối)</div>
-      <p style="font-size:15px; color:var(--text-mid); margin-bottom:24px; line-height:1.5">Ba mẹ và bé hãy cùng nhau ghi âm toàn bộ 10 câu dưới đây, tải lên Vocaroo, rồi dán đường link vào ô bên dưới để nộp bài nhé!</p>
+      <div class="sec-title">🏆 Ghi âm 10 Câu / 10-Sentence Recording (Final Test)</div>
+      <p style="font-size:15px; color:var(--text-mid); margin-bottom:24px; line-height:1.5">Ba mẹ và bé hãy cùng nhau ghi âm toàn bộ 10 câu dưới đây, tải lên Vocaroo, rồi dán đường link vào ô bên dưới để nộp bài nhé! / Please record all 10 sentences below, upload to Vocaroo, and paste the link in the box below to submit!</p>
       
       <div id="chalListContainer"></div>
 
       <div class="submit-box">
-        <h3 style="color:var(--wood); margin-bottom:12px; font-size:18px;">Dán Link Ghi Âm Tại Đây</h3>
-        <input type="url" id="challengeFinalLink" class="type-input" placeholder="Ví dụ: https://voca.ro/...">
-        <button class="btn-wood" style="background:var(--sunrise); border-color:var(--sunrise); margin-top:16px;" onclick="submitChallengeRecording()">📤 Nộp Bài Ghi Âm</button>
+        <h3 style="color:var(--wood); margin-bottom:12px; font-size:18px;">Dán Link Ghi Âm Tại Đây / Paste Recording Link Here</h3>
+        <input type="url" id="challengeFinalLink" class="type-input" placeholder="Ví dụ / Example: https://voca.ro/...">
+        <button class="btn-wood" style="background:var(--sunrise); border-color:var(--sunrise); margin-top:16px;" onclick="submitChallengeRecording()">📤 Nộp Bài Ghi Âm / Submit Recording</button>
         <div id="challengeSubmitRes" style="margin-top:16px; font-weight:bold; font-size:15px;"></div>
       </div>
       
@@ -260,74 +260,74 @@
 </div>
 
 <div id="gameCenterCore" class="game-center-wrap" style="display:none;">
-  <h3 id="gcTitle" style="font-size:18px;color:var(--wood);margin-bottom:16px;">3. Khu vui chơi</h3>
+  <h3 id="gcTitle" style="font-size:18px;color:var(--wood);margin-bottom:16px;">3. Khu vui chơi / Game Center</h3>
   
   <div class="day-tabs" id="gameTabsContainer">
-    <div class="d-tab active" onclick="switchGameTab(1)" id="tabGame1">1. Xếp từ</div>
-    <div class="d-tab" onclick="switchGameTab(2)" id="tabGame2">2. Nối từ</div>
-    <div class="d-tab" onclick="switchGameTab(3)" id="tabGame3">3. Điền từ</div>
-    <div class="d-tab" onclick="switchGameTab(4)" id="tabGame4">4. Nghe chọn</div>
-    <div class="d-tab" onclick="switchGameTab(5)" id="tabGame5">5. Cấu trúc</div>
-    <div class="d-tab" onclick="switchGameTab(6)" id="tabGame6">6. Ghi âm</div>
+    <div class="d-tab active" onclick="switchGameTab(1)" id="tabGame1">1. Xếp từ / Unscramble</div>
+    <div class="d-tab" onclick="switchGameTab(2)" id="tabGame2">2. Nối từ / Match</div>
+    <div class="d-tab" onclick="switchGameTab(3)" id="tabGame3">3. Điền từ / Fill in</div>
+    <div class="d-tab" onclick="switchGameTab(4)" id="tabGame4">4. Nghe chọn / Listen</div>
+    <div class="d-tab" onclick="switchGameTab(5)" id="tabGame5">5. Cấu trúc / Structure</div>
+    <div class="d-tab" onclick="switchGameTab(6)" id="tabGame6">6. Ghi âm / Record</div>
   </div>
 
   <div id="game1Area" class="game-area">
-    <h3 style="color:var(--wood); margin-bottom: 8px;">Sắp xếp từ thành câu</h3>
-    <p id="g1VnText" style="color:var(--text-soft); margin-bottom: 20px;">(Nghĩa tiếng Việt)</p>
+    <h3 style="color:var(--wood); margin-bottom: 8px;">Sắp xếp từ thành câu / Unscramble the sentence</h3>
+    <p id="g1VnText" style="color:var(--text-soft); margin-bottom: 20px;">(Nghĩa tiếng Việt / Vietnamese meaning)</p>
     <div class="ans-box" id="g1AnsBox"></div>
     <div id="g1WordPool" style="min-height: 80px; margin-bottom: 20px;"></div>
     <div>
-      <button class="btn-action" onclick="checkGame1()">Kiểm tra</button>
-      <button class="btn-sec" id="btnReloadG1" onclick="loadGame1()">🔄 Chơi lại</button>
+      <button class="btn-action" onclick="checkGame1()">Kiểm tra / Check</button>
+      <button class="btn-sec" id="btnReloadG1" onclick="loadGame1()">🔄 Chơi lại / Play again</button>
     </div>
     <div id="g1Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
   </div>
 
   <div id="game2Area" class="game-area" style="display:none; padding: 12px;">
-    <h3 style="color:var(--wood); margin-bottom: 10px;">Nối câu Tiếng Anh và Tiếng Việt</h3>
+    <h3 style="color:var(--wood); margin-bottom: 10px;">Nối câu Tiếng Anh và Tiếng Việt / Match English and Vietnamese</h3>
     <div class="match-grid">
       <div id="gmEnCol" style="display:flex;flex-direction:column;gap:10px"></div>
       <div id="gmVnCol" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
     <div id="game2Res" style="text-align:center; margin-top:20px; font-weight:bold; font-size:16px"></div>
-    <button class="btn-sec" style="margin-top:16px; background:#fff" onclick="loadGame2()">🔄 Đổi ván khác</button>
+    <button class="btn-sec" style="margin-top:16px; background:#fff" onclick="loadGame2()">🔄 Đổi ván khác / Change game</button>
   </div>
 
   <div id="game3Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 20px;">Chọn từ còn thiếu</h3>
+    <h3 style="color:var(--wood); margin-bottom: 20px;">Chọn từ còn thiếu / Choose the missing word</h3>
     <div id="g3Sentence" style="font-family:'Lora',serif; font-size:24px; font-weight:600; color:var(--text); margin-bottom:24px; background:var(--beige); padding:20px; border-radius:12px; border:2px dashed var(--warm);"></div>
     <div id="g3Options"></div>
     <div id="g3Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
-    <button class="btn-sec" id="btnReloadG3" style="margin-top:16px;" onclick="loadGame3()">🔄 Chơi lại</button>
+    <button class="btn-sec" id="btnReloadG3" style="margin-top:16px;" onclick="loadGame3()">🔄 Chơi lại / Play again</button>
   </div>
 
   <div id="game4Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 20px;">Nghe và chọn câu đúng</h3>
+    <h3 style="color:var(--wood); margin-bottom: 20px;">Nghe và chọn câu đúng / Listen and choose the correct sentence</h3>
     <button class="audio-big-btn" onclick="playGame4Audio()">🔊</button>
     <div id="g4Options"></div>
     <div id="g4Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
-    <button class="btn-sec" id="btnReloadG4" style="margin-top:16px;" onclick="loadGame4()">🔄 Chơi lại</button>
+    <button class="btn-sec" id="btnReloadG4" style="margin-top:16px;" onclick="loadGame4()">🔄 Chơi lại / Play again</button>
   </div>
 
   <div id="game5Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 16px;">Bài tập ứng dụng cấu trúc (Nộp bài)</h3>
+    <h3 style="color:var(--wood); margin-bottom: 16px;">Bài tập ứng dụng cấu trúc / Structure exercises (Nộp bài / Submit)</h3>
     <div id="g5TaskList" style="margin-bottom:20px; width:100%; max-width:500px; margin: 0 auto;"></div>
     <div>
-      <button class="btn-action" onclick="checkGame5()">Kiểm tra & Nộp bài ✓</button>
-      <button class="btn-sec" id="btnReloadG5" onclick="loadGame5()">🔄 Lấy câu khác</button>
+      <button class="btn-action" onclick="checkGame5()">Kiểm tra & Nộp bài ✓ / Check & Submit ✓</button>
+      <button class="btn-sec" id="btnReloadG5" onclick="loadGame5()">🔄 Lấy câu khác / Get another</button>
     </div>
     <div id="g5Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
   </div>
 
   <div id="game6Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 16px;">Nghe, đọc lại và nộp file ghi âm</h3>
-    <p style="font-size:14px; color:var(--text-soft); margin-bottom:12px">Hãy nghe mẫu câu hôm nay, đọc ghi âm lại trên Vocaroo và dán link vào bên dưới.</p>
+    <h3 style="color:var(--wood); margin-bottom: 16px;">Nghe, đọc lại và nộp file ghi âm / Listen, repeat and submit recording</h3>
+    <p style="font-size:14px; color:var(--text-soft); margin-bottom:12px">Hãy nghe mẫu câu hôm nay, đọc ghi âm lại trên Vocaroo và dán link vào bên dưới. / Listen to today's sentence, record on Vocaroo and paste the link below.</p>
     <p id="g6Task" style="font-size:22px; font-family:'Lora',serif; color:var(--wood); font-weight:700; margin-bottom:10px;"></p>
-    <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px; margin-bottom:20px;" onclick="playAudio(window.g6Target)">🔊 Nghe mẫu</button>
-    <input type="url" id="g6Inp" class="type-input" placeholder="Dán link Vocaroo (vd: https://voca.ro/...) vào đây..." style="width:100%; max-width:400px; margin: 0 auto 16px; display:block;">
+    <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px; margin-bottom:20px;" onclick="playAudio(window.g6Target)">🔊 Nghe mẫu / Listen</button>
+    <input type="url" id="g6Inp" class="type-input" placeholder="Dán link Vocaroo (vd/ex: https://voca.ro/...) vào đây/here..." style="width:100%; max-width:400px; margin: 0 auto 16px; display:block;">
     <div>
-      <button class="btn-action" onclick="submitGame6()">Nộp link ghi âm ✓</button>
-      <button class="btn-sec" id="btnReloadG6" onclick="loadGame6()">🔄 Câu ngẫu nhiên khác</button>
+      <button class="btn-action" onclick="submitGame6()">Nộp link ghi âm ✓ / Submit recording link ✓</button>
+      <button class="btn-sec" id="btnReloadG6" onclick="loadGame6()">🔄 Câu ngẫu nhiên khác / Another random sentence</button>
     </div>
     <div id="g6Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
   </div>
@@ -340,63 +340,63 @@
 // ==========================================
 const CURRICULUM = [
   {
-    day: 1, en: "Good morning, sweetie!", vn: "Chào buổi sáng, con yêu!", pron: "/gʊd ˈmɔːrnɪŋ, ˈswiːti/", note: "Flap T /r/ trong 'sweetie' nghe như âm 'd' nhẹ.", struct: "Good + [thời gian trong ngày]!",
+    day: 1, en: "Good morning, sweetie!", vn: "Chào buổi sáng, con yêu!", pron: "/gʊd ˈmɔːrnɪŋ, ˈswiːti/", note: "Flap T /r/ trong 'sweetie' nghe như âm 'd' nhẹ.", struct: "Good + [thời gian trong ngày/time of day]!",
     structEg: ["Good morning! (Chào buổi sáng)", "Good afternoon! (Chào buổi chiều)", "Good evening! (Chào buổi tối)", "Good night, sweetie! (Chúc bé ngủ ngon)"],
-    exTask: ["Dịch: Chào buổi sáng, con yêu!", "Dịch: Chào buổi chiều, con yêu!", "Dịch: Chúc bé ngủ ngon!"],
+    exTask: ["Dịch/Translate: Chào buổi sáng, con yêu!", "Dịch/Translate: Chào buổi chiều, con yêu!", "Dịch/Translate: Chúc bé ngủ ngon!"],
     exAns: ["Good morning, sweetie!", "Good afternoon, sweetie!", "Good night, sweetie!"]
   },
   {
-    day: 2, en: "Time to wake up!", vn: "Đến giờ thức dậy rồi!", pron: "/taɪm tu weɪk ʌp/", note: "Nối âm /k/ với /ʌ/ trong 'wake up'.", struct: "Time to + [Động từ nguyên mẫu]",
+    day: 2, en: "Time to wake up!", vn: "Đến giờ thức dậy rồi!", pron: "/taɪm tu weɪk ʌp/", note: "Nối âm /k/ với /ʌ/ trong 'wake up'.", struct: "Time to + [Động từ nguyên mẫu / Bare infinitive]",
     structEg: ["Time to eat! (Đến giờ ăn rồi!)", "Time to sleep! (Đến giờ đi ngủ!)", "Time to go! (Đến lúc đi rồi!)"],
-    exTask: ["Dịch: Đến giờ thức dậy rồi!", "Dịch: Đến giờ ăn rồi!", "Dịch: Đến giờ đi ngủ rồi!"],
+    exTask: ["Dịch/Translate: Đến giờ thức dậy rồi!", "Dịch/Translate: Đến giờ ăn rồi!", "Dịch/Translate: Đến giờ đi ngủ rồi!"],
     exAns: ["Time to wake up!", "Time to eat!", "Time to sleep!"]
   },
   {
-    day: 3, en: "Rise and shine!", vn: "Dậy đi nào, tỏa sáng thôi!", pron: "/raɪz ænd ʃaɪn/", note: "Giảm 'and' thành /ən/.", struct: "Các cụm từ cố định giục bé thức dậy",
+    day: 3, en: "Rise and shine!", vn: "Dậy đi nào, tỏa sáng thôi!", pron: "/raɪz ænd ʃaɪn/", note: "Giảm 'and' thành /ən/.", struct: "Các cụm từ cố định giục bé thức dậy / Fixed phrases to wake up a child",
     structEg: ["Rise and shine! (Dậy đi nào!)", "Wakey wakey! (Dậy nào dậy nào!)", "Time to get up! (Đến giờ dậy rồi!)"],
-    exTask: ["Dịch: Dậy đi nào, tỏa sáng thôi!", "Dịch: Dậy nào dậy nào!", "Dịch: Đến giờ dậy rồi!"],
+    exTask: ["Dịch/Translate: Dậy đi nào, tỏa sáng thôi!", "Dịch/Translate: Dậy nào dậy nào!", "Dịch/Translate: Đến giờ dậy rồi!"],
     exAns: ["Rise and shine!", "Wakey wakey!", "Time to get up!"]
   },
   {
-    day: 4, en: "Did you sleep well?", vn: "Con ngủ ngon không?", pron: "/dɪd ju sliːp wɛl/", note: "Nối 'did' và 'you' thành /dɪdʒu/.", struct: "Did you + [Động từ] + well?",
+    day: 4, en: "Did you sleep well?", vn: "Con ngủ ngon không?", pron: "/dɪd ju sliːp wɛl/", note: "Nối 'did' và 'you' thành /dɪdʒu/.", struct: "Did you + [Động từ/Verb] + well?",
     structEg: ["Did you sleep well? (Con ngủ ngon không?)", "Did you eat well? (Con ăn ngon không?)", "Did you play well? (Con chơi vui không?)"],
-    exTask: ["Dịch: Con ngủ ngon không?", "Dịch: Con ăn ngon không?", "Dịch: Con chơi vui không?"],
+    exTask: ["Dịch/Translate: Con ngủ ngon không?", "Dịch/Translate: Con ăn ngon không?", "Dịch/Translate: Con chơi vui không?"],
     exAns: ["Did you sleep well?", "Did you eat well?", "Did you play well?"]
   },
   {
-    day: 5, en: "It's a beautiful day today!", vn: "Hôm nay là một ngày thật đẹp!", pron: "/ɪts ə ˈbjuːtɪfəl deɪ təˈdeɪ/", note: "Nối âm liền mạch.", struct: "It's a + [Tính từ] + day!",
+    day: 5, en: "It's a beautiful day today!", vn: "Hôm nay là một ngày thật đẹp!", pron: "/ɪts ə ˈbjuːtɪfəl deɪ təˈdeɪ/", note: "Nối âm liền mạch.", struct: "It's a + [Tính từ/Adjective] + day!",
     structEg: ["It's a beautiful day! (Một ngày thật đẹp!)", "It's a sunny day! (Một ngày đầy nắng!)", "It's a rainy day! (Một ngày mưa!)"],
-    exTask: ["Dịch: Hôm nay là một ngày thật đẹp!", "Dịch: Hôm nay là một ngày nắng!", "Dịch: Hôm nay là một ngày mưa!"],
+    exTask: ["Dịch/Translate: Hôm nay là một ngày thật đẹp!", "Dịch/Translate: Hôm nay là một ngày nắng!", "Dịch/Translate: Hôm nay là một ngày mưa!"],
     exAns: ["It's a beautiful day today!", "It's a sunny day today!", "It's a rainy day today!"]
   },
   {
-    day: 6, en: "Come on, open your eyes.", vn: "Nào, mở mắt ra đi.", pron: "/kʌm ɒn, ˈoʊpən jʊər aɪz/", note: "Giảm 'your' thành /jər/.", struct: "Open your + [Bộ phận cơ thể/Vật]",
+    day: 6, en: "Come on, open your eyes.", vn: "Nào, mở mắt ra đi.", pron: "/kʌm ɒn, ˈoʊpən jʊər aɪz/", note: "Giảm 'your' thành /jər/.", struct: "Open your + [Bộ phận cơ thể/Vật (Body part/Item)]",
     structEg: ["Open your eyes! (Mở mắt ra!)", "Open your mouth! (Mở miệng ra!)", "Open your book! (Mở sách ra!)"],
-    exTask: ["Dịch: Nào, mở mắt ra đi.", "Dịch: Mở miệng ra đi.", "Dịch: Mở sách ra đi."],
+    exTask: ["Dịch/Translate: Nào, mở mắt ra đi.", "Dịch/Translate: Mở miệng ra đi.", "Dịch/Translate: Mở sách ra đi."],
     exAns: ["Come on, open your eyes.", "Open your mouth.", "Open your book."]
   },
   {
-    day: 7, en: "Don't go back to sleep!", vn: "Đừng ngủ lại nữa mà!", pron: "/doʊnt ɡoʊ bæk tu sliːp/", note: "Âm tắc /k/ trong 'back'.", struct: "Don't + [Động từ nguyên mẫu]",
+    day: 7, en: "Don't go back to sleep!", vn: "Đừng ngủ lại nữa mà!", pron: "/doʊnt ɡoʊ bæk tu sliːp/", note: "Âm tắc /k/ trong 'back'.", struct: "Don't + [Động từ nguyên mẫu / Bare infinitive]",
     structEg: ["Don't go! (Đừng đi!)", "Don't cry! (Đừng khóc!)", "Don't touch that! (Đừng chạm vào đó!)"],
-    exTask: ["Dịch: Đừng ngủ lại nữa mà!", "Dịch: Đừng khóc!", "Dịch: Đừng đi!"],
+    exTask: ["Dịch/Translate: Đừng ngủ lại nữa mà!", "Dịch/Translate: Đừng khóc!", "Dịch/Translate: Đừng đi!"],
     exAns: ["Don't go back to sleep!", "Don't cry!", "Don't go!"]
   },
   {
-    day: 8, en: "Let's make the bed.", vn: "Cùng dọn giường nào.", pron: "/lɛts meɪk ðə bɛd/", note: "Âm /d/ cuối từ 'bed' bật nhẹ.", struct: "Let's + [Động từ nguyên mẫu]",
+    day: 8, en: "Let's make the bed.", vn: "Cùng dọn giường nào.", pron: "/lɛts meɪk ðə bɛd/", note: "Âm /d/ cuối từ 'bed' bật nhẹ.", struct: "Let's + [Động từ nguyên mẫu / Bare infinitive]",
     structEg: ["Let's make the bed. (Cùng dọn giường nào.)", "Let's eat. (Cùng ăn nào.)", "Let's play. (Cùng chơi nào.)"],
-    exTask: ["Dịch: Cùng dọn giường nào.", "Dịch: Cùng ăn nào.", "Dịch: Cùng chơi nào."],
+    exTask: ["Dịch/Translate: Cùng dọn giường nào.", "Dịch/Translate: Cùng ăn nào.", "Dịch/Translate: Cùng chơi nào."],
     exAns: ["Let's make the bed.", "Let's eat.", "Let's play."]
   },
   {
-    day: 9, en: "Go wash your face.", vn: "Đi rửa mặt đi con.", pron: "/ɡoʊ wɒʃ jʊər feɪs/", note: "Âm /ʃ/ trong 'wash' chu môi.", struct: "Go + [Động từ nguyên mẫu]",
+    day: 9, en: "Go wash your face.", vn: "Đi rửa mặt đi con.", pron: "/ɡoʊ wɒʃ jʊər feɪs/", note: "Âm /ʃ/ trong 'wash' chu môi.", struct: "Go + [Động từ nguyên mẫu / Bare infinitive]",
     structEg: ["Go wash your face. (Đi rửa mặt đi.)", "Go brush your teeth. (Đi đánh răng đi.)", "Go wash your hands. (Đi rửa tay đi.)"],
-    exTask: ["Dịch: Đi rửa mặt đi con.", "Dịch: Đi đánh răng đi con.", "Dịch: Đi rửa tay đi con."],
+    exTask: ["Dịch/Translate: Đi rửa mặt đi con.", "Dịch/Translate: Đi đánh răng đi con.", "Dịch/Translate: Đi rửa tay đi con."],
     exAns: ["Go wash your face.", "Go brush your teeth.", "Go wash your hands."]
   },
   {
-    day: 10, en: "Are you ready for breakfast?", vn: "Con sẵn sàng ăn sáng chưa?", pron: "/ɑːr ju ˈrɛdi fɔːr ˈbrɛkfəst/", note: "'for' giảm âm thành /fər/.", struct: "Are you ready for + [Danh từ]?",
+    day: 10, en: "Are you ready for breakfast?", vn: "Con sẵn sàng ăn sáng chưa?", pron: "/ɑːr ju ˈrɛdi fɔːr ˈbrɛkfəst/", note: "'for' giảm âm thành /fər/.", struct: "Are you ready for + [Danh từ/Noun]?",
     structEg: ["Are you ready for breakfast? (Sẵn sàng ăn sáng chưa?)", "Are you ready for school? (Sẵn sàng đi học chưa?)", "Are you ready for bed? (Sẵn sàng đi ngủ chưa?)"],
-    exTask: ["Dịch: Con sẵn sàng ăn sáng chưa?", "Dịch: Con sẵn sàng đi học chưa?", "Dịch: Con sẵn sàng đi ngủ chưa?"],
+    exTask: ["Dịch/Translate: Con sẵn sàng ăn sáng chưa?", "Dịch/Translate: Con sẵn sàng đi học chưa?", "Dịch/Translate: Con sẵn sàng đi ngủ chưa?"],
     exAns: ["Are you ready for breakfast?", "Are you ready for school?", "Are you ready for bed?"]
   }
 ];
@@ -455,7 +455,7 @@ function openView(viewName) {
       document.getElementById('dailyGameHolder').appendChild(gameCore);
       gameCore.style.display = 'block';
       currentGameMode = 'daily';
-      document.getElementById('gcTitle').textContent = '3. Thực hành tương tác (Câu hôm nay)';
+      document.getElementById('gcTitle').textContent = '3. Thực hành tương tác (Câu hôm nay) / Interactive Practice (Today\'s sentence)';
       updateGameReloadButtons();
       buildDaily();
     }
@@ -464,7 +464,7 @@ function openView(viewName) {
       document.getElementById('challengeGameHolder').appendChild(gameCore);
       gameCore.style.display = 'block'; 
       currentGameMode = 'challenge';
-      document.getElementById('gcTitle').textContent = '🎮 Game Center (Trộn 10 câu ôn tập)';
+      document.getElementById('gcTitle').textContent = '🎮 Game Center (Trộn 10 câu ôn tập / Mix 10 review sentences)';
       updateGameReloadButtons();
       buildChallenge();
       switchGameTab(1); 
@@ -476,21 +476,21 @@ function openView(viewName) {
 function buildVocab() {
   document.getElementById('vocabListContainer').innerHTML = CURRICULUM.map(d => `
     <div class="list-item">
-      <div style="font-size:14px;color:var(--green);font-weight:800;margin-bottom:6px">Ngày ${d.day}</div>
+      <div style="font-size:14px;color:var(--green);font-weight:800;margin-bottom:6px">Day ${d.day}</div>
       <div class="li-en">${d.en} <span class="audio-btn-sm" onclick="playAudio('${d.en.replace(/'/g,"\\'")}', 1.0)">🔊</span></div>
       <div class="li-vn">${d.vn}</div>
     </div>`).join('');
 }
 
 function buildDaily() {
-  document.getElementById('dayTabsContainer').innerHTML = CURRICULUM.map(d => `<div class="d-tab ${d.day===currentDay?'active':''}" onclick="selectDay(${d.day})">Ngày ${d.day}</div>`).join('');
+  document.getElementById('dayTabsContainer').innerHTML = CURRICULUM.map(d => `<div class="d-tab ${d.day===currentDay?'active':''}" onclick="selectDay(${d.day})">Day ${d.day}</div>`).join('');
   let d = CURRICULUM[currentDay - 1];
   
   document.getElementById('theFC').classList.remove('flipped');
   document.getElementById('dEn').textContent = d.en;
   document.getElementById('dPron').textContent = d.pron;
   document.getElementById('dVn').textContent = d.vn;
-  document.getElementById('dNote').textContent = `💡 Ghi chú: ${d.note}`;
+  document.getElementById('dNote').textContent = `💡 Ghi chú / Note: ${d.note}`;
   
   document.getElementById('dStruct').textContent = d.struct;
   document.getElementById('dStructEg').innerHTML = d.structEg.join("<br>");
@@ -504,9 +504,9 @@ function selectDay(day) { currentDay = day; buildDaily(); }
 function buildChallenge() {
   document.getElementById('chalListContainer').innerHTML = CURRICULUM.map(d => `
     <div class="chal-item">
-      <div class="chal-head">Ngày ${d.day}: ${d.vn}</div>
+      <div class="chal-head">Day ${d.day}: ${d.vn}</div>
       <div style="font-size:16px; color:var(--text); font-weight:600; margin-bottom:10px">${d.en}</div>
-      <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px;" onclick="playAudio('${d.en.replace(/'/g,"\\'")}')">🔊 Nghe mẫu</button>
+      <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px;" onclick="playAudio('${d.en.replace(/'/g,"\\'")}')">🔊 Nghe mẫu / Listen</button>
     </div>
   `).join('');
   document.getElementById('challengeFinalLink').value = "";
@@ -519,15 +519,15 @@ function submitChallengeRecording() {
   const resBox = document.getElementById('challengeSubmitRes');
 
   if(!linkValue || linkValue.trim() === "") {
-    resBox.innerHTML = '<span style="color:#E24B4A">⚠️ Ba/mẹ vui lòng dán link file ghi âm vào ô trống nhé!</span>';
+    resBox.innerHTML = '<span style="color:#E24B4A">⚠️ Ba/mẹ vui lòng dán link file ghi âm vào ô trống nhé! / Please paste the recording link in the box!</span>';
     return;
   }
 
-  resBox.innerHTML = '<span style="color:var(--text-mid)">Đang gửi bài cho giáo viên...</span>';
+  resBox.innerHTML = '<span style="color:var(--text-mid)">Đang gửi bài cho giáo viên... / Submitting to teacher...</span>';
 
   if(window.submitResult) {
     window.submitResult('speaking_challenge_link_topic1', 0, "Link Audio Nộp Bài: " + linkValue).then(() => {
-      resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công!</span>';
+      resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công! / Excellent! Recording submitted successfully!</span>';
     });
   } else {
     resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công! (Test Mode)</span>';
@@ -539,7 +539,7 @@ function submitChallengeRecording() {
 // ==========================================
 
 function updateGameReloadButtons() {
-  let txt = currentGameMode === 'daily' ? '🔄 Chơi lại' : '🔄 Câu ngẫu nhiên khác';
+  let txt = currentGameMode === 'daily' ? '🔄 Chơi lại / Play again' : '🔄 Câu ngẫu nhiên khác / Another random sentence';
   document.getElementById('btnReloadG1').textContent = txt;
   document.getElementById('btnReloadG3').textContent = txt;
   document.getElementById('btnReloadG4').textContent = txt;
@@ -574,7 +574,7 @@ function loadGame1() {
   const data = getTargetData();
   window.g1Target = data.en;
   window.g1Day = data.day;
-  document.getElementById('g1VnText').textContent = "Ý nghĩa: " + data.vn;
+  document.getElementById('g1VnText').textContent = "Ý nghĩa / Meaning: " + data.vn;
   document.getElementById('g1Res').innerHTML = "";
   document.getElementById('g1AnsBox').innerHTML = "";
   
@@ -597,11 +597,11 @@ function loadGame1() {
 function checkGame1() {
   let userSentence = Array.from(document.getElementById('g1AnsBox').childNodes).map(n => n.textContent).join(" ");
   if(userSentence === window.g1Target) {
-    document.getElementById('g1Res').innerHTML = '<span style="color:var(--green)">🎉 Hoàn hảo! Kết quả đã tự động nộp cho cô giáo.</span>';
+    document.getElementById('g1Res').innerHTML = '<span style="color:var(--green)">🎉 Hoàn hảo! Kết quả đã tự động nộp cho cô giáo. / Perfect! Result submitted to teacher.</span>';
     playAudio(window.g1Target);
     if(window.submitResult) { window.submitResult('game1_unscramble', window.g1Day, "Hoàn thành đúng: " + userSentence); }
   } else {
-    document.getElementById('g1Res').innerHTML = '<span style="color:#E24B4A">❌ Sai thứ tự, chạm vào từ phía trên để xếp lại nhé.</span>';
+    document.getElementById('g1Res').innerHTML = '<span style="color:#E24B4A">❌ Sai thứ tự, chạm vào từ phía trên để xếp lại nhé. / Wrong order, tap the words to rearrange.</span>';
   }
 }
 
@@ -638,7 +638,7 @@ function loadGame2() {
         selEn = null; selVn = null;
         
         if(matched === 5) {
-          document.getElementById('game2Res').innerHTML = '<span style="color:var(--green)">🎉 Tuyệt vời! Ghép đúng hết và bài làm đã được gửi đi!</span>';
+          document.getElementById('game2Res').innerHTML = '<span style="color:var(--green)">🎉 Tuyệt vời! Ghép đúng hết và bài làm đã được gửi đi! / Great job! Matched everything and submitted!</span>';
           if(window.submitResult) {
             let activeDayContext = currentGameMode === 'daily' ? currentDay : 0;
             window.submitResult('game2_match', activeDayContext, "Hoàn thành trọn vẹn cặp 5 từ nối");
@@ -684,14 +684,14 @@ function loadGame3() {
     btn.onclick = () => {
       if(opt === correctWordClean) {
         btn.style.background = 'var(--green)'; btn.style.color = '#fff';
-        document.getElementById('g3Res').innerHTML = '<span style="color:var(--green)">✅ Chính xác! Bài đã được gửi đi.</span>';
+        document.getElementById('g3Res').innerHTML = '<span style="color:var(--green)">✅ Chính xác! Bài đã được gửi đi. / Correct! Submitted.</span>';
         document.getElementById('g3Sentence').textContent = window.g3CorrectData.en; playAudio(window.g3CorrectData.en);
         if(window.submitResult) {
           window.submitResult('game3_fill_blank', window.g3CorrectData.day, "Điền từ đúng: " + correctWordClean + " trong câu '" + window.g3CorrectData.en + "'");
         }
       } else {
         btn.style.background = '#E24B4A'; btn.style.color = '#fff';
-        document.getElementById('g3Res').innerHTML = '<span style="color:#E24B4A">❌ Sai rồi, thử lại nhé!</span>';
+        document.getElementById('g3Res').innerHTML = '<span style="color:#E24B4A">❌ Sai rồi, thử lại nhé! / Wrong, try again!</span>';
         setTimeout(() => { btn.style.background = '#fff'; btn.style.color = 'var(--wood)'; }, 800);
       }
     };
@@ -715,13 +715,13 @@ function loadGame4() {
     btn.onclick = () => {
       if(opt === window.g4CorrectEn) {
         btn.style.background = 'var(--green)'; btn.style.color = '#fff';
-        document.getElementById('g4Res').innerHTML = '<span style="color:var(--green)">✅ Tai tinh quá! Kết quả đã ghi nhận thành công.</span>';
+        document.getElementById('g4Res').innerHTML = '<span style="color:var(--green)">✅ Tai tinh quá! Kết quả đã ghi nhận thành công. / Good listening! Result recorded.</span>';
         if(window.submitResult) {
           window.submitResult('game4_listen', window.g4Day, "Nghe & lựa chọn đúng câu: " + window.g4CorrectEn);
         }
       } else {
         btn.style.background = '#E24B4A'; btn.style.color = '#fff';
-        document.getElementById('g4Res').innerHTML = '<span style="color:#E24B4A">❌ Bấm loa nghe kỹ lại nhé!</span>';
+        document.getElementById('g4Res').innerHTML = '<span style="color:#E24B4A">❌ Bấm loa nghe kỹ lại nhé! / Tap the speaker to listen again!</span>';
         setTimeout(() => { btn.style.background = '#fff'; btn.style.color = 'var(--wood)'; }, 800);
       }
     };
@@ -744,8 +744,8 @@ function loadGame5() {
   for(let i=0; i < data.exTask.length; i++) {
     container.innerHTML += `
       <div style="margin-bottom: 16px; text-align: left;">
-        <div style="font-size:15px; color:var(--text); margin-bottom:6px; font-weight:600;">✍️ Câu ${i+1}: ${data.exTask[i]}</div>
-        <input type="text" id="g5Inp_${i}" class="type-input" placeholder="Gõ câu tiếng Anh..." style="margin:0; padding:12px;">
+        <div style="font-size:15px; color:var(--text); margin-bottom:6px; font-weight:600;">✍️ Câu / Q ${i+1}: ${data.exTask[i]}</div>
+        <input type="text" id="g5Inp_${i}" class="type-input" placeholder="Gõ câu tiếng Anh... / Type English sentence..." style="margin:0; padding:12px;">
       </div>
     `;
   }
@@ -771,14 +771,14 @@ function checkGame5() {
 
   const res = document.getElementById('g5Res');
   if(allCorrect) {
-    res.innerHTML = `<span style="color:var(--green)">✅ Tuyệt vời! Bạn đã hoàn thành đúng tất cả. Đang nộp bài...</span>`;
+    res.innerHTML = `<span style="color:var(--green)">✅ Tuyệt vời! Bạn đã hoàn thành đúng tất cả. Đang nộp bài... / Awesome! All correct. Submitting...</span>`;
     if(window.submitResult) {
       window.submitResult('structure_practice', window.currentG5Day, allUserAns.join(" | ")).then(() => {
-         res.innerHTML = `<span style="color:var(--green)">✅ Tuyệt vời! Bài đã được gửi cho cô giáo thành công.</span>`;
+         res.innerHTML = `<span style="color:var(--green)">✅ Tuyệt vời! Bài đã được gửi cho cô giáo thành công. / Awesome! Submitted to teacher successfully.</span>`;
       });
     }
   } else {
-    res.innerHTML = `<span style="color:#E24B4A">❌ Vẫn còn câu chưa chính xác. Bạn hãy kiểm tra lại nhé!</span>`;
+    res.innerHTML = `<span style="color:#E24B4A">❌ Vẫn còn câu chưa chính xác. Bạn hãy kiểm tra lại nhé! / Some answers are incorrect. Please check again!</span>`;
   }
 }
 
@@ -800,18 +800,18 @@ function submitGame6() {
   const res = document.getElementById('g6Res');
   
   if(!inp.value || inp.value.trim() === "") {
-    res.innerHTML = `<span style="color:#E24B4A">⚠️ Bạn chưa dán link âm thanh vào ô trống!</span>`;
+    res.innerHTML = `<span style="color:#E24B4A">⚠️ Bạn chưa dán link âm thanh vào ô trống! / You haven't pasted the audio link!</span>`;
     return;
   }
   
-  res.innerHTML = `<span style="color:var(--text-mid)">Đang nộp file ghi âm...</span>`;
+  res.innerHTML = `<span style="color:var(--text-mid)">Đang nộp file ghi âm... / Submitting audio file...</span>`;
   
   if(window.submitResult) {
     window.submitResult('game6_daily_record', window.currentG6Day, "Link: " + inp.value).then(() => {
-      res.innerHTML = `<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công!</span>`;
+      res.innerHTML = `<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công! / Audio file submitted successfully!</span>`;
     });
   } else {
-    res.innerHTML = `<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công! (Test mode)</span>`;
+    res.innerHTML = `<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công! (Test mode) / Audio file submitted successfully! (Test mode)</span>`;
   }
 }
 </script>
