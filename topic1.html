@@ -10,7 +10,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
@@ -24,7 +23,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
     // Kiểm tra đăng nhập và whitelist
     onAuthStateChanged(auth, async (user) => {
@@ -43,29 +41,15 @@
       }
     });
 
-    // Hàm nộp bài toàn cục
-    window.submitResult = async (type, day, answer, blob = null) => {
+    // Hàm nộp bài toàn cục (Đã bỏ phần xử lý Audio Blob vì chuyển sang dùng Link)
+    window.submitResult = async (type, day, answer) => {
       try {
-        let audioUrl = null;
-        
-        // Nếu có file ghi âm, đẩy lên Storage trước
-        if (blob) {
-          // Xử lý đuôi file động nhằm tương thích tốt với iOS (Safari) và Android/PC
-          const extension = blob.type.includes('mp4') ? 'm4a' : 'webm';
-          const fileName = `audios/${window.currentUserEmail}_T1_D${day}_${Date.now()}.${extension}`;
-          const storageRef = ref(storage, fileName);
-          await uploadBytes(storageRef, blob);
-          audioUrl = await getDownloadURL(storageRef);
-        }
-
-        // Lưu thông tin vào Firestore
         await addDoc(collection(db, "results"), {
-          email: window.currentUserEmail,
+          email: window.currentUserEmail || "guest@example.com",
           topic: 1,
           day: day,
           type: type,
           answer: answer,
-          audioUrl: audioUrl,
           timestamp: serverTimestamp()
         });
         return true;
@@ -145,6 +129,7 @@
     
     /* UI Buttons & Inputs */
     .type-input{width:100%;padding:14px;border:2px solid var(--warm);border-radius:12px;font-family:'Lora',serif;font-size:16px;margin:14px 0;}
+    .type-input:focus {border-color:var(--green); outline:none; box-shadow: 0 0 0 3px var(--green-pale);}
     .btn-action{background:var(--green);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.2s}
     .btn-action:hover{background:var(--green-light)}
     .btn-sec{background:var(--beige2);color:var(--text);border:1px solid var(--warm);padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;font-family:'Nunito';transition:all 0.2s}
@@ -152,16 +137,12 @@
     .btn-wood{background:var(--wood);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s; margin-top:20px}
     .btn-wood:hover{background:var(--wood-light)}
 
-    /* Ghi âm */
-    .mic-wrap{text-align:center;padding:24px 16px;background:var(--beige);border-radius:16px;border:1px dashed var(--warm); margin-top:28px;}
-    .mic-btn{width:72px;height:72px;border-radius:50%;border:none;cursor:pointer;background:var(--sunrise);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(244,162,97,.35)}
-    .mic-btn.active{background:#E24B4A;animation:pmic 1.1s infinite}
-    @keyframes pmic{0%,100%{box-shadow:0 0 0 0 rgba(226,75,74,.4)}50%{box-shadow:0 0 0 18px rgba(226,75,74,0)}}
+    /* Challenge Ghi âm form */
+    .submit-box {background: #fff; border: 2px dashed var(--warm); padding: 24px; border-radius: 16px; text-align: center; margin-top: 24px;}
     
-    /* CHALLENGE */
+    /* CHALLENGE ITEMS */
     .chal-item{background:var(--beige);border:1px solid var(--warm);border-radius:16px;padding:20px;margin-bottom:14px}
-    .chal-head{font-weight:700;font-size:16px;color:var(--wood);margin-bottom:12px}
-    .chal-actions{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .chal-head{font-weight:700;font-size:16px;color:var(--wood);margin-bottom:8px}
 
     /* GAME CENTER CORE STYLES */
     .game-center-wrap { background: var(--yellow-pale); border-radius: 16px; padding: 24px; border: 1px solid var(--yellow); margin-bottom: 24px; }
@@ -182,7 +163,6 @@
     .audio-big-btn { width: 80px; height: 80px; border-radius: 50%; background: var(--drop); color: #fff; border: none; font-size: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 0 var(--drop-light); }
     .audio-big-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--drop-light); }
 
-    audio { width: 100%; max-width: 320px; height: 40px; outline: none; border-radius: 20px; }
   </style>
 </head>
 <body>
@@ -212,7 +192,7 @@
     <div class="m-item" onclick="openView('Challenge')" style="grid-column: 1 / -1;">
       <div class="m-ico">🏆</div>
       <div class="m-name">Challenge</div>
-      <div class="m-desc">Test tổng hợp 10 câu qua Game</div>
+      <div class="m-desc">Test tổng hợp & Nộp bài ghi âm</div>
     </div>
   </div>
 
@@ -255,15 +235,6 @@
       </div>
 
       <div id="dailyGameHolder"></div>
-
-      <div class="mic-wrap">
-        <h3 style="font-size:18px;color:var(--wood);margin-bottom:20px">4. Luyện phát âm (Ghi âm nộp bài)</h3>
-        <button class="mic-btn" id="dMicBtn" onclick="toggleDailyMic()">
-          <svg style="width:32px;height:32px;fill:none;stroke:#fff;stroke-width:2" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
-        </button>
-        <div style="font-size:15px;color:var(--text-mid);margin-bottom:18px;font-weight:700" id="dMicLbl">Bấm để bắt đầu ghi âm 🎙️</div>
-        <audio id="dAudioPlayer" controls style="display:none;margin:0 auto"></audio>
-      </div>
     </div>
   </div>
 
@@ -272,9 +243,17 @@
 
     <div style="background:#fff; padding:24px; border-radius:20px; border:1px solid var(--beige2); margin-top:20px">
       <div class="sec-title">🏆 Ghi âm 10 Câu (Vượt ải cuối)</div>
-      <p style="font-size:15px; color:var(--text-mid); margin-bottom:24px; line-height:1.5">Mẹ và bé hãy nghe lại và cùng nhau ghi âm toàn bộ 10 câu của chủ đề này để nộp bài nhé!</p>
+      <p style="font-size:15px; color:var(--text-mid); margin-bottom:24px; line-height:1.5">Mẹ và bé hãy cùng nhau ghi âm toàn bộ 10 câu dưới đây, tải lên Vocaroo hoặc Google Drive, rồi dán đường link vào ô bên dưới để nộp bài nhé!</p>
+      
       <div id="chalListContainer"></div>
-      <button class="btn-wood" style="background:var(--green); border:2px solid var(--green-light);" onclick="alert('🎉 Chúc mừng bạn đã hoàn thành Topic 1!')">🎉 Hoàn thành Topic 1</button>
+
+      <div class="submit-box">
+        <h3 style="color:var(--wood); margin-bottom:12px; font-size:18px;">Dán Link Ghi Âm Tại Đây</h3>
+        <input type="url" id="challengeFinalLink" class="type-input" placeholder="Ví dụ: https://voca.ro/... hoặc Link Google Drive">
+        <button class="btn-wood" style="background:var(--sunrise); border-color:var(--sunrise); margin-top:16px;" onclick="submitChallengeRecording()">📤 Nộp Bài Ghi Âm</button>
+        <div id="challengeSubmitRes" style="margin-top:16px; font-weight:bold; font-size:15px;"></div>
+      </div>
+      
     </div>
   </div>
 
@@ -360,7 +339,7 @@ const CURRICULUM = [
 ];
 
 // ==========================================
-// AUDIO & GHI ÂM
+// AUDIO SYNTHESIS
 // ==========================================
 let synth = window.speechSynthesis;
 let preferredVoice = null;
@@ -381,27 +360,6 @@ function playAudio(text, rate = 1.0) {
   }
 }
 setTimeout(loadVoices, 500);
-
-let mediaRecorder;
-let audioChunks = [];
-async function startRecording(onStopCallback) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      // Nhận định dạng gốc của trình duyệt/thiết bị để tránh bị hỏng file âm thanh khi lưu trữ
-      const mimeType = mediaRecorder.mimeType || 'audio/webm';
-      const audioBlob = new Blob(audioChunks, { type: mimeType });
-      onStopCallback(URL.createObjectURL(audioBlob), audioBlob); 
-      stream.getTracks().forEach(track => track.stop());
-    };
-    mediaRecorder.start();
-    return true;
-  } catch (err) { alert("Vui lòng cho phép quyền ghi âm để nộp bài!"); return false; }
-}
-function stopRecording() { if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop(); }
 
 // ==========================================
 // ĐIỀU HƯỚNG
@@ -479,90 +437,43 @@ function buildDaily() {
 
 function selectDay(day) { currentDay = day; buildDaily(); }
 
-// --- NỘP BÀI GHI ÂM HÀNG NGÀY ---
-let activeDailyRec = false;
-async function toggleDailyMic() {
-  const btn = document.getElementById('dMicBtn'); 
-  const lbl = document.getElementById('dMicLbl'); 
-  const player = document.getElementById('dAudioPlayer');
-  
-  if(!activeDailyRec) {
-    const started = await startRecording((url, blob) => { 
-      player.src = url; 
-      player.style.display = 'block'; 
-      lbl.textContent = 'Đang đẩy file ghi âm cho giáo viên...';
-      
-      // GỌI HÀM NỘP BÀI LÊN FIREBASE
-      if(window.submitResult) {
-        window.submitResult('speaking_daily', currentDay, CURRICULUM[currentDay-1].en, blob).then(() => {
-          lbl.innerHTML = '<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công!</span>';
-        });
-      }
-    });
-    
-    if(started) { 
-      activeDailyRec = true; 
-      btn.classList.add('active'); 
-      lbl.textContent = 'Đang ghi âm... (Bấm để dừng và Nộp bài)'; 
-      player.style.display = 'none'; 
-    }
-  } else {
-    stopRecording(); 
-    activeDailyRec = false; 
-    btn.classList.remove('active'); 
-  }
-}
-
-// --- NỘP BÀI GHI ÂM CHALLENGE ---
+// --- XÂY DỰNG MỤC CHALLENGE (HIỂN THỊ CÂU ĐỂ GHI ÂM) ---
 function buildChallenge() {
-  document.getElementById('chalListContainer').innerHTML = CURRICULUM.map((d, i) => `
+  document.getElementById('chalListContainer').innerHTML = CURRICULUM.map(d => `
     <div class="chal-item">
       <div class="chal-head">Ngày ${d.day}: ${d.vn}</div>
-      <div class="chal-actions" style="margin-bottom:12px">
-        <button class="btn-sec" style="background:#fff" onclick="playAudio('${d.en.replace(/'/g,"\\'")}')">🔊 Nghe</button>
-        <button class="btn-action" id="cMicBtn_${i}" style="background:var(--sunrise)" onclick="toggleChalMic(${i}, 'cMicBtn_${i}', 'cAud_${i}')">🎙️ Ghi âm Nộp bài</button>
-      </div>
-      <div id="cStatus_${i}" style="font-size:14px; font-weight:bold; margin-bottom:8px"></div>
-      <audio id="cAud_${i}" controls style="display:none; width:100%"></audio>
+      <div style="font-size:16px; color:var(--text); font-weight:600; margin-bottom:10px">${d.en}</div>
+      <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px;" onclick="playAudio('${d.en.replace(/'/g,"\\'")}')">🔊 Nghe mẫu</button>
     </div>
   `).join('');
+  document.getElementById('challengeFinalLink').value = "";
+  document.getElementById('challengeSubmitRes').innerHTML = "";
 }
 
-async function toggleChalMic(idx, btnId, audId) {
-  const btn = document.getElementById(btnId); 
-  const player = document.getElementById(audId);
-  const status = document.getElementById(`cStatus_${idx}`);
-  
-  if(!btn.classList.contains('active')) {
-    const started = await startRecording((url, blob) => { 
-      player.src = url; 
-      player.style.display = 'block'; 
-      status.textContent = 'Đang nộp file lên hệ thống...';
-      
-      // GỌI HÀM NỘP BÀI
-      if(window.submitResult) {
-        window.submitResult('speaking_challenge', idx + 1, CURRICULUM[idx].en, blob).then(() => {
-          status.innerHTML = '<span style="color:var(--green)">✅ Nộp bài thành công!</span>';
-        });
-      }
+// --- HÀM NỘP LINK GHI ÂM TỔNG HỢP ---
+function submitChallengeRecording() {
+  const linkValue = document.getElementById('challengeFinalLink').value;
+  const resBox = document.getElementById('challengeSubmitRes');
+
+  if(!linkValue || linkValue.trim() === "") {
+    resBox.innerHTML = '<span style="color:#E24B4A">⚠️ Ba/mẹ vui lòng dán link file ghi âm vào ô trống nhé!</span>';
+    return;
+  }
+
+  resBox.innerHTML = '<span style="color:var(--text-mid)">Đang gửi bài cho giáo viên...</span>';
+
+  if(window.submitResult) {
+    window.submitResult('speaking_challenge_link_topic1', 0, "Link Audio Nộp Bài: " + linkValue).then(() => {
+      resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công!</span>';
     });
-    
-    if(started) { 
-      btn.classList.add('active'); 
-      btn.style.background = '#E24B4A'; 
-      btn.textContent = '⏹ Dừng & Nộp'; 
-      status.textContent = 'Đang ghi âm...';
-    }
   } else {
-    stopRecording(); 
-    btn.classList.remove('active'); 
-    btn.style.background = 'var(--sunrise)'; 
-    btn.textContent = '🎙️ Ghi lại';
+    // Dự phòng trường hợp Firebase chưa khởi tạo kịp / đang test offline
+    resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công! (Test Mode)</span>';
   }
 }
 
 // ==========================================
-// GAME CENTER LOGIC
+// GAME CENTER LOGIC (TỰ ĐỘNG NỘP BÀI)
 // ==========================================
 
 function updateGameReloadButtons() {
@@ -594,10 +505,11 @@ function switchGameTab(gameId) {
   if(gameId === 5) loadGame5();
 }
 
+// GAME 1: UNSCRAMBLE
 function loadGame1() {
   const data = getTargetData();
   window.g1Target = data.en;
-  window.g1Day = data.day; // Lưu lại day tương ứng để nộp bài chuẩn khi trộn câu ở Challenge
+  window.g1Day = data.day;
   document.getElementById('g1VnText').textContent = "Ý nghĩa: " + data.vn;
   document.getElementById('g1Res').innerHTML = "";
   document.getElementById('g1AnsBox').innerHTML = "";
@@ -623,16 +535,13 @@ function checkGame1() {
   if(userSentence === window.g1Target) {
     document.getElementById('g1Res').innerHTML = '<span style="color:var(--green)">🎉 Hoàn hảo! Kết quả đã tự động nộp cho cô giáo.</span>';
     playAudio(window.g1Target);
-    
-    // TỰ ĐỘNG NỘP BÀI GAME 1 VỀ FIREBASE
-    if(window.submitResult) {
-      window.submitResult('game1_unscramble', window.g1Day, "Hoàn thành đúng: " + userSentence);
-    }
+    if(window.submitResult) { window.submitResult('game1_unscramble', window.g1Day, "Hoàn thành đúng: " + userSentence); }
   } else {
     document.getElementById('g1Res').innerHTML = '<span style="color:#E24B4A">❌ Sai thứ tự, chạm vào từ phía trên để xếp lại nhé.</span>';
   }
 }
 
+// GAME 2: MATCHING
 function loadGame2() {
   const ec = document.getElementById('gmEnCol'); const vc = document.getElementById('gmVnCol');
   ec.innerHTML = ''; vc.innerHTML = ''; document.getElementById('game2Res').textContent = '';
@@ -666,10 +575,8 @@ function loadGame2() {
         
         if(matched === 5) {
           document.getElementById('game2Res').innerHTML = '<span style="color:var(--green)">🎉 Tuyệt vời! Ghép đúng hết và bài làm đã được gửi đi!</span>';
-          
-          // TỰ ĐỘNG NỘP BÀI GAME 2 VỀ FIREBASE
           if(window.submitResult) {
-            let activeDayContext = currentGameMode === 'daily' ? currentDay : 0; // 0 ám chỉ làm tổng hợp ở màn Challenge
+            let activeDayContext = currentGameMode === 'daily' ? currentDay : 0;
             window.submitResult('game2_match', activeDayContext, "Hoàn thành trọn vẹn cặp 5 từ nối");
           }
         }
@@ -680,6 +587,7 @@ function loadGame2() {
   }
 }
 
+// GAME 3: FILL BLANK
 function loadGame3() {
   const data = getTargetData();
   window.g3CorrectData = data;
@@ -714,8 +622,6 @@ function loadGame3() {
         btn.style.background = 'var(--green)'; btn.style.color = '#fff';
         document.getElementById('g3Res').innerHTML = '<span style="color:var(--green)">✅ Chính xác! Bài đã được gửi đi.</span>';
         document.getElementById('g3Sentence').textContent = window.g3CorrectData.en; playAudio(window.g3CorrectData.en);
-        
-        // TỰ ĐỘNG NỘP BÀI GAME 3 VỀ FIREBASE
         if(window.submitResult) {
           window.submitResult('game3_fill_blank', window.g3CorrectData.day, "Điền từ đúng: " + correctWordClean + " trong câu '" + window.g3CorrectData.en + "'");
         }
@@ -729,6 +635,7 @@ function loadGame3() {
   });
 }
 
+// GAME 4: LISTEN
 function loadGame4() {
   const data = getTargetData();
   window.g4CorrectEn = data.en;
@@ -745,8 +652,6 @@ function loadGame4() {
       if(opt === window.g4CorrectEn) {
         btn.style.background = 'var(--green)'; btn.style.color = '#fff';
         document.getElementById('g4Res').innerHTML = '<span style="color:var(--green)">✅ Tai tinh quá! Kết quả đã ghi nhận thành công.</span>';
-        
-        // TỰ ĐỘNG NỘP BÀI GAME 4 VỀ FIREBASE
         if(window.submitResult) {
           window.submitResult('game4_listen', window.g4Day, "Nghe & lựa chọn đúng câu: " + window.g4CorrectEn);
         }
@@ -762,12 +667,12 @@ function loadGame4() {
 }
 function playGame4Audio() { playAudio(window.g4CorrectEn); }
 
-// --- NỘP BÀI GÕ: BÀI TẬP CẤU TRÚC (GAME 5) ---
+// GAME 5: STRUCTURE (TYPING)
 let g5TargetAns = "";
 function loadGame5() {
   const data = getTargetData();
   g5TargetAns = data.exAns;
-  window.currentG5Day = data.day; // Lưu lại day để nộp bài
+  window.currentG5Day = data.day;
   document.getElementById('g5Task').textContent = "✍️ " + data.exTask;
   
   const inp = document.getElementById('g5Inp');
@@ -785,8 +690,6 @@ function checkGame5() {
     inp.style.borderColor = 'var(--green)';
     res.innerHTML = `<span style="color:var(--green)">✅ Chính xác! Đang nộp bài cho cô giáo...</span>`;
     playAudio(g5TargetAns);
-    
-    // GỌI HÀM NỘP BÀI GÕ LÊN FIREBASE
     if(window.submitResult) {
       window.submitResult('structure_practice', window.currentG5Day, inp.value).then(() => {
          res.innerHTML = `<span style="color:var(--green)">✅ Chính xác! Bài đã được gửi cho cô giáo thành công.</span>`;
