@@ -401,6 +401,10 @@
 // --- ANTI-COPY SECURITY ---
 // Khóa chuột phải, khóa bôi đen, khóa kéo thả với quyền cấp cao nhất (Capture phase)
 document.addEventListener('contextmenu', e => {
+  // Ngoại lệ: Cho phép chuột phải nếu đang click vào ô input (để học viên dán link)
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    return;
+  }
   if (window.currentUserRole !== 'teacher') e.preventDefault();
 }, true);
 
@@ -408,8 +412,17 @@ document.addEventListener('keydown', e => {
   if (window.currentUserRole !== 'teacher') {
     // Chặn F12 & Inspect
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault();
-    // Chặn Ctrl+C, Ctrl+S, Ctrl+U, Ctrl+V
-    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 67 || e.keyCode === 86)) e.preventDefault();
+    
+    // Kiểm tra xem học viên có đang gõ vào ô nhập liệu không
+    const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+    
+    // Vẫn luôn chặn Ctrl+S (Lưu trang), Ctrl+U (Xem Source)
+    if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) e.preventDefault();
+    
+    // Chặn Ctrl+C (Copy), Ctrl+V (Paste) nếu KHÔNG phải đang ở trong ô input
+    if (!isInput && e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86)) {
+      e.preventDefault();
+    }
   }
 }, true);
 
