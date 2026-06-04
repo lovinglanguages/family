@@ -9,7 +9,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
@@ -27,8 +27,10 @@
 
     window.currentUserRole = "student";
     let allStudentResults = []; 
+    let currentTotalMinutes = 0; // Biến lưu tổng thời gian học
+    let studyTimerInterval;
 
-    // 1. KIỂM TRA WHITELIST (Danh sách được phép)
+    // 1. KIỂM TRA WHITELIST
     async function getUserData(email) {
       try {
         const docRef = doc(db, "whitelist", email.toLowerCase().trim());
@@ -40,23 +42,88 @@
       }
     }
 
-    // 2. LẤY DỮ LIỆU TIẾN ĐỘ (Giọt nước)
+    // 2. LẤY DỮ LIỆU TIẾN ĐỘ (Nước, Streak, Thời gian)
     async function getUserProgress(email) {
       try {
         const docRef = doc(db, "users", email.toLowerCase().trim());
         const docSnap = await getDoc(docRef);
-        return docSnap.exists() ? docSnap.data() : { drops: 0 };
+        return docSnap.exists() ? docSnap.data() : { drops: 0, streak: 0, lastActiveDate: null, totalMinutes: 0 };
       } catch (e) {
-        console.error("Progress Error / Lỗi lấy tiến độ:", e);
-        return { drops: 0 };
+        console.error("Progress Error:", e);
+        return { drops: 0, streak: 0, lastActiveDate: null, totalMinutes: 0 };
       }
     }
 
-    // Cập nhật giao diện điểm thưởng
-    function updateDropsUI(drops) {
-      const dropCount = drops || 0;
-      document.getElementById('navDrops').textContent = dropCount;
-      document.getElementById('sDrops').textContent = dropCount;
+    // Cập nhật giao diện Nước và Thời gian
+    function updateProgressUI(progress) {
+      const drops = progress.drops || 0;
+      document.getElementById('navDrops').textContent = drops;
+      document.getElementById('sDrops').textContent = drops;
+      
+      currentTotalMinutes = progress.totalMinutes || 0;
+      renderTimeUI(currentTotalMinutes);
+    }
+
+    function renderTimeUI(minutes) {
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      const display = h > 0 ? `${h}h${m}m` : `${m}m`;
+      document.getElementById('sTime').textContent = display;
+    }
+
+    // --- LOGIC TÍNH STREAK (CHUỖI NGÀY HỌC) ---
+    async function checkAndUpdateStreak(email, progressData) {
+      const today = new Date();
+      // Chuyển ngày hiện tại thành YYYY-MM-DD
+      const todayStr = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+      let currentStreak = progressData.streak || 0;
+      let lastActive = progressData.lastActiveDate;
+
+      if (lastActive !== todayStr) {
+        if (lastActive) {
+          const lastDate = new Date(lastActive);
+          const diffTime = Math.abs(today.setHours(0,0,0,0) - lastDate.setHours(0,0,0,0));
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+          if (diffDays === 1) {
+            currentStreak += 1; // Học liên tiếp
+          } else {
+            currentStreak = 1;  // Đứt chuỗi, tính lại từ 1
+          }
+        } else {
+          currentStreak = 1; // Ngày đầu tiên
+        }
+
+        try {
+          const docRef = doc(db, "users", email.toLowerCase().trim());
+          await setDoc(docRef, { streak: currentStreak, lastActiveDate: todayStr }, { merge: true });
+        } catch (error) {
+          console.error("Lỗi cập nhật streak:", error);
+        }
+      }
+
+      document.getElementById('sStreak').textContent = currentStreak;
+    }
+
+    // --- LOGIC TÍNH THỜI GIAN HỌC ---
+    function startStudyTimer(email) {
+      // Dừng timer cũ nếu có để tránh chạy lặp
+      if (studyTimerInterval) clearInterval(studyTimerInterval);
+      
+      // Chạy ngầm mỗi 60 giây (1 phút)
+      studyTimerInterval = setInterval(async () => {
+        currentTotalMinutes += 1;
+        renderTimeUI(currentTotalMinutes); // Cập nhật giao diện ngay lập tức
+        
+        try {
+          const docRef = doc(db, "users", email.toLowerCase().trim());
+          // Lưu ngầm lên Firebase
+          await setDoc(docRef, { totalMinutes: currentTotalMinutes }, { merge: true });
+        } catch (error) {
+          console.error("Lỗi đồng bộ thời gian:", error);
+        }
+      }, 60000); 
     }
 
     // 3. ĐĂNG NHẬP GOOGLE
@@ -75,7 +142,9 @@
         if (userData) {
           window.currentUserRole = userData.role || "student";
           const progress = await getUserProgress(email);
-          updateDropsUI(progress.drops);
+          updateProgressUI(progress);
+          await checkAndUpdateStreak(email, progress);
+          startStudyTimer(email);
           enterGarden();
         } else {
           await signOut(auth);
@@ -103,23 +172,19 @@
       }
     }
 
-    // 4. XEM BÀI LÀM HỌC VIÊN (ĐÃ CẬP NHẬT ĐỂ LẤY NICKNAME)
+    // 4. XEM BÀI LÀM HỌC VIÊN
     window.loadStudentResults = async () => {
       const list = document.getElementById('resultsList');
       list.innerHTML = "<p style='padding:20px; color:var(--text-soft);'>Loading data... / Đang tải dữ liệu...</p>";
       
       try {
-        // Lấy danh sách whitelist để tạo bản đồ mapping email -> nickname
         const whitelistSnapshot = await getDocs(collection(db, "whitelist"));
         const nicknameMap = {};
         whitelistSnapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.nickname) {
-            nicknameMap[doc.id.toLowerCase().trim()] = data.nickname;
-          }
+          if (data.nickname) nicknameMap[doc.id.toLowerCase().trim()] = data.nickname;
         });
 
-        // Lấy danh sách bài làm
         const q = query(collection(db, "results"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         
@@ -132,10 +197,7 @@
         querySnapshot.forEach((doc) => {
           const itemData = doc.data();
           const studentEmail = (itemData.email || "").toLowerCase().trim();
-          
-          // Gán thêm nickname vào dữ liệu bài làm dựa theo email
           itemData.nickname = nicknameMap[studentEmail] || "";
-          
           allStudentResults.push(itemData);
         });
 
@@ -197,7 +259,6 @@
       list.innerHTML = html;
     };
 
-    // Hàm lọc tổng hợp (Lọc kết hợp nhiều điều kiện)
     window.applyFilters = () => {
       const dayInput = document.getElementById('filterDayInput').value.trim();
       const nameInput = document.getElementById('filterNameInput').value.trim().toLowerCase();
@@ -205,28 +266,21 @@
 
       let filteredData = allStudentResults;
 
-      if (dayInput) {
-        filteredData = filteredData.filter(item => String(item.day) === dayInput);
-      }
-
+      if (dayInput) filteredData = filteredData.filter(item => String(item.day) === dayInput);
       if (nameInput) {
         filteredData = filteredData.filter(item => 
           (item.email && item.email.toLowerCase().includes(nameInput)) ||
           (item.nickname && item.nickname.toLowerCase().includes(nameInput))
         );
       }
-
       if (dateInput) {
         filteredData = filteredData.filter(item => {
           if (!item.timestamp) return false;
-          
           const itemDate = item.timestamp.toDate();
           const year = itemDate.getFullYear();
           const month = String(itemDate.getMonth() + 1).padStart(2, '0');
           const day = String(itemDate.getDate()).padStart(2, '0');
-          const formattedDate = `${year}-${month}-${day}`;
-
-          return formattedDate === dateInput;
+          return `${year}-${month}-${day}` === dateInput;
         });
       }
 
@@ -240,7 +294,11 @@
       window.renderTable(allStudentResults);
     };
 
-    window.logout = () => { signOut(auth); location.reload(); };
+    window.logout = () => { 
+      if (studyTimerInterval) clearInterval(studyTimerInterval);
+      signOut(auth); 
+      location.reload(); 
+    };
 
     // 5. THEO DÕI TRẠNG THÁI ĐĂNG NHẬP
     onAuthStateChanged(auth, async (user) => {
@@ -249,12 +307,14 @@
         if (userData) {
           window.currentUserRole = userData.role || "student";
           
-          // Ưu tiên hiển thị nickname, nếu không có mới hiển thị email
           document.getElementById('userEmailDisplay').textContent = userData.nickname || user.email;
           document.getElementById('userEmailDisplay').style.display = 'block';
           
           const progress = await getUserProgress(user.email);
-          updateDropsUI(progress.drops);
+          updateProgressUI(progress);
+          await checkAndUpdateStreak(user.email, progress);
+          startStudyTimer(user.email); // Khởi động đếm thời gian
+          
           enterGarden();
         } else {
           await signOut(auth);
@@ -409,19 +469,19 @@
   <div class="stats-row">
     <div class="stat-box">
       <div class="stat-num" id="sDays">1</div>
-      <div class="stat-lbl">Completed<br>Ngày Xong</div>
+      <div class="stat-lbl">Completed<br>Bài Xong</div>
     </div>
     <div class="stat-box">
       <div class="stat-num" id="sDrops">0</div>
       <div class="stat-lbl">Water<br>Nước 💧</div>
     </div>
     <div class="stat-box">
-      <div class="stat-num" id="sStreak">1</div>
+      <div class="stat-num" id="sStreak">0</div>
       <div class="stat-lbl">Streak<br>Chuỗi 🔥</div>
     </div>
     <div class="stat-box">
-      <div class="stat-num" id="sPct" style="color:var(--green)">1%</div>
-      <div class="stat-lbl">Progress<br>Tiến Độ</div>
+      <div class="stat-num" id="sTime" style="color:var(--green)">0m</div>
+      <div class="stat-lbl">Time<br>Thời Gian</div>
     </div>
   </div>
 
@@ -458,9 +518,7 @@ document.addEventListener('contextmenu', e => {
 
 document.addEventListener('keydown', e => {
   if (window.currentUserRole !== 'teacher') {
-    // Chặn F12 & Inspect (Ctrl+Shift+I)
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault();
-    // Chặn Copy, View Source, Save (Ctrl+C, U, S, V)
     if (e.ctrlKey && [85, 83, 67, 86].includes(e.keyCode)) e.preventDefault();
   }
 }, true);
@@ -469,7 +527,7 @@ document.addEventListener('dragstart', e => {
   if (window.currentUserRole !== 'teacher') e.preventDefault();
 }, true);
 
-// --- TOPICS DATA (SONG NGỮ ANH - VIỆT) ---
+// --- TOPICS DATA ---
 const TOPICS = [
   {id:1,  emoji:"👋", en:"Good Morning", vn:"Chào buổi sáng", color:"#EF9F27", status:"active"},
   {id:2,  emoji:"🪥", en:"Personal Hygiene", vn:"Vệ sinh cá nhân", color:"#5DCAA5", status:"locked"},
