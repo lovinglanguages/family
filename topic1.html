@@ -24,9 +24,9 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.currentUserRole = "student"; // Mặc định là học viên
+    window.currentUserRole = "student"; 
+    window.currentUserEmail = "guest@example.com";
 
-    // Kiểm tra đăng nhập và whitelist
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         alert("Vui lòng đăng nhập để vào lớp học! / Please log in to enter the class!");
@@ -38,51 +38,30 @@
           alert("Email không có quyền truy cập! / Unauthorized email!");
           window.location.href = 'index.html';
         } else {
-          window.currentUserEmail = user.email.toLowerCase().trim(); // Lưu email chuẩn hóa
-          window.currentUserRole = docSnap.data().role || "student"; // Nhận diện giáo viên/học viên
+          window.currentUserEmail = user.email.toLowerCase().trim();
+          window.currentUserRole = docSnap.data().role || "student";
         }
       }
     });
 
-    // Hàm nộp bài toàn cục
     window.submitResult = async (type, day, answer) => {
       try {
         const userEmail = window.currentUserEmail || "guest@example.com";
-
-        // 1. Lưu lịch sử làm bài vào bảng "results"
         await addDoc(collection(db, "results"), {
-          email: userEmail,
-          topic: 1,
-          day: day,
-          type: type,
-          answer: answer,
-          timestamp: serverTimestamp()
+          email: userEmail, topic: 1, day: day, type: type, answer: answer, timestamp: serverTimestamp()
         });
 
-        // 2. Tính toán điểm Giọt nước theo độ khó
         let dropsToEarn = 5; 
-        if (type === 'speaking_challenge_link_topic1') {
-          dropsToEarn = 50; 
-        } else if (type.includes('record') || type.includes('structure')) {
-          dropsToEarn = 15; 
-        } else if (type === 'game2_match') {
-          dropsToEarn = 10; 
-        }
+        if (type === 'speaking_challenge_link_topic1') dropsToEarn = 50; 
+        else if (type.includes('record') || type.includes('structure')) dropsToEarn = 15; 
+        else if (type === 'game2_match') dropsToEarn = 10; 
 
-        // 3. Cập nhật vào tài khoản học viên (Bảng users)
         if (userEmail !== "guest@example.com") {
           const userRef = doc(db, "users", userEmail);
-          await setDoc(userRef, {
-            drops: increment(dropsToEarn),
-            lastActive: serverTimestamp()
-          }, { merge: true });
+          await setDoc(userRef, { drops: increment(dropsToEarn), lastActive: serverTimestamp() }, { merge: true });
         }
 
-        // 4. Kích hoạt hiệu ứng chúc mừng
-        if (window.showCelebration) {
-          window.showCelebration(dropsToEarn);
-        }
-
+        if (window.showCelebration) window.showCelebration(dropsToEarn);
         return true;
       } catch (e) {
         console.error("Lỗi nộp bài / Submission error:", e);
@@ -92,25 +71,15 @@
   </script>
 
   <style>
-    :root{
-      --beige:#F5F0E8;--beige2:#EDE6D6;--warm:#D4C5A9;--wood:#8B6F4E;--wood-light:#C4956A;
-      --green:#5C8A5E;--green-light:#89B48B;--green-pale:#D4E8D5;
-      --yellow:#E8C547;--yellow-pale:#FDF3C0;
-      --text:#3D2B1F;--text-mid:#6B4E3D;--text-soft:#9B7E6F;
-      --sunrise:#F4A261;--drop:#4A90D9;--drop-light:#A8D4F5;
-      --card-r:16px;
-    }
+    :root{ --beige:#F5F0E8;--beige2:#EDE6D6;--warm:#D4C5A9;--wood:#8B6F4E;--wood-light:#C4956A; --green:#5C8A5E;--green-light:#89B48B;--green-pale:#D4E8D5; --yellow:#E8C547;--yellow-pale:#FDF3C0; --text:#3D2B1F;--text-mid:#6B4E3D;--text-soft:#9B7E6F; --sunrise:#F4A261;--drop:#4A90D9;--drop-light:#A8D4F5; --card-r:16px; }
     *{margin:0;padding:0;box-sizing:border-box}
-    
     body { font-family:'Nunito',sans-serif;background:var(--beige);color:var(--text);min-height:100vh; overflow-x: hidden; }
     input { outline:none; font-family:'Nunito',sans-serif;}
-    
-    /* NAV & MENU */
     .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(245,240,232,0.97);border-bottom:1px solid var(--warm);position:sticky;top:0;z-index:99}
     .logo{font-family:'Lora',serif;font-size:18px;color:var(--wood);font-weight:600;text-decoration:none}
     .logo span{color:var(--green)}
     .nav-right{display:flex;align-items:center;gap:10px}
-    .back-btn{background:transparent;border:1px solid var(--warm);border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:'Nunito',sans-serif;text-decoration:none; transition:all 0.2s}
+    .back-btn{background:transparent;border:1px solid var(--warm);border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;color:var(--text-mid);cursor:pointer; transition:all 0.2s}
     .back-btn:hover{background:var(--beige2)}
     
     .main-wrap{max-width:700px;margin:0 auto;padding:24px 18px 60px}
@@ -125,29 +94,20 @@
     .m-name{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--wood);margin-bottom:6px}
     .m-desc{font-size:14px;color:var(--text-mid)}
 
-    /* VIEWS */
     .view-section{display:none; background:#fff; border-radius:20px; padding:24px; border:1px solid var(--beige2); margin-top:16px;}
     .sec-title{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--wood);border-bottom:2px dashed var(--warm);padding-bottom:10px;margin-bottom:20px}
     
-    /* MỤC LIST */
     .list-item{padding:16px 0;border-bottom:1px solid var(--beige2)}
     .list-item:last-child{border-bottom:none}
     .li-en{font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px; display:flex; align-items:center; flex-wrap:wrap; gap:8px;}
     .li-vn{font-size:16px;color:var(--text-soft);margin-bottom:6px}
     .li-struct{background:#fff;border:1px solid var(--green-light);color:var(--green);padding:14px;border-radius:12px;font-size:15px;margin-top:10px;line-height:1.6}
-    .li-struct b{color:var(--wood)}
-    .audio-btn-sm{cursor:pointer; background:var(--beige2); padding:4px 10px; border-radius:8px; font-size:13px; font-family:'Nunito',sans-serif; color:var(--text-mid); font-weight:700; transition:all 0.2s}
-    .audio-btn-sm:hover{background:var(--warm)}
-    .audio-btn-sm.slow{background:var(--drop-light); color:var(--drop)}
-
-    /* MỤC HỌC TỪNG NGÀY */
+    .audio-btn-sm{cursor:pointer; background:var(--beige2); padding:4px 10px; border-radius:8px; font-size:13px; font-weight:700; transition:all 0.2s}
+    
     .day-tabs{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;margin-bottom:24px}
-    .day-tabs::-webkit-scrollbar{height:6px}
-    .day-tabs::-webkit-scrollbar-thumb{background:var(--warm);border-radius:6px}
     .d-tab{padding:10px 18px;background:var(--beige);border:1px solid var(--warm);border-radius:12px;font-size:15px;font-weight:700;color:var(--text-mid);cursor:pointer;white-space:nowrap;transition:all 0.2s}
     .d-tab.active{background:var(--green);color:#fff;border-color:var(--green)}
     
-    /* Flashcard */
     .fc-scene{perspective:900px;margin:10px 0 28px;cursor:pointer}
     .fc-inner{width:100%;min-height:220px;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
     .fc-inner.flipped{transform:rotateY(180deg)}
@@ -156,76 +116,35 @@
     .fc-back{background:var(--wood);color:#fff;transform:rotateY(180deg)}
     .fc-en{font-family:'Lora',serif;font-size:32px;font-weight:600;margin-bottom:12px;color:var(--wood)}
     .fc-vn{font-family:'Lora',serif;font-size:24px;font-weight:600;margin-bottom:14px}
-    .fc-pron{font-size:16px;color:var(--text-mid);background:rgba(255,255,255,0.7);padding:8px 16px;border-radius:12px;margin-bottom:16px;font-weight:700;letter-spacing:0.5px}
+    .fc-pron{font-size:16px;color:var(--text-mid);background:rgba(255,255,255,0.7);padding:8px 16px;border-radius:12px;margin-bottom:16px;font-weight:700;}
     
-    /* UI Buttons & Inputs */
     .type-input{width:100%;padding:14px;border:2px solid var(--warm);border-radius:12px;font-family:'Lora',serif;font-size:16px;margin:14px 0;}
-    .type-input:focus {border-color:var(--green); outline:none; box-shadow: 0 0 0 3px var(--green-pale);}
     .btn-action{background:var(--green);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.2s}
-    .btn-action:hover{background:var(--green-light)}
-    .btn-sec{background:var(--beige2);color:var(--text);border:1px solid var(--warm);padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;font-family:'Nunito';transition:all 0.2s}
-    .btn-sec:hover{background:var(--warm)}
-    .btn-wood{background:var(--wood);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s; margin-top:20px}
-    .btn-wood:hover{background:var(--wood-light)}
-
-    /* Challenge Ghi âm form */
-    .submit-box {background: #fff; border: 2px dashed var(--warm); padding: 24px; border-radius: 16px; text-align: center; margin-top: 24px;}
+    .btn-sec{background:var(--beige2);color:var(--text);border:1px solid var(--warm);padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.2s}
+    .btn-wood{background:var(--wood);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px; margin-top:20px}
     
-    /* CHALLENGE ITEMS */
-    .chal-item{background:var(--beige);border:1px solid var(--warm);border-radius:16px;padding:20px;margin-bottom:14px}
-    .chal-head{font-weight:700;font-size:16px;color:var(--wood);margin-bottom:8px}
-
-    /* GAME CENTER CORE STYLES */
+    .submit-box {background: #fff; border: 2px dashed var(--warm); padding: 24px; border-radius: 16px; text-align: center; margin-top: 24px;}
     .game-center-wrap { background: var(--yellow-pale); border-radius: 16px; padding: 24px; border: 1px solid var(--yellow); margin-bottom: 24px; }
     .game-area { background: #fff; border: 1px dashed var(--warm); border-radius: 16px; padding: 24px; text-align: center; min-height: 250px; display: flex; flex-direction: column; justify-content: center; }
     
-    .word-chip { background: #fff; border: 2px solid var(--warm); border-radius: 12px; padding: 10px 16px; font-size: 18px; font-family: 'Lora', serif; font-weight: 600; color: var(--wood); cursor: pointer; display: inline-block; margin: 6px; box-shadow: 0 4px 0 var(--beige2); transition: transform 0.1s; }
-    .word-chip:active { transform: translateY(4px); box-shadow: 0 0 0 var(--beige2); }
+    .word-chip { background: #fff; border: 2px solid var(--warm); border-radius: 12px; padding: 10px 16px; font-size: 18px; font-family: 'Lora', serif; font-weight: 600; color: var(--wood); cursor: pointer; display: inline-block; margin: 6px; transition: transform 0.1s; }
+    .word-chip:active { transform: translateY(4px); }
     .ans-box { min-height: 60px; background: var(--beige); border: 2px dashed var(--wood-light); border-radius: 12px; margin-bottom: 20px; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px;}
     
     .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
     .m-card-gm{padding:16px 12px;border-radius:12px;border:2px solid var(--warm);background:#fff;font-size:16px;cursor:pointer;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;min-height:60px;transition:all 0.2s;line-height:1.4}
-    .m-card-gm:hover{background:var(--green-pale);border-color:var(--green-light)}
     .m-card-gm.sel{border-color:var(--green);background:var(--green-pale);color:var(--green)}
     .m-card-gm.mat{border-color:var(--green);background:var(--green);color:#fff;pointer-events:none}
 
     .option-btn { width: 100%; background: #fff; border: 2px solid var(--warm); border-radius: 12px; padding: 16px; font-size: 18px; font-family: 'Lora', serif; color: var(--wood); margin-bottom: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
     .option-btn:hover { background: var(--green-pale); border-color: var(--green); }
-    .audio-big-btn { width: 80px; height: 80px; border-radius: 50%; background: var(--drop); color: #fff; border: none; font-size: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 0 var(--drop-light); }
-    .audio-big-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--drop-light); }
+    .audio-big-btn { width: 80px; height: 80px; border-radius: 50%; background: var(--drop); color: #fff; border: none; font-size: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;}
 
-    /* HIỆU ỨNG CHÚC MỪNG (CELEBRATION) */
-    .cute-popup {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      border: 3px solid var(--drop);
-      color: var(--drop);
-      padding: 14px 28px;
-      border-radius: 50px;
-      font-size: 18px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      box-shadow: 0 10px 25px rgba(74, 144, 217, 0.25);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.5s 3.5s forwards;
-    }
-    .flying-drop {
-      position: fixed;
-      bottom: -30px;
-      font-size: 28px;
-      z-index: 9998;
-      animation: flyUp linear forwards;
-    }
+    .cute-popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fff; border: 3px solid var(--drop); color: var(--drop); padding: 14px 28px; border-radius: 50px; font-size: 18px; font-weight: 800; z-index: 9999; display: flex; align-items: center; gap: 10px; animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.5s 3.5s forwards; }
+    .flying-drop { position: fixed; bottom: -30px; font-size: 28px; z-index: 9998; animation: flyUp linear forwards; }
     @keyframes bounceIn { 0% { top: -60px; opacity: 0; } 100% { top: 20px; opacity: 1; } }
     @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
     @keyframes flyUp { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; } }
-
   </style>
 </head>
 <body>
@@ -233,30 +152,18 @@
 <div class="nav">
   <div class="logo">🌱 Loving English <span>Garden</span></div>
   <div class="nav-right">
-    <button class="back-btn" id="btnBack" onclick="goBack()">← Quay lại / Back</button>
+    <button class="back-btn" onclick="goBack()">← Quay lại</button>
   </div>
 </div>
 
 <div class="main-wrap">
   <div class="topic-title">Topic 1: Good Morning! ☀️</div>
-  <div class="topic-sub">Chào ngày mới năng động cùng bé / Start a dynamic new day with your child</div>
+  <div class="topic-sub">Chào ngày mới năng động cùng bé</div>
 
   <div id="viewMenu" class="menu-grid">
-    <div class="m-item" onclick="openView('Vocab')">
-      <div class="m-ico">📋</div>
-      <div class="m-name">Vocab List</div>
-      <div class="m-desc">Danh sách 10 câu trọng tâm / Top 10 core sentences</div>
-    </div>
-    <div class="m-item" onclick="openView('Daily')">
-      <div class="m-ico">📅</div>
-      <div class="m-name">Daily Learning</div>
-      <div class="m-desc">Từ vựng, Cấu trúc & Game / Vocab, Structure & Games</div>
-    </div>
-    <div class="m-item" onclick="openView('Challenge')" style="grid-column: 1 / -1;">
-      <div class="m-ico">🏆</div>
-      <div class="m-name">Challenge</div>
-      <div class="m-desc">Test tổng hợp & Nộp bài ghi âm / Final Test & Submit Recording</div>
-    </div>
+    <div class="m-item" onclick="openView('Vocab')"><div class="m-ico">📋</div><div class="m-name">Vocab List</div><div class="m-desc">Danh sách 10 câu trọng tâm</div></div>
+    <div class="m-item" onclick="openView('Daily')"><div class="m-ico">📅</div><div class="m-name">Daily Learning</div><div class="m-desc">Từ vựng, Cấu trúc & Game</div></div>
+    <div class="m-item" onclick="openView('Challenge')" style="grid-column: 1 / -1;"><div class="m-ico">🏆</div><div class="m-name">Challenge</div><div class="m-desc">Test tổng hợp & Nộp bài ghi âm</div></div>
   </div>
 
   <div id="viewVocab" class="view-section">
@@ -273,175 +180,147 @@
       <div class="fc-scene">
         <div class="fc-inner" id="theFC" onclick="document.getElementById('theFC').classList.toggle('flipped')">
           <div class="fc-face fc-front">
-            <div style="font-size:13px;opacity:.8;margin-bottom:12px;color:var(--text-mid);text-transform:uppercase;font-weight:700">Tiếng Anh · Bấm thẻ để lật / English · Tap to flip</div>
+            <div style="font-size:13px;opacity:.8;margin-bottom:12px;color:var(--text-mid);font-weight:700">Tiếng Anh · Bấm thẻ để lật</div>
             <div class="fc-en" id="dEn">—</div>
             <div class="fc-pron" id="dPron">—</div>
             <div style="display:flex; gap:10px; justify-content:center; margin-top:8px;">
-              <button class="btn-sec" style="padding:8px 16px;font-size:14px;background:#fff" onclick="playAudio(document.getElementById('dEn').textContent, 1.0); event.stopPropagation();">🔊 Đọc chuẩn / Normal</button>
-              <button class="btn-sec" style="padding:8px 16px;font-size:14px;background:#fff;border-color:var(--drop);color:var(--drop)" onclick="playAudio(document.getElementById('dEn').textContent, 0.7); event.stopPropagation();">🐢 Đọc chậm / Slow</button>
+              <button class="btn-sec" style="padding:8px 16px;background:#fff" onclick="playAudio(document.getElementById('dEn').textContent, 1.0); event.stopPropagation();">🔊 Bình thường</button>
+              <button class="btn-sec" style="padding:8px 16px;background:#fff;color:var(--drop)" onclick="playAudio(document.getElementById('dEn').textContent, 0.7); event.stopPropagation();">🐢 Chậm</button>
             </div>
           </div>
           <div class="fc-face fc-back">
-            <div style="font-size:13px;opacity:.7;margin-bottom:12px;text-transform:uppercase;font-weight:700">Nghĩa tiếng Việt / Vietnamese Meaning</div>
+            <div style="font-size:13px;opacity:.7;margin-bottom:12px;font-weight:700">Nghĩa tiếng Việt</div>
             <div class="fc-vn" id="dVn">—</div>
-            <div id="dNote" style="font-size:15px;opacity:0.95;margin-top:16px;background:rgba(0,0,0,0.15);padding:10px 16px;border-radius:12px;line-height:1.5">—</div>
+            <div id="dNote" style="font-size:15px;opacity:0.95;margin-top:16px;background:rgba(0,0,0,0.15);padding:10px 16px;border-radius:12px;">—</div>
           </div>
         </div>
       </div>
 
-      <div id="dailyStructureBlock" style="margin-bottom: 28px; background:var(--beige); padding:16px; border-radius:16px; border:1px solid var(--warm);">
+      <div style="margin-bottom: 28px; background:var(--beige); padding:16px; border-radius:16px; border:1px solid var(--warm);">
         <h3 style="font-size:18px;color:var(--wood);margin-bottom:12px">2. Cấu trúc câu / Sentence Structure</h3>
         <div class="li-struct" style="margin-top:0;">
-          <b>Cấu trúc / Structure:</b> <span id="dStruct">—</span><br><br>
-          <b>Các ví dụ ứng dụng / Applied examples:</b> <div id="dStructEg" style="font-style:italic; margin-top:8px; line-height:1.8;">—</div>
+          <b>Cấu trúc:</b> <span id="dStruct">—</span><br><br>
+          <b>Các ví dụ:</b> <div id="dStructEg" style="font-style:italic; margin-top:8px;">—</div>
         </div>
       </div>
-
-      <div id="dailyGameHolder"></div>
     </div>
   </div>
 
   <div id="viewChallenge" class="view-section" style="background:var(--beige); border:none; padding:0">
-    <div id="challengeGameHolder"></div>
-
     <div style="background:#fff; padding:24px; border-radius:20px; border:1px solid var(--beige2); margin-top:20px">
-      <div class="sec-title">🏆 Ghi âm 10 Câu / 10-Sentence Recording (Final Test)</div>
-      <p style="font-size:15px; color:var(--text-mid); margin-bottom:24px; line-height:1.5">Ba mẹ và bé hãy cùng nhau ghi âm toàn bộ 10 câu dưới đây, tải lên Vocaroo, rồi dán đường link vào ô bên dưới để nộp bài nhé! / Please record all 10 sentences below, upload to Vocaroo, and paste the link in the box below to submit!</p>
-      
+      <div class="sec-title">🏆 Ghi âm 10 Câu (Final Test)</div>
+      <p style="font-size:15px; color:var(--text-mid); margin-bottom:24px;">Ba mẹ và bé hãy cùng nhau ghi âm toàn bộ 10 câu dưới đây, tải lên Vocaroo, rồi dán đường link vào ô bên dưới để nộp bài nhé!</p>
       <div id="chalListContainer"></div>
-
       <div class="submit-box">
-        <h3 style="color:var(--wood); margin-bottom:12px; font-size:18px;">Dán Link Ghi Âm Tại Đây / Paste Recording Link Here</h3>
-        <input type="url" id="challengeFinalLink" class="type-input" placeholder="Ví dụ / Example: https://voca.ro/...">
-        <button class="btn-wood" style="background:var(--sunrise); border-color:var(--sunrise); margin-top:16px;" onclick="submitChallengeRecording()">📤 Nộp Bài Ghi Âm / Submit Recording</button>
+        <h3 style="color:var(--wood); margin-bottom:12px; font-size:18px;">Dán Link Ghi Âm Tại Đây</h3>
+        <input type="url" id="challengeFinalLink" class="type-input" placeholder="Ví dụ: https://voca.ro/...">
+        <button class="btn-wood" style="background:var(--sunrise)" onclick="submitChallengeRecording()">📤 Nộp Bài Ghi Âm</button>
         <div id="challengeSubmitRes" style="margin-top:16px; font-weight:bold; font-size:15px;"></div>
       </div>
-      
     </div>
   </div>
 
 </div>
 
-<div id="gameCenterCore" class="game-center-wrap" style="display:none;">
-  <h3 id="gcTitle" style="font-size:18px;color:var(--wood);margin-bottom:16px;">3. Khu vui chơi / Game Center</h3>
+<div id="gameCenterCore" class="main-wrap game-center-wrap" style="display:none; padding-top:0;">
+  <h3 style="font-size:18px;color:var(--wood);margin-bottom:16px;">3. Khu vui chơi / Game Center</h3>
   
   <div class="day-tabs" id="gameTabsContainer">
-    <div class="d-tab active" onclick="switchGameTab(1)" id="tabGame1">1. Xếp từ / Unscramble</div>
-    <div class="d-tab" onclick="switchGameTab(2)" id="tabGame2">2. Nối từ / Match</div>
-    <div class="d-tab" onclick="switchGameTab(3)" id="tabGame3">3. Điền từ / Fill in</div>
-    <div class="d-tab" onclick="switchGameTab(4)" id="tabGame4">4. Nghe chọn / Listen</div>
-    <div class="d-tab" onclick="switchGameTab(5)" id="tabGame5">5. Cấu trúc / Structure</div>
-    <div class="d-tab" onclick="switchGameTab(6)" id="tabGame6">6. Ghi âm / Record</div>
+    <div class="d-tab active" onclick="switchGameTab(1)" id="tabGame1">1. Xếp từ</div>
+    <div class="d-tab" onclick="switchGameTab(2)" id="tabGame2">2. Nối từ</div>
+    <div class="d-tab" onclick="switchGameTab(3)" id="tabGame3">3. Điền từ</div>
+    <div class="d-tab" onclick="switchGameTab(4)" id="tabGame4">4. Nghe chọn</div>
+    <div class="d-tab" onclick="switchGameTab(5)" id="tabGame5">5. Cấu trúc</div>
   </div>
 
   <div id="game1Area" class="game-area">
-    <h3 style="color:var(--wood); margin-bottom: 8px;">Sắp xếp từ thành câu / Unscramble the sentence</h3>
-    <p id="g1VnText" style="color:var(--text-soft); margin-bottom: 20px;">(Nghĩa tiếng Việt / Vietnamese meaning)</p>
+    <h3 style="color:var(--wood); margin-bottom: 8px;">Sắp xếp từ thành câu</h3>
+    <p id="g1VnText" style="color:var(--text-soft); margin-bottom: 20px;"></p>
     <div class="ans-box" id="g1AnsBox"></div>
     <div id="g1WordPool" style="min-height: 80px; margin-bottom: 20px;"></div>
-    <div>
-      <button class="btn-action" onclick="checkGame1()">Kiểm tra / Check</button>
-      <button class="btn-sec" id="btnReloadG1" onclick="loadGame1()">🔄 Chơi lại / Play again</button>
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-sec" onclick="checkGame1('practice')">🛠 Luyện tập (Không lưu)</button>
+      <button class="btn-action" id="btnSubmitG1" onclick="checkGame1('submit')">📤 Nộp bài (1 lần)</button>
+      <button class="btn-sec" onclick="loadGame1()">🔄 Làm lại</button>
     </div>
     <div id="g1Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
   </div>
 
   <div id="game2Area" class="game-area" style="display:none; padding: 12px;">
-    <h3 style="color:var(--wood); margin-bottom: 10px;">Nối câu Tiếng Anh và Tiếng Việt / Match English and Vietnamese</h3>
+    <h3 style="color:var(--wood); margin-bottom: 10px;">Nối câu Tiếng Anh và Tiếng Việt</h3>
     <div class="match-grid">
       <div id="gmEnCol" style="display:flex;flex-direction:column;gap:10px"></div>
       <div id="gmVnCol" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
     <div id="game2Res" style="text-align:center; margin-top:20px; font-weight:bold; font-size:16px"></div>
-    <button class="btn-sec" style="margin-top:16px; background:#fff" onclick="loadGame2()">🔄 Đổi ván khác / Change game</button>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+      <button class="btn-action" id="btnSubmitG2" onclick="submitGame2()">📤 Nộp bài (1 lần)</button>
+      <button class="btn-sec" onclick="loadGame2()">🔄 Đổi ván khác (Luyện tập)</button>
+    </div>
   </div>
 
   <div id="game3Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 20px;">Chọn từ còn thiếu / Choose the missing word</h3>
-    <div id="g3Sentence" style="font-family:'Lora',serif; font-size:24px; font-weight:600; color:var(--text); margin-bottom:24px; background:var(--beige); padding:20px; border-radius:12px; border:2px dashed var(--warm);"></div>
+    <h3 style="color:var(--wood); margin-bottom: 20px;">Chọn từ còn thiếu</h3>
+    <div id="g3Sentence" style="font-family:'Lora',serif; font-size:24px; font-weight:600; margin-bottom:24px; background:var(--beige); padding:20px; border-radius:12px; border:2px dashed var(--warm);"></div>
     <div id="g3Options"></div>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+        <button class="btn-sec" onclick="checkGame3('practice')">🛠 Luyện tập (Không lưu)</button>
+        <button class="btn-action" id="btnSubmitG3" onclick="checkGame3('submit')">📤 Nộp bài (1 lần)</button>
+        <button class="btn-sec" onclick="loadGame3()">🔄 Chơi lại</button>
+    </div>
     <div id="g3Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
-    <button class="btn-sec" id="btnReloadG3" style="margin-top:16px;" onclick="loadGame3()">🔄 Chơi lại / Play again</button>
   </div>
 
   <div id="game4Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 20px;">Nghe và chọn câu đúng / Listen and choose the correct sentence</h3>
+    <h3 style="color:var(--wood); margin-bottom: 20px;">Nghe và chọn câu đúng</h3>
     <button class="audio-big-btn" onclick="playGame4Audio()">🔊</button>
     <div id="g4Options"></div>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+        <button class="btn-sec" onclick="checkGame4('practice')">🛠 Luyện tập (Không lưu)</button>
+        <button class="btn-action" id="btnSubmitG4" onclick="checkGame4('submit')">📤 Nộp bài (1 lần)</button>
+        <button class="btn-sec" onclick="loadGame4()">🔄 Chơi lại</button>
+    </div>
     <div id="g4Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
-    <button class="btn-sec" id="btnReloadG4" style="margin-top:16px;" onclick="loadGame4()">🔄 Chơi lại / Play again</button>
   </div>
 
   <div id="game5Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 16px;">Bài tập ứng dụng cấu trúc / Structure exercises (Nộp bài / Submit)</h3>
-    <div id="g5TaskList" style="margin-bottom:20px; width:100%; max-width:500px; margin: 0 auto;"></div>
-    <div>
-      <button class="btn-action" onclick="checkGame5()">Kiểm tra & Nộp bài ✓ / Check & Submit ✓</button>
-      <button class="btn-sec" id="btnReloadG5" onclick="loadGame5()">🔄 Lấy câu khác / Get another</button>
+    <h3 style="color:var(--wood); margin-bottom: 16px;">Bài tập ứng dụng cấu trúc</h3>
+    <div id="g5Task" style="font-weight:bold; font-size:18px; margin-bottom:10px"></div>
+    <input type="text" id="g5Input" class="type-input" placeholder="Nhập câu tiếng Anh..." style="max-width:400px; margin:0 auto 20px;">
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-sec" onclick="checkGame5('practice')">🛠 Luyện tập (Không lưu)</button>
+      <button class="btn-action" id="btnSubmitG5" onclick="checkGame5('submit')">📤 Nộp bài (1 lần)</button>
+      <button class="btn-sec" onclick="loadGame5()">🔄 Đổi câu khác</button>
     </div>
     <div id="g5Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
   </div>
-
-  <div id="game6Area" class="game-area" style="display:none;">
-    <h3 style="color:var(--wood); margin-bottom: 16px;">Nghe, đọc lại và nộp file ghi âm / Listen, repeat and submit recording</h3>
-    <p style="font-size:14px; color:var(--text-soft); margin-bottom:12px">Hãy nghe mẫu câu hôm nay, đọc ghi âm lại trên Vocaroo và dán link vào bên dưới. / Listen to today's sentence, record on Vocaroo and paste the link below.</p>
-    <p id="g6Task" style="font-size:22px; font-family:'Lora',serif; color:var(--wood); font-weight:700; margin-bottom:10px;"></p>
-    <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px; margin-bottom:20px;" onclick="playAudio(window.g6Target)">🔊 Nghe mẫu / Listen</button>
-    <input type="url" id="g6Inp" class="type-input" placeholder="Dán link Vocaroo (vd/ex: https://voca.ro/...) vào đây/here..." style="width:100%; max-width:400px; margin: 0 auto 16px; display:block;">
-    <div>
-      <button class="btn-action" onclick="submitGame6()">Nộp link ghi âm ✓ / Submit recording link ✓</button>
-      <button class="btn-sec" id="btnReloadG6" onclick="loadGame6()">🔄 Câu ngẫu nhiên khác / Another random sentence</button>
-    </div>
-    <div id="g6Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
-  </div>
-
 </div>
 
 <script>
 // --- ANTI-COPY SECURITY ---
-// Khóa chuột phải, khóa bôi đen, khóa kéo thả với quyền cấp cao nhất (Capture phase)
 document.addEventListener('contextmenu', e => {
-  // Ngoại lệ: Cho phép chuột phải nếu đang click vào ô input (để học viên dán link)
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-    return;
-  }
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (window.currentUserRole !== 'teacher') e.preventDefault();
 }, true);
-
 document.addEventListener('keydown', e => {
   if (window.currentUserRole !== 'teacher') {
-    // Chặn F12 & Inspect
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault();
-    
-    // Kiểm tra xem học viên có đang gõ vào ô nhập liệu không
     const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
-    
-    // Vẫn luôn chặn Ctrl+S (Lưu trang), Ctrl+U (Xem Source)
     if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) e.preventDefault();
-    
-    // Chặn Ctrl+C (Copy), Ctrl+V (Paste) nếu KHÔNG phải đang ở trong ô input
-    if (!isInput && e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86)) {
-      e.preventDefault();
-    }
+    if (!isInput && e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86)) e.preventDefault();
   }
 }, true);
-
 document.addEventListener('dragstart', e => {
   if (window.currentUserRole !== 'teacher') e.preventDefault();
 }, true);
 
-// ==========================================
-// HIỆU ỨNG CHÚC MỪNG MẸ & BÉ
-// ==========================================
+// CELEBRATION
 window.showCelebration = (dropsEarned) => {
-  // 1. Tạo Popup thông báo
   const popup = document.createElement('div');
   popup.className = 'cute-popup';
   popup.innerHTML = `🎉 Giỏi quá! Bé nhận được <b>+${dropsEarned} 💧</b>`;
   document.body.appendChild(popup);
   setTimeout(() => { popup.remove(); }, 4000);
-
-  // 2. Tạo hiệu ứng mưa Giọt nước bay lên
   for (let i = 0; i < 20; i++) {
     const drop = document.createElement('div');
     drop.className = 'flying-drop';
@@ -453,491 +332,335 @@ window.showCelebration = (dropsEarned) => {
   }
 };
 
-// ==========================================
-// DỮ LIỆU CURRICULUM (Cập nhật Day 9 mới)
-// ==========================================
+// DATA
 const CURRICULUM = [
-  {
-    day: 1, en: "Good morning, sweetie!", vn: "Chào buổi sáng, con yêu!", pron: "/gʊd ˈmɔːrnɪŋ, ˈswiːti/", note: "Flap T /r/ trong 'sweetie' nghe như âm 'd' nhẹ.", struct: "Good + [thời gian trong ngày/time of day]!",
-    structEg: ["Good morning! (Chào buổi sáng)", "Good afternoon! (Chào buổi chiều)", "Good evening! (Chào buổi tối)", "Good night, sweetie! (Chúc bé ngủ ngon)"],
-    exTask: ["Dịch/Translate: Chào buổi sáng, con yêu!", "Dịch/Translate: Chào buổi chiều, con yêu!", "Dịch/Translate: Chúc bé ngủ ngon!"],
-    exAns: ["Good morning, sweetie!", "Good afternoon, sweetie!", "Good night, sweetie!"]
-  },
-  {
-    day: 2, en: "Time to wake up!", vn: "Đến giờ thức dậy rồi!", pron: "/taɪm tu weɪk ʌp/", note: "Nối âm /k/ với /ʌ/ trong 'wake up'.", struct: "Time to + [Động từ nguyên mẫu / Bare infinitive]",
-    structEg: ["Time to eat! (Đến giờ ăn rồi!)", "Time to sleep! (Đến giờ đi ngủ!)", "Time to go! (Đến lúc đi rồi!)"],
-    exTask: ["Dịch/Translate: Đến giờ thức dậy rồi!", "Dịch/Translate: Đến giờ ăn rồi!", "Dịch/Translate: Đến giờ đi ngủ rồi!"],
-    exAns: ["Time to wake up!", "Time to eat!", "Time to sleep!"]
-  },
-  {
-    day: 3, en: "Rise and shine!", vn: "Dậy đi nào, tỏa sáng thôi!", pron: "/raɪz ænd ʃaɪn/", note: "Giảm 'and' thành /ən/.", struct: "Các cụm từ cố định giục bé thức dậy / Fixed phrases to wake up a child",
-    structEg: ["Rise and shine! (Dậy đi nào!)", "Wakey wakey! (Dậy nào dậy nào!)", "Time to get up! (Đến giờ dậy rồi!)"],
-    exTask: ["Dịch/Translate: Dậy đi nào, tỏa sáng thôi!", "Dịch/Translate: Dậy nào dậy nào!", "Dịch/Translate: Đến giờ dậy rồi!"],
-    exAns: ["Rise and shine!", "Wakey wakey!", "Time to get up!"]
-  },
-  {
-    day: 4, en: "Did you sleep well?", vn: "Con ngủ ngon không?", pron: "/dɪd ju sliːp wɛl/", note: "Nối 'did' và 'you' thành /dɪdʒu/.", struct: "Did you + [Động từ/Verb] + well?",
-    structEg: ["Did you sleep well? (Con ngủ ngon không?)", "Did you eat well? (Con ăn ngon không?)", "Did you play well? (Con chơi vui không?)"],
-    exTask: ["Dịch/Translate: Con ngủ ngon không?", "Dịch/Translate: Con ăn ngon không?", "Dịch/Translate: Con chơi vui không?"],
-    exAns: ["Did you sleep well?", "Did you eat well?", "Did you play well?"]
-  },
-  {
-    day: 5, en: "It's a beautiful day today!", vn: "Hôm nay là một ngày thật đẹp!", pron: "/ɪts ə ˈbjuːtɪfəl deɪ təˈdeɪ/", note: "Nối âm liền mạch.", struct: "It's a + [Tính từ/Adjective] + day!",
-    structEg: ["It's a beautiful day! (Một ngày thật đẹp!)", "It's a sunny day! (Một ngày đầy nắng!)", "It's a rainy day! (Một ngày mưa!)"],
-    exTask: ["Dịch/Translate: Hôm nay là một ngày thật đẹp!", "Dịch/Translate: Hôm nay là một ngày nắng!", "Dịch/Translate: Hôm nay là một ngày mưa!"],
-    exAns: ["It's a beautiful day today!", "It's a sunny day today!", "It's a rainy day today!"]
-  },
-  {
-    day: 6, en: "Come on, open your eyes.", vn: "Nào, mở mắt ra đi.", pron: "/kʌm ɒn, ˈoʊpən jʊər aɪz/", note: "Giảm 'your' thành /jər/.", struct: "Open your + [Bộ phận cơ thể/Vật (Body part/Item)]",
-    structEg: ["Open your eyes! (Mở mắt ra!)", "Open your mouth! (Mở miệng ra!)", "Open your book! (Mở sách ra!)"],
-    exTask: ["Dịch/Translate: Nào, mở mắt ra đi.", "Dịch/Translate: Mở miệng ra đi.", "Dịch/Translate: Mở sách ra đi."],
-    exAns: ["Come on, open your eyes.", "Open your mouth.", "Open your book."]
-  },
-  {
-    day: 7, en: "Don't go back to sleep!", vn: "Đừng ngủ lại nữa mà!", pron: "/doʊnt ɡoʊ bæk tu sliːp/", note: "Âm tắc /k/ trong 'back'.", struct: "Don't + [Động từ nguyên mẫu / Bare infinitive]",
-    structEg: ["Don't go! (Đừng đi!)", "Don't cry! (Đừng khóc!)", "Don't touch that! (Đừng chạm vào đó!)"],
-    exTask: ["Dịch/Translate: Đừng ngủ lại nữa mà!", "Dịch/Translate: Đừng khóc!", "Dịch/Translate: Đừng đi!"],
-    exAns: ["Don't go back to sleep!", "Don't cry!", "Don't go!"]
-  },
-  {
-    day: 8, en: "Let's make the bed.", vn: "Cùng dọn giường nào.", pron: "/lɛts meɪk ðə bɛd/", note: "Âm /d/ cuối từ 'bed' bật nhẹ.", struct: "Let's + [Động từ nguyên mẫu / Bare infinitive]",
-    structEg: ["Let's make the bed. (Cùng dọn giường nào.)", "Let's eat. (Cùng ăn nào.)", "Let's play. (Cùng chơi nào.)"],
-    exTask: ["Dịch/Translate: Cùng dọn giường nào.", "Dịch/Translate: Cùng ăn nào.", "Dịch/Translate: Cùng chơi nào."],
-    exAns: ["Let's make the bed.", "Let's eat.", "Let's play."]
-  },
-  {
-    day: 9, en: "Stretch your arms up high!", vn: "🤸 Vươn tay lên cao nào!", pron: "/strɛtʃ jʊər ɑːrmz ʌp haɪ/", note: "Âm /tʃ/ trong 'stretch' bật mạnh, từ 'arms' có âm /z/ ở cuối.", struct: "Stretch your + [Bộ phận cơ thể/Body part] + [hướng/direction]!",
-    structEg: ["Stretch your arms up high! (Vươn tay lên cao!)", "Stretch your legs out! (Duỗi chân ra!)", "Stretch your back! (Vươn lưng nào!)"],
-    exTask: ["Dịch/Translate: Vươn tay lên cao nào!", "Dịch/Translate: Duỗi chân ra!", "Dịch/Translate: Vươn lưng nào!"],
-    exAns: ["Stretch your arms up high!", "Stretch your legs out!", "Stretch your back!"]
-  },
-  {
-    day: 10, en: "Are you ready for breakfast?", vn: "Con sẵn sàng ăn sáng chưa?", pron: "/ɑːr ju ˈrɛdi fɔːr ˈbrɛkfəst/", note: "'for' giảm âm thành /fər/.", struct: "Are you ready for + [Danh từ/Noun]?",
-    structEg: ["Are you ready for breakfast? (Sẵn sàng ăn sáng chưa?)", "Are you ready for school? (Sẵn sàng đi học chưa?)", "Are you ready for bed? (Sẵn sàng đi ngủ chưa?)"],
-    exTask: ["Dịch/Translate: Con sẵn sàng ăn sáng chưa?", "Dịch/Translate: Con sẵn sàng đi học chưa?", "Dịch/Translate: Con sẵn sàng đi ngủ chưa?"],
-    exAns: ["Are you ready for breakfast?", "Are you ready for school?", "Are you ready for bed?"]
-  }
+  { day: 1, en: "Good morning, sweetie!", vn: "Chào buổi sáng, con yêu!", pron: "/gʊd ˈmɔːrnɪŋ, ˈswiːti/", note: "Flap T /r/ trong 'sweetie' nghe như âm 'd' nhẹ.", struct: "Good + [thời gian trong ngày]", structEg: ["Good morning!", "Good afternoon!", "Good night, sweetie!"], exTask: ["Dịch: Chào buổi sáng, con yêu!", "Dịch: Chào buổi chiều, con yêu!", "Dịch: Chúc bé ngủ ngon!"], exAns: ["Good morning, sweetie!", "Good afternoon, sweetie!", "Good night, sweetie!"] },
+  { day: 2, en: "Time to wake up!", vn: "Đến giờ thức dậy rồi!", pron: "/taɪm tu weɪk ʌp/", note: "Nối âm /k/ với /ʌ/ trong 'wake up'.", struct: "Time to + [Động từ nguyên mẫu]", structEg: ["Time to eat!", "Time to sleep!", "Time to go!"], exTask: ["Dịch: Đến giờ thức dậy rồi!", "Dịch: Đến giờ ăn rồi!", "Dịch: Đến giờ đi ngủ rồi!"], exAns: ["Time to wake up!", "Time to eat!", "Time to sleep!"] },
+  { day: 3, en: "Rise and shine!", vn: "Dậy đi nào, tỏa sáng thôi!", pron: "/raɪz ænd ʃaɪn/", note: "Giảm 'and' thành /ən/.", struct: "Các cụm từ cố định giục bé thức dậy", structEg: ["Rise and shine!", "Wakey wakey!", "Time to get up!"], exTask: ["Dịch: Dậy đi nào, tỏa sáng thôi!", "Dịch: Dậy nào dậy nào!", "Dịch: Đến giờ dậy rồi!"], exAns: ["Rise and shine!", "Wakey wakey!", "Time to get up!"] },
+  { day: 4, en: "Did you sleep well?", vn: "Con ngủ ngon không?", pron: "/dɪd ju sliːp wɛl/", note: "Nối 'did' và 'you' thành /dɪdʒu/.", struct: "Did you + [Động từ] + well?", structEg: ["Did you sleep well?", "Did you eat well?", "Did you play well?"], exTask: ["Dịch: Con ngủ ngon không?", "Dịch: Con ăn ngon không?", "Dịch: Con chơi vui không?"], exAns: ["Did you sleep well?", "Did you eat well?", "Did you play well?"] },
+  { day: 5, en: "It's a beautiful day today!", vn: "Hôm nay là một ngày thật đẹp!", pron: "/ɪts ə ˈbjuːtɪfəl deɪ təˈdeɪ/", note: "Nối âm liền mạch.", struct: "It's a + [Tính từ] + day!", structEg: ["It's a beautiful day!", "It's a sunny day!", "It's a rainy day!"], exTask: ["Dịch: Hôm nay là một ngày thật đẹp!", "Dịch: Hôm nay là một ngày nắng!", "Dịch: Hôm nay là một ngày mưa!"], exAns: ["It's a beautiful day today!", "It's a sunny day today!", "It's a rainy day today!"] },
+  { day: 6, en: "Come on, open your eyes.", vn: "Nào, mở mắt ra đi.", pron: "/kʌm ɒn, ˈoʊpən jʊər aɪz/", note: "Giảm 'your' thành /jər/.", struct: "Open your + [Bộ phận cơ thể/Vật]", structEg: ["Open your eyes!", "Open your mouth!", "Open your book!"], exTask: ["Dịch: Nào, mở mắt ra đi.", "Dịch: Mở miệng ra đi.", "Dịch: Mở sách ra đi."], exAns: ["Come on, open your eyes.", "Open your mouth.", "Open your book."] },
+  { day: 7, en: "Don't go back to sleep!", vn: "Đừng ngủ lại nữa mà!", pron: "/doʊnt ɡoʊ bæk tu sliːp/", note: "Âm tắc /k/ trong 'back'.", struct: "Don't + [Động từ nguyên mẫu]", structEg: ["Don't go!", "Don't cry!", "Don't touch that!"], exTask: ["Dịch: Đừng ngủ lại nữa mà!", "Dịch: Đừng khóc!", "Dịch: Đừng đi!"], exAns: ["Don't go back to sleep!", "Don't cry!", "Don't go!"] },
+  { day: 8, en: "Let's make the bed.", vn: "Cùng dọn giường nào.", pron: "/lɛts meɪk ðə bɛd/", note: "Âm /d/ cuối từ 'bed' bật nhẹ.", struct: "Let's + [Động từ nguyên mẫu]", structEg: ["Let's make the bed.", "Let's eat.", "Let's play."], exTask: ["Dịch: Cùng dọn giường nào.", "Dịch: Cùng ăn nào.", "Dịch: Cùng chơi nào."], exAns: ["Let's make the bed.", "Let's eat.", "Let's play."] },
+  { day: 9, en: "Stretch your arms up high!", vn: "Vươn tay lên cao nào!", pron: "/strɛtʃ jʊər ɑːrmz ʌp haɪ/", note: "Âm /tʃ/ bật mạnh.", struct: "Stretch your + [Bộ phận] + [hướng]!", structEg: ["Stretch your arms up high!", "Stretch your legs out!", "Stretch your back!"], exTask: ["Dịch: Vươn tay lên cao nào!", "Dịch: Duỗi chân ra!", "Dịch: Vươn lưng nào!"], exAns: ["Stretch your arms up high!", "Stretch your legs out!", "Stretch your back!"] },
+  { day: 10, en: "Are you ready for breakfast?", vn: "Con sẵn sàng ăn sáng chưa?", pron: "/ɑːr ju ˈrɛdi fɔːr ˈbrɛkfəst/", note: "'for' giảm âm thành /fər/.", struct: "Are you ready for + [Danh từ]?", structEg: ["Are you ready for breakfast?", "Are you ready for school?", "Are you ready for bed?"], exTask: ["Dịch: Con sẵn sàng ăn sáng chưa?", "Dịch: Con sẵn sàng đi học chưa?", "Dịch: Con sẵn sàng đi ngủ chưa?"], exAns: ["Are you ready for breakfast?", "Are you ready for school?", "Are you ready for bed?"] }
 ];
 
-// ==========================================
-// AUDIO SYNTHESIS
-// ==========================================
+// GLOBALS
+let currentDay = 1;
+let submittedGames = {};
 let synth = window.speechSynthesis;
 let preferredVoice = null;
+const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+
 function loadVoices() {
-  let voices = synth.getVoices();
-  preferredVoice = voices.find(v => v.lang === 'en-US' && (v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Salli') || v.name.includes('Google US English')))
-                 || voices.find(v => v.lang === 'en-US' && v.name.includes('Zira'))
-                 || voices[0];
+  const voices = synth.getVoices();
+  preferredVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB')) || voices[0];
 }
-if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = loadVoices; }
-function playAudio(text, rate = 1.0) {
-  if(synth) {
-    synth.cancel(); 
-    let u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = rate; 
-    if(preferredVoice) u.voice = preferredVoice;
-    synth.speak(u);
-  }
-}
-setTimeout(loadVoices, 500);
+if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = loadVoices;
 
-// ==========================================
-// ĐIỀU HƯỚNG
-// ==========================================
-let currentView = 'Menu';
-let currentDay = 1;
-let currentGameMode = 'daily'; 
-let activeGameTab = 1;
+window.playAudio = (text, rate = 1.0) => {
+  if (!text) return;
+  const ut = new SpeechSynthesisUtterance(text);
+  if (preferredVoice) ut.voice = preferredVoice;
+  ut.lang = 'en-US'; ut.rate = rate;
+  synth.speak(ut);
+};
 
-function goBack() {
-  if(currentView === 'Menu') { window.location.href = 'index.html'; } 
-  else { openView('Menu'); }
-}
-
+// VIEWS & RENDER
 function openView(viewName) {
-  currentView = viewName;
+  document.querySelectorAll('.view-section, .game-center-wrap').forEach(el => el.style.display = 'none');
   document.getElementById('viewMenu').style.display = 'none';
-  document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+  document.getElementById('view' + viewName).style.display = 'block';
   
-  let gameCore = document.getElementById('gameCenterCore');
-  gameCore.style.display = 'none'; 
-  
-  if(viewName === 'Menu') {
-    document.getElementById('viewMenu').style.display = 'grid';
-  } else {
-    document.getElementById('view' + viewName).style.display = 'block';
-    if(viewName === 'Vocab') buildVocab();
-    
-    if(viewName === 'Daily') {
-      document.getElementById('dailyGameHolder').appendChild(gameCore);
-      gameCore.style.display = 'block';
-      currentGameMode = 'daily';
-      document.getElementById('gcTitle').textContent = '3. Thực hành tương tác (Câu hôm nay) / Interactive Practice (Today\'s sentence)';
-      updateGameReloadButtons();
-      buildDaily();
-    }
-    
-    if(viewName === 'Challenge') {
-      document.getElementById('challengeGameHolder').appendChild(gameCore);
-      gameCore.style.display = 'block'; 
-      currentGameMode = 'challenge';
-      document.getElementById('gcTitle').textContent = '🎮 Game Center (Trộn 10 câu ôn tập / Mix 10 review sentences)';
-      updateGameReloadButtons();
-      buildChallenge();
-      switchGameTab(1); 
-    }
+  if(viewName === 'Daily') {
+    document.getElementById('gameCenterCore').style.display = 'block';
+    renderDayTabs(); selectDay(1); loadVoices();
+  } else if(viewName === 'Vocab') {
+    renderVocab();
+  } else if(viewName === 'Challenge') {
+    renderChallenge();
   }
-  window.scrollTo({top:0, behavior:'smooth'});
+}
+function goBack() {
+  document.querySelectorAll('.view-section, .game-center-wrap').forEach(el => el.style.display = 'none');
+  document.getElementById('viewMenu').style.display = 'grid';
 }
 
-function buildVocab() {
-  document.getElementById('vocabListContainer').innerHTML = CURRICULUM.map(d => `
+function renderVocab() {
+  const cont = document.getElementById('vocabListContainer');
+  cont.innerHTML = CURRICULUM.map(c => `
     <div class="list-item">
-      <div style="font-size:14px;color:var(--green);font-weight:800;margin-bottom:6px">Day ${d.day}</div>
-      <div class="li-en">${d.en} <span class="audio-btn-sm" onclick="playAudio('${d.en.replace(/'/g,"\\'")}', 1.0)">🔊</span></div>
-      <div class="li-vn">${d.vn}</div>
-    </div>`).join('');
-}
-
-function buildDaily() {
-  document.getElementById('dayTabsContainer').innerHTML = CURRICULUM.map(d => `<div class="d-tab ${d.day===currentDay?'active':''}" onclick="selectDay(${d.day})">Day ${d.day}</div>`).join('');
-  let d = CURRICULUM[currentDay - 1];
-  
-  // Hiển thị lại tab "6. Ghi âm" khi ở chế độ Daily
-  document.getElementById('tabGame6').style.display = 'inline-block';
-
-  document.getElementById('theFC').classList.remove('flipped');
-  document.getElementById('dEn').textContent = d.en;
-  document.getElementById('dPron').textContent = d.pron;
-  document.getElementById('dVn').textContent = d.vn;
-  document.getElementById('dNote').textContent = `💡 Ghi chú / Note: ${d.note}`;
-  
-  document.getElementById('dStruct').textContent = d.struct;
-  document.getElementById('dStructEg').innerHTML = d.structEg.join("<br>");
-
-  if(currentGameMode === 'daily') { switchGameTab(activeGameTab); }
-}
-
-function selectDay(day) { currentDay = day; buildDaily(); }
-
-// --- XÂY DỰNG MỤC CHALLENGE (HIỂN THỊ CÂU ĐỂ GHI ÂM TỔNG HỢP) ---
-function buildChallenge() {
-  // Ẩn tab "6. Ghi âm" trong Game Center khi ở phần Challenge
-  document.getElementById('tabGame6').style.display = 'none';
-
-  document.getElementById('chalListContainer').innerHTML = CURRICULUM.map(d => `
-    <div class="chal-item">
-      <div class="chal-head">Day ${d.day}: ${d.vn}</div>
-      <div style="font-size:16px; color:var(--text); font-weight:600; margin-bottom:10px">${d.en}</div>
-      <button class="btn-sec" style="background:#fff; padding:6px 14px; font-size:13px;" onclick="playAudio('${d.en.replace(/'/g,"\\'")}')">🔊 Nghe mẫu / Listen</button>
+      <div class="li-en">${c.en} 
+        <span class="audio-btn-sm" onclick="playAudio('${c.en}')">🔊</span>
+        <span class="audio-btn-sm" style="color:var(--drop)" onclick="playAudio('${c.en}', 0.7)">🐢</span>
+      </div>
+      <div class="li-vn">${c.vn} (${c.pron})</div>
     </div>
   `).join('');
-  document.getElementById('challengeFinalLink').value = "";
-  document.getElementById('challengeSubmitRes').innerHTML = "";
+}
+function renderChallenge() {
+  const cont = document.getElementById('chalListContainer');
+  cont.innerHTML = CURRICULUM.map(c => `<div style="padding:10px 0; border-bottom:1px dashed #eee;"><b>Day ${c.day}:</b> ${c.en}</div>`).join('');
 }
 
-// --- HÀM NỘP LINK GHI ÂM TỔNG HỢP ---
-function submitChallengeRecording() {
-  const linkValue = document.getElementById('challengeFinalLink').value;
-  const resBox = document.getElementById('challengeSubmitRes');
+function renderDayTabs() {
+  const cont = document.getElementById('dayTabsContainer');
+  cont.innerHTML = CURRICULUM.map(c => `<div class="d-tab" id="dtab-${c.day}" onclick="selectDay(${c.day})">Day ${c.day}</div>`).join('');
+}
 
-  if(!linkValue || linkValue.trim() === "") {
-    resBox.innerHTML = '<span style="color:#E24B4A">⚠️ Ba/mẹ vui lòng dán link file ghi âm vào ô trống nhé! / Please paste the recording link in the box!</span>';
-    return;
+function selectDay(day) {
+  currentDay = day;
+  document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`dtab-${day}`).classList.add('active');
+  
+  const curr = CURRICULUM[day - 1];
+  document.getElementById('dEn').innerText = curr.en;
+  document.getElementById('dPron').innerText = curr.pron;
+  document.getElementById('dVn').innerText = curr.vn;
+  document.getElementById('dNote').innerText = curr.note;
+  document.getElementById('dStruct').innerText = curr.struct;
+  document.getElementById('dStructEg').innerHTML = curr.structEg.map(e => `• ${e}`).join('<br>');
+  document.getElementById('theFC').classList.remove('flipped');
+  
+  // Reset submitted stats for the day
+  submittedGames = { game1: false, game2: false, game3: false, game4: false, game5: false };
+  ['G1','G2','G3','G4','G5'].forEach(id => {
+    let btn = document.getElementById(`btnSubmit${id}`);
+    if(btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerText = "📤 Nộp bài (1 lần)"; }
+  });
+
+  switchGameTab(1);
+}
+
+function switchGameTab(tabId) {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`game${i}Area`).style.display = 'none';
+    document.getElementById(`tabGame${i}`).classList.remove('active');
   }
-
-  resBox.innerHTML = '<span style="color:var(--text-mid)">Đang gửi bài cho giáo viên... / Submitting to teacher...</span>';
-
-  if(window.submitResult) {
-    window.submitResult('speaking_challenge_link_topic1', 0, "Link Audio Nộp Bài: " + linkValue).then(() => {
-      resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công! / Excellent! Recording submitted successfully!</span>';
-    });
-  } else {
-    resBox.innerHTML = '<span style="color:var(--green)">✅ Tuyệt vời! Bài ghi âm đã được nộp thành công! (Test Mode)</span>';
-  }
+  document.getElementById(`game${tabId}Area`).style.display = 'flex';
+  document.getElementById(`tabGame${tabId}`).classList.add('active');
+  
+  if(tabId===1) loadGame1();
+  if(tabId===2) loadGame2();
+  if(tabId===3) loadGame3();
+  if(tabId===4) loadGame4();
+  if(tabId===5) loadGame5();
 }
 
-// ==========================================
-// GAME CENTER LOGIC (TỰ ĐỘNG NỘP BÀI)
-// ==========================================
-
-function updateGameReloadButtons() {
-  let txt = currentGameMode === 'daily' ? '🔄 Chơi lại / Play again' : '🔄 Câu ngẫu nhiên khác / Another random sentence';
-  document.getElementById('btnReloadG1').textContent = txt;
-  document.getElementById('btnReloadG3').textContent = txt;
-  document.getElementById('btnReloadG4').textContent = txt;
-  document.getElementById('btnReloadG5').textContent = txt;
-  document.getElementById('btnReloadG6').textContent = txt;
-}
-
-function getTargetData() {
-  if(currentGameMode === 'daily') return CURRICULUM[currentDay - 1];
-  return CURRICULUM[Math.floor(Math.random() * CURRICULUM.length)];
-}
-
-function switchGameTab(gameId) {
-  activeGameTab = gameId;
-  for(let i=1; i<=6; i++) {
-    document.getElementById('tabGame' + i).classList.remove('active');
-    document.getElementById('game' + i + 'Area').style.display = 'none';
-  }
-  document.getElementById('tabGame' + gameId).classList.add('active');
-  document.getElementById('game' + gameId + 'Area').style.display = 'flex';
-
-  if(gameId === 1) loadGame1();
-  if(gameId === 2) loadGame2();
-  if(gameId === 3) loadGame3();
-  if(gameId === 4) loadGame4();
-  if(gameId === 5) loadGame5();
-  if(gameId === 6) loadGame6();
-}
-
-// GAME 1: UNSCRAMBLE
+// ==================== GAME 1: UNSCRAMBLE ====================
+let g1Ans = [], g1Pool = [], g1Target = "";
 function loadGame1() {
-  const data = getTargetData();
-  window.g1Target = data.en;
-  window.g1Day = data.day;
-  document.getElementById('g1VnText').textContent = "Ý nghĩa / Meaning: " + data.vn;
-  document.getElementById('g1Res').innerHTML = "";
-  document.getElementById('g1AnsBox').innerHTML = "";
-  
-  let words = [...data.en.split(" ")].sort(() => Math.random() - 0.5);
-  const pool = document.getElementById('g1WordPool');
-  pool.innerHTML = "";
-  words.forEach(w => {
-    let span = document.createElement('div');
-    span.className = 'word-chip'; span.textContent = w;
-    span.onclick = () => {
-      span.style.display = 'none';
-      let ansSpan = document.createElement('div');
-      ansSpan.className = 'word-chip'; ansSpan.textContent = w;
-      ansSpan.onclick = () => { ansSpan.remove(); span.style.display = 'inline-block'; };
-      document.getElementById('g1AnsBox').appendChild(ansSpan);
-    };
-    pool.appendChild(span);
-  });
+  document.getElementById('g1Res').innerText = '';
+  const curr = CURRICULUM[currentDay - 1];
+  g1Target = curr.en.replace(/[^\w\s\']/g, "").trim();
+  g1Pool = shuffle(g1Target.split(" "));
+  g1Ans = [];
+  document.getElementById('g1VnText').innerText = curr.vn;
+  renderG1();
 }
-function checkGame1() {
-  let userSentence = Array.from(document.getElementById('g1AnsBox').childNodes).map(n => n.textContent).join(" ");
-  if(userSentence === window.g1Target) {
-    document.getElementById('g1Res').innerHTML = '<span style="color:var(--green)">🎉 Hoàn hảo! Kết quả đã tự động nộp cho cô giáo. / Perfect! Result submitted to teacher.</span>';
-    playAudio(window.g1Target);
-    if(window.submitResult) { window.submitResult('game1_unscramble', window.g1Day, "Hoàn thành đúng: " + userSentence); }
-  } else {
-    document.getElementById('g1Res').innerHTML = '<span style="color:#E24B4A">❌ Sai thứ tự, chạm vào từ phía trên để xếp lại nhé. / Wrong order, tap the words to rearrange.</span>';
-  }
+function renderG1() {
+  document.getElementById('g1AnsBox').innerHTML = g1Ans.map((w, i) => `<div class="word-chip" onclick="g1MoveToPool(${i})">${w}</div>`).join('');
+  document.getElementById('g1WordPool').innerHTML = g1Pool.map((w, i) => `<div class="word-chip" onclick="g1MoveToAns(${i})">${w}</div>`).join('');
 }
+window.g1MoveToAns = (i) => { g1Ans.push(g1Pool[i]); g1Pool.splice(i, 1); renderG1(); };
+window.g1MoveToPool = (i) => { g1Pool.push(g1Ans[i]); g1Ans.splice(i, 1); renderG1(); };
 
-// GAME 2: MATCHING
-function loadGame2() {
-  const ec = document.getElementById('gmEnCol'); const vc = document.getElementById('gmVnCol');
-  ec.innerHTML = ''; vc.innerHTML = ''; document.getElementById('game2Res').textContent = '';
-  let pairs = (currentGameMode === 'daily') 
-    ? [CURRICULUM[currentDay - 1], ...[...CURRICULUM].filter(x => x.day !== currentDay).sort(() => Math.random() - 0.5).slice(0, 4)]
-    : [...CURRICULUM].sort(() => Math.random() - 0.5).slice(0, 5);
+function checkGame1(mode) {
+  if(g1Ans.length === 0) return;
+  let isCorrect = g1Ans.join(" ").toLowerCase() === g1Target.toLowerCase();
+  let res = document.getElementById('g1Res');
   
-  const shufEn = [...pairs].sort(() => Math.random() - 0.5);
-  const shufVn = [...pairs].sort(() => Math.random() - 0.5);
-  let selEn = null, selVn = null, matched = 0;
-  
-  shufEn.forEach(p => {
-    const c = document.createElement('div'); c.className = 'm-card-gm'; c.textContent = p.en;
-    c.onclick = () => pick(c, 'en'); ec.appendChild(c);
-  });
-  shufVn.forEach(p => {
-    const c = document.createElement('div'); c.className = 'm-card-gm'; c.textContent = p.vn; c.dataset.target = p.en;
-    c.onclick = () => pick(c, 'vn'); vc.appendChild(c);
-  });
-
-  function pick(card, type) {
-    if(card.classList.contains('mat')) return;
-    if(type === 'en') { document.querySelectorAll('#gmEnCol .m-card-gm:not(.mat)').forEach(x => x.classList.remove('sel')); selEn = card; }
-    else { document.querySelectorAll('#gmVnCol .m-card-gm:not(.mat)').forEach(x => x.classList.remove('sel')); selVn = card; }
-    card.classList.add('sel');
-    
-    if(selEn && selVn) {
-      if(selEn.textContent === selVn.dataset.target) {
-        selEn.className = 'm-card-gm mat'; selVn.className = 'm-card-gm mat'; matched++; playAudio(selEn.textContent);
-        selEn = null; selVn = null;
-        
-        if(matched === 5) {
-          document.getElementById('game2Res').innerHTML = '<span style="color:var(--green)">🎉 Tuyệt vời! Ghép đúng hết và bài làm đã được gửi đi! / Great job! Matched everything and submitted!</span>';
-          if(window.submitResult) {
-            let activeDayContext = currentGameMode === 'daily' ? currentDay : 0;
-            window.submitResult('game2_match', activeDayContext, "Hoàn thành trọn vẹn cặp 5 từ nối");
-          }
-        }
-      } else {
-        setTimeout(() => { selEn.classList.remove('sel'); selVn.classList.remove('sel'); selEn = null; selVn = null; }, 500);
-      }
-    }
-  }
-}
-
-// GAME 3: FILL BLANK
-function loadGame3() {
-  const data = getTargetData();
-  window.g3CorrectData = data;
-  let words = data.en.split(" ");
-  let validIndexes = [];
-  words.forEach((w, i) => { if(w.replace(/[^a-zA-Z]/g, "").length > 2) validIndexes.push(i); });
-  if(validIndexes.length === 0) validIndexes = [0];
-  
-  let blankIdx = validIndexes[Math.floor(Math.random() * validIndexes.length)];
-  let correctWordFull = words[blankIdx];
-  let correctWordClean = correctWordFull.replace(/[^a-zA-Z]/g, ""); 
-  
-  let displaySentence = [...words];
-  displaySentence[blankIdx] = "_____" + correctWordFull.replace(/[a-zA-Z]/g, "");
-  document.getElementById('g3Sentence').textContent = displaySentence.join(" ");
-  
-  let distractors = [];
-  while(distractors.length < 2) {
-    let randSen = CURRICULUM[Math.floor(Math.random() * CURRICULUM.length)].en;
-    let w = randSen.split(" ")[Math.floor(Math.random() * randSen.split(" ").length)].replace(/[^a-zA-Z]/g, "");
-    if(w.length > 2 && w.toLowerCase() !== correctWordClean.toLowerCase() && !distractors.includes(w)) distractors.push(w);
-  }
-  
-  let options = [correctWordClean, ...distractors].sort(() => Math.random() - 0.5);
-  const optContainer = document.getElementById('g3Options');
-  optContainer.innerHTML = ""; document.getElementById('g3Res').innerHTML = "";
-  
-  options.forEach(opt => {
-    let btn = document.createElement('button'); btn.className = 'option-btn'; btn.textContent = opt;
-    btn.onclick = () => {
-      if(opt === correctWordClean) {
-        btn.style.background = 'var(--green)'; btn.style.color = '#fff';
-        document.getElementById('g3Res').innerHTML = '<span style="color:var(--green)">✅ Chính xác! Bài đã được gửi đi. / Correct! Submitted.</span>';
-        document.getElementById('g3Sentence').textContent = window.g3CorrectData.en; playAudio(window.g3CorrectData.en);
-        if(window.submitResult) {
-          window.submitResult('game3_fill_blank', window.g3CorrectData.day, "Điền từ đúng: " + correctWordClean + " trong câu '" + window.g3CorrectData.en + "'");
-        }
-      } else {
-        btn.style.background = '#E24B4A'; btn.style.color = '#fff';
-        document.getElementById('g3Res').innerHTML = '<span style="color:#E24B4A">❌ Sai rồi, thử lại nhé! / Wrong, try again!</span>';
-        setTimeout(() => { btn.style.background = '#fff'; btn.style.color = 'var(--wood)'; }, 800);
-      }
-    };
-    optContainer.appendChild(btn);
-  });
-}
-
-// GAME 4: LISTEN
-function loadGame4() {
-  const data = getTargetData();
-  window.g4CorrectEn = data.en;
-  window.g4Day = data.day;
-  let others = [...CURRICULUM].filter(x => x.day !== data.day).sort(() => Math.random() - 0.5).slice(0, 2);
-  let options = [data.en, others[0].en, others[1].en].sort(() => Math.random() - 0.5);
-  
-  const optContainer = document.getElementById('g4Options');
-  optContainer.innerHTML = ""; document.getElementById('g4Res').innerHTML = "";
-  
-  options.forEach(opt => {
-    let btn = document.createElement('button'); btn.className = 'option-btn'; btn.textContent = opt;
-    btn.onclick = () => {
-      if(opt === window.g4CorrectEn) {
-        btn.style.background = 'var(--green)'; btn.style.color = '#fff';
-        document.getElementById('g4Res').innerHTML = '<span style="color:var(--green)">✅ Tai tinh quá! Kết quả đã ghi nhận thành công. / Good listening! Result recorded.</span>';
-        if(window.submitResult) {
-          window.submitResult('game4_listen', window.g4Day, "Nghe & lựa chọn đúng câu: " + window.g4CorrectEn);
-        }
-      } else {
-        btn.style.background = '#E24B4A'; btn.style.color = '#fff';
-        document.getElementById('g4Res').innerHTML = '<span style="color:#E24B4A">❌ Bấm loa nghe kỹ lại nhé! / Tap the speaker to listen again!</span>';
-        setTimeout(() => { btn.style.background = '#fff'; btn.style.color = 'var(--wood)'; }, 800);
-      }
-    };
-    optContainer.appendChild(btn);
-  });
-  setTimeout(playGame4Audio, 500);
-}
-function playGame4Audio() { playAudio(window.g4CorrectEn); }
-
-// GAME 5: STRUCTURE (TYPING - NÂNG CẤP NHIỀU CÂU)
-function loadGame5() {
-  const data = getTargetData();
-  window.currentG5Day = data.day;
-  window.g5Tasks = data.exTask;
-  window.g5Answers = data.exAns;
-  
-  const container = document.getElementById('g5TaskList');
-  container.innerHTML = "";
-  
-  for(let i=0; i < data.exTask.length; i++) {
-    container.innerHTML += `
-      <div style="margin-bottom: 16px; text-align: left;">
-        <div style="font-size:15px; color:var(--text); margin-bottom:6px; font-weight:600;">✍️ Câu / Q ${i+1}: ${data.exTask[i]}</div>
-        <input type="text" id="g5Inp_${i}" class="type-input" placeholder="Gõ câu tiếng Anh... / Type English sentence..." style="margin:0; padding:12px;">
-      </div>
-    `;
-  }
-  document.getElementById('g5Res').innerHTML = "";
-}
-
-function checkGame5() {
-  let allCorrect = true;
-  let allUserAns = [];
-  const clean = s => s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim().toLowerCase();
-  
-  for(let i=0; i < window.g5Tasks.length; i++) {
-    let inp = document.getElementById('g5Inp_' + i);
-    allUserAns.push(inp.value);
-    
-    if(clean(inp.value) === clean(window.g5Answers[i])) {
-      inp.style.borderColor = 'var(--green)';
+  if (mode === 'practice') {
+    res.style.color = isCorrect ? "var(--green)" : "red";
+    res.innerText = isCorrect ? "🎉 Chính xác! (Chế độ luyện tập)" : "Sai rồi, hãy thử lại!";
+  } else if (mode === 'submit') {
+    if (submittedGames.game1) { alert("Bạn đã nộp bài phần này rồi!"); return; }
+    if (isCorrect) {
+      submittedGames.game1 = true;
+      let btn = document.getElementById('btnSubmitG1');
+      btn.disabled = true; btn.style.opacity = '0.5'; btn.innerText = "Đã nộp ✓";
+      window.submitResult('game1_unscramble', currentDay, "Correct");
+      res.style.color = "var(--sunrise)"; res.innerText = "📤 Đã ghi nhận điểm nộp bài!";
     } else {
-      inp.style.borderColor = '#E24B4A';
-      allCorrect = false;
+      res.style.color = "red"; res.innerText = "Câu chưa đúng, hãy xếp lại cho chuẩn trước khi nộp!";
     }
   }
+}
 
-  const res = document.getElementById('g5Res');
-  if(allCorrect) {
-    res.innerHTML = `<span style="color:var(--green)">✅ Tuyệt vời! Bạn đã hoàn thành đúng tất cả. Đang nộp bài... / Awesome! All correct. Submitting...</span>`;
-    if(window.submitResult) {
-      window.submitResult('structure_practice', window.currentG5Day, allUserAns.join(" | ")).then(() => {
-         res.innerHTML = `<span style="color:var(--green)">✅ Tuyệt vời! Bài đã được gửi cho cô giáo thành công. / Awesome! Submitted to teacher successfully.</span>`;
-      });
+// ==================== GAME 2: MATCH ====================
+let g2En=[], g2Vn=[], g2SelEn=null, g2SelVn=null, g2Pairs=[], matchedCount=0;
+function loadGame2() {
+  document.getElementById('game2Res').innerText = ''; matchedCount = 0; g2SelEn = null; g2SelVn = null;
+  g2Pairs = shuffle([...CURRICULUM]).slice(0, 4);
+  g2En = shuffle(g2Pairs.map(p => ({txt: p.en, id: p.day})));
+  g2Vn = shuffle(g2Pairs.map(p => ({txt: p.vn, id: p.day})));
+  renderG2();
+}
+function renderG2() {
+  const ec = document.getElementById('gmEnCol'); const vc = document.getElementById('gmVnCol');
+  ec.innerHTML = g2En.map((item, i) => `<div class="m-card-gm ${item.matched?'mat':''} ${g2SelEn===i?'sel':''}" onclick="selG2('en',${i})">${item.txt}</div>`).join('');
+  vc.innerHTML = g2Vn.map((item, i) => `<div class="m-card-gm ${item.matched?'mat':''} ${g2SelVn===i?'sel':''}" onclick="selG2('vn',${i})">${item.txt}</div>`).join('');
+}
+window.selG2 = (type, idx) => {
+  if(type==='en') g2SelEn = idx; else g2SelVn = idx;
+  renderG2();
+  if(g2SelEn!==null && g2SelVn!==null) {
+    if(g2En[g2SelEn].id === g2Vn[g2SelVn].id) {
+      g2En[g2SelEn].matched = true; g2Vn[g2SelVn].matched = true;
+      matchedCount++; playAudio("Correct", 1.5);
     }
+    g2SelEn = null; g2SelVn = null;
+    setTimeout(renderG2, 300);
+    if(matchedCount === g2Pairs.length) {
+      document.getElementById('game2Res').style.color = 'var(--green)';
+      document.getElementById('game2Res').innerText = "🎉 Tuyệt vời! Bạn đã nối đúng hết.";
+    }
+  }
+};
+function submitGame2() {
+  if (submittedGames.game2) { alert("Bạn đã nộp bài phần này rồi!"); return; }
+  if (matchedCount === g2Pairs.length) {
+    submittedGames.game2 = true;
+    let btn = document.getElementById('btnSubmitG2');
+    btn.disabled = true; btn.style.opacity = '0.5'; btn.innerText = "Đã nộp ✓";
+    window.submitResult('game2_match', currentDay, "Completed");
+    document.getElementById('game2Res').style.color = 'var(--sunrise)';
+    document.getElementById('game2Res').innerText = "📤 Đã ghi nhận điểm!";
   } else {
-    res.innerHTML = `<span style="color:#E24B4A">❌ Vẫn còn câu chưa chính xác. Bạn hãy kiểm tra lại nhé! / Some answers are incorrect. Please check again!</span>`;
+    alert("Hãy hoàn thành nối tất cả các cặp trước khi nộp!");
   }
 }
 
-// GAME 6: GHI ÂM TỪNG BÀI
-function loadGame6() {
-  const data = getTargetData();
-  window.g6Target = data.en;
-  window.currentG6Day = data.day;
+// ==================== GAME 3: FILL IN ====================
+let g3AnsIdx = -1, g3TargetWord = "";
+function loadGame3() {
+  document.getElementById('g3Res').innerText = ''; g3SelectedVal = null;
+  const curr = CURRICULUM[currentDay - 1];
+  let words = curr.en.split(" ");
+  let hideIdx = Math.floor(Math.random() * words.length);
+  g3TargetWord = words[hideIdx].replace(/[^\w\s\']/g, "");
   
-  document.getElementById('g6Task').textContent = data.en;
+  let showSentence = [...words];
+  showSentence[hideIdx] = "_____";
+  document.getElementById('g3Sentence').innerText = showSentence.join(" ");
+
+  let dist = shuffle(CURRICULUM.filter(c => c.day !== currentDay).map(c => c.en.split(" ")[0].replace(/[^\w\s\']/g, ""))).slice(0, 2);
+  let opts = shuffle([g3TargetWord, ...dist]);
   
-  const inp = document.getElementById('g6Inp');
-  inp.value = "";
-  document.getElementById('g6Res').innerHTML = "";
+  document.getElementById('g3Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG3(this, '${o}')">${o}</button>`).join('');
+}
+let g3SelectedVal = null;
+window.selG3 = (btn, val) => {
+  document.querySelectorAll('#g3Options .option-btn').forEach(b => {b.style.background='#fff'; b.style.borderColor='var(--warm)'});
+  btn.style.background='var(--green-pale)'; btn.style.borderColor='var(--green)';
+  g3SelectedVal = val;
+}
+function checkGame3(mode) {
+  if(!g3SelectedVal) return;
+  let isCorrect = (g3SelectedVal === g3TargetWord);
+  let res = document.getElementById('g3Res');
+  if (mode === 'practice') {
+    res.style.color = isCorrect ? "var(--green)" : "red";
+    res.innerText = isCorrect ? "🎉 Chính xác! (Luyện tập)" : "Sai rồi!";
+  } else if (mode === 'submit') {
+    if (submittedGames.game3) { alert("Đã nộp rồi!"); return; }
+    if (isCorrect) {
+      submittedGames.game3 = true;
+      let btn = document.getElementById('btnSubmitG3'); btn.disabled = true; btn.style.opacity = '0.5'; btn.innerText = "Đã nộp ✓";
+      window.submitResult('game3_fillin', currentDay, "Correct");
+      res.style.color = "var(--sunrise)"; res.innerText = "📤 Nộp thành công!";
+    } else {
+      res.style.color = "red"; res.innerText = "Sai rồi, hãy chọn đúng trước khi nộp!";
+    }
+  }
 }
 
-function submitGame6() {
-  const inp = document.getElementById('g6Inp');
-  const res = document.getElementById('g6Res');
+// ==================== GAME 4: LISTEN ====================
+let g4AnsText = "";
+function loadGame4() {
+  document.getElementById('g4Res').innerText = ''; g4SelectedVal = null;
+  const curr = CURRICULUM[currentDay - 1];
+  g4AnsText = curr.en;
   
-  if(!inp.value || inp.value.trim() === "") {
-    res.innerHTML = `<span style="color:#E24B4A">⚠️ Bạn chưa dán link âm thanh vào ô trống! / You haven't pasted the audio link!</span>`;
+  let dist = shuffle(CURRICULUM.filter(c => c.day !== currentDay)).slice(0, 2);
+  let opts = shuffle([curr, ...dist]);
+  
+  document.getElementById('g4Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG4(this, '${o.en}')">${o.en}</button>`).join('');
+}
+let g4SelectedVal = null;
+window.selG4 = (btn, val) => {
+  document.querySelectorAll('#g4Options .option-btn').forEach(b => {b.style.background='#fff'; b.style.borderColor='var(--warm)'});
+  btn.style.background='var(--green-pale)'; btn.style.borderColor='var(--green)';
+  g4SelectedVal = val;
+}
+window.playGame4Audio = () => playAudio(g4AnsText);
+function checkGame4(mode) {
+  if(!g4SelectedVal) return;
+  let isCorrect = (g4SelectedVal === g4AnsText);
+  let res = document.getElementById('g4Res');
+  if (mode === 'practice') {
+    res.style.color = isCorrect ? "var(--green)" : "red";
+    res.innerText = isCorrect ? "🎉 Chính xác!" : "Nghe lại nhé!";
+  } else if (mode === 'submit') {
+    if (submittedGames.game4) { alert("Đã nộp rồi!"); return; }
+    if (isCorrect) {
+      submittedGames.game4 = true;
+      let btn = document.getElementById('btnSubmitG4'); btn.disabled = true; btn.style.opacity = '0.5'; btn.innerText = "Đã nộp ✓";
+      window.submitResult('game4_listen', currentDay, "Correct");
+      res.style.color = "var(--sunrise)"; res.innerText = "📤 Nộp thành công!";
+    } else {
+      res.style.color = "red"; res.innerText = "Sai rồi, hãy chọn đúng trước khi nộp!";
+    }
+  }
+}
+
+// ==================== GAME 5: STRUCTURE ====================
+let g5AnsStr = "";
+function loadGame5() {
+  document.getElementById('g5Res').innerText = ''; document.getElementById('g5Input').value = '';
+  const curr = CURRICULUM[currentDay - 1];
+  let rIdx = Math.floor(Math.random() * curr.exTask.length);
+  document.getElementById('g5Task').innerText = curr.exTask[rIdx];
+  g5AnsStr = curr.exAns[rIdx];
+}
+function checkGame5(mode) {
+  let val = document.getElementById('g5Input').value.trim();
+  if(!val) return;
+  
+  let isCorrect = val.toLowerCase().replace(/[^\w\s\']/g,"") === g5AnsStr.toLowerCase().replace(/[^\w\s\']/g,"");
+  let res = document.getElementById('g5Res');
+  
+  if (mode === 'practice') {
+    res.style.color = isCorrect ? "var(--green)" : "red";
+    res.innerText = isCorrect ? "🎉 Quá giỏi! (Luyện tập)" : `Chưa đúng! Đáp án: ${g5AnsStr}`;
+  } else if (mode === 'submit') {
+    if (submittedGames.game5) { alert("Đã nộp rồi!"); return; }
+    if (isCorrect) {
+      submittedGames.game5 = true;
+      let btn = document.getElementById('btnSubmitG5'); btn.disabled = true; btn.style.opacity = '0.5'; btn.innerText = "Đã nộp ✓";
+      window.submitResult('game5_structure', currentDay, val);
+      res.style.color = "var(--sunrise)"; res.innerText = "📤 Đã ghi nhận bài tập cấu trúc!";
+    } else {
+      res.style.color = "red"; res.innerText = "Chưa đúng chuẩn, hãy sửa lại trước khi nộp nhé!";
+    }
+  }
+}
+
+// ==================== CHALLENGE RECORDING ====================
+window.submitChallengeRecording = async () => {
+  const link = document.getElementById('challengeFinalLink').value.trim();
+  if (!link || !link.startsWith('http')) {
+    alert("Vui lòng nhập đúng đường link ghi âm hợp lệ! / Please enter a valid recording link!");
     return;
   }
-  
-  res.innerHTML = `<span style="color:var(--text-mid)">Đang nộp file ghi âm... / Submitting audio file...</span>`;
-  
-  if(window.submitResult) {
-    window.submitResult('game6_daily_record', window.currentG6Day, "Link: " + inp.value).then(() => {
-      res.innerHTML = `<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công! / Audio file submitted successfully!</span>`;
-    });
-  } else {
-    res.innerHTML = `<span style="color:var(--green)">✅ Đã nộp file ghi âm thành công! (Test mode) / Audio file submitted successfully! (Test mode)</span>`;
+  const success = await window.submitResult('speaking_challenge_link_topic1', 0, link);
+  if (success) {
+    document.getElementById('challengeSubmitRes').style.color = 'var(--green)';
+    document.getElementById('challengeSubmitRes').innerText = "✅ Nộp bài thành công! Cảm ơn bé và ba mẹ!";
+    document.getElementById('challengeFinalLink').value = '';
   }
-}
+};
 </script>
 </body>
 </html>
