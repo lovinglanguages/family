@@ -26,20 +26,41 @@
 
     window.currentUserRole = "student"; 
     window.currentUserEmail = "guest@example.com";
+    let studyTimerInterval;
+
+    // Chạy ngầm tính thời gian học (1 phút cộng 1 lần)
+    function startStudyTimer(email) {
+      if (email === "guest@example.com") return;
+      if (studyTimerInterval) clearInterval(studyTimerInterval);
+      
+      studyTimerInterval = setInterval(async () => {
+        try {
+          const docRef = doc(db, "users", email);
+          await setDoc(docRef, { totalMinutes: increment(1) }, { merge: true });
+        } catch (error) {
+          console.error("Lỗi đồng bộ thời gian:", error);
+        }
+      }, 60000); 
+    }
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         alert("Vui lòng đăng nhập để vào lớp học! / Please log in to enter the class!");
         window.location.href = 'index.html';
       } else {
-        const docRef = doc(db, "whitelist", user.email.toLowerCase().trim());
+        const userEmail = user.email.toLowerCase().trim();
+        const docRef = doc(db, "whitelist", userEmail);
         const docSnap = await getDoc(docRef);
+        
         if (!docSnap.exists()) {
           alert("Email không có quyền truy cập! / Unauthorized email!");
           window.location.href = 'index.html';
         } else {
-          window.currentUserEmail = user.email.toLowerCase().trim();
+          window.currentUserEmail = userEmail;
           window.currentUserRole = docSnap.data().role || "student";
+          
+          // Khởi động đếm thời gian khi xác thực xong
+          startStudyTimer(window.currentUserEmail);
         }
       }
     });
@@ -58,7 +79,14 @@
 
         if (userEmail !== "guest@example.com") {
           const userRef = doc(db, "users", userEmail);
-          await setDoc(userRef, { drops: increment(dropsToEarn), lastActive: serverTimestamp() }, { merge: true });
+          
+          // Lấy ngày hiện tại format YYYY-MM-DD để đồng bộ với tính Streak ở index.html
+          const todayStr = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+          await setDoc(userRef, { 
+            drops: increment(dropsToEarn), 
+            lastActiveDate: todayStr 
+          }, { merge: true });
         }
 
         if (window.showCelebration) window.showCelebration(dropsToEarn);
@@ -68,6 +96,11 @@
         return false;
       }
     };
+
+    // Dọn dẹp timer khi rời trang
+    window.addEventListener('beforeunload', () => {
+      if (studyTimerInterval) clearInterval(studyTimerInterval);
+    });
   </script>
 
   <style>
@@ -385,6 +418,10 @@ function openView(viewName) {
 function goBack() {
   document.querySelectorAll('.view-section, .game-center-wrap').forEach(el => el.style.display = 'none');
   document.getElementById('viewMenu').style.display = 'grid';
+  // Quay lại trang Dashboard nếu đang ở ngoài menu chính
+  if (document.getElementById('viewMenu').style.display === 'grid' && window.location.href.includes('topic')) {
+    window.location.href = 'index.html';
+  }
 }
 
 function renderVocab() {
@@ -392,8 +429,8 @@ function renderVocab() {
   cont.innerHTML = CURRICULUM.map(c => `
     <div class="list-item">
       <div class="li-en">${c.en} 
-        <span class="audio-btn-sm" onclick="playAudio('${c.en}')">🔊</span>
-        <span class="audio-btn-sm" style="color:var(--drop)" onclick="playAudio('${c.en}', 0.7)">🐢</span>
+        <span class="audio-btn-sm" onclick="playAudio('${c.en.replace(/'/g, "\\'")}')">🔊</span>
+        <span class="audio-btn-sm" style="color:var(--drop)" onclick="playAudio('${c.en.replace(/'/g, "\\'")}', 0.7)">🐢</span>
       </div>
       <div class="li-vn">${c.vn} (${c.pron})</div>
     </div>
@@ -586,7 +623,7 @@ function loadGame4() {
   let dist = shuffle(CURRICULUM.filter(c => c.day !== currentDay)).slice(0, 2);
   let opts = shuffle([curr, ...dist]);
   
-  document.getElementById('g4Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG4(this, '${o.en}')">${o.en}</button>`).join('');
+  document.getElementById('g4Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG4(this, '${o.en.replace(/'/g, "\\'")}')">${o.en}</button>`).join('');
 }
 let g4SelectedVal = null;
 window.selG4 = (btn, val) => {
