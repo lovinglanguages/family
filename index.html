@@ -103,12 +103,23 @@
       }
     }
 
-    // 4. XEM BÀI LÀM HỌC VIÊN (DÀNH CHO TUTOR)
+    // 4. XEM BÀI LÀM HỌC VIÊN (ĐÃ CẬP NHẬT ĐỂ LẤY NICKNAME)
     window.loadStudentResults = async () => {
       const list = document.getElementById('resultsList');
       list.innerHTML = "<p style='padding:20px; color:var(--text-soft);'>Loading data... / Đang tải dữ liệu...</p>";
       
       try {
+        // Lấy danh sách whitelist để tạo bản đồ mapping email -> nickname
+        const whitelistSnapshot = await getDocs(collection(db, "whitelist"));
+        const nicknameMap = {};
+        whitelistSnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.nickname) {
+            nicknameMap[doc.id.toLowerCase().trim()] = data.nickname;
+          }
+        });
+
+        // Lấy danh sách bài làm
         const q = query(collection(db, "results"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         
@@ -119,11 +130,18 @@
 
         allStudentResults = [];
         querySnapshot.forEach((doc) => {
-          allStudentResults.push(doc.data());
+          const itemData = doc.data();
+          const studentEmail = (itemData.email || "").toLowerCase().trim();
+          
+          // Gán thêm nickname vào dữ liệu bài làm dựa theo email
+          itemData.nickname = nicknameMap[studentEmail] || "";
+          
+          allStudentResults.push(itemData);
         });
 
         window.renderTable(allStudentResults);
       } catch (e) {
+        console.error(e);
         list.innerHTML = "<p style='color:#E24B4A; padding:20px'>Access denied or security error. / Lỗi bảo mật hoặc từ chối truy cập.</p>";
       }
     };
@@ -191,7 +209,6 @@
         filteredData = filteredData.filter(item => String(item.day) === dayInput);
       }
 
-      // Đã cập nhật để lọc theo cả nickname và email
       if (nameInput) {
         filteredData = filteredData.filter(item => 
           (item.email && item.email.toLowerCase().includes(nameInput)) ||
@@ -464,7 +481,7 @@ const TOPICS = [
   {id:8,  emoji:"🛁", en:"Bath Time", vn:"Tắm rửa", color:"#AFA9EC", status:"locked"},
   {id:9,  emoji:"📖", en:"Storytelling", vn:"Kể chuyện", color:"#85B7EB", status:"locked"},
   {id:10, emoji:"🌙", en:"Good Night", vn:"Chúc ngủ ngon", color:"#D4537E", status:"locked"},
-    {id:11,  emoji:"👋", en:"My family members", vn:"Thành viên gia đình của tôi", color:"#EF9F27", status:"active"},
+  {id:11, emoji:"👋", en:"My family members", vn:"Thành viên gia đình của tôi", color:"#EF9F27", status:"active"},
 ];
 
 function renderHome() {
