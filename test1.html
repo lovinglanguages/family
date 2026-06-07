@@ -189,7 +189,7 @@ body{
 .quiz-bar { height: 100%; background: linear-gradient(90deg, var(--blue-main), var(--purple-main)); transition: width 0.3s; }
 .quiz-card { background: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow-md); text-align: center; }
 .quiz-emoji { font-size: 4rem; display: block; margin-bottom: 15px; }
-.quiz-q { font-family: 'Baloo 2', cursive; font-size: 1.6rem; margin-bottom: 25px; line-height: 1.4; }
+.quiz-q { font-family: 'Baloo 2', cursive; font-size: 1.5rem; margin-bottom: 25px; line-height: 1.4; color: var(--text); }
 .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 @media(max-width: 500px) { .quiz-opts { grid-template-columns: 1fr; } }
 .q-opt {
@@ -214,7 +214,7 @@ body{
 
 /* ── SENTENCE BUILDER ── */
 .builder-area { background: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow-md); text-align: center; }
-.build-target { font-size: 1.2rem; font-weight: 700; color: var(--muted); margin-bottom: 20px; }
+.build-target { font-size: 1.3rem; font-weight: 700; color: var(--purple-main); margin-bottom: 20px; }
 .ans-box { min-height: 70px; border: 3px dashed #E9ECEF; border-radius: 15px; padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; align-items: center; background: #F8F9FA;}
 .word-pool { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 30px; min-height: 50px;}
 .chip {
@@ -286,11 +286,11 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:.9rem;backgro
 <!-- 1. TRẮC NGHIỆM -->
 <section class="section active" id="sec-quiz">
   <div class="sec-title">The Ultimate Quiz</div>
-  <div class="sec-desc">10 câu hỏi ngẫu nhiên tổng hợp từ vựng và câu chào. Sẵn sàng chưa?</div>
+  <div class="sec-desc">20 câu hỏi tổng hợp toàn bộ từ vựng và 10 mẫu câu đánh thức bé. Sẵn sàng chưa?</div>
   
   <div class="quiz-container">
     <div class="quiz-hud">
-      <span id="qzNum">Câu: 1/10</span>
+      <span id="qzNum">Câu: 1/20</span>
       <div class="quiz-progress"><div class="quiz-bar" id="qzBar" style="width:0%"></div></div>
       <span id="qzScore">⭐ 0</span>
     </div>
@@ -306,7 +306,7 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:.9rem;backgro
     <div class="quiz-result" id="qzResult">
       <div style="font-size: 5rem; margin-bottom: 10px;">🎉</div>
       <h2 style="font-family:'Baloo 2',cursive; font-size:2.5rem; color:var(--purple-main)">Hoàn Thành!</h2>
-      <div id="qzFinalScore" style="font-size:3.5rem; font-weight:900; color:var(--gold-main); margin: 10px 0;">10/10</div>
+      <div id="qzFinalScore" style="font-size:3.5rem; font-weight:900; color:var(--gold-main); margin: 10px 0;">20/20</div>
       <p id="qzFinalMsg" style="font-size:1.2rem; font-weight:600; color:var(--muted); margin-bottom: 25px;">Con làm xuất sắc lắm!</p>
       <button class="btn-action btn-check" onclick="submitQuizData()">📤 Lưu Điểm Lên Bảng Vàng</button>
       <button class="btn-action btn-reset" style="margin-left:10px;" onclick="startQuiz()">🔄 Thử lại</button>
@@ -317,11 +317,11 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:.9rem;backgro
 <!-- 2. XẾP CÂU -->
 <section class="section" id="sec-build">
   <div class="sec-title">Sentence Master</div>
-  <div class="sec-desc">Sắp xếp các từ bị xáo trộn thành câu hoàn chỉnh.</div>
+  <div class="sec-desc">10 thử thách xếp câu - Kiểm tra kỹ năng ghép từ chuẩn xác!</div>
   
   <div class="builder-area">
     <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:700; color:var(--purple-main);">
-      <span>Câu <span id="bldCurrent">1</span>/5</span>
+      <span>Câu <span id="bldCurrent">1</span>/10</span>
       <span>⭐ Điểm: <span id="bldScore">0</span></span>
     </div>
     
@@ -434,10 +434,17 @@ function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
 // 1. QUẢN LÝ QUIZ TỔNG HỢP (Topic 1 + 2)
 // ==========================================
 const masterQuizData = [
-  {emoji:'☀️', q:'Con chào Mẹ vào buổi sáng như thế nào?', a:'Good morning, Mommy!', opts:['Good night, Mommy!', 'Good morning, Mommy!', 'Good evening, Mommy!', 'Hello, Mommy!']},
-  {emoji:'🌙', q:'Trước khi đi ngủ, con chúc Ba sao nhỉ?', a:'Good night, Daddy!', opts:['Good night, Daddy!', 'Good afternoon, Daddy!', 'Wake up, Daddy!', 'Rise and shine!']},
+  {emoji:'☀️', q:'"Good morning, sweetie!" có nghĩa là gì?', a:'Chào buổi sáng, con yêu!', opts:['Chào buổi chiều, con yêu!', 'Chào buổi sáng, con yêu!', 'Chúc ngủ ngon!', 'Đến giờ dậy rồi!']},
   {emoji:'⏰', q:'"Đến giờ thức dậy rồi" tiếng Anh là gì?', a:'Time to wake up!', opts:['Time to sleep!', 'Don\'t go back to sleep!', 'Time to wake up!', 'Did you sleep well?']},
-  {emoji:'🛏️', q:'"Don\'t go back to sleep!" nghĩa là gì?', a:'Đừng ngủ lại nữa mà!', opts:['Hãy ngủ ngon nhé!', 'Đừng ngủ lại nữa mà!', 'Đến giờ ăn rồi!', 'Cùng dọn giường nào.']},
+  {emoji:'✨', q:'"Rise and shine!" dùng để làm gì?', a:'Gọi bé thức dậy rạng rỡ', opts:['Gọi bé đi ngủ', 'Gọi bé thức dậy rạng rỡ', 'Khen bé ngoan', 'Giục bé đi tắm']},
+  {emoji:'🛏️', q:'Con ngủ ngon không? (Tiếng Anh là gì?)', a:'Did you sleep well?', opts:['Are you ready?', 'Did you sleep well?', 'Time to wake up!', 'Let\'s make the bed.']},
+  {emoji:'🌈', q:'"It\'s a beautiful day today!" nghĩa là gì?', a:'Hôm nay là một ngày thật đẹp!', opts:['Hôm nay trời mưa.', 'Hôm nay là một ngày thật đẹp!', 'Hôm nay con rất ngoan.', 'Bầu trời rất trong xanh.']},
+  {emoji:'👀', q:'Nào, mở mắt ra đi. (Tiếng Anh là gì?)', a:'Come on, open your eyes.', opts:['Come on, close your eyes.', 'Come on, open your eyes.', 'Stretch your arms.', 'Wakey wakey.']},
+  {emoji:'😴', q:'"Don\'t go back to sleep!" nghĩa là gì?', a:'Đừng ngủ lại nữa mà!', opts:['Hãy ngủ ngon nhé!', 'Đừng ngủ lại nữa mà!', 'Đến giờ ăn rồi!', 'Cùng dọn giường nào.']},
+  {emoji:'🛌', q:'"Let\'s make the bed." nghĩa là gì?', a:'Cùng dọn giường nào.', opts:['Cùng đi ngủ nào.', 'Cùng dọn giường nào.', 'Đến giờ ăn sáng.', 'Cùng đánh răng nào.']},
+  {emoji:'🙆', q:'"Stretch your arms up high!" nghĩa là?', a:'Vươn tay lên cao nào!', opts:['Cùng dọn giường nào.', 'Mở mắt ra đi.', 'Vươn tay lên cao nào!', 'Con sẵn sàng chưa?']},
+  {emoji:'🥞', q:'Con sẵn sàng ăn sáng chưa? (Tiếng Anh là gì?)', a:'Are you ready for breakfast?', opts:['Are you ready for bed?', 'Are you ready for school?', 'Are you ready for breakfast?', 'Did you eat well?']},
+  {emoji:'🌙', q:'Trước khi đi ngủ, con chúc Ba sao nhỉ?', a:'Good night, Daddy!', opts:['Good night, Daddy!', 'Good afternoon, Daddy!', 'Wake up, Daddy!', 'Rise and shine!']},
   {emoji:'👧', q:'Từ nào dùng để gọi Chị/Em gái?', a:'Sister', opts:['Brother', 'Auntie', 'Sister', 'Baby']},
   {emoji:'👴👵', q:'Ông và Bà gọi chung là gì?', a:'Grandparents', opts:['Parents', 'Siblings', 'Grandparents', 'Family']},
   {emoji:'👨👩', q:'"Parents" nghĩa là?', a:'Ba và Mẹ', opts:['Ông và Bà', 'Chú và Dì', 'Ba và Mẹ', 'Anh và Chị']},
@@ -445,13 +452,14 @@ const masterQuizData = [
   {emoji:'👨‍🦰', q:'"Uncle" là ai trong gia đình?', a:'Chú / Cậu / Bác trai', opts:['Cô / Dì', 'Anh trai', 'Chú / Cậu / Bác trai', 'Ông nội']},
   {emoji:'🌱', q:'"Small family" nghĩa là gì?', a:'Gia đình nhỏ', opts:['Gia đình lớn', 'Gia đình nhỏ', 'Gia đình vui vẻ', 'Gia đình tuyệt vời']},
   {emoji:'🏡', q:'"Big and lively" nghĩa là gì?', a:'Lớn và sôi nổi', opts:['Nhỏ và yên tĩnh', 'Lớn và sôi nổi', 'Tuyệt vời', 'Hạnh phúc']},
-  {emoji:'🙆', q:'"Stretch your arms up high!" nghĩa là?', a:'Vươn tay lên cao nào!', opts:['Cùng dọn giường nào.', 'Mở mắt ra đi.', 'Vươn tay lên cao nào!', 'Con sẵn sàng chưa?']}
+  {emoji:'👶', q:'"Baby" có nghĩa là gì?', a:'Em bé', opts:['Công chúa', 'Em bé', 'Người lớn', 'Anh trai']},
+  {emoji:'❤️', q:'"I love my family so much" nghĩa là gì?', a:'Mình rất yêu gia đình của mình', opts:['Gia đình mình rất lớn', 'Mình có một gia đình', 'Mình rất yêu gia đình của mình', 'Gia đình mình rất vui']}
 ];
 
 let qzList = [], qzIdx = 0, qzScore = 0;
 
 function startQuiz() {
-  qzList = shuffle([...masterQuizData]).slice(0, 10);
+  qzList = shuffle([...masterQuizData]).slice(0, 20);
   qzIdx = 0; qzScore = 0;
   document.getElementById('qzResult').classList.remove('show');
   document.getElementById('qzCard').style.display = 'block';
@@ -535,29 +543,48 @@ window.submitQuizData = async () => {
 // 2. QUẢN LÝ XẾP CÂU (SENTENCE BUILDER)
 // ==========================================
 const buildData = [
-  { vn: 'Chào buổi sáng, Mẹ!', en: 'Good morning Mommy' },
+  // 10 câu mẫu của Topic 1
+  { vn: 'Chào buổi sáng, con yêu!', en: 'Good morning sweetie' },
   { vn: 'Đến giờ thức dậy rồi!', en: 'Time to wake up' },
+  { vn: 'Dậy đi nào, tỏa sáng thôi!', en: 'Rise and shine' },
+  { vn: 'Con ngủ ngon không?', en: 'Did you sleep well' },
+  { vn: 'Hôm nay là một ngày thật đẹp!', en: "It's a beautiful day today" },
+  { vn: 'Nào, mở mắt ra đi.', en: 'Come on open your eyes' },
+  { vn: 'Đừng ngủ lại nữa mà!', en: "Don't go back to sleep" },
+  { vn: 'Cùng dọn giường nào.', en: "Let's make the bed" },
+  { vn: 'Vươn tay lên cao nào!', en: 'Stretch your arms up high' },
+  { vn: 'Con sẵn sàng ăn sáng chưa?', en: 'Are you ready for breakfast' },
+  // Câu giới thiệu của Topic 2
   { vn: 'Mình có một gia đình nhỏ.', en: 'I have a small family' },
-  { vn: 'Có bốn thành viên trong gia đình mình.', en: 'There are four members in my family' },
-  { vn: 'Mình rất yêu gia đình của mình.', en: 'I love my family so much' }
+  { vn: 'Có sáu thành viên trong gia đình mình.', en: 'There are six members in my family' },
+  { vn: 'Mình rất yêu gia đình của mình.', en: 'I love my family so much' },
+  { vn: 'Chúc ngủ ngon, Mẹ!', en: 'Good night Mommy' },
+  { vn: 'Chào buổi chiều, Ông!', en: 'Good afternoon Grandpa' }
 ];
 
-let bldIdx = 0, bldScore = 0;
+let bldList = [], bldIdx = 0, bldScore = 0;
 let currentAns = [], currentPool = [], currentTargetStr = "";
 
+function startBuild() {
+  bldList = shuffle([...buildData]).slice(0, 10);
+  bldIdx = 0; bldScore = 0;
+  loadBuild();
+}
+
 function loadBuild() {
-  if (bldIdx >= buildData.length) {
+  if (bldIdx >= bldList.length) {
     document.querySelector('.builder-area').innerHTML = `
       <div style="font-size: 5rem; margin-bottom: 10px;">🏆</div>
       <h2 style="font-family:'Baloo 2',cursive; font-size:2rem; color:var(--purple-main)">Hoàn Thành Xếp Câu!</h2>
-      <p style="font-size:1.2rem; font-weight:600; color:var(--muted); margin: 20px 0;">Điểm của con: ${bldScore}/${buildData.length}</p>
+      <p style="font-size:1.2rem; font-weight:600; color:var(--muted); margin: 20px 0;">Điểm của con: ${bldScore}/${bldList.length}</p>
       <button class="btn-action btn-check" onclick="submitBuildData()">📤 Lưu Điểm Xếp Câu</button>
+      <button class="btn-action btn-reset" style="margin-left:10px;" onclick="location.reload()">🔄 Làm Lại Từ Đầu</button>
     `;
     confetti();
     return;
   }
   
-  const d = buildData[bldIdx];
+  const d = bldList[bldIdx];
   currentTargetStr = d.en;
   currentAns = [];
   currentPool = shuffle(currentTargetStr.split(' '));
@@ -610,7 +637,7 @@ window.nextBuild = () => {
 
 window.submitBuildData = async () => {
   if (window.submitResult) {
-    const success = await window.submitResult('master_builder', 'Mastery', `Score: ${bldScore}/${buildData.length}`, 50);
+    const success = await window.submitResult('master_builder', 'Mastery', `Score: ${bldScore}/${bldList.length}`, 50);
     if(success) alert("Đã lưu điểm phần Xếp câu! 🌟");
   }
 };
@@ -631,7 +658,7 @@ window.submitSpeaking = async () => {
   if (window.submitResult) {
     const success = await window.submitResult('master_speaking_final', 'Mastery', link, 100);
     if (success) {
-      fb.innerText = "✅ Nộp bài thành công! Chúc mừng con đã hoàn thành Topic 1 & 2!";
+      fb.innerText = "✅ Nộp bài thành công! Chúc mừng con đã hoàn thành xuất sắc!";
       fb.style.color = 'var(--green-main)';
       document.getElementById('speakLink').value = '';
       confetti();
@@ -641,7 +668,7 @@ window.submitSpeaking = async () => {
 
 // START SCRIPT
 startQuiz();
-loadBuild();
+startBuild();
 
 </script>
 </body>
