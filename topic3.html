@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏠 My Family Stories</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --lucy-main: #FF7EB3;
+  --lucy-light: #FFE8F3;
+  --lucy-dark: #D94F8A;
+  --leo-main: #5B9CF6;
+  --leo-light: #E0EEFF;
+  --leo-dark: #2E73D9;
+  --anna-main: #48BFA0;
+  --anna-light: #DFF6EF;
+  --anna-dark: #2A9478;
+  --gold: #FFD166;
+  --bg: #FDF7FF;
+  --white: #FFFFFF;
+  --text: #2A2A3E;
+  --muted: #7B7B9A;
+  --radius: 24px;
+  --shadow-sm: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Quicksand',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(160deg,#FFF0FA 0%,#EFF4FF 50%,#EDFDF7 100%);
+  padding:56px 24px 40px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::after{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 80%,rgba(255,126,179,.12),transparent 55%),
+             radial-gradient(ellipse at 80% 20%,rgba(91,156,246,.12),transparent 55%),
+             radial-gradient(ellipse at 60% 70%,rgba(72,191,160,.10),transparent 45%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--lucy-main),var(--leo-main));
+  color:#fff;
+  font-family:'Fredoka One',cursive;
+  font-size:.85rem;
+  letter-spacing:.06em;
+  padding:6px 18px;
+  border-radius:50px;
+  margin-bottom:18px;
+  position:relative;z-index:1;
+}
+.hero h1{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(2.2rem,6vw,4rem);
+  line-height:1.15;
+  position:relative;z-index:1;
+  background:linear-gradient(135deg,var(--lucy-dark),var(--leo-main),var(--anna-main));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.hero p{font-size:1.05rem;color:var(--muted);font-weight:600;position:relative;z-index:1;}
+.hero-chars{
+  display:flex;justify-content:center;gap:32px;margin-top:32px;flex-wrap:wrap;
+  position:relative;z-index:1;
+}
+.hero-char{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:float 3s ease-in-out infinite;
+}
+.hero-char:nth-child(2){animation-delay:.7s;}
+.hero-char:nth-child(3){animation-delay:1.4s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.hero-avatar{
+  width:80px;height:80px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.4rem;
+  box-shadow:0 6px 20px rgba(0,0,0,.14);
+}
+.av-lucy{background:linear-gradient(135deg,#FFB3D1,#FF7EB3);}
+.av-leo{background:linear-gradient(135deg,#A8CBFF,#5B9CF6);}
+.av-anna{background:linear-gradient(135deg,#A0EDD8,#48BFA0);}
+.hero-name{font-family:'Fredoka One',cursive;font-size:1.1rem;}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(253,247,255,.92);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:2px solid rgba(0,0,0,.05);
+  padding:0 16px;
+}
+.nav-inner{
+  max-width:900px;margin:0 auto;
+  display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
+  padding:10px 0;
+}
+.nav-inner::-webkit-scrollbar{display:none;}
+.nav-btn{
+  font-family:'Fredoka One',cursive;font-size:.95rem;
+  padding:9px 20px;border-radius:50px;border:none;
+  cursor:pointer;white-space:nowrap;
+  background:#F0EEF8;color:var(--muted);
+  transition:all .25s;flex-shrink:0;
+}
+.nav-btn:hover{background:#E4E0F5;color:var(--text);}
+.nav-btn.active{color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2);}
+.nav-btn[data-tab="stories"].active{background:linear-gradient(135deg,var(--lucy-main),var(--leo-main));}
+.nav-btn[data-tab="vocab"].active{background:linear-gradient(135deg,var(--leo-main),var(--anna-main));}
+.nav-btn[data-tab="quiz1"].active{background:linear-gradient(135deg,var(--lucy-main),var(--lucy-dark));}
+.nav-btn[data-tab="quiz2"].active{background:linear-gradient(135deg,var(--leo-main),var(--leo-dark));}
+.nav-btn[data-tab="quiz3"].active{background:linear-gradient(135deg,var(--anna-main),var(--anna-dark));}
+.nav-btn[data-tab="challenge"].active{background:linear-gradient(135deg,#FF9A3C,#FF6B6B);}
+
+/* ── SECTIONS ── */
+.section{display:none;padding:36px 20px 80px;max-width:960px;margin:0 auto;}
+.section.active{display:block;}
+.sec-title{
+  font-family:'Fredoka One',cursive;
+  font-size:1.9rem;text-align:center;margin-bottom:28px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+
+/* ── STORY CARDS ── */
+.stories-grid{display:flex;flex-direction:column;gap:32px;}
+.story-card{
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow-md);
+  transition:transform .3s,box-shadow .3s;
+}
+.story-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.story-header{
+  padding:24px 28px 20px;
+  display:flex;align-items:center;gap:18px;
+  cursor:pointer;
+  position:relative;
+}
+.story-avatar{
+  width:68px;height:68px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;flex-shrink:0;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+.story-meta h2{
+  font-family:'Fredoka One',cursive;font-size:1.6rem;
+  margin-bottom:4px;
+}
+.story-meta p{font-size:.88rem;font-weight:600;}
+.story-tag{
+  display:inline-block;
+  border-radius:50px;padding:3px 12px;
+  font-size:.78rem;font-weight:700;margin-right:6px;
+  background:rgba(255,255,255,.4);
+}
+.story-body{padding:0 28px 28px;}
+.story-text{
+  font-size:1.05rem;line-height:1.85;font-weight:600;
+  background:rgba(255,255,255,.55);
+  border-radius:16px;padding:18px 20px;
+  margin-bottom:18px;border-left:4px solid;
+}
+.story-members{
+  display:flex;flex-wrap:wrap;gap:10px;
+}
+.member-chip{
+  display:flex;align-items:center;gap:8px;
+  border-radius:50px;padding:8px 16px;
+  font-weight:700;font-size:.88rem;
+  background:rgba(255,255,255,.7);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transition:transform .2s;cursor:default;
+}
+.member-chip:hover{transform:scale(1.05);}
+.member-chip .m-emoji{font-size:1.2rem;}
+/* Lucy */
+.s-lucy .story-header{background:linear-gradient(135deg,var(--lucy-light),#FFF0FA);}
+.s-lucy .story-meta h2{color:var(--lucy-dark);}
+.s-lucy .story-meta p{color:var(--lucy-main);}
+.s-lucy .story-body{background:var(--lucy-light);}
+.s-lucy .story-text{border-color:var(--lucy-main);}
+.s-lucy .member-chip{border:2px solid rgba(255,126,179,.3);}
+/* Leo */
+.s-leo .story-header{background:linear-gradient(135deg,var(--leo-light),#F0F6FF);}
+.s-leo .story-meta h2{color:var(--leo-dark);}
+.s-leo .story-meta p{color:var(--leo-main);}
+.s-leo .story-body{background:var(--leo-light);}
+.s-leo .story-text{border-color:var(--leo-main);}
+.s-leo .member-chip{border:2px solid rgba(91,156,246,.3);}
+/* Anna */
+.s-anna .story-header{background:linear-gradient(135deg,var(--anna-light),#F0FDF8);}
+.s-anna .story-meta h2{color:var(--anna-dark);}
+.s-anna .story-meta p{color:var(--anna-main);}
+.s-anna .story-body{background:var(--anna-light);}
+.s-anna .story-text{border-color:var(--anna-main);}
+.s-anna .member-chip{border:2px solid rgba(72,191,160,.3);}
+
+/* ── VOCAB TABLE ── */
+.vocab-filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px;}
+.vf-btn{
+  font-family:'Fredoka One',cursive;font-size:.88rem;
+  padding:7px 18px;border-radius:50px;border:2px solid #ddd;
+  background:white;cursor:pointer;transition:all .2s;
+}
+.vf-btn:hover{border-color:var(--leo-main);color:var(--leo-dark);}
+.vf-btn.active{background:var(--leo-main);color:white;border-color:var(--leo-main);}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.vocab-card{
+  background:white;border-radius:18px;padding:16px;
+  box-shadow:var(--shadow-sm);
+  cursor:pointer;transition:transform .25s,box-shadow .25s;
+  position:relative;overflow:hidden;text-align:center;
+  border:2px solid transparent;
+}
+.vocab-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0),rgba(255,255,255,.5));
+  pointer-events:none;
+}
+.vocab-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+/* Card border colors based on type */
+.vocab-card.member-v{border-color:rgba(91,156,246,.3);}
+.vocab-card.adj-v{border-color:rgba(255,154,60,.3);}
+
+.vc-emoji{font-size:2.6rem;margin-bottom:8px;display:block;}
+.vc-en{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--text);margin-bottom:3px;}
+.vc-vi{font-size:.8rem;color:var(--muted);font-weight:600;}
+.vc-story{
+  font-size:.72rem;font-weight:700;
+  border-radius:50px;padding:2px 10px;
+  display:inline-block;margin-top:6px;color:white;
+}
+/* Tags */
+.tag-member{background:var(--leo-main);}
+.tag-adj{background:linear-gradient(135deg,#FF9A3C,#FF6B6B);}
+.vocab-card.hidden{display:none;}
+
+/* ── QUIZ SHARED ── */
+.quiz-wrap{max-width:680px;margin:0 auto;}
+.quiz-hud{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:8px;
+}
+.quiz-progress-track{
+  flex:1;height:12px;background:#EDE8F5;border-radius:50px;overflow:hidden;min-width:140px;
+}
+.quiz-progress-fill{height:100%;border-radius:50px;transition:width .5s;}
+.pf-lucy{background:linear-gradient(90deg,var(--lucy-main),var(--lucy-dark));}
+.pf-leo{background:linear-gradient(90deg,var(--leo-main),var(--leo-dark));}
+.pf-anna{background:linear-gradient(90deg,var(--anna-main),var(--anna-dark));}
+.quiz-stat{
+  font-family:'Fredoka One',cursive;font-size:.9rem;
+  background:white;padding:5px 14px;border-radius:50px;
+  box-shadow:var(--shadow-sm);
+}
+.qcard{
+  background:white;border-radius:var(--radius);padding:28px;
+  box-shadow:var(--shadow-md);margin-bottom:18px;
+  animation:slideIn .3s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.q-num{font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.q-scene{
+  font-size:.9rem;font-weight:600;
+  padding:10px 16px;border-radius:12px;margin-bottom:14px;
+  border-left:3px solid;
+}
+.qs-lucy{background:var(--lucy-light);border-color:var(--lucy-main);color:var(--lucy-dark);}
+.qs-leo{background:var(--leo-light);border-color:var(--leo-main);color:var(--leo-dark);}
+.qs-anna{background:var(--anna-light);border-color:var(--anna-main);color:var(--anna-dark);}
+.q-emoji{font-size:3rem;display:block;text-align:center;margin-bottom:10px;}
+.q-text{
+  font-family:'Fredoka One',cursive;font-size:1.35rem;
+  text-align:center;margin-bottom:20px;line-height:1.4;
+}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.q-opt{
+  border-radius:14px;padding:13px 12px;font-weight:700;font-size:.92rem;
+  cursor:pointer;border:2.5px solid #EDE8F5;background:#FAFAFA;
+  text-align:center;transition:all .18s;line-height:1.35;
+}
+.q-opt:hover:not([disabled]){transform:scale(1.03);border-color:var(--leo-main);background:#EFF4FF;}
+.q-opt[disabled]{cursor:default; opacity:0.8;}
+.q-opt.opt-correct{border-color:#48BFA0;background:#DFF6EF;color:#1A7A61;}
+.q-opt.opt-wrong{border-color:#FF6B6B;background:#FFEAEA;color:#c62828;}
+.q-feedback{text-align:center;font-size:1.05rem;font-weight:800;min-height:28px;margin-top:12px;}
+.q-feedback.ok{color:var(--anna-main);}
+.q-feedback.no{color:#FF6B6B;}
+.q-next-btn{
+  display:none;margin:16px auto 0;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  padding:12px 28px;border-radius:50px;border:none;color:white;
+  cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .2s;
+}
+.q-next-btn:hover{transform:translateY(-2px);}
+.q-next-btn.show{display:block;}
+.btn-lucy{background:linear-gradient(135deg,var(--lucy-main),var(--lucy-dark));}
+.btn-leo{background:linear-gradient(135deg,var(--leo-main),var(--leo-dark));}
+.btn-anna{background:linear-gradient(135deg,var(--anna-main),var(--anna-dark));}
+.q-result{
+  display:none;background:white;border-radius:var(--radius);
+  padding:36px;text-align:center;box-shadow:var(--shadow-md);
+  animation:popIn .4s ease;
+}
+.q-result.show{display:block;}
+@keyframes popIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
+.res-emoji{font-size:4rem;display:block;margin-bottom:8px;}
+.res-title{font-family:'Fredoka One',cursive;font-size:2.2rem;margin-bottom:6px;}
+.res-score{font-size:3.5rem;font-weight:900;margin-bottom:8px;}
+.res-msg{color:var(--muted);font-weight:600;margin-bottom:24px;font-size:1rem;}
+.res-restart{
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  padding:12px 28px;border-radius:50px;border:none;color:white;
+  cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .2s;
+}
+.res-restart:hover{transform:translateY(-2px);}
+
+/* ── CHALLENGE ── */
+.challenge-intro{
+  background:linear-gradient(135deg,#FFF0FA,#EFF4FF,#EDFDF7);
+  border-radius:var(--radius);padding:24px;
+  text-align:center;margin-bottom:28px;
+  box-shadow:var(--shadow-sm);
+}
+.challenge-intro p{font-weight:600;color:var(--muted);font-size:.95rem;}
+.fill-story{
+  background:white;border-radius:20px;padding:24px;
+  box-shadow:var(--shadow-sm);margin-bottom:20px;
+}
+.fill-story h3{
+  font-family:'Fredoka One',cursive;font-size:1.2rem;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.fill-text{
+  font-size:1rem;line-height:2.2;font-weight:600;
+  border-radius:14px;padding:16px;
+}
+.blank-input{
+  border:none;border-bottom:2.5px dashed;
+  background:transparent;font-family:'Quicksand',sans-serif;
+  font-weight:700;font-size:1rem;
+  width:110px;text-align:center;outline:none;
+  padding:2px 4px;color:var(--text);
+  transition:border-color .2s;
+}
+.blank-input:focus{border-style:solid;}
+.blank-input.correct-fill{border-color:var(--anna-main)!important;color:var(--anna-dark);}
+.blank-input.wrong-fill{border-color:#FF6B6B!important;color:#c62828;}
+.blank-input[readonly]{cursor:not-allowed;}
+.check-btn{
+  display:block;margin:20px auto 0;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  padding:12px 32px;border-radius:50px;border:none;color:white;
+  background:linear-gradient(135deg,#FF9A3C,#FF6B6B);
+  cursor:pointer;box-shadow:0 4px 16px rgba(255,107,107,.3);
+  transition:transform .2s;
+}
+.check-btn:hover{transform:translateY(-2px);}
+.fill-feedback{
+  text-align:center;font-family:'Fredoka One',cursive;font-size:1.1rem;
+  min-height:32px;margin-top:12px;
+}
+
+/* ── CONFETTI ── */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+.cp{
+  position:absolute;border-radius:2px;
+  animation:fall 2.8s linear forwards;
+}
+@keyframes fall{
+  0%{transform:translateY(-10px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(105vh) rotate(720deg);opacity:0;}
+}
+
+footer{
+  text-align:center;padding:28px;color:var(--muted);
+  font-size:.82rem;background:white;border-top:1px solid #EEE;
+}
+footer b{color:var(--lucy-main);}
+
+@media(max-width:560px){
+  .q-opts{grid-template-columns:1fr;}
+  .story-header{padding:18px 18px 16px;}
+  .story-body{padding:0 18px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">📖 Lesson 2 · My Family Stories</div>
+  <h1>Meet Our Families! 🏠</h1>
+  <p>Ba câu chuyện, ba gia đình yêu thương — cùng học nào! 🌈</p>
+  <div class="hero-chars">
+    <div class="hero-char">
+      <div class="hero-avatar av-lucy">👧</div>
+      <span class="hero-name" style="color:var(--lucy-dark)">Lucy</span>
+    </div>
+    <div class="hero-char">
+      <div class="hero-avatar av-leo">👦</div>
+      <span class="hero-name" style="color:var(--leo-dark)">Leo</span>
+    </div>
+    <div class="hero-char">
+      <div class="hero-avatar av-anna">👧</div>
+      <span class="hero-name" style="color:var(--anna-dark)">Anna</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" data-tab="stories">📖 Câu Chuyện</button>
+    <button class="nav-btn" data-tab="vocab">📚 Từ Vựng</button>
+    <button class="nav-btn" data-tab="quiz1">💗 Quiz Lucy</button>
+    <button class="nav-btn" data-tab="quiz2">💙 Quiz Leo</button>
+    <button class="nav-btn" data-tab="quiz3">💚 Quiz Anna</button>
+    <button class="nav-btn" data-tab="challenge">🏆 Challenge!</button>
+  </div>
+</nav>
+
+<!-- STORIES -->
+<section class="section active" id="stories">
+  <div class="sec-title">📖 Ba Câu Chuyện Gia Đình</div>
+  <div class="stories-grid">
+
+    <!-- LUCY -->
+    <div class="story-card s-lucy">
+      <div class="story-header">
+        <div class="story-avatar av-lucy">👧</div>
+        <div class="story-meta">
+          <h2>Lucy's Family</h2>
+          <p>
+            <span class="story-tag">4 members</span>
+            <span class="story-tag">Small & sweet</span>
+          </p>
+        </div>
+      </div>
+      <div class="story-body">
+        <div class="story-text">
+          Hi! My name is Lucy. 👋<br>
+          I have a small and happy family.<br>
+          There are <strong>4 members</strong> in my family.<br>
+          They are my <strong>Daddy</strong>, my <strong>Mommy</strong>, my <strong>Brother</strong>, and <strong>me</strong>! 💕
+        </div>
+        <div class="story-members">
+          <div class="member-chip"><span class="m-emoji">👨</span><span>Daddy — Ba</span></div>
+          <div class="member-chip"><span class="m-emoji">👩</span><span>Mommy — Mẹ</span></div>
+          <div class="member-chip"><span class="m-emoji">👦</span><span>Brother — Anh/Em trai</span></div>
+          <div class="member-chip"><span class="m-emoji">👧</span><span>Me — Mình (Lucy)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEO -->
+    <div class="story-card s-leo">
+      <div class="story-header">
+        <div class="story-avatar av-leo">👦</div>
+        <div class="story-meta">
+          <h2>Leo's Family</h2>
+          <p>
+            <span class="story-tag">6 members</span>
+            <span class="story-tag">3 generations</span>
+          </p>
+        </div>
+      </div>
+      <div class="story-body">
+        <div class="story-text">
+          Hello! I'm Leo. 😊<br>
+          My family is big and wonderful!<br>
+          There are <strong>6 members</strong> in my family.<br>
+          They are my <strong>Grandpa</strong>, my <strong>Grandma</strong>, my <strong>Father</strong>, my <strong>Mother</strong>, my <strong>Sister</strong>, and <strong>me</strong>! 💙
+        </div>
+        <div class="story-members">
+          <div class="member-chip"><span class="m-emoji">👴</span><span>Grandpa — Ông</span></div>
+          <div class="member-chip"><span class="m-emoji">👵</span><span>Grandma — Bà</span></div>
+          <div class="member-chip"><span class="m-emoji">👨</span><span>Father — Ba/Bố</span></div>
+          <div class="member-chip"><span class="m-emoji">👩</span><span>Mother — Mẹ</span></div>
+          <div class="member-chip"><span class="m-emoji">👧</span><span>Sister — Chị/Em gái</span></div>
+          <div class="member-chip"><span class="m-emoji">👦</span><span>Me — Mình (Leo)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNA -->
+    <div class="story-card s-anna">
+      <div class="story-header">
+        <div class="story-avatar av-anna">👧</div>
+        <div class="story-meta">
+          <h2>Anna's Family</h2>
+          <p>
+            <span class="story-tag">8 members</span>
+            <span class="story-tag">Big & lively</span>
+          </p>
+        </div>
+      </div>
+      <div class="story-body">
+        <div class="story-text">
+          Hey there! I'm Anna. 🌟<br>
+          I have a big and lively family — I love them so much!<br>
+          There are <strong>8 members</strong> in my family.<br>
+          They are my <strong>Grandparents</strong>, my <strong>Parents</strong>, my <strong>Uncle</strong>, my <strong>Auntie</strong>, a cute <strong>Baby</strong>, and <strong>me</strong>! 💚
+        </div>
+        <div class="story-members">
+          <div class="member-chip"><span class="m-emoji">👴👵</span><span>Grandparents — Ông &amp; Bà</span></div>
+          <div class="member-chip"><span class="m-emoji">👨👩</span><span>Parents — Ba &amp; Mẹ</span></div>
+          <div class="member-chip"><span class="m-emoji">👨‍🦰</span><span>Uncle — Chú/Cậu</span></div>
+          <div class="member-chip"><span class="m-emoji">👩‍🦰</span><span>Auntie — Cô/Dì</span></div>
+          <div class="member-chip"><span class="m-emoji">👶</span><span>Baby — Em bé</span></div>
+          <div class="member-chip"><span class="m-emoji">👧</span><span>Me — Mình (Anna)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOCAB -->
+<section class="section" id="vocab">
+  <div class="sec-title">📚 Từ Vựng Trọng Tâm</div>
+  <div class="vocab-filters">
+    <button class="vf-btn active" data-filter="all">🏠 Tất Cả</button>
+    <button class="vf-btn" data-filter="member">👨‍👩‍👧 Thành Viên</button>
+    <button class="vf-btn" data-filter="adj">✨ Tính Từ</button>
+  </div>
+  <div class="vocab-grid" id="vocabGrid"></div>
+</section>
+
+<!-- QUIZ LUCY -->
+<section class="section" id="quiz1">
+  <div class="sec-title" style="color:var(--lucy-dark)">💗 Quiz — Lucy's Family</div>
+  <div class="quiz-wrap" id="qwrap1"></div>
+</section>
+
+<!-- QUIZ LEO -->
+<section class="section" id="quiz2">
+  <div class="sec-title" style="color:var(--leo-dark)">💙 Quiz — Leo's Family</div>
+  <div class="quiz-wrap" id="qwrap2"></div>
+</section>
+
+<!-- QUIZ ANNA -->
+<section class="section" id="quiz3">
+  <div class="sec-title" style="color:var(--anna-dark)">💚 Quiz — Anna's Family</div>
+  <div class="quiz-wrap" id="qwrap3"></div>
+</section>
+
+<!-- CHALLENGE -->
+<section class="section" id="challenge">
+  <div class="sec-title" style="color:#FF6B6B">🏆 Super Challenge!</div>
+  <div class="challenge-intro">
+    <p>⭐ Điền từ thích hợp vào chỗ trống và nộp bài từng người để hoàn thành thử thách nhé!</p>
+  </div>
+  <div id="fillContainer"></div>
+</section>
+
+<footer>Made with <b>♥</b> for 3 Mẹ Con — <em>Happy Learning Together!</em> 🌸</footer>
+<div class="confetti-wrap" id="cWrap"></div>
+
+<script>
+/* ─── DATA ─── */
+const vocabData = [
+  // Thành viên gia đình (Member)
+  {emoji:'👨',en:'Daddy',vi:'Ba / Bố',type:'member',cls:'member-v'},
+  {emoji:'👩',en:'Mommy',vi:'Mẹ',type:'member',cls:'member-v'},
+  {emoji:'👦',en:'Brother',vi:'Anh trai / Em trai',type:'member',cls:'member-v'},
+  {emoji:'👴',en:'Grandpa',vi:'Ông',type:'member',cls:'member-v'},
+  {emoji:'👵',en:'Grandma',vi:'Bà',type:'member',cls:'member-v'},
+  {emoji:'👨',en:'Father',vi:'Ba / Bố (trang trọng)',type:'member',cls:'member-v'},
+  {emoji:'👩',en:'Mother',vi:'Mẹ (trang trọng)',type:'member',cls:'member-v'},
+  {emoji:'👧',en:'Sister',vi:'Chị gái / Em gái',type:'member',cls:'member-v'},
+  {emoji:'👴👵',en:'Grandparents',vi:'Ông & Bà',type:'member',cls:'member-v'},
+  {emoji:'👨👩',en:'Parents',vi:'Ba & Mẹ',type:'member',cls:'member-v'},
+  {emoji:'👨‍🦰',en:'Uncle',vi:'Chú / Cậu / Bác trai',type:'member',cls:'member-v'},
+  {emoji:'👩‍🦰',en:'Auntie',vi:'Cô / Dì / Bác gái',type:'member',cls:'member-v'},
+  {emoji:'👶',en:'Baby',vi:'Em bé',type:'member',cls:'member-v'},
+  
+  // Tính từ miêu tả (Adj)
+  {emoji:'🌱',en:'Small',vi:'Nhỏ, ít người',type:'adj',cls:'adj-v'},
+  {emoji:'🏡',en:'Big',vi:'Lớn, đông người',type:'adj',cls:'adj-v'},
+  {emoji:'🥰',en:'Happy',vi:'Hạnh phúc, vui vẻ',type:'adj',cls:'adj-v'},
+  {emoji:'🌟',en:'Wonderful',vi:'Tuyệt vời',type:'adj',cls:'adj-v'},
+  {emoji:'🎉',en:'Lively',vi:'Sôi nổi, nhộn nhịp',type:'adj',cls:'adj-v'}
+];
+
+/* VOCAB */
+function buildVocab(filter='all'){
+  const g=document.getElementById('vocabGrid');g.innerHTML='';
+  vocabData.forEach(v=>{
+    if(filter !== 'all' && v.type !== filter) return;
+    
+    const card=document.createElement('div');
+    card.className=`vocab-card ${v.cls}`;
+    card.innerHTML=`<span class="vc-emoji">${v.emoji}</span>
+      <div class="vc-en">${v.en}</div>
+      <div class="vc-vi">${v.vi}</div>
+      <span class="vc-story tag-${v.type}">${v.type==='member' ? '👨‍👩‍👧 Thành Viên' : '✨ Tính Từ'}</span>`;
+    g.appendChild(card);
+  });
+}
+buildVocab();
+
+document.querySelectorAll('.vf-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.vf-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    buildVocab(b.dataset.filter);
+  });
+});
+
+/* ─── QUIZ ENGINE ─── */
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+
+function buildQuiz(wrapId,questions,pfCls,btnCls,scene,sceneCls){
+  let idx=0,score=0;
+  const qs=shuffle(questions);
+  const wrap=document.getElementById(wrapId);
+  
+  window[`checkQ_${wrapId}`] = (el,chosen,correct,optsEl) => {
+    optsEl.querySelectorAll('.q-opt').forEach(o=>{
+      o.setAttribute('disabled','');
+      if(o.textContent.trim()===correct) o.classList.add('opt-correct');
+    });
+    const fb=document.getElementById(`qfb_${wrapId}`);
+    const nxt=document.getElementById(`qnext_${wrapId}`);
+    if(chosen===correct){
+      el.classList.add('opt-correct');
+      fb.textContent='🎉 Đúng rồi! Tuyệt!'; fb.className='q-feedback ok'; score++;
+    } else {
+      el.classList.add('opt-wrong');
+      fb.textContent=`❌ Sai rồi! Đáp án đúng: ${correct}`; fb.className='q-feedback no';
+    }
+    nxt.classList.add('show');
+  };
+
+  function render(){
+    if(idx>=qs.length){showResult();return;}
+    const q=qs[idx];
+    const opts=shuffle(q.opts);
+    const pct=Math.round((idx/qs.length)*100);
+    wrap.innerHTML=`
+      <div class="quiz-hud">
+        <div class="quiz-progress-track"><div class="quiz-progress-fill ${pfCls}" style="width:${pct}%"></div></div>
+        <div class="quiz-stat">Câu ${idx+1}/${qs.length}</div>
+        <div class="quiz-stat">⭐ ${score}</div>
+      </div>
+      <div class="qcard">
+        <div class="q-num">Câu ${idx+1} trong ${qs.length}</div>
+        <div class="q-scene ${sceneCls}">${scene}</div>
+        <span class="q-emoji">${q.emoji}</span>
+        <div class="q-text">${q.q}</div>
+        <div class="q-opts">
+          ${opts.map(o=>`<div class="q-opt" onclick="window['checkQ_${wrapId}'](this,'${o.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${q.a.replace(/'/g,"\\'").replace(/"/g,"&quot;")}',this.parentElement)">${o}</div>`).join('')}
+        </div>
+        <div class="q-feedback" id="qfb_${wrapId}"></div>
+        <button class="q-next-btn ${btnCls}" id="qnext_${wrapId}" onclick="nextQ_${wrapId}()">Câu tiếp theo →</button>
+      </div>`;
+    window[`nextQ_${wrapId}`]=()=>{idx++;render();};
+  }
+  
+  function showResult(){
+    const pct=Math.round(score/qs.length*100);
+    const msg=pct===100?'🌟 Hoàn hảo! Xuất sắc lắm!':pct>=80?'🎊 Tuyệt vời! Giỏi quá!':pct>=60?'👏 Tốt lắm! Cố lên nhé!':'💪 Ôn thêm và thử lại nhé!';
+    const emoji=pct>=80?'🎉':'📚';
+    wrap.innerHTML=`<div class="q-result show">
+      <span class="res-emoji">${emoji}</span>
+      <div class="res-title">Kết Quả!</div>
+      <div class="res-score" style="background:linear-gradient(135deg,var(--${scene.includes('Lucy')?'lucy':'scene'.includes('Leo')?'leo':'anna'}-main,var(--${scene.includes('Lucy')?'lucy':'leo'}-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent">${score}/${qs.length}</div>
+      <div class="res-msg">${msg}</div>
+      <button class="res-restart ${btnCls}" onclick="buildQuiz('${wrapId}',${JSON.stringify(questions)},'${pfCls}','${btnCls}','${scene}','${sceneCls}')">🔄 Làm Lại!</button>
+    </div>`;
+    if(pct>=60)confetti();
+  }
+  
+  render();
+}
+
+/* ─── QUESTIONS ─── */
+const lucyQ=[
+  {emoji:'👨',q:'Lucy calls her father _____.',a:'Daddy',opts:['Daddy','Grandpa','Uncle','Brother']},
+  {emoji:'👩',q:'"Mommy" nghĩa là gì?',a:'Mẹ',opts:['Mẹ','Bà','Cô','Chị gái']},
+  {emoji:'👦',q:'Lucy có anh/em trai. Từ đúng là?',a:'Brother',opts:['Sister','Mother','Brother','Father']},
+  {emoji:'🔢',q:'How many members are in Lucy\'s family?',a:'4 members',opts:['3 members','4 members','5 members','6 members']},
+  {emoji:'👧',q:'Trong gia đình Lucy, "me" là ai?',a:'Lucy',opts:['Mommy','Brother','Daddy','Lucy']},
+  {emoji:'💬',q:'Lucy says: "I have a _____ and happy family."',a:'small',opts:['big','small','quiet','large']},
+  {emoji:'👨',q:'Cách gọi thân mật của "Father" là?',a:'Daddy',opts:['Daddy','Grandpa','Uncle','Brother']},
+  {emoji:'👨👩',q:'Gia đình Lucy có Ba và Mẹ, còn gọi là?',a:'Parents',opts:['Siblings','Grandparents','Parents','Cousins']},
+];
+const leoQ=[
+  {emoji:'👴',q:'Leo calls his grandfather _____.',a:'Grandpa',opts:['Grandpa','Brother','Uncle','Father']},
+  {emoji:'👵',q:'"Grandma" nghĩa là gì?',a:'Bà',opts:['Cô','Bà','Mẹ','Chị']},
+  {emoji:'👧',q:'Leo có chị/em gái. Từ đúng là?',a:'Sister',opts:['Brother','Mother','Auntie','Sister']},
+  {emoji:'🔢',q:'How many members are in Leo\'s family?',a:'6 members',opts:['4 members','5 members','6 members','7 members']},
+  {emoji:'👨',q:'"Father" là cách gọi ___ của "Daddy".',a:'trang trọng hơn',opts:['thân mật hơn','trang trọng hơn','vui hơn','dễ hơn']},
+  {emoji:'💬',q:'Leo says: "My family is big and _____!"',a:'wonderful',opts:['small','boring','wonderful','quiet']},
+  {emoji:'👴👵',q:'Ông và Bà gọi chung là?',a:'Grandparents',opts:['Parents','Siblings','Grandparents','Relatives']},
+  {emoji:'👨👩',q:'Ba và Mẹ của Leo được gọi là?',a:'Father and Mother',opts:['Daddy and Mommy','Grandpa and Grandma','Father and Mother','Uncle and Auntie']},
+];
+const annaQ=[
+  {emoji:'👶',q:'"Baby" nghĩa là gì?',a:'Em bé',opts:['Em bé','Bạn thân','Em trai','Cô bé']},
+  {emoji:'👩‍🦰',q:'Anna có Cô / Dì trong nhà. Từ đúng là?',a:'Auntie',opts:['Uncle','Sister','Grandma','Auntie']},
+  {emoji:'👨‍🦰',q:'"Uncle" nghĩa là gì trong tiếng Việt?',a:'Chú / Cậu / Bác trai',opts:['Cô / Dì','Chú / Cậu / Bác trai','Ông','Anh']},
+  {emoji:'🔢',q:'How many members are in Anna\'s family?',a:'8 members',opts:['6 members','7 members','8 members','9 members']},
+  {emoji:'👴👵',q:'"Grandparents" bao gồm?',a:'Grandpa and Grandma',opts:['Father and Mother','Uncle and Auntie','Grandpa and Grandma','Brother and Sister']},
+  {emoji:'💬',q:'Anna says: "I have a big and _____ family!"',a:'lively',opts:['quiet','lively','small','boring']},
+  {emoji:'👨👩',q:'"Parents" nghĩa là?',a:'Ba và Mẹ',opts:['Ông và Bà','Chú và Cô','Ba và Mẹ','Anh và Chị']},
+  {emoji:'👶',q:'Em bé trong gia đình Anna, gọi là?',a:'Baby',opts:['Sister','Baby','Buddy','Angel']},
+];
+
+/* ─── FILL IN BLANKS ─── */
+const fillStories=[
+  {
+    char:'Lucy',avatar:'👧',cls:'s-lucy',
+    text:'Hi! My name is <b>Lucy</b>. I have a small and happy family. There are <b>[4]</b> members in my family. They are my <input class="blank-input" style="border-color:var(--lucy-main)" data-ans="Daddy">, my <input class="blank-input" style="border-color:var(--lucy-main)" data-ans="Mommy">, my <input class="blank-input" style="border-color:var(--lucy-main)" data-ans="Brother">, and me!',
+    hints:['Daddy','Mommy','Brother']
+  },
+  {
+    char:'Leo',avatar:'👦',cls:'s-leo',
+    text:"Hello! I'm <b>Leo</b>. My family is big and wonderful! There are <b>[6]</b> members. They are my <input class='blank-input' style='border-color:var(--leo-main)' data-ans='Grandpa'>, my <input class='blank-input' style='border-color:var(--leo-main)' data-ans='Grandma'>, my <input class='blank-input' style='border-color:var(--leo-main)' data-ans='Father'>, my <input class='blank-input' style='border-color:var(--leo-main)' data-ans='Mother'>, my <input class='blank-input' style='border-color:var(--leo-main)' data-ans='Sister'>, and me!",
+    hints:['Grandpa','Grandma','Father','Mother','Sister']
+  },
+  {
+    char:'Anna',avatar:'👧',cls:'s-anna',
+    text:"Hey! I'm <b>Anna</b>. I have a big and lively family! There are <b>[8]</b> members. They are my <input class='blank-input' style='border-color:var(--anna-main)' data-ans='Grandparents'>, my <input class='blank-input' style='border-color:var(--anna-main)' data-ans='Parents'>, my <input class='blank-input' style='border-color:var(--anna-main)' data-ans='Uncle'>, my <input class='blank-input' style='border-color:var(--anna-main)' data-ans='Auntie'>, a cute <input class='blank-input' style='border-color:var(--anna-main)' data-ans='Baby'>, and me!",
+    hints:['Grandparents','Parents','Uncle','Auntie','Baby']
+  }
+];
+
+function buildFills(){
+  const c=document.getElementById('fillContainer');c.innerHTML='';
+  fillStories.forEach((s, idx)=>{
+    const box=document.createElement('div');
+    box.className=`fill-story ${s.cls}`;
+    box.id = `fillBox_${idx}`;
+    box.innerHTML=`<h3><div class="hero-avatar ${s.cls.replace('s-','av-')} " style="width:36px;height:36px;font-size:1.2rem;display:inline-flex">${s.avatar}</div> ${s.char}'s Story</h3>
+    <div style="font-size:.78rem;color:var(--muted);font-weight:600;margin-bottom:10px;">💡 Hint: ${s.hints.join(', ')}</div>
+    <div class="fill-text">${s.text}</div>
+    <button class="check-btn" onclick="checkSingleFill(${idx})">✅ Nộp bài của ${s.char}</button>
+    <div class="fill-feedback" id="fillFb_${idx}"></div>`;
+    c.appendChild(box);
+  });
+}
+buildFills();
+
+window.checkSingleFill = (idx) => {
+  const box = document.getElementById(`fillBox_${idx}`);
+  const inputs = box.querySelectorAll('.blank-input');
+  let correct = 0;
+  
+  inputs.forEach(inp => {
+    const val = inp.value.trim();
+    const ans = inp.dataset.ans;
+    if(val.toLowerCase() === ans.toLowerCase()){
+      inp.classList.add('correct-fill');
+      inp.classList.remove('wrong-fill');
+      correct++;
+    } else {
+      inp.classList.add('wrong-fill');
+      inp.classList.remove('correct-fill');
+      inp.value = ans;
+    }
+    inp.setAttribute('readonly', 'true');
+  });
+  
+  const fb = document.getElementById(`fillFb_${idx}`);
+  const pct = Math.round(correct/inputs.length*100);
+  
+  if (pct === 100) {
+    fb.textContent = '🎉 Xuất sắc! Bạn làm đúng hết rồi!';
+    fb.style.color = 'var(--anna-main)';
+    confetti();
+  } else {
+    fb.textContent = `📝 Đúng ${correct}/${inputs.length} câu. Đã hiển thị các đáp án đúng!`;
+    fb.style.color = '#FF6B6B';
+  }
+  
+  box.querySelector('.check-btn').style.display = 'none';
+};
+
+/* ─── NAV ─── */
+document.querySelectorAll('.nav-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.tab).classList.add('active');
+  });
+});
+
+/* ─── INIT QUIZZES ─── */
+buildQuiz('qwrap1',lucyQ,'pf-lucy','btn-lucy','💗 Lucy\'s Family — 4 members','qs-lucy');
+buildQuiz('qwrap2',leoQ,'pf-leo','btn-leo','💙 Leo\'s Family — 6 members','qs-leo');
+buildQuiz('qwrap3',annaQ,'pf-anna','btn-anna','💚 Anna\'s Family — 8 members','qs-anna');
+
+/* ─── CONFETTI ─── */
+function confetti(){
+  const w=document.getElementById('cWrap');w.innerHTML='';
+  const c=['#FF7EB3','#FFD166','#5B9CF6','#48BFA0','#FF9A3C','#C77DFF'];
+  for(let i=0;i<70;i++){
+    const p=document.createElement('div');
+    p.className='cp';
+    p.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;background:${c[Math.floor(Math.random()*c.length)]};border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${2+Math.random()*1.5}s;animation-delay:${Math.random()*.8}s;transform:rotate(${Math.random()*360}deg)`;
+    w.appendChild(p);
+    setTimeout(()=>p.remove(),3500);
+  }
+}
+</script>
+</body>
+</html>
