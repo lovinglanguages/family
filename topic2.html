@@ -862,7 +862,7 @@ function startVoiceRecognition() {
             fb.className = 'sm-feedback correct';
             launchConfetti();
         } else {
-            fb.textContent = `❌ Gần đúng rồi! Mẹ nghe thành: "${speechResult}". Thử lại nhé!`;
+            fb.textContent = `❌ Gần đúng rồi! Cô nghe thành: "${speechResult}". Thử lại nhé!`;
             fb.className = 'sm-feedback wrong';
         }
         btn.classList.remove('recording');
