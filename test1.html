@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>?? Master Challenge: Loving Family</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- FIREBASE INTEGRATION -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
+    authDomain: "dailyenglish-aca50.firebaseapp.com",
+    projectId: "dailyenglish-aca50",
+    storageBucket: "dailyenglish-aca50.firebasestorage.app",
+    messagingSenderId: "876041668209",
+    appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.currentUserRole = "student"; 
+  window.currentUserEmail = "guest@example.com";
+  let studyTimerInterval;
+
+  function startStudyTimer(email) {
+    if (email === "guest@example.com") return;
+    if (studyTimerInterval) clearInterval(studyTimerInterval);
+    
+    studyTimerInterval = setInterval(async () => {
+      try {
+        const docRef = doc(db, "users", email);
+        await setDoc(docRef, { totalMinutes: increment(1) }, { merge: true });
+      } catch (error) {
+        console.error("L?i ??ng b? th?i gian:", error);
+      }
+    }, 60000); 
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("Vui lòng ??ng nh?p ?? tham gia bài thi! / Please log in to take the challenge!");
+      window.location.href = 'index.html';
+    } else {
+      const userEmail = user.email.toLowerCase().trim();
+      const docRef = doc(db, "whitelist", userEmail);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        alert("Email không có quy?n truy c?p! / Unauthorized email!");
+        window.location.href = 'index.html';
+      } else {
+        window.currentUserEmail = userEmail;
+        window.currentUserRole = docSnap.data().role || "student";
+        startStudyTimer(window.currentUserEmail);
+      }
+    }
+  });
+
+  window.submitResult = async (type, topic, answer, customDrops = 100) => {
+    try {
+      const userEmail = window.currentUserEmail || "guest@example.com";
+      await addDoc(collection(db, "results"), {
+        email: userEmail, topic: topic, day: 0, type: type, answer: answer, timestamp: serverTimestamp()
+      });
+
+      if (userEmail !== "guest@example.com") {
+        const userRef = doc(db, "users", userEmail);
+        const todayStr = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+        await setDoc(userRef, { 
+          drops: increment(customDrops), 
+          lastActiveDate: todayStr 
+        }, { merge: true });
+      }
+
+      if (window.showCelebration) window.showCelebration(customDrops);
+      return true;
+    } catch (e) {
+      console.error("L?i n?p bài / Submission error:", e);
+      return false;
+    }
+  };
+
+  window.addEventListener('beforeunload', () => {
+    if (studyTimerInterval) clearInterval(studyTimerInterval);
+  });
+</script>
+
+<style>
+:root {
+  --gold-main: #FFB703;
+  --gold-light: #FFD166;
+  --purple-main: #7209B7;
+  --purple-light: #F0E6FF;
+  --blue-main: #4361EE;
+  --green-main: #4CAF50;
+  --bg: #F8F9FA;
+  --white: #FFFFFF;
+  --text: #2B2D42;
+  --muted: #8D99AE;
+  --radius: 20px;
+  --shadow-sm: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Quicksand',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* ?? HERO ?? */
+.hero{
+  background:linear-gradient(135deg, var(--purple-main) 0%, var(--blue-main) 100%);
+  padding:60px 20px 50px;
+  text-align:center;
+  color: white;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l3 20h20l-16 12 6 20-17-13-17 13 6-20-16-12h20z' fill='rgba(255,255,255,0.05)' fill-rule='evenodd'/%3E%3C/svg%3E") repeat;
+  animation: floatBG 20s linear infinite;
+}
+@keyframes floatBG { from{background-position:0 0;} to{background-position:600px 600px;} }
+.hero-emoji{font-size: 5rem; display: block; animation: bounce 2s infinite; position: relative; z-index: 1;}
+@keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
+.hero h1{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(2rem,6vw,3.5rem);
+  margin: 15px 0 10px;
+  position:relative;z-index:1;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.hero p{font-size:1.1rem;font-weight:600;opacity:0.9;position:relative;z-index:1;}
+
+/* ?? NAV ?? */
+.nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(10px);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+  padding:12px 16px;
+}
+.nav-inner{
+  max-width:800px;margin:0 auto;
+  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+}
+.nav-btn{
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  padding:10px 24px;border-radius:50px;border:none;
+  cursor:pointer;
+  background:#F1F3F5;color:var(--muted);
+  transition:all .3s;
+}
+.nav-btn:hover{background:#E9ECEF;color:var(--text);transform:translateY(-2px);}
+.nav-btn.active{
+  background:var(--gold-main);color:#fff;
+  box-shadow:0 4px 15px rgba(255,183,3,0.4);
+  transform:translateY(-2px);
+}
+
+/* ?? SECTIONS ?? */
+.section{display:none;padding:40px 20px 80px;max-width:900px;margin:0 auto;}
+.section.active{display:block;}
+.sec-title{
+  font-family:'Fredoka One',cursive;
+  font-size:2rem;text-align:center;margin-bottom:10px;
+  color: var(--purple-main);
+}
+.sec-desc{text-align:center;color:var(--muted);font-weight:600;margin-bottom:30px;font-size:1.05rem;}
+
+/* ?? QUIZ ?? */
+.quiz-container { max-width: 700px; margin: 0 auto; }
+.quiz-hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 700; color: var(--muted); }
+.quiz-progress { flex: 1; height: 12px; background: #E9ECEF; border-radius: 50px; margin: 0 15px; overflow: hidden; }
+.quiz-bar { height: 100%; background: linear-gradient(90deg, var(--blue-main), var(--purple-main)); transition: width 0.3s; }
+.quiz-card { background: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow-md); text-align: center; }
+.quiz-emoji { font-size: 4rem; display: block; margin-bottom: 15px; }
+.quiz-q { font-family: 'Fredoka One', cursive; font-size: 1.4rem; margin-bottom: 25px; line-height: 1.4; }
+.quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+@media(max-width: 500px) { .quiz-opts { grid-template-columns: 1fr; } }
+.q-opt {
+  padding: 15px; border-radius: 15px; border: 3px solid #E9ECEF; background: #F8F9FA;
+  font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: all 0.2s;
+}
+.q-opt:hover:not([disabled]) { border-color: var(--blue-main); background: #EDF2FF; transform: scale(1.02); }
+.q-opt[disabled] { cursor: not-allowed; opacity: 0.8; }
+.q-opt.correct { border-color: var(--green-main); background: #E8F5E9; color: #2E7D32; }
+.q-opt.wrong { border-color: #FF5252; background: #FFEBEE; color: #C62828; }
+.q-feedback { margin-top: 20px; font-size: 1.2rem; font-weight: 800; min-height: 30px; }
+.btn-next {
+  display: none; margin: 20px auto 0; font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+  padding: 12px 30px; border-radius: 50px; border: none; background: var(--blue-main); color: white;
+  cursor: pointer; box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3); transition: transform 0.2s;
+}
+.btn-next.show { display: block; }
+.btn-next:hover { transform: translateY(-2px); }
+
+.quiz-result { display: none; background: white; border-radius: var(--radius); padding: 40px; text-align: center; box-shadow: var(--shadow-md); }
+.quiz-result.show { display: block; animation: popIn 0.5s ease; }
+
+/* ?? SENTENCE BUILDER ?? */
+.builder-area { background: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow-md); text-align: center; }
+.build-target { font-size: 1.2rem; font-weight: 700; color: var(--muted); margin-bottom: 20px; }
+.ans-box { min-height: 70px; border: 3px dashed #E9ECEF; border-radius: 15px; padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; align-items: center; background: #F8F9FA;}
+.word-pool { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 30px; min-height: 50px;}
+.chip {
+  background: white; border: 2px solid var(--blue-main); border-radius: 10px;
+  padding: 10px 18px; font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--blue-main);
+  cursor: pointer; box-shadow: 0 4px 10px rgba(67, 97, 238, 0.1); transition: transform 0.1s;
+}
+.chip:active { transform: translateY(4px); }
+.build-fb { font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; min-height: 30px; }
+.build-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+.btn-action {
+  font-family: 'Fredoka One', cursive; padding: 12px 25px; border-radius: 50px; border: none; font-size: 1rem;
+  cursor: pointer; color: white; transition: transform 0.2s;
+}
+.btn-check { background: var(--green-main); box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); }
+.btn-reset { background: var(--muted); }
+.btn-action:hover { transform: translateY(-2px); }
+
+/* ?? SPEAKING CHALLENGE ?? */
+.speak-card { background: white; border-radius: var(--radius); padding: 35px; box-shadow: var(--shadow-md); text-align: center; border: 3px solid var(--gold-light);}
+.template-box {
+  background: var(--purple-light); border-radius: 15px; padding: 25px;
+  font-size: 1.15rem; line-height: 1.8; font-weight: 600; text-align: left;
+  margin: 20px auto; max-width: 600px; color: var(--purple-main);
+}
+.template-box span { background: white; padding: 2px 10px; border-radius: 8px; border: 1px dashed var(--purple-main); color: var(--text); }
+.record-input {
+  width: 100%; max-width: 500px; padding: 15px 20px; border-radius: 50px;
+  border: 2px solid var(--muted); font-family: 'Quicksand', sans-serif; font-size: 1rem; font-weight: 700;
+  margin: 25px auto 20px; display: block; outline: none; text-align: center; transition: border-color 0.3s;
+}
+.record-input:focus { border-color: var(--gold-main); box-shadow: 0 0 0 4px rgba(255,183,3,0.2); }
+.btn-submit-big {
+  font-family: 'Fredoka One', cursive; font-size: 1.2rem; padding: 15px 40px; border-radius: 50px; border: none;
+  background: linear-gradient(135deg, var(--gold-main), #FF9E00); color: white; cursor: pointer;
+  box-shadow: 0 6px 20px rgba(255,183,3,0.4); transition: transform 0.2s;
+}
+.btn-submit-big:hover { transform: translateY(-3px); }
+
+/* MISC */
+.cute-popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fff; border: 3px solid var(--gold-main); color: var(--purple-main); padding: 14px 28px; border-radius: 50px; font-size: 18px; font-weight: 800; z-index: 9999; display: flex; align-items: center; gap: 10px; animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.5s 3.5s forwards; }
+.flying-drop { position: fixed; bottom: -30px; font-size: 28px; z-index: 9998; animation: flyUp linear forwards; }
+@keyframes bounceIn { 0% { top: -60px; opacity: 0; } 100% { top: 20px; opacity: 1; } }
+@keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes flyUp { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; } }
+@keyframes popIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+.cp{position:absolute;border-radius:2px;animation:fall 2.8s linear forwards;}
+@keyframes fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1;}100%{transform:translateY(105vh) rotate(720deg);opacity:0;}}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:.9rem;background:white;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-emoji">??</span>
+  <h1>Master Challenge</h1>
+  <p>Cùng ôn t?p và nh?n ch?ng nh?n xu?t s?c nhé! ??</p>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" data-tab="sec-quiz">?? Tr?c Nghi?m</button>
+    <button class="nav-btn" data-tab="sec-build">?? X?p Câu</button>
+    <button class="nav-btn" data-tab="sec-speak">?? Ghi Âm</button>
+  </div>
+</nav>
+
+<!-- 1. TR?C NGHI?M -->
+<section class="section active" id="sec-quiz">
+  <div class="sec-title">The Ultimate Quiz</div>
+  <div class="sec-desc">10 câu h?i ng?u nhiên t?ng h?p t? v?ng và câu chào. S?n sàng ch?a?</div>
+  
+  <div class="quiz-container">
+    <div class="quiz-hud">
+      <span id="qzNum">Câu: 1/10</span>
+      <div class="quiz-progress"><div class="quiz-bar" id="qzBar" style="width:0%"></div></div>
+      <span id="qzScore">? 0</span>
+    </div>
+    
+    <div class="quiz-card" id="qzCard">
+      <span class="quiz-emoji" id="qzEmoji">??</span>
+      <div class="quiz-q" id="qzQuestion">?ang t?i câu h?i...</div>
+      <div class="quiz-opts" id="qzOpts"></div>
+      <div class="q-feedback" id="qzFb"></div>
+      <button class="btn-next" id="qzNext" onclick="nextQuiz()">Ti?p t?c ?</button>
+    </div>
+
+    <div class="quiz-result" id="qzResult">
+      <div style="font-size: 5rem; margin-bottom: 10px;">??</div>
+      <h2 style="font-family:'Fredoka One',cursive; font-size:2.5rem; color:var(--purple-main)">Hoàn Thành!</h2>
+      <div id="qzFinalScore" style="font-size:3.5rem; font-weight:900; color:var(--gold-main); margin: 10px 0;">10/10</div>
+      <p id="qzFinalMsg" style="font-size:1.2rem; font-weight:600; color:var(--muted); margin-bottom: 25px;">Con làm xu?t s?c l?m!</p>
+      <button class="btn-action btn-check" onclick="submitQuizData()">?? L?u ?i?m Lên B?ng Vàng</button>
+      <button class="btn-action btn-reset" style="margin-left:10px;" onclick="startQuiz()">?? Th? l?i</button>
+    </div>
+  </div>
+</section>
+
+<!-- 2. X?P CÂU -->
+<section class="section" id="sec-build">
+  <div class="sec-title">Sentence Master</div>
+  <div class="sec-desc">S?p x?p các t? b? xáo tr?n thành câu hoàn ch?nh.</div>
+  
+  <div class="builder-area">
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:700; color:var(--purple-main);">
+      <span>Câu <span id="bldCurrent">1</span>/5</span>
+      <span>? ?i?m: <span id="bldScore">0</span></span>
+    </div>
+    
+    <div class="build-target" id="bldTargetVn">Ngh?a ti?ng Vi?t ? ?ây</div>
+    
+    <div class="ans-box" id="bldAnsBox"></div>
+    <div class="word-pool" id="bldPool"></div>
+    
+    <div class="build-fb" id="bldFb"></div>
+    
+    <div class="build-actions" id="bldActions">
+      <button class="btn-action btn-reset" onclick="resetBuild()">?? X?p l?i</button>
+      <button class="btn-action btn-check" id="btnCheckBuild" onclick="checkBuild()">? Ki?m tra</button>
+    </div>
+    <button class="btn-action btn-check" id="btnNextBuild" style="display:none; margin: 0 auto;" onclick="nextBuild()">Câu ti?p theo ?</button>
+  </div>
+</section>
+
+<!-- 3. GHI ÂM -->
+<section class="section" id="sec-speak">
+  <div class="sec-title">Voice of a Star</div>
+  <div class="sec-desc">Hãy t? tin gi?i thi?u v? gia ?ình ?áng yêu c?a con nhé!</div>
+  
+  <div class="speak-card">
+    <span style="font-size:4rem; display:block; margin-bottom:10px;">???????????</span>
+    <h3 style="color:var(--purple-main); font-size:1.5rem; margin-bottom: 10px;">K?ch b?n g?i ý:</h3>
+    
+    <div class="template-box">
+      "Hello! My name is <span>[Tên con]</span>. ??<br><br>
+      I have a <span>[big / small]</span> family.<br>
+      There are <span>[S? l??ng]</span> members in my family.<br>
+      They are <span>[K? tên: Daddy, Mommy, Brother...]</span> and me! ??<br><br>
+      I love my family so much!" ??
+    </div>
+    
+    <p style="color:var(--muted); font-weight:600; margin-top: 30px;">
+      Ba m? giúp bé ??c to ?o?n v?n trên, ghi âm t?i <a href="https://vocaroo.com/" target="_blank" style="color:var(--blue-main)">Vocaroo</a> và dán link vào ô d??i ?ây ?? cô ch?m ?i?m nhé!
+    </p>
+    
+    <input type="url" id="speakLink" class="record-input" placeholder="Dán link Vocaroo vào ?ây...">
+    <button class="btn-submit-big" onclick="submitSpeaking()">?? N?p Bài Ghi Âm T?t Nghi?p</button>
+    <div id="speakFb" style="margin-top:15px; font-weight:bold; font-size:1.1rem; min-height: 25px;"></div>
+  </div>
+</section>
+
+<footer>Made with <b>?</b> for 3 M? Con — <em>You have mastered Topic 1 & 2!</em> ??</footer>
+<div class="confetti-wrap" id="cWrap"></div>
+
+<script>
+// --- ANTI-COPY SECURITY ---
+document.addEventListener('contextmenu', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+}, true);
+document.addEventListener('keydown', e => {
+  if (window.currentUserRole !== 'teacher') {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault();
+    const isInput = e.target.tagName === 'INPUT';
+    if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) e.preventDefault();
+    if (!isInput && e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86)) e.preventDefault();
+  }
+}, true);
+document.addEventListener('dragstart', e => {
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+}, true);
+
+// --- CELEBRATION EFFECT ---
+window.showCelebration = (dropsEarned) => {
+  const popup = document.createElement('div');
+  popup.className = 'cute-popup';
+  popup.innerHTML = `?? Tuy?t v?i! Bé ???c th??ng <b>+${dropsEarned} ??</b>`;
+  document.body.appendChild(popup);
+  setTimeout(() => { popup.remove(); }, 4000);
+  for (let i = 0; i < 25; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'flying-drop';
+    drop.innerText = '??';
+    drop.style.left = Math.random() * 95 + 'vw';
+    drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+    document.body.appendChild(drop);
+    setTimeout(() => { drop.remove(); }, 3000);
+  }
+};
+
+function confetti(){
+  const w=document.getElementById('cWrap');w.innerHTML='';
+  const c=['#FFB703','#7209B7','#4361EE','#4CAF50','#FF5252','#FFFFFF'];
+  for(let i=0;i<100;i++){
+    const p=document.createElement('div');
+    p.className='cp';
+    p.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${c[Math.floor(Math.random()*c.length)]};border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${2+Math.random()*2}s;animation-delay:${Math.random()}s;transform:rotate(${Math.random()*360}deg)`;
+    w.appendChild(p);
+    setTimeout(()=>p.remove(),4000);
+  }
+}
+
+// --- TABS LOGIC ---
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+
+// ==========================================
+// 1. QU?N LÝ QUIZ T?NG H?P (Topic 1 + 2)
+// ==========================================
+const masterQuizData = [
+  {emoji:'??', q:'Con chào M? vào bu?i sáng nh? th? nào?', a:'Good morning, Mommy!', opts:['Good night, Mommy!', 'Good morning, Mommy!', 'Good evening, Mommy!', 'Hello, Mommy!']},
+  {emoji:'??', q:'Tr??c khi ?i ng?, con chúc Ba sao nh??', a:'Good night, Daddy!', opts:['Good night, Daddy!', 'Good afternoon, Daddy!', 'Wake up, Daddy!', 'Rise and shine!']},
+  {emoji:'?', q:'"??n gi? th?c d?y r?i" ti?ng Anh là gì?', a:'Time to wake up!', opts:['Time to sleep!', 'Don\'t go back to sleep!', 'Time to wake up!', 'Did you sleep well?']},
+  {emoji:'???', q:'"Don\'t go back to sleep!" ngh?a là gì?', a:'??ng ng? l?i n?a mà!', opts:['Hãy ng? ngon nhé!', '??ng ng? l?i n?a mà!', '??n gi? ?n r?i!', 'Cùng d?n gi??ng nào.']},
+  {emoji:'??', q:'T? nào dùng ?? g?i Ch?/Em gái?', a:'Sister', opts:['Brother', 'Auntie', 'Sister', 'Baby']},
+  {emoji:'????', q:'Ông và Bà g?i chung là gì?', a:'Grandparents', opts:['Parents', 'Siblings', 'Grandparents', 'Family']},
+  {emoji:'????', q:'"Parents" ngh?a là?', a:'Ba và M?', opts:['Ông và Bà', 'Chú và Dì', 'Ba và M?', 'Anh và Ch?']},
+  {emoji:'??', q:'Ba m? g?i con là "Sweetie" ngh?a là gì?', a:'Con yêu / C?c c?ng', opts:['Thiên th?n nh?', 'Con yêu / C?c c?ng', 'B?n nh?', 'Công chúa']},
+  {emoji:'?????', q:'"Uncle" là ai trong gia ?ình?', a:'Chú / C?u / Bác trai', opts:['Cô / Dì', 'Anh trai', 'Chú / C?u / Bác trai', 'Ông n?i']},
+  {emoji:'??', q:'"Small family" ngh?a là gì?', a:'Gia ?ình nh?', opts:['Gia ?ình l?n', 'Gia ?ình nh?', 'Gia ?ình vui v?', 'Gia ?ình tuy?t v?i']},
+  {emoji:'??', q:'"Big and lively" ngh?a là gì?', a:'L?n và sôi n?i', opts:['Nh? và yên t?nh', 'L?n và sôi n?i', 'Tuy?t v?i', 'H?nh phúc']},
+  {emoji:' stretch', q:'"Stretch your arms up high!" ngh?a là?', a:'V??n tay lên cao nào!', opts:['Cùng d?n gi??ng nào.', 'M? m?t ra ?i.', 'V??n tay lên cao nào!', 'Con s?n sàng ch?a?']}
+];
+
+let qzList = [], qzIdx = 0, qzScore = 0;
+
+function startQuiz() {
+  qzList = shuffle([...masterQuizData]).slice(0, 10);
+  qzIdx = 0; qzScore = 0;
+  document.getElementById('qzResult').classList.remove('show');
+  document.getElementById('qzCard').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = qzList[qzIdx];
+  const opts = shuffle([...q.opts]);
+  
+  document.getElementById('qzNum').innerText = `Câu: ${qzIdx + 1}/${qzList.length}`;
+  document.getElementById('qzScore').innerText = `? ${qzScore}`;
+  document.getElementById('qzBar').style.width = `${(qzIdx / qzList.length) * 100}%`;
+  
+  document.getElementById('qzEmoji').innerText = q.emoji;
+  document.getElementById('qzQuestion').innerText = q.q;
+  
+  const optsHtml = opts.map(o => `<div class="q-opt" onclick="checkQuiz(this, '${o.replace(/'/g,"\\'").replace(/"/g,"&quot;")}', '${q.a.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')">${o}</div>`).join('');
+  document.getElementById('qzOpts').innerHTML = optsHtml;
+  
+  document.getElementById('qzFb').innerText = '';
+  document.getElementById('qzNext').classList.remove('show');
+}
+
+window.checkQuiz = (el, chosen, correct) => {
+  const opts = document.querySelectorAll('.q-opt');
+  opts.forEach(o => {
+    o.setAttribute('disabled', 'true');
+    if(o.innerText === correct) o.classList.add('correct');
+  });
+  
+  const fb = document.getElementById('qzFb');
+  if(chosen === correct) {
+    el.classList.add('correct');
+    fb.innerText = '?? Chính xác! Gi?i quá!';
+    fb.style.color = 'var(--green-main)';
+    qzScore++;
+  } else {
+    el.classList.add('wrong');
+    fb.innerText = `? Sai r?i! ?áp án ?úng: ${correct}`;
+    fb.style.color = '#FF5252';
+  }
+  
+  document.getElementById('qzScore').innerText = `? ${qzScore}`;
+  document.getElementById('qzNext').classList.add('show');
+};
+
+window.nextQuiz = () => {
+  qzIdx++;
+  if(qzIdx >= qzList.length) {
+    showQuizResult();
+  } else {
+    renderQuiz();
+  }
+};
+
+function showQuizResult() {
+  document.getElementById('qzCard').style.display = 'none';
+  document.getElementById('qzBar').style.width = '100%';
+  const resBox = document.getElementById('qzResult');
+  resBox.classList.add('show');
+  
+  document.getElementById('qzFinalScore').innerText = `${qzScore}/${qzList.length}`;
+  const pct = qzScore / qzList.length;
+  const msg = pct === 1 ? '?? Tuy?t ??nh! Con ??t ?i?m t?i ?a!' : pct >= 0.7 ? '?? R?t t?t! Con n?m bài r?t v?ng!' : '?? C? g?ng ôn l?i m?t chút nhé con yêu!';
+  document.getElementById('qzFinalMsg').innerText = msg;
+  
+  if(pct >= 0.7) confetti();
+}
+
+window.submitQuizData = async () => {
+  if (window.submitResult) {
+    const success = await window.submitResult('master_quiz', 'Mastery', `Score: ${qzScore}/${qzList.length}`, 50);
+    if(success) {
+      alert("?ã l?u ?i?m thi tr?c nghi?m thành công! ??");
+    }
+  }
+};
+
+// ==========================================
+// 2. QU?N LÝ X?P CÂU (SENTENCE BUILDER)
+// ==========================================
+const buildData = [
+  { vn: 'Chào bu?i sáng, M?!', en: 'Good morning Mommy' },
+  { vn: '??n gi? th?c d?y r?i!', en: 'Time to wake up' },
+  { vn: 'Mình có m?t gia ?ình nh?.', en: 'I have a small family' },
+  { vn: 'Có b?n thành viên trong gia ?ình mình.', en: 'There are four members in my family' },
+  { vn: 'Mình r?t yêu gia ?ình c?a mình.', en: 'I love my family so much' }
+];
+
+let bldIdx = 0, bldScore = 0;
+let currentAns = [], currentPool = [], currentTargetStr = "";
+
+function loadBuild() {
+  if (bldIdx >= buildData.length) {
+    document.querySelector('.builder-area').innerHTML = `
+      <div style="font-size: 5rem; margin-bottom: 10px;">??</div>
+      <h2 style="font-family:'Fredoka One',cursive; font-size:2rem; color:var(--purple-main)">Hoàn Thành X?p Câu!</h2>
+      <p style="font-size:1.2rem; font-weight:600; color:var(--muted); margin: 20px 0;">?i?m c?a con: ${bldScore}/${buildData.length}</p>
+      <button class="btn-action btn-check" onclick="submitBuildData()">?? L?u ?i?m X?p Câu</button>
+    `;
+    confetti();
+    return;
+  }
+  
+  const d = buildData[bldIdx];
+  currentTargetStr = d.en;
+  currentAns = [];
+  currentPool = shuffle(currentTargetStr.split(' '));
+  
+  document.getElementById('bldCurrent').innerText = bldIdx + 1;
+  document.getElementById('bldTargetVn').innerText = `"${d.vn}"`;
+  document.getElementById('bldFb').innerText = '';
+  document.getElementById('btnNextBuild').style.display = 'none';
+  document.getElementById('bldActions').style.display = 'flex';
+  
+  renderBuildUI();
+}
+
+function renderBuildUI() {
+  document.getElementById('bldAnsBox').innerHTML = currentAns.map((w, i) => `<div class="chip" onclick="moveToPool(${i})">${w}</div>`).join('');
+  document.getElementById('bldPool').innerHTML = currentPool.map((w, i) => `<div class="chip" onclick="moveToAns(${i})">${w}</div>`).join('');
+}
+
+window.moveToAns = (i) => { currentAns.push(currentPool[i]); currentPool.splice(i, 1); renderBuildUI(); };
+window.moveToPool = (i) => { currentPool.push(currentAns[i]); currentAns.splice(i, 1); renderBuildUI(); };
+window.resetBuild = () => {
+  currentPool = currentPool.concat(currentAns);
+  currentAns = [];
+  renderBuildUI();
+};
+
+window.checkBuild = () => {
+  if(currentAns.length === 0) return;
+  const userStr = currentAns.join(' ').toLowerCase();
+  const target = currentTargetStr.toLowerCase();
+  const fb = document.getElementById('bldFb');
+  
+  if (userStr === target) {
+    fb.innerText = '?? X?p câu quá chu?n!';
+    fb.style.color = 'var(--green-main)';
+    bldScore++;
+    document.getElementById('bldScore').innerText = bldScore;
+    document.getElementById('bldActions').style.display = 'none';
+    document.getElementById('btnNextBuild').style.display = 'block';
+  } else {
+    fb.innerText = '? V? trí t? ch?a ?úng, con th? l?i nhé!';
+    fb.style.color = '#FF5252';
+  }
+};
+
+window.nextBuild = () => {
+  bldIdx++;
+  loadBuild();
+};
+
+window.submitBuildData = async () => {
+  if (window.submitResult) {
+    const success = await window.submitResult('master_builder', 'Mastery', `Score: ${bldScore}/${buildData.length}`, 50);
+    if(success) alert("?ã l?u ?i?m ph?n X?p câu! ??");
+  }
+};
+
+// ==========================================
+// 3. QU?N LÝ GHI ÂM (SPEAKING)
+// ==========================================
+window.submitSpeaking = async () => {
+  const link = document.getElementById('speakLink').value.trim();
+  const fb = document.getElementById('speakFb');
+  
+  if (!link || !link.startsWith('http')) {
+    fb.innerText = "? Vui lòng nh?p ?úng ???ng link ghi âm h?p l? (b?t ??u b?ng http)!";
+    fb.style.color = '#FF5252';
+    return;
+  }
+  
+  if (window.submitResult) {
+    const success = await window.submitResult('master_speaking_final', 'Mastery', link, 100);
+    if (success) {
+      fb.innerText = "? N?p bài thành công! Chúc m?ng con ?ã hoàn thành Topic 1 & 2!";
+      fb.style.color = 'var(--green-main)';
+      document.getElementById('speakLink').value = '';
+      confetti();
+    }
+  }
+};
+
+// START SCRIPT
+startQuiz();
+loadBuild();
+
+</script>
+</body>
+</html>
