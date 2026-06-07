@@ -202,13 +202,13 @@
   /* FLASHCARDS */
   .flashcards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
   }
   .flashcard {
     perspective: 800px;
     cursor: pointer;
-    height: 200px;
+    height: 220px;
   }
   .flashcard-inner {
     width: 100%; height: 100%;
@@ -233,11 +233,68 @@
   .fc-front { background: white; }
   .fc-back { background: linear-gradient(135deg, #667eea, #764ba2); color: white; transform: rotateY(180deg); }
   .fc-emoji { font-size: 3rem; margin-bottom: 8px; }
-  .fc-word { font-family: 'Bubblegum Sans', cursive; font-size: 1.3rem; color: #333; text-align: center; }
+  .fc-word { font-family: 'Bubblegum Sans', cursive; font-size: 1.5rem; color: #333; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;}
   .fc-sub { font-size: 0.8rem; color: #888; margin-top: 4px; }
-  .fc-vi { font-size: 1.1rem; font-weight: 800; text-align: center; }
-  .fc-alt { font-size: 0.8rem; margin-top: 6px; opacity: 0.85; text-align: center; }
-  .fc-hint { font-size: 0.75rem; color: #aaa; margin-top: 8px; font-style: italic; }
+  .fc-vi { font-size: 1.2rem; font-weight: 800; text-align: center; margin-bottom: 4px; }
+  .fc-alt { font-size: 0.8rem; opacity: 0.85; text-align: center; margin-bottom: 12px; }
+  .fc-hint { font-size: 0.75rem; color: #aaa; margin-top: auto; font-style: italic; }
+
+  /* MỚI BỔ SUNG: Nút trong Flashcard & Modal Học Từ */
+  .btn-audio {
+    background: var(--blue); color: white; border: none; border-radius: 50%;
+    width: 32px; height: 32px; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(77, 150, 255, 0.4);
+  }
+  .btn-audio:hover { transform: scale(1.1); }
+  .fc-actions {
+    display: flex; gap: 8px; margin-top: auto;
+  }
+  .fc-action-btn {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    padding: 6px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .fc-action-btn:hover { background: rgba(255,255,255,0.4); }
+
+  .study-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    display: none; justify-content: center; align-items: center; z-index: 1000;
+  }
+  .study-modal-overlay.show { display: flex; animation: fadeIn 0.3s; }
+  .study-modal {
+    background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; text-align: center;
+  }
+  .close-modal {
+    position: absolute; top: 15px; right: 15px; background: none; border: none;
+    font-size: 1.5rem; color: #aaa; cursor: pointer; transition: color 0.2s;
+  }
+  .close-modal:hover { color: var(--red); }
+  .sm-emoji { font-size: 4rem; margin-bottom: 10px; }
+  .sm-vi { font-size: 1.4rem; font-weight: 800; color: var(--purple); margin-bottom: 20px; }
+  
+  /* Chế độ Gõ */
+  .sm-type-area { display: flex; flex-direction: column; gap: 12px; }
+  .sm-input { 
+    padding: 12px; border-radius: 12px; border: 2px solid #ddd; 
+    font-size: 1.2rem; font-family: 'Nunito'; text-align: center; transition: border-color 0.3s;
+  }
+  .sm-input:focus { border-color: var(--blue); outline: none; }
+  
+  /* Chế độ Chọn */
+  .sm-quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sm-opt {
+    padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #f9f9f9;
+    font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .sm-opt:hover { border-color: var(--blue); background: #e8f1ff; }
+  .sm-opt.correct { border-color: var(--green); background: #e8f5e9; color: #2e7d32; pointer-events: none;}
+  .sm-opt.wrong { border-color: var(--red); background: #ffeaea; color: #c62828; pointer-events: none;}
+  
+  .sm-feedback { margin-top: 15px; font-weight: 800; font-size: 1.1rem; min-height: 24px; }
+  .sm-feedback.correct { color: var(--green); }
+  .sm-feedback.wrong { color: var(--red); }
 
   /* GREETING */
   .greeting-grid {
@@ -449,7 +506,7 @@
     .quiz-options { grid-template-columns: 1fr; }
     .match-item { font-size: 0.85rem; padding: 10px 12px; }
     .flashcards-grid { grid-template-columns: repeat(2, 1fr); }
-    .flashcard { height: 170px; }
+    .flashcard { height: 190px; }
     .fc-emoji { font-size: 2.2rem; }
   }
 </style>
@@ -479,40 +536,34 @@
     <div class="mindmap">
       <div class="mm-center">🏠 My Sweet Family Members 💕</div>
       <div class="mm-branches">
-
         <div class="mm-branch b1">
           <div class="mm-branch-title">🟢 Nhánh 1: Ông Bà (Grandparents)</div>
           <div class="mm-word">👵 Grandma / Granny / Grandmother<br><span>Bà (Bà nội / Bà ngoại)</span></div>
           <div class="mm-word">👴 Grandpa / Granddad / Grandfather<br><span>Ông (Ông nội / Ông ngoại)</span></div>
         </div>
-
         <div class="mm-branch b2">
           <div class="mm-branch-title">🔴 Nhánh 2: Ba Mẹ (Parents)</div>
           <div class="mm-word">👩 Mommy / Mom / Mama / Mother<br><span>Mẹ</span></div>
           <div class="mm-word">👨 Daddy / Dad / Papa / Father<br><span>Ba / Bố</span></div>
         </div>
-
         <div class="mm-branch b3">
           <div class="mm-branch-title">🔵 Nhánh 3: Anh Chị Em (Siblings)</div>
           <div class="mm-word">👦 Bro (Brother)<br><span>Anh trai / Em trai</span></div>
           <div class="mm-word">👧 Sis (Sister)<br><span>Chị gái / Em gái</span></div>
           <div class="mm-word">👶 Baby<br><span>Em bé</span></div>
         </div>
-
         <div class="mm-branch b4">
           <div class="mm-branch-title">🟡 Nhánh 4: Cô Chú (Aunts & Uncles)</div>
           <div class="mm-word">👩‍🦰 Auntie / Aunt<br><span>Cô / Dì / Bác gái</span></div>
           <div class="mm-word">👨‍🦰 Uncle<br><span>Chú / Cậu / Bác trai</span></div>
         </div>
-
         <div class="mm-branch b5">
           <div class="mm-branch-title">🟣 Nhánh 5: Con Cái (Children / Kids)</div>
           <div class="mm-word">🍬 Sweetie / Sweetheart<br><span>Con yêu, cục cưng</span></div>
           <div class="mm-word">👼 Angel<br><span>Thiên thần nhỏ</span></div>
-          <div class="mm-word">👧👧 My girls / Princess<br><span>Công chúa nhỏ</span></div>
+          <div class="mm-word">👧👧 My girls / Princesses<br><span>Công chúa nhỏ</span></div>
           <div class="mm-word">👦 Buddy / Little man<br><span>Cậu bé / Anh bạn nhỏ</span></div>
         </div>
-
       </div>
     </div>
   </div>
@@ -520,14 +571,22 @@
 
 <!-- FLASHCARD -->
 <section class="section" id="flashcard">
-  <div class="section-title" style="color:var(--blue)">🃏 Flashcard — Hover để lật bài!</div>
+  <div class="section-title" style="color:var(--blue)">🃏 Flashcard Thông Minh</div>
+  <p style="text-align:center; color:#666; margin-bottom:20px; font-weight:600;">Hover để lật bài, Nhấn 🔊 để nghe, Lật ra sau để Chọn chế độ Học! ✨</p>
   <div class="flashcards-grid" id="flashcardGrid"></div>
 </section>
+
+<!-- MODAL HỌC TỪ CỦA FLASHCARD -->
+<div id="studyModal" class="study-modal-overlay">
+  <div class="study-modal">
+    <button class="close-modal" onclick="closeStudyModal()">✖</button>
+    <div id="studyModalContent"></div>
+  </div>
+</div>
 
 <!-- GREETING -->
 <section class="section" id="greeting">
   <div class="section-title" style="color:var(--pink)">👋 Câu Chào Theo Buổi</div>
-
   <div class="greeting-grid">
     <div class="greeting-card gc-morning">
       <h3>☀️ Good Morning!</h3>
@@ -635,8 +694,8 @@
 <script>
 // DATA
 const familyData = [
-  { emoji:'👵', word:'Grandma', alts:'Granny / Grandmother', vi:'Bà (Bà nội / Bà ngoại)', branch:'Grandparents' },
-  { emoji:'👴', word:'Grandpa', alts:'Granddad / Grandfather', vi:'Ông (Ông nội / Ông ngoại)', branch:'Grandparents' },
+  { emoji:'👵', word:'Grandma', alts:'Granny / Grandmother', vi:'Bà nội / Bà ngoại', branch:'Grandparents' },
+  { emoji:'👴', word:'Grandpa', alts:'Granddad / Grandfather', vi:'Ông nội / Ông ngoại', branch:'Grandparents' },
   { emoji:'👩', word:'Mommy', alts:'Mom / Mama / Mother', vi:'Mẹ', branch:'Parents' },
   { emoji:'👨', word:'Daddy', alts:'Dad / Papa / Father', vi:'Ba / Bố', branch:'Parents' },
   { emoji:'👦', word:'Bro', alts:'Brother', vi:'Anh trai / Em trai', branch:'Siblings' },
@@ -649,6 +708,18 @@ const familyData = [
   { emoji:'👑', word:'Princess', alts:'My girl', vi:'Công chúa nhỏ', branch:'Children' },
   { emoji:'👦', word:'Buddy', alts:'Little man', vi:'Cậu bé / Anh bạn nhỏ', branch:'Children' },
 ];
+
+// UTILS
+function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
+
+// HÀM PHÁT AUDIO (Web Speech API)
+function playAudio(text, event) {
+  if(event) event.stopPropagation(); // Ngăn việc lật flashcard khi bấm nút
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.9; // Đọc chậm lại 1 xíu cho bé dễ nghe
+  window.speechSynthesis.speak(utterance);
+}
 
 // STARS
 function createStars() {
@@ -677,32 +748,138 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// FLASHCARDS
+// FLASHCARDS BUILDER
 function buildFlashcards() {
   const grid = document.getElementById('flashcardGrid');
   grid.innerHTML = '';
-  familyData.forEach(d => {
+  familyData.forEach((d, index) => {
     const card = document.createElement('div');
     card.className='flashcard';
     card.innerHTML=`
       <div class="flashcard-inner">
         <div class="fc-front">
           <div class="fc-emoji">${d.emoji}</div>
-          <div class="fc-word">${d.word}</div>
+          <div class="fc-word">${d.word} <button class="btn-audio" title="Nghe Phát Âm" onclick="playAudio('${d.word}', event)">🔊</button></div>
           ${d.alts?`<div class="fc-sub">${d.alts}</div>`:''}
-          <div class="fc-hint">Hover để xem nghĩa →</div>
+          <div class="fc-hint">Lật để xem nghĩa →</div>
         </div>
         <div class="fc-back">
-          <div class="fc-emoji">${d.emoji}</div>
+          <div class="fc-emoji" style="font-size: 2rem; margin-bottom: 0">${d.emoji}</div>
           <div class="fc-vi">${d.vi}</div>
           ${d.alts?`<div class="fc-alt">(${d.alts})</div>`:''}
+          
+          <div class="fc-actions">
+            <button class="fc-action-btn" title="Nghe" onclick="playAudio('${d.word}', event)">🔊 Nghe</button>
+            <button class="fc-action-btn" title="Tập Gõ" onclick="openStudyModal('type', ${index}, event)">⌨️ Gõ</button>
+            <button class="fc-action-btn" title="Chọn Nghĩa" onclick="openStudyModal('quiz', ${index}, event)">🎯 Chọn</button>
+          </div>
         </div>
       </div>`;
-    card.addEventListener('click',()=>card.classList.toggle('flipped'));
+    // Chỉ lật thẻ khi click vào thẻ, bỏ qua nếu click vào nút
+    card.addEventListener('click', (e) => {
+      if(e.target.tagName !== 'BUTTON') {
+        card.classList.toggle('flipped');
+      }
+    });
     grid.appendChild(card);
   });
 }
 buildFlashcards();
+
+// HỆ THỐNG HỌC TỪ TỪNG FLASHCARD (MODAL)
+let currentStudyWord = null;
+
+function openStudyModal(mode, idx, event) {
+  if(event) event.stopPropagation();
+  currentStudyWord = familyData[idx];
+  const modal = document.getElementById('studyModal');
+  const content = document.getElementById('studyModalContent');
+  
+  if(mode === 'type') {
+    content.innerHTML = `
+      <div class="sm-emoji">${currentStudyWord.emoji}</div>
+      <div class="sm-vi">${currentStudyWord.vi}</div>
+      <p style="margin-bottom: 12px; color: #666;">Hãy gõ lại từ tiếng Anh đúng nhé:</p>
+      <div class="sm-type-area">
+        <input type="text" id="smTypeInput" class="sm-input" placeholder="Nhập từ tiếng Anh..." autocomplete="off">
+        <button class="btn-game" style="margin:0; padding:10px" onclick="checkStudyType()">Kiểm tra 🚀</button>
+      </div>
+      <div id="smFeedback" class="sm-feedback"></div>
+    `;
+    setTimeout(() => document.getElementById('smTypeInput').focus(), 100);
+    
+    // Hỗ trợ nhấn phím Enter để kiểm tra
+    setTimeout(() => {
+        document.getElementById('smTypeInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkStudyType();
+            }
+        });
+    }, 150);
+
+  } else if(mode === 'quiz') {
+    // Tạo 3 đáp án sai + 1 đáp án đúng
+    let wrongOptions = familyData.filter(d => d.word !== currentStudyWord.word).sort(() => 0.5 - Math.random()).slice(0, 3).map(d => d.word);
+    let allOptions = shuffle([...wrongOptions, currentStudyWord.word]);
+    
+    content.innerHTML = `
+      <div class="sm-emoji">${currentStudyWord.emoji}</div>
+      <div class="sm-vi">${currentStudyWord.vi}</div>
+      <p style="margin-bottom: 15px; color: #666;">Từ tiếng Anh tương ứng là gì?</p>
+      <div class="sm-quiz-opts">
+        ${allOptions.map(opt => `<button class="sm-opt" onclick="checkStudyQuiz(this, '${opt}')">${opt}</button>`).join('')}
+      </div>
+      <div id="smFeedback" class="sm-feedback"></div>
+    `;
+  }
+  
+  modal.classList.add('show');
+}
+
+function closeStudyModal() {
+  document.getElementById('studyModal').classList.remove('show');
+  currentStudyWord = null;
+}
+
+function checkStudyType() {
+  const input = document.getElementById('smTypeInput').value.trim().toLowerCase();
+  const correct = currentStudyWord.word.toLowerCase();
+  const fb = document.getElementById('smFeedback');
+  
+  if(input === correct) {
+    fb.textContent = '🎉 Chính xác! Giỏi quá!';
+    fb.className = 'sm-feedback correct';
+    playAudio(currentStudyWord.word, null); // Phát âm luôn khi gõ đúng
+    launchConfetti();
+  } else {
+    fb.textContent = `❌ Chưa đúng! Đáp án là: ${currentStudyWord.word}`;
+    fb.className = 'sm-feedback wrong';
+  }
+}
+
+function checkStudyQuiz(btnElem, selectedOpt) {
+  const fb = document.getElementById('smFeedback');
+  const opts = document.querySelectorAll('.sm-opt');
+  
+  opts.forEach(opt => opt.style.pointerEvents = 'none'); // Vô hiệu hóa click lại
+  
+  if(selectedOpt === currentStudyWord.word) {
+    btnElem.classList.add('correct');
+    fb.textContent = '🎉 Đúng rồi! Xuất sắc!';
+    fb.className = 'sm-feedback correct';
+    playAudio(currentStudyWord.word, null);
+    launchConfetti();
+  } else {
+    btnElem.classList.add('wrong');
+    fb.textContent = `❌ Sai rồi! Đáp án là: ${currentStudyWord.word}`;
+    fb.className = 'sm-feedback wrong';
+    
+    // Hiển thị nút đúng
+    opts.forEach(opt => {
+      if(opt.textContent === currentStudyWord.word) opt.classList.add('correct');
+    });
+  }
+}
 
 // SENTENCE BUILDER
 let builderSelected = { greet:'', name:'' };
@@ -715,6 +892,8 @@ document.querySelectorAll('.builder-chip').forEach(chip=>{
     const res = document.getElementById('builderResult');
     if(builderSelected.greet && builderSelected.name){
       res.textContent = `${builderSelected.greet} ${builderSelected.name}! 💕`;
+      // Tự động phát âm câu chào mới tạo
+      playAudio(`${builderSelected.greet} ${builderSelected.name}`, null);
     } else if(builderSelected.greet){
       res.textContent = `${builderSelected.greet} ...?`;
     } else {
@@ -723,7 +902,7 @@ document.querySelectorAll('.builder-chip').forEach(chip=>{
   });
 });
 
-// GAME
+// GAME GHÉP CẶP
 const gamePairs = [
   {en:'Grandma 👵', vi:'Bà'},
   {en:'Grandpa 👴', vi:'Ông'},
@@ -737,8 +916,6 @@ const gamePairs = [
   {en:'Angel 👼', vi:'Thiên thần nhỏ'},
 ];
 let selectedLeft=null, selectedRight=null, matched=0, total=0, wrong=0;
-
-function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 
 function initGame(){
   const pairs = shuffle([...gamePairs]).slice(0,6);
@@ -774,6 +951,9 @@ function onMatchClick(el){
   if(side==='left'){
     if(selectedLeft){selectedLeft.classList.remove('selected');}
     selectedLeft=el; el.classList.add('selected');
+    // Đọc từ Tiếng Anh lên khi bấm vào
+    let rawWord = el.dataset.val.split(' ')[0];
+    playAudio(rawWord, null);
   } else {
     if(selectedRight){selectedRight.classList.remove('selected');}
     selectedRight=el; el.classList.add('selected');
