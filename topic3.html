@@ -2,9 +2,102 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏠 My Family Stories</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🏠 My Family Stories - Lesson 2</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- FIREBASE INTEGRATION -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_RqXoT5thozqJGYP0_MKCjGXcne5Qr8I",
+    authDomain: "dailyenglish-aca50.firebaseapp.com",
+    projectId: "dailyenglish-aca50",
+    storageBucket: "dailyenglish-aca50.firebasestorage.app",
+    messagingSenderId: "876041668209",
+    appId: "1:876041668209:web:4ee8019d0605650a90bdd0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.currentUserRole = "student"; 
+  window.currentUserEmail = "guest@example.com";
+  let studyTimerInterval;
+
+  // Tính thời gian học (1 phút cộng 1 lần)
+  function startStudyTimer(email) {
+    if (email === "guest@example.com") return;
+    if (studyTimerInterval) clearInterval(studyTimerInterval);
+    
+    studyTimerInterval = setInterval(async () => {
+      try {
+        const docRef = doc(db, "users", email);
+        await setDoc(docRef, { totalMinutes: increment(1) }, { merge: true });
+      } catch (error) {
+        console.error("Lỗi đồng bộ thời gian:", error);
+      }
+    }, 60000); 
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để vào lớp học! / Please log in to enter the class!");
+      window.location.href = 'index.html';
+    } else {
+      const userEmail = user.email.toLowerCase().trim();
+      const docRef = doc(db, "whitelist", userEmail);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        alert("Email không có quyền truy cập! / Unauthorized email!");
+        window.location.href = 'index.html';
+      } else {
+        window.currentUserEmail = userEmail;
+        window.currentUserRole = docSnap.data().role || "student";
+        
+        // Khởi động đếm thời gian
+        startStudyTimer(window.currentUserEmail);
+      }
+    }
+  });
+
+  window.submitResult = async (type, topic, answer) => {
+    try {
+      const userEmail = window.currentUserEmail || "guest@example.com";
+      await addDoc(collection(db, "results"), {
+        email: userEmail, topic: topic, day: 0, type: type, answer: answer, timestamp: serverTimestamp()
+      });
+
+      let dropsToEarn = 50; 
+
+      if (userEmail !== "guest@example.com") {
+        const userRef = doc(db, "users", userEmail);
+        const todayStr = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+        await setDoc(userRef, { 
+          drops: increment(dropsToEarn), 
+          lastActiveDate: todayStr 
+        }, { merge: true });
+      }
+
+      if (window.showCelebration) window.showCelebration(dropsToEarn);
+      return true;
+    } catch (e) {
+      console.error("Lỗi nộp bài / Submission error:", e);
+      return false;
+    }
+  };
+
+  window.addEventListener('beforeunload', () => {
+    if (studyTimerInterval) clearInterval(studyTimerInterval);
+  });
+</script>
+
 <style>
 :root {
   --lucy-main: #FF7EB3;
@@ -376,6 +469,37 @@ body{
   min-height:32px;margin-top:12px;
 }
 
+/* ── SUBMIT RECORDING ── */
+.submit-box {
+  background: white; border-radius: 20px; padding: 32px 24px;
+  box-shadow: var(--shadow-sm); margin-top: 24px;
+  text-align: center; border: 2px dashed #FF6B6B;
+}
+.record-input {
+  width: 100%; max-width: 450px;
+  padding: 14px 20px;
+  border-radius: 50px;
+  border: 2px solid #E4E0F5;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem; font-weight: 600;
+  margin: 16px auto 24px;
+  display: block;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+.record-input:focus {
+  border-color: #FF6B6B;
+  box-shadow: 0 4px 16px rgba(255,107,107,0.15);
+}
+
+/* ── CELEBRATION EFFECTS ── */
+.cute-popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fff; border: 3px solid #FF9A3C; color: #FF6B6B; padding: 14px 28px; border-radius: 50px; font-size: 18px; font-weight: 800; z-index: 9999; display: flex; align-items: center; gap: 10px; animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.5s 3.5s forwards; }
+.flying-drop { position: fixed; bottom: -30px; font-size: 28px; z-index: 9998; animation: flyUp linear forwards; }
+@keyframes bounceIn { 0% { top: -60px; opacity: 0; } 100% { top: 20px; opacity: 1; } }
+@keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes flyUp { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; } }
+
 /* ── CONFETTI ── */
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;}
 .cp{
@@ -562,16 +686,64 @@ footer b{color:var(--lucy-main);}
 <!-- CHALLENGE -->
 <section class="section" id="challenge">
   <div class="sec-title" style="color:#FF6B6B">🏆 Super Challenge!</div>
+  
   <div class="challenge-intro">
-    <p>⭐ Điền từ thích hợp vào chỗ trống và nộp bài từng người để hoàn thành thử thách nhé!</p>
+    <h3 style="color:var(--text); margin-bottom: 8px;">📝 Phần 1: Ôn Tập Câu Chuyện</h3>
+    <p>Điền từ thích hợp vào chỗ trống để nhớ lại gia đình của các bạn nhé!</p>
   </div>
   <div id="fillContainer"></div>
+
+  <div class="submit-box">
+    <h3 style="color:#FF6B6B; font-family:'Fredoka One', cursive; font-size: 1.5rem; margin-bottom: 12px;">🎙️ Phần 2: Đọc To & Ghi Âm</h3>
+    <p style="color:var(--muted); font-weight:600; margin-bottom: 16px;">
+      Ba mẹ và bé hãy cùng nhau <b>đọc to 3 câu chuyện giới thiệu gia đình</b> của Lucy, Leo và Anna ở trên.<br>
+      Sau đó tải lên Vocaroo và dán link vào đây để gửi bài cho cô nhé!
+    </p>
+    <input type="url" id="challengeFinalLink" class="record-input" placeholder="Dán link ghi âm vào đây (VD: https://voca.ro/...)">
+    <button class="check-btn" style="margin-top:0; display:inline-block;" onclick="submitChallengeRecording()">📤 Nộp Bài Ghi Âm</button>
+    <div id="challengeSubmitRes" class="fill-feedback" style="margin-top: 16px;"></div>
+  </div>
 </section>
 
 <footer>Made with <b>♥</b> for 3 Mẹ Con — <em>Happy Learning Together!</em> 🌸</footer>
 <div class="confetti-wrap" id="cWrap"></div>
 
 <script>
+// --- ANTI-COPY SECURITY ---
+document.addEventListener('contextmenu', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+}, true);
+document.addEventListener('keydown', e => {
+  if (window.currentUserRole !== 'teacher') {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) e.preventDefault();
+    const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+    if (e.ctrlKey && (e.keyCode === 83 || e.keyCode === 85)) e.preventDefault();
+    if (!isInput && e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86)) e.preventDefault();
+  }
+}, true);
+document.addEventListener('dragstart', e => {
+  if (window.currentUserRole !== 'teacher') e.preventDefault();
+}, true);
+
+// --- CELEBRATION EFFECT ---
+window.showCelebration = (dropsEarned) => {
+  const popup = document.createElement('div');
+  popup.className = 'cute-popup';
+  popup.innerHTML = `🎉 Giỏi quá! Bé nhận được <b>+${dropsEarned} 💧</b>`;
+  document.body.appendChild(popup);
+  setTimeout(() => { popup.remove(); }, 4000);
+  for (let i = 0; i < 20; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'flying-drop';
+    drop.innerText = '💧';
+    drop.style.left = Math.random() * 95 + 'vw';
+    drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+    document.body.appendChild(drop);
+    setTimeout(() => { drop.remove(); }, 3000);
+  }
+};
+
 /* ─── DATA ─── */
 const vocabData = [
   // Thành viên gia đình (Member)
@@ -789,6 +961,28 @@ window.checkSingleFill = (idx) => {
   }
   
   box.querySelector('.check-btn').style.display = 'none';
+};
+
+/* ─── SUBMIT RECORDING LOGIC ─── */
+window.submitChallengeRecording = async () => {
+  const link = document.getElementById('challengeFinalLink').value.trim();
+  if (!link || !link.startsWith('http')) {
+    alert("Vui lòng nhập đúng đường link ghi âm hợp lệ (bắt đầu bằng http)! / Please enter a valid recording link!");
+    return;
+  }
+  
+  // Submit function (from Firebase module)
+  if (window.submitResult) {
+    const success = await window.submitResult('speaking_challenge_topic2', 2, link);
+    if (success) {
+      document.getElementById('challengeSubmitRes').style.color = 'var(--anna-main)';
+      document.getElementById('challengeSubmitRes').innerText = "✅ Nộp bài thành công! Cảm ơn bé và ba mẹ!";
+      document.getElementById('challengeFinalLink').value = '';
+      confetti();
+    }
+  } else {
+    alert("Chưa kết nối được với hệ thống! Hãy thử lại sau nhé.");
+  }
 };
 
 /* ─── NAV ─── */
