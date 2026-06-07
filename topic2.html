@@ -239,24 +239,41 @@
   .fc-alt { font-size: 0.8rem; opacity: 0.85; text-align: center; margin-bottom: 12px; }
   .fc-hint { font-size: 0.75rem; color: #aaa; margin-top: auto; font-style: italic; }
 
-  /* MỚI BỔ SUNG: Nút trong Flashcard & Modal Học Từ */
-  .btn-audio {
+  /* AUDIO & MIC BUTTONS */
+  .btn-audio, .btn-audio-small {
     background: var(--blue); color: white; border: none; border-radius: 50%;
-    width: 32px; height: 32px; font-size: 1rem; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(77, 150, 255, 0.4);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; 
   }
-  .btn-audio:hover { transform: scale(1.1); }
-  .fc-actions {
-    display: flex; gap: 8px; margin-top: auto;
+  .btn-audio {
+    width: 32px; height: 32px; font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(77, 150, 255, 0.4);
   }
+  .btn-audio-small {
+    width: 24px; height: 24px; font-size: 0.8rem; margin-left: 8px; display: inline-flex;
+    box-shadow: 0 2px 6px rgba(77, 150, 255, 0.4); vertical-align: middle;
+  }
+  .btn-audio:hover, .btn-audio-small:hover { transform: scale(1.1); }
+  
+  .btn-mic { background: var(--pink); box-shadow: 0 4px 10px rgba(255, 107, 157, 0.4); }
+  
+  /* MICROPHONE RECORDING ANIMATION */
+  @keyframes pulse-record {
+    0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 107, 107, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+  }
+  .recording { background: var(--red); animation: pulse-record 1.5s infinite; }
+
+  .fc-actions { display: flex; gap: 6px; margin-top: auto; flex-wrap: wrap; justify-content: center;}
   .fc-action-btn {
     background: rgba(255,255,255,0.2); border: none; color: white;
-    padding: 6px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;
-    cursor: pointer; transition: background 0.2s;
+    padding: 6px 10px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+    cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 4px;
   }
   .fc-action-btn:hover { background: rgba(255,255,255,0.4); }
 
+  /* MODAL HỌC TẬP */
   .study-modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
     display: none; justify-content: center; align-items: center; z-index: 1000;
@@ -274,7 +291,6 @@
   .sm-emoji { font-size: 4rem; margin-bottom: 10px; }
   .sm-vi { font-size: 1.4rem; font-weight: 800; color: var(--purple); margin-bottom: 20px; }
   
-  /* Chế độ Gõ */
   .sm-type-area { display: flex; flex-direction: column; gap: 12px; }
   .sm-input { 
     padding: 12px; border-radius: 12px; border: 2px solid #ddd; 
@@ -282,7 +298,6 @@
   }
   .sm-input:focus { border-color: var(--blue); outline: none; }
   
-  /* Chế độ Chọn */
   .sm-quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .sm-opt {
     padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #f9f9f9;
@@ -311,73 +326,44 @@
     transition: transform 0.3s;
   }
   .greeting-card:hover { transform: translateY(-4px); }
-  .greeting-card h3 { font-family: 'Bubblegum Sans', cursive; font-size: 1.4rem; color: white; margin-bottom: 8px; }
+  .greeting-card h3 { font-family: 'Bubblegum Sans', cursive; font-size: 1.4rem; color: white; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
   .greeting-card .time { font-size: 0.85rem; color: rgba(255,255,255,0.85); margin-bottom: 12px; }
   .greeting-examples { background: rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; }
-  .greeting-example { font-size: 0.9rem; color: white; font-weight: 600; padding: 4px 0; }
-  .greeting-vi { font-size: 0.8rem; color: rgba(255,255,255,0.8); font-weight: 400; }
+  .greeting-example { font-size: 0.95rem; color: white; font-weight: 700; padding: 4px 0; display: flex; align-items: center;}
+  .greeting-vi { font-size: 0.8rem; color: rgba(255,255,255,0.8); font-weight: 400; padding-bottom: 8px;}
   .gc-morning { background: linear-gradient(135deg, #FF9A3C, #FFD93D); }
   .gc-afternoon { background: linear-gradient(135deg, #4D96FF, #6BCB77); }
   .gc-evening { background: linear-gradient(135deg, #FF6B9D, #C77DFF); }
   .gc-night { background: linear-gradient(135deg, #2D3561, #C05C7E); }
 
-  .sentence-builder {
-    background: white;
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: var(--shadow);
-  }
+  .sentence-builder { background: white; border-radius: 20px; padding: 24px; box-shadow: var(--shadow); }
   .sentence-builder h3 { font-family: 'Bubblegum Sans', cursive; font-size: 1.5rem; color: var(--purple); margin-bottom: 16px; text-align: center; }
   .builder-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
   .builder-chip {
-    background: #f0f0f0;
-    border-radius: 50px;
-    padding: 8px 16px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s;
-    user-select: none;
+    background: #f0f0f0; border-radius: 50px; padding: 8px 16px; font-weight: 700;
+    font-size: 0.9rem; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; user-select: none;
   }
   .builder-chip:hover { border-color: var(--purple); background: #f3e8ff; }
   .builder-chip.selected { background: var(--purple); color: white; border-color: #9a4fd6; }
+  .builder-result-container {
+      background: linear-gradient(135deg, #f8f0ff, #fff0f8);
+      border-radius: 14px; padding: 16px; border: 2px dashed #c77dff;
+      margin-top: 12px; text-align: center;
+      display: flex; justify-content: center; align-items: center; gap: 12px;
+  }
   .builder-result {
-    background: linear-gradient(135deg, #f8f0ff, #fff0f8);
-    border-radius: 14px;
-    padding: 16px;
-    font-family: 'Bubblegum Sans', cursive;
-    font-size: 1.3rem;
-    color: var(--purple);
-    min-height: 60px;
-    text-align: center;
-    border: 2px dashed #c77dff;
-    margin-top: 12px;
-    word-break: break-word;
+    font-family: 'Bubblegum Sans', cursive; font-size: 1.5rem; color: var(--purple); word-break: break-word;
   }
 
-  /* GAME - MATCHING */
+  /* GAME & QUIZ CSS REMAIN UNCHANGED */
   .game-area { background: white; border-radius: 20px; padding: 24px; box-shadow: var(--shadow); }
   .game-area h3 { font-family: 'Bubblegum Sans', cursive; font-size: 1.5rem; text-align: center; margin-bottom: 20px; }
-  .match-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 600px; margin: 0 auto; }
   .match-col { display: flex; flex-direction: column; gap: 10px; }
   .match-item {
-    border-radius: 14px;
-    padding: 12px 16px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    border: 3px solid #eee;
-    background: #f9f9f9;
-    text-align: center;
-    transition: all 0.2s;
-    user-select: none;
+    border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; border: 3px solid #eee; background: #f9f9f9; text-align: center;
+    transition: all 0.2s; user-select: none;
   }
   .match-item:hover { border-color: var(--blue); background: #e8f1ff; transform: scale(1.02); }
   .match-item.selected { border-color: var(--orange); background: #fff3e0; transform: scale(1.04); }
@@ -385,64 +371,29 @@
   .match-item.wrong { border-color: var(--red); background: #ffeaea; animation: shake 0.4s; }
   @keyframes pop { 0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)} }
   @keyframes shake { 0%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}100%{transform:translateX(0)} }
-  .game-score {
-    text-align: center;
-    font-family: 'Bubblegum Sans', cursive;
-    font-size: 1.4rem;
-    color: var(--orange);
-    margin: 16px 0;
-  }
+  .game-score { text-align: center; font-family: 'Bubblegum Sans', cursive; font-size: 1.4rem; color: var(--orange); margin: 16px 0; }
   .btn-game {
-    display: block;
-    margin: 16px auto 0;
-    background: linear-gradient(135deg, var(--orange), var(--yellow));
-    color: white;
-    font-family: 'Bubblegum Sans', cursive;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 32px;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(255,154,60,0.4);
+    display: block; margin: 16px auto 0; background: linear-gradient(135deg, var(--orange), var(--yellow));
+    color: white; font-family: 'Bubblegum Sans', cursive; font-size: 1.1rem; border: none;
+    border-radius: 50px; padding: 12px 32px; cursor: pointer; box-shadow: 0 4px 16px rgba(255,154,60,0.4);
     transition: transform 0.2s, box-shadow 0.2s;
   }
   .btn-game:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,154,60,0.5); }
-  .game-win {
-    text-align: center;
-    padding: 20px;
-    font-family: 'Bubblegum Sans', cursive;
-    font-size: 2rem;
-    color: var(--green);
-    display: none;
-  }
+  .game-win { text-align: center; padding: 20px; font-family: 'Bubblegum Sans', cursive; font-size: 2rem; color: var(--green); display: none; }
   .game-win.show { display: block; animation: fadeIn 0.5s; }
   @keyframes fadeIn { from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)} }
 
-  /* QUIZ */
   .quiz-container { max-width: 700px; margin: 0 auto; }
   .quiz-progress { background: #eee; border-radius: 50px; height: 10px; margin-bottom: 24px; overflow: hidden; }
   .quiz-progress-bar { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--purple), var(--pink)); transition: width 0.5s; }
-  .quiz-card {
-    background: white;
-    border-radius: 24px;
-    padding: 30px;
-    box-shadow: var(--shadow);
-    margin-bottom: 20px;
-  }
+  .quiz-card { background: white; border-radius: 24px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 20px; }
   .quiz-q-num { font-size: 0.85rem; color: #aaa; font-weight: 700; margin-bottom: 8px; }
   .quiz-question { font-family: 'Bubblegum Sans', cursive; font-size: 1.5rem; color: #333; margin-bottom: 24px; text-align: center; }
   .quiz-emoji { font-size: 3rem; display: block; text-align: center; margin-bottom: 12px; }
   .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .quiz-opt {
-    border-radius: 14px;
-    padding: 14px 16px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    border: 3px solid #eee;
-    background: #f9f9f9;
-    text-align: center;
-    transition: all 0.2s;
+    border-radius: 14px; padding: 14px 16px; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; border: 3px solid #eee; background: #f9f9f9; text-align: center; transition: all 0.2s;
   }
   .quiz-opt:hover:not(.answered) { border-color: var(--purple); background: #f3e8ff; transform: scale(1.02); }
   .quiz-opt.correct { border-color: var(--green); background: #e8f5e9; color: #2e7d32; }
@@ -451,29 +402,13 @@
   .quiz-feedback.correct { color: var(--green); }
   .quiz-feedback.wrong { color: var(--red); }
   .quiz-next {
-    display: none;
-    margin: 16px auto 0;
-    background: linear-gradient(135deg, var(--purple), var(--pink));
-    color: white;
-    font-family: 'Bubblegum Sans', cursive;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 32px;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(199,125,255,0.4);
-    transition: transform 0.2s;
+    display: none; margin: 16px auto 0; background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: white; font-family: 'Bubblegum Sans', cursive; font-size: 1.1rem; border: none;
+    border-radius: 50px; padding: 12px 32px; cursor: pointer; box-shadow: 0 4px 16px rgba(199,125,255,0.4); transition: transform 0.2s;
   }
   .quiz-next:hover { transform: translateY(-2px); }
   .quiz-next.show { display: block; }
-  .quiz-result {
-    background: white;
-    border-radius: 24px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    display: none;
-  }
+  .quiz-result { background: white; border-radius: 24px; padding: 40px; text-align: center; box-shadow: var(--shadow); display: none; }
   .quiz-result.show { display: block; animation: fadeIn 0.5s; }
   .quiz-result h2 { font-family: 'Bubblegum Sans', cursive; font-size: 2.5rem; color: var(--purple); margin-bottom: 12px; }
   .quiz-score-big { font-size: 4rem; font-weight: 900; background: linear-gradient(135deg,var(--purple),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
@@ -481,33 +416,20 @@
 
   /* CONFETTI */
   .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; }
-  .confetti-piece {
-    position: absolute;
-    width: 10px; height: 10px;
-    border-radius: 2px;
-    animation: confetti-fall 3s linear forwards;
-  }
-  @keyframes confetti-fall {
-    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-  }
+  .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confetti-fall 3s linear forwards; }
+  @keyframes confetti-fall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
 
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 30px;
-    color: #aaa;
-    font-size: 0.85rem;
-    background: white;
-  }
+  footer { text-align: center; padding: 30px; color: #aaa; font-size: 0.85rem; background: white; }
   footer span { color: var(--pink); }
 
   @media(max-width:600px) {
     .quiz-options { grid-template-columns: 1fr; }
     .match-item { font-size: 0.85rem; padding: 10px 12px; }
     .flashcards-grid { grid-template-columns: repeat(2, 1fr); }
-    .flashcard { height: 190px; }
+    .flashcard { height: 210px; }
     .fc-emoji { font-size: 2.2rem; }
+    .fc-actions { flex-direction: column; width: 100%;}
+    .fc-action-btn { justify-content: center; width: 100%;}
   }
 </style>
 </head>
@@ -538,18 +460,18 @@
       <div class="mm-branches">
         <div class="mm-branch b1">
           <div class="mm-branch-title">🟢 Nhánh 1: Ông Bà (Grandparents)</div>
-          <div class="mm-word">👵 Grandma / Granny / Grandmother<br><span>Bà (Bà nội / Bà ngoại)</span></div>
-          <div class="mm-word">👴 Grandpa / Granddad / Grandfather<br><span>Ông (Ông nội / Ông ngoại)</span></div>
+          <div class="mm-word">👵 Grandma / Granny<br><span>Bà (Bà nội / Bà ngoại)</span></div>
+          <div class="mm-word">👴 Grandpa / Granddad<br><span>Ông (Ông nội / Ông ngoại)</span></div>
         </div>
         <div class="mm-branch b2">
           <div class="mm-branch-title">🔴 Nhánh 2: Ba Mẹ (Parents)</div>
-          <div class="mm-word">👩 Mommy / Mom / Mama / Mother<br><span>Mẹ</span></div>
-          <div class="mm-word">👨 Daddy / Dad / Papa / Father<br><span>Ba / Bố</span></div>
+          <div class="mm-word">👩 Mommy / Mom<br><span>Mẹ</span></div>
+          <div class="mm-word">👨 Daddy / Dad<br><span>Ba / Bố</span></div>
         </div>
         <div class="mm-branch b3">
           <div class="mm-branch-title">🔵 Nhánh 3: Anh Chị Em (Siblings)</div>
-          <div class="mm-word">👦 Bro (Brother)<br><span>Anh trai / Em trai</span></div>
-          <div class="mm-word">👧 Sis (Sister)<br><span>Chị gái / Em gái</span></div>
+          <div class="mm-word">👦 Bro (Brother)<br><span>Anh / Em trai</span></div>
+          <div class="mm-word">👧 Sis (Sister)<br><span>Chị / Em gái</span></div>
           <div class="mm-word">👶 Baby<br><span>Em bé</span></div>
         </div>
         <div class="mm-branch b4">
@@ -558,11 +480,11 @@
           <div class="mm-word">👨‍🦰 Uncle<br><span>Chú / Cậu / Bác trai</span></div>
         </div>
         <div class="mm-branch b5">
-          <div class="mm-branch-title">🟣 Nhánh 5: Con Cái (Children / Kids)</div>
+          <div class="mm-branch-title">🟣 Nhánh 5: Con Cái (Children)</div>
           <div class="mm-word">🍬 Sweetie / Sweetheart<br><span>Con yêu, cục cưng</span></div>
           <div class="mm-word">👼 Angel<br><span>Thiên thần nhỏ</span></div>
-          <div class="mm-word">👧👧 My girls / Princesses<br><span>Công chúa nhỏ</span></div>
-          <div class="mm-word">👦 Buddy / Little man<br><span>Cậu bé / Anh bạn nhỏ</span></div>
+          <div class="mm-word">👑 Princess / My girl<br><span>Công chúa nhỏ</span></div>
+          <div class="mm-word">👦 Buddy / Little man<br><span>Anh bạn nhỏ</span></div>
         </div>
       </div>
     </div>
@@ -572,7 +494,7 @@
 <!-- FLASHCARD -->
 <section class="section" id="flashcard">
   <div class="section-title" style="color:var(--blue)">🃏 Flashcard Thông Minh</div>
-  <p style="text-align:center; color:#666; margin-bottom:20px; font-weight:600;">Hover để lật bài, Nhấn 🔊 để nghe, Lật ra sau để Chọn chế độ Học! ✨</p>
+  <p style="text-align:center; color:#666; margin-bottom:20px; font-weight:600;">Hover để lật thẻ. Bấm các nút ở mặt sau để Nghe, Đọc, Gõ chữ và Chọn nghĩa nhé! ✨</p>
   <div class="flashcards-grid" id="flashcardGrid"></div>
 </section>
 
@@ -587,44 +509,46 @@
 <!-- GREETING -->
 <section class="section" id="greeting">
   <div class="section-title" style="color:var(--pink)">👋 Câu Chào Theo Buổi</div>
+  <p style="text-align:center; color:#666; margin-bottom:20px; font-weight:600;">Nhấn vào biểu tượng 🔊 để nghe cách đọc nhé!</p>
+  
   <div class="greeting-grid">
     <div class="greeting-card gc-morning">
-      <h3>☀️ Good Morning!</h3>
+      <h3>☀️ Good Morning! <button class="btn-audio-small" style="background:rgba(255,255,255,0.3)" onclick="playAudio('Good Morning', event)">🔊</button></h3>
       <div class="time">Buổi sáng (5:00 – 11:59)</div>
       <div class="greeting-examples">
-        <div class="greeting-example">Good morning, Mommy! 🌞</div>
+        <div class="greeting-example">Good morning, Mommy! 🌞 <button class="btn-audio-small" onclick="playAudio('Good morning, Mommy!', event)">🔊</button></div>
         <div class="greeting-vi">Chào buổi sáng, Mẹ!</div>
-        <div class="greeting-example" style="margin-top:8px">Good morning, Grandpa! 🌞</div>
+        <div class="greeting-example">Good morning, Grandpa! 🌞 <button class="btn-audio-small" onclick="playAudio('Good morning, Grandpa!', event)">🔊</button></div>
         <div class="greeting-vi">Chào buổi sáng, Ông!</div>
       </div>
     </div>
     <div class="greeting-card gc-afternoon">
-      <h3>🌤️ Good Afternoon!</h3>
+      <h3>🌤️ Good Afternoon! <button class="btn-audio-small" style="background:rgba(255,255,255,0.3)" onclick="playAudio('Good Afternoon', event)">🔊</button></h3>
       <div class="time">Buổi chiều (12:00 – 17:59)</div>
       <div class="greeting-examples">
-        <div class="greeting-example">Good afternoon, Daddy! 🌤️</div>
+        <div class="greeting-example">Good afternoon, Daddy! 🌤️ <button class="btn-audio-small" onclick="playAudio('Good afternoon, Daddy!', event)">🔊</button></div>
         <div class="greeting-vi">Chào buổi chiều, Ba!</div>
-        <div class="greeting-example" style="margin-top:8px">Good afternoon, Auntie! 🌤️</div>
+        <div class="greeting-example">Good afternoon, Auntie! 🌤️ <button class="btn-audio-small" onclick="playAudio('Good afternoon, Auntie!', event)">🔊</button></div>
         <div class="greeting-vi">Chào buổi chiều, Cô!</div>
       </div>
     </div>
     <div class="greeting-card gc-evening">
-      <h3>🌆 Good Evening!</h3>
+      <h3>🌆 Good Evening! <button class="btn-audio-small" style="background:rgba(255,255,255,0.3)" onclick="playAudio('Good Evening', event)">🔊</button></h3>
       <div class="time">Buổi tối (18:00 – 20:59)</div>
       <div class="greeting-examples">
-        <div class="greeting-example">Good evening, Grandma! 🌆</div>
+        <div class="greeting-example">Good evening, Grandma! 🌆 <button class="btn-audio-small" onclick="playAudio('Good evening, Grandma!', event)">🔊</button></div>
         <div class="greeting-vi">Chào buổi tối, Bà!</div>
-        <div class="greeting-example" style="margin-top:8px">Good evening, Uncle! 🌆</div>
+        <div class="greeting-example">Good evening, Uncle! 🌆 <button class="btn-audio-small" onclick="playAudio('Good evening, Uncle!', event)">🔊</button></div>
         <div class="greeting-vi">Chào buổi tối, Chú!</div>
       </div>
     </div>
     <div class="greeting-card gc-night">
-      <h3>🌙 Good Night!</h3>
+      <h3>🌙 Good Night! <button class="btn-audio-small" style="background:rgba(255,255,255,0.3)" onclick="playAudio('Good Night', event)">🔊</button></h3>
       <div class="time">Chúc ngủ ngon (21:00 trở đi)</div>
       <div class="greeting-examples">
-        <div class="greeting-example">Good night, Sweetie! 🌙</div>
+        <div class="greeting-example">Good night, Sweetie! 🌙 <button class="btn-audio-small" onclick="playAudio('Good night, Sweetie!', event)">🔊</button></div>
         <div class="greeting-vi">Chúc ngủ ngon, Con yêu!</div>
-        <div class="greeting-example" style="margin-top:8px">Good night, my Angel! 🌙</div>
+        <div class="greeting-example">Good night, my Angel! 🌙 <button class="btn-audio-small" onclick="playAudio('Good night, my Angel!', event)">🔊</button></div>
         <div class="greeting-vi">Chúc ngủ ngon, Thiên thần nhỏ!</div>
       </div>
     </div>
@@ -632,7 +556,7 @@
 
   <div class="sentence-builder">
     <h3>✨ Tạo Câu Chào Của Mình!</h3>
-    <p style="text-align:center;color:#888;margin-bottom:16px">Chọn từng phần để ghép câu chào nhé 🎉</p>
+    <p style="text-align:center;color:#888;margin-bottom:16px">Chọn từng phần để ghép câu chào và nhấn loa để nghe nhé 🎉</p>
     <div style="margin-bottom:10px;font-weight:700;color:#666;">1️⃣ Chọn lời chào:</div>
     <div class="builder-row" id="greetRow">
       <div class="builder-chip" data-group="greet">Good morning,</div>
@@ -653,7 +577,10 @@
       <div class="builder-chip" data-group="name">Sweetie</div>
       <div class="builder-chip" data-group="name">Angel</div>
     </div>
-    <div class="builder-result" id="builderResult">Câu chào của em sẽ hiện ra đây... ✨</div>
+    <div class="builder-result-container">
+      <div class="builder-result" id="builderResult">Câu chào của em sẽ hiện ra đây... ✨</div>
+      <button class="btn-audio btn-mic" id="btnPlayBuilder" style="display:none;" onclick="playBuiltSentence()">🔊</button>
+    </div>
   </div>
 </section>
 
@@ -674,7 +601,8 @@
 
 <!-- QUIZ -->
 <section class="section" id="quiz">
-  <div class="section-title" style="color:var(--purple)">📝 Quiz Kiểm Tra!</div>
+  <div class="section-title" style="color:var(--purple)">📝 Trắc Nghiệm Tổng Hợp!</div>
+  <p style="text-align:center; color:#666; margin-bottom:20px; font-weight:600;">Cùng kiểm tra xem bé đã nắm vững các thành viên gia đình và câu chào chưa nhé! 🚀</p>
   <div class="quiz-container">
     <div class="quiz-progress"><div class="quiz-progress-bar" id="quizBar" style="width:0%"></div></div>
     <div id="quizCard" class="quiz-card"></div>
@@ -714,14 +642,22 @@ function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 
 // HÀM PHÁT AUDIO (Web Speech API)
 function playAudio(text, event) {
-  if(event) event.stopPropagation(); // Ngăn việc lật flashcard khi bấm nút
+  if(event) event.stopPropagation(); // Ngăn sự kiện nổi bọt
+  // Ngừng các âm thanh đang phát để tránh chồng chéo
+  window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  utterance.rate = 0.9; // Đọc chậm lại 1 xíu cho bé dễ nghe
+  utterance.rate = 0.85; // Đọc hơi chậm cho bé dễ nghe
   window.speechSynthesis.speak(utterance);
 }
 
-// STARS
+function playBuiltSentence() {
+    if(builderSelected.greet && builderSelected.name){
+        playAudio(`${builderSelected.greet} ${builderSelected.name}`);
+    }
+}
+
+// STARS BACKGROUND
 function createStars() {
   const c = document.getElementById('stars');
   const emojis = ['⭐','🌟','✨','💫','🌸','🦋','🌈'];
@@ -738,7 +674,7 @@ function createStars() {
 }
 createStars();
 
-// TABS
+// TABS LOGIC
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -759,25 +695,26 @@ function buildFlashcards() {
       <div class="flashcard-inner">
         <div class="fc-front">
           <div class="fc-emoji">${d.emoji}</div>
-          <div class="fc-word">${d.word} <button class="btn-audio" title="Nghe Phát Âm" onclick="playAudio('${d.word}', event)">🔊</button></div>
+          <div class="fc-word">${d.word} <button class="btn-audio" title="Nghe" onclick="playAudio('${d.word}', event)">🔊</button></div>
           ${d.alts?`<div class="fc-sub">${d.alts}</div>`:''}
           <div class="fc-hint">Lật để xem nghĩa →</div>
         </div>
         <div class="fc-back">
           <div class="fc-emoji" style="font-size: 2rem; margin-bottom: 0">${d.emoji}</div>
           <div class="fc-vi">${d.vi}</div>
-          ${d.alts?`<div class="fc-alt">(${d.alts})</div>`:''}
           
           <div class="fc-actions">
             <button class="fc-action-btn" title="Nghe" onclick="playAudio('${d.word}', event)">🔊 Nghe</button>
+            <button class="fc-action-btn" title="Luyện Nói" onclick="openStudyModal('speak', ${index}, event)">🎤 Nói</button>
             <button class="fc-action-btn" title="Tập Gõ" onclick="openStudyModal('type', ${index}, event)">⌨️ Gõ</button>
             <button class="fc-action-btn" title="Chọn Nghĩa" onclick="openStudyModal('quiz', ${index}, event)">🎯 Chọn</button>
           </div>
         </div>
       </div>`;
-    // Chỉ lật thẻ khi click vào thẻ, bỏ qua nếu click vào nút
+    
+    // Chỉ lật thẻ khi click vào nền thẻ, bỏ qua các nút bấm
     card.addEventListener('click', (e) => {
-      if(e.target.tagName !== 'BUTTON') {
+      if(e.target.tagName !== 'BUTTON' && !e.target.classList.contains('fc-action-btn')) {
         card.classList.toggle('flipped');
       }
     });
@@ -786,8 +723,9 @@ function buildFlashcards() {
 }
 buildFlashcards();
 
-// HỆ THỐNG HỌC TỪ TỪNG FLASHCARD (MODAL)
+// MODAL HỌC TỪ (LOẠI: TYPE, QUIZ, SPEAK)
 let currentStudyWord = null;
+let speechRecognition = null;
 
 function openStudyModal(mode, idx, event) {
   if(event) event.stopPropagation();
@@ -801,24 +739,19 @@ function openStudyModal(mode, idx, event) {
       <div class="sm-vi">${currentStudyWord.vi}</div>
       <p style="margin-bottom: 12px; color: #666;">Hãy gõ lại từ tiếng Anh đúng nhé:</p>
       <div class="sm-type-area">
-        <input type="text" id="smTypeInput" class="sm-input" placeholder="Nhập từ tiếng Anh..." autocomplete="off">
+        <input type="text" id="smTypeInput" class="sm-input" placeholder="Nhập từ..." autocomplete="off">
         <button class="btn-game" style="margin:0; padding:10px" onclick="checkStudyType()">Kiểm tra 🚀</button>
       </div>
       <div id="smFeedback" class="sm-feedback"></div>
     `;
-    setTimeout(() => document.getElementById('smTypeInput').focus(), 100);
-    
-    // Hỗ trợ nhấn phím Enter để kiểm tra
     setTimeout(() => {
+        document.getElementById('smTypeInput').focus();
         document.getElementById('smTypeInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkStudyType();
-            }
+            if (e.key === 'Enter') checkStudyType();
         });
     }, 150);
 
   } else if(mode === 'quiz') {
-    // Tạo 3 đáp án sai + 1 đáp án đúng
     let wrongOptions = familyData.filter(d => d.word !== currentStudyWord.word).sort(() => 0.5 - Math.random()).slice(0, 3).map(d => d.word);
     let allOptions = shuffle([...wrongOptions, currentStudyWord.word]);
     
@@ -831,6 +764,23 @@ function openStudyModal(mode, idx, event) {
       </div>
       <div id="smFeedback" class="sm-feedback"></div>
     `;
+  } else if (mode === 'speak') {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SpeechRecognition) {
+        content.innerHTML = `
+            <div class="sm-emoji">😢</div>
+            <div class="sm-vi" style="color:var(--red);font-size:1.1rem">Trình duyệt không hỗ trợ Mic.</div>
+            <p style="color:#666">Con hãy mở trang web này bằng trình duyệt <b>Google Chrome</b> hoặc <b>Microsoft Edge</b> nhé!</p>
+        `;
+    } else {
+        content.innerHTML = `
+          <div class="sm-emoji">${currentStudyWord.emoji}</div>
+          <div class="sm-vi" style="color:#666; font-size:1.1rem">Hãy nhấn Mic và đọc to từ:</div>
+          <div class="sm-vi" style="font-size:2.2rem; color:var(--blue); margin-bottom:5px;">${currentStudyWord.word}</div>
+          <button id="btnRecordModal" class="btn-audio btn-mic" style="width:70px;height:70px;font-size:2.5rem;margin:15px auto" onclick="startVoiceRecognition()">🎤</button>
+          <div id="smFeedback" class="sm-feedback">Nhấn Mic để bắt đầu nói nhé!</div>
+        `;
+    }
   }
   
   modal.classList.add('show');
@@ -839,8 +789,13 @@ function openStudyModal(mode, idx, event) {
 function closeStudyModal() {
   document.getElementById('studyModal').classList.remove('show');
   currentStudyWord = null;
+  if(speechRecognition) {
+      speechRecognition.abort();
+      speechRecognition = null;
+  }
 }
 
+// LOGIC KIỂM TRA CHO MODAL
 function checkStudyType() {
   const input = document.getElementById('smTypeInput').value.trim().toLowerCase();
   const correct = currentStudyWord.word.toLowerCase();
@@ -849,7 +804,7 @@ function checkStudyType() {
   if(input === correct) {
     fb.textContent = '🎉 Chính xác! Giỏi quá!';
     fb.className = 'sm-feedback correct';
-    playAudio(currentStudyWord.word, null); // Phát âm luôn khi gõ đúng
+    playAudio(currentStudyWord.word, null);
     launchConfetti();
   } else {
     fb.textContent = `❌ Chưa đúng! Đáp án là: ${currentStudyWord.word}`;
@@ -860,8 +815,7 @@ function checkStudyType() {
 function checkStudyQuiz(btnElem, selectedOpt) {
   const fb = document.getElementById('smFeedback');
   const opts = document.querySelectorAll('.sm-opt');
-  
-  opts.forEach(opt => opt.style.pointerEvents = 'none'); // Vô hiệu hóa click lại
+  opts.forEach(opt => opt.style.pointerEvents = 'none');
   
   if(selectedOpt === currentStudyWord.word) {
     btnElem.classList.add('correct');
@@ -873,12 +827,61 @@ function checkStudyQuiz(btnElem, selectedOpt) {
     btnElem.classList.add('wrong');
     fb.textContent = `❌ Sai rồi! Đáp án là: ${currentStudyWord.word}`;
     fb.className = 'sm-feedback wrong';
-    
-    // Hiển thị nút đúng
     opts.forEach(opt => {
       if(opt.textContent === currentStudyWord.word) opt.classList.add('correct');
     });
   }
+}
+
+// NHẬN DIỆN GIỌNG NÓI (Web Speech API)
+function startVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!speechRecognition) {
+        speechRecognition = new SpeechRecognition();
+        speechRecognition.lang = 'en-US'; // Nhận diện tiếng Anh
+        speechRecognition.interimResults = false;
+        speechRecognition.maxAlternatives = 1;
+    }
+
+    const btn = document.getElementById('btnRecordModal');
+    const fb = document.getElementById('smFeedback');
+
+    btn.classList.add('recording');
+    fb.textContent = 'Đang nghe... 👂';
+    fb.className = 'sm-feedback';
+
+    speechRecognition.start();
+
+    speechRecognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript.toLowerCase().replace(/[^a-z0-9\s]/gi, '');
+        const correctWord = currentStudyWord.word.toLowerCase();
+
+        // Kiểm tra xem từ đọc có chứa từ cần học không (ví dụ đọc "grandma" nhưng nhận là "hi grandma")
+        if(speechResult.includes(correctWord) || correctWord.includes(speechResult) && speechResult.length > 2) {
+            fb.textContent = `🎉 Giỏi quá! Con vừa nói: "${speechResult}"`;
+            fb.className = 'sm-feedback correct';
+            launchConfetti();
+        } else {
+            fb.textContent = `❌ Gần đúng rồi! Mẹ nghe thành: "${speechResult}". Thử lại nhé!`;
+            fb.className = 'sm-feedback wrong';
+        }
+        btn.classList.remove('recording');
+    };
+
+    speechRecognition.onspeechend = () => {
+        speechRecognition.stop();
+        btn.classList.remove('recording');
+    };
+
+    speechRecognition.onerror = (event) => {
+        if(event.error === 'no-speech') {
+            fb.textContent = 'Bé chưa nói gì kìa. Bấm lại và nói to nhé!';
+        } else {
+            fb.textContent = 'Có lỗi xảy ra hoặc nghe chưa rõ. Thử lại nha!';
+        }
+        fb.className = 'sm-feedback wrong';
+        btn.classList.remove('recording');
+    };
 }
 
 // SENTENCE BUILDER
@@ -890,47 +893,49 @@ document.querySelectorAll('.builder-chip').forEach(chip=>{
     chip.classList.add('selected');
     builderSelected[group] = chip.textContent;
     const res = document.getElementById('builderResult');
+    const btnPlay = document.getElementById('btnPlayBuilder');
+    
     if(builderSelected.greet && builderSelected.name){
-      res.textContent = `${builderSelected.greet} ${builderSelected.name}! 💕`;
-      // Tự động phát âm câu chào mới tạo
+      const finalSentence = `${builderSelected.greet} ${builderSelected.name}! 💕`;
+      res.textContent = finalSentence;
+      btnPlay.style.display = 'inline-flex';
       playAudio(`${builderSelected.greet} ${builderSelected.name}`, null);
     } else if(builderSelected.greet){
       res.textContent = `${builderSelected.greet} ...?`;
+      btnPlay.style.display = 'none';
     } else {
       res.textContent = 'Câu chào của em sẽ hiện ra đây... ✨';
+      btnPlay.style.display = 'none';
     }
   });
 });
 
 // GAME GHÉP CẶP
 const gamePairs = [
-  {en:'Grandma 👵', vi:'Bà'},
-  {en:'Grandpa 👴', vi:'Ông'},
-  {en:'Mommy 👩', vi:'Mẹ'},
-  {en:'Daddy 👨', vi:'Ba / Bố'},
-  {en:'Sis 👧', vi:'Chị / Em gái'},
-  {en:'Bro 👦', vi:'Anh / Em trai'},
-  {en:'Auntie 👩‍🦰', vi:'Cô / Dì'},
-  {en:'Uncle 👨‍🦰', vi:'Chú / Cậu'},
-  {en:'Sweetie 🍬', vi:'Con yêu'},
-  {en:'Angel 👼', vi:'Thiên thần nhỏ'},
+  {en:'Grandma 👵', vi:'Bà'}, {en:'Grandpa 👴', vi:'Ông'}, {en:'Mommy 👩', vi:'Mẹ'},
+  {en:'Daddy 👨', vi:'Ba / Bố'}, {en:'Sis 👧', vi:'Chị / Em gái'}, {en:'Bro 👦', vi:'Anh / Em trai'},
+  {en:'Auntie 👩‍🦰', vi:'Cô / Dì'}, {en:'Uncle 👨‍🦰', vi:'Chú / Cậu'}, {en:'Sweetie 🍬', vi:'Con yêu'},
+  {en:'Angel 👼', vi:'Thiên thần nhỏ'}, {en:'Princess 👑', vi:'Công chúa nhỏ'}
 ];
 let selectedLeft=null, selectedRight=null, matched=0, total=0, wrong=0;
 
 function initGame(){
-  const pairs = shuffle([...gamePairs]).slice(0,6);
+  const pairs = shuffle([...gamePairs]).slice(0,6); // Chọn ngẫu nhiên 6 cặp mỗi lần chơi
   total = pairs.length; matched=0; wrong=0;
   document.getElementById('gameScore').textContent=`⭐ Điểm: 0 / ${total}`;
   document.getElementById('gameWin').classList.remove('show');
   selectedLeft=null; selectedRight=null;
+  
   const lefts = shuffle(pairs.map(p=>p.en));
   const rights = shuffle(pairs.map(p=>p.vi));
   const lc = document.getElementById('leftCol');
   const rc = document.getElementById('rightCol');
   lc.innerHTML=''; rc.innerHTML='';
+  
   const pairMap = {};
   pairs.forEach(p=>{ pairMap[p.en]=p.vi; pairMap[p.vi]=p.en; });
   window._pairMap = pairMap;
+  
   lefts.forEach(txt=>{
     const el = document.createElement('div');
     el.className='match-item'; el.textContent=txt; el.dataset.side='left'; el.dataset.val=txt;
@@ -951,7 +956,6 @@ function onMatchClick(el){
   if(side==='left'){
     if(selectedLeft){selectedLeft.classList.remove('selected');}
     selectedLeft=el; el.classList.add('selected');
-    // Đọc từ Tiếng Anh lên khi bấm vào
     let rawWord = el.dataset.val.split(' ')[0];
     playAudio(rawWord, null);
   } else {
@@ -981,24 +985,33 @@ function onMatchClick(el){
 }
 initGame();
 
-// QUIZ
+// QUIZ MỞ RỘNG (Gồm Từ Vựng & Câu Chào)
 const quizData = [
+  // Từ vựng
   {emoji:'👵',question:'Từ nào có nghĩa là "Bà" (Bà nội/ngoại)?',correct:'Grandma',options:['Grandma','Daddy','Uncle','Sis']},
   {emoji:'👨',question:'Từ nào có nghĩa là "Ba / Bố"?',correct:'Daddy',options:['Mommy','Daddy','Buddy','Angel']},
   {emoji:'👩',question:'"Mommy" nghĩa là gì?',correct:'Mẹ',options:['Bà','Cô','Mẹ','Chị gái']},
   {emoji:'👦',question:'"Bro" là cách gọi thân mật của từ nào?',correct:'Brother',options:['Sister','Baby','Brother','Uncle']},
   {emoji:'👧',question:'Từ nào dùng để gọi chị gái / em gái thân mật?',correct:'Sis',options:['Bro','Sis','Buddy','Granny']},
-  {emoji:'👴',question:'"Granddad" có nghĩa là?',correct:'Ông',options:['Bà','Ba','Ông','Chú']},
+  {emoji:'👴',question:'"Grandpa" hoặc "Granddad" có nghĩa là?',correct:'Ông',options:['Bà','Ba','Ông','Chú']},
   {emoji:'🍬',question:'"Sweetie" nghĩa là gì?',correct:'Con yêu / Cục cưng',options:['Thiên thần','Con yêu / Cục cưng','Em bé','Công chúa']},
   {emoji:'👼',question:'Ba Mẹ gọi con là "Angel" có nghĩa là?',correct:'Thiên thần nhỏ',options:['Cậu bé','Bạn nhỏ','Công chúa','Thiên thần nhỏ']},
   {emoji:'👩‍🦰',question:'"Auntie" dùng để gọi ai?',correct:'Cô / Dì / Bác gái',options:['Chú / Cậu','Ông','Cô / Dì / Bác gái','Mẹ']},
+  {emoji:'👨‍🦰',question:'"Uncle" nghĩa là gì?',correct:'Chú / Cậu / Bác trai',options:['Ba','Cô / Dì','Ông','Chú / Cậu / Bác trai']},
   {emoji:'👶',question:'Từ nào có nghĩa là "Em bé"?',correct:'Baby',options:['Baby','Buddy','Sis','Princess']},
+  {emoji:'👑',question:'"Princess" nghĩa là gì?',correct:'Công chúa nhỏ',options:['Thiên thần','Công chúa nhỏ','Cục cưng','Anh bạn']},
+  {emoji:'👦',question:'"Buddy" thường dùng để gọi ai?',correct:'Anh bạn nhỏ / Cậu bé',options:['Con gái','Anh bạn nhỏ / Cậu bé','Chú','Ông']},
+  // Câu chào
+  {emoji:'☀️',question:'Buổi sáng khi thức dậy, con chào Mẹ như thế nào?',correct:'Good morning, Mommy!',options:['Good night, Mommy!','Good morning, Mommy!','Good evening, Mommy!','Good afternoon, Mommy!']},
+  {emoji:'🌙',question:'Trước khi đi ngủ, con chúc Ba ngủ ngon ra sao?',correct:'Good night, Daddy!',options:['Good night, Daddy!','Good morning, Daddy!','Hello, Daddy!','Good afternoon, Daddy!']},
+  {emoji:'🌤️',question:'Vào buổi chiều gặp Ông, con chào sao cho đúng?',correct:'Good afternoon, Grandpa!',options:['Good morning, Grandpa!','Good evening, Grandpa!','Good afternoon, Grandpa!','Good night, Grandpa!']},
+  {emoji:'🌆',question:'"Good evening" dùng để chào vào buổi nào?',correct:'Buổi tối',options:['Buổi sáng','Buổi trưa','Buổi chiều','Buổi tối']}
 ];
 
 let quizIdx=0, quizScore=0, shuffledQuiz=[];
 
 function startQuiz(){
-  shuffledQuiz = shuffle([...quizData]);
+  shuffledQuiz = shuffle([...quizData]).slice(0, 10); // Lấy ngẫu nhiên 10 câu cho 1 lần kiểm tra
   quizIdx=0; quizScore=0;
   document.getElementById('quizResult').classList.remove('show');
   document.getElementById('quizCard').style.display='block';
