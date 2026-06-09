@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Loving English Garden - Topic 2</title>
+  <title>Loving English Garden - Topic 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   
   <script type="module">
@@ -28,6 +28,7 @@
     window.currentUserEmail = "guest@example.com";
     let studyTimerInterval;
 
+    // Chạy ngầm tính thời gian học (1 phút cộng 1 lần)
     function startStudyTimer(email) {
       if (email === "guest@example.com") return;
       if (studyTimerInterval) clearInterval(studyTimerInterval);
@@ -57,6 +58,8 @@
         } else {
           window.currentUserEmail = userEmail;
           window.currentUserRole = docSnap.data().role || "student";
+          
+          // Khởi động đếm thời gian khi xác thực xong
           startStudyTimer(window.currentUserEmail);
         }
       }
@@ -66,16 +69,18 @@
       try {
         const userEmail = window.currentUserEmail || "guest@example.com";
         await addDoc(collection(db, "results"), {
-          email: userEmail, topic: 2, day: day, type: type, answer: answer, timestamp: serverTimestamp()
+          email: userEmail, topic: 1, day: day, type: type, answer: answer, timestamp: serverTimestamp()
         });
 
         let dropsToEarn = 5; 
-        if (type === 'speaking_challenge_link_topic2') dropsToEarn = 50; 
+        if (type === 'speaking_challenge_link_topic1') dropsToEarn = 50; 
         else if (type.includes('record') || type.includes('structure')) dropsToEarn = 15; 
         else if (type === 'game2_match') dropsToEarn = 10; 
 
         if (userEmail !== "guest@example.com") {
           const userRef = doc(db, "users", userEmail);
+          
+          // Lấy ngày hiện tại format YYYY-MM-DD để đồng bộ với tính Streak ở index.html
           const todayStr = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
           await setDoc(userRef, { 
@@ -92,6 +97,7 @@
       }
     };
 
+    // Dọn dẹp timer khi rời trang
     window.addEventListener('beforeunload', () => {
       if (studyTimerInterval) clearInterval(studyTimerInterval);
     });
@@ -184,8 +190,8 @@
 </div>
 
 <div class="main-wrap">
-  <div class="topic-title">Topic 2: Personal Hygiene 🪥</div>
-  <div class="topic-sub">Vệ sinh cá nhân - Cùng bé đánh răng mỗi ngày</div>
+  <div class="topic-title">Topic 1: Good Morning! ☀️</div>
+  <div class="topic-sub">Chào ngày mới năng động cùng bé</div>
 
   <div id="viewMenu" class="menu-grid">
     <div class="m-item" onclick="openView('Vocab')"><div class="m-ico">📋</div><div class="m-name">Vocab List</div><div class="m-desc">Danh sách 10 câu trọng tâm</div></div>
@@ -359,22 +365,22 @@ window.showCelebration = (dropsEarned) => {
   }
 };
 
-// DATA TOPIC 2
+// DATA
 const CURRICULUM = [
-  { day: 11, en: "Let’s brush your teeth!", vn: "Cùng đánh răng nào!", pron: "/lets brʌʃ jər tiːθ/", note: "Nhấn vào BRUSH, TEETH. /br/ bật /b/ rồi cuộn lưỡi ngay. /θ/ thổi hơi rõ.", struct: "Let's + [Động từ nguyên mẫu]", structEg: ["Let's brush your teeth!", "Let's wash your face!", "Let's comb your hair!"], exTask: ["Dịch: Cùng đánh răng nào!", "Dịch: Cùng rửa mặt nào!", "Dịch: Cùng chải tóc nào!"], exAns: ["Let's brush your teeth!", "Let's wash your face!", "Let's comb your hair!"] },
-  { day: 12, en: "Put toothpaste on the brush.", vn: "Lấy kem đánh răng lên bàn chải.", pron: "/pʊt ˈtuːθpeɪst ɑːn ðə brʌʃ/", note: "Nhấn TOOTH-paste, BRUSH. 'the' đọc nhẹ. /θ/ thổi hơi.", struct: "Put + [Danh từ] + on the + [Danh từ]", structEg: ["Put toothpaste on the brush.", "Put your hat on.", "Put the book on the table."], exTask: ["Dịch: Lấy kem đánh răng lên bàn chải.", "Dịch: Đội mũ lên.", "Dịch: Đặt sách lên bàn."], exAns: ["Put toothpaste on the brush.", "Put your hat on.", "Put the book on the table."] },
-  { day: 13, en: "Brush up and down.", vn: "Chải răng nhẹ nhàng, đều tay nhé", pron: "/brʌʃʌp ən daʊn/", note: "Nối 'brush' và 'up' -> /brʌʃʌp/. Giảm 'and' thành /ən/.", struct: "[Động từ] + up and down", structEg: ["Brush up and down.", "Jump up and down.", "Look up and down."], exTask: ["Dịch: Chải lên và xuống.", "Dịch: Nhảy lên và xuống.", "Dịch: Nhìn lên và xuống."], exAns: ["Brush up and down.", "Jump up and down.", "Look up and down."] },
-  { day: 14, en: "Don’t forget your tongue!", vn: "Đừng quên làm sạch cả lưỡi nhé", pron: "/ˌdoʊnt fərˈɡet jər tʌŋ/", note: "Nhấn for-GET, TONGUE. 'tongue' kết thúc bằng /ŋ/ (âm mũi), KHÔNG đọc /g/.", struct: "Don't forget + [Danh từ/To V]", structEg: ["Don't forget your tongue!", "Don't forget your bag!", "Don't forget to wash your hands!"], exTask: ["Dịch: Đừng quên lưỡi của con!", "Dịch: Đừng quên cặp sách!", "Dịch: Đừng quên rửa tay!"], exAns: ["Don't forget your tongue!", "Don't forget your bag!", "Don't forget to wash your hands!"] },
-  { day: 15, en: "Now rinse your mouth.", vn: "Súc miệng thật sạch nhé", pron: "/naʊ rɪns jər maʊθ/", note: "Nhấn RINSE, MOUTH. /r/ lưỡi cong lên. /θ/ cuối 'mouth' thổi hơi ra.", struct: "Now + [Động từ nguyên mẫu]", structEg: ["Now rinse your mouth.", "Now wash your hands.", "Now go to sleep."], exTask: ["Dịch: Bây giờ hãy súc miệng.", "Dịch: Bây giờ hãy rửa tay.", "Dịch: Bây giờ hãy đi ngủ."], exAns: ["Now rinse your mouth.", "Now wash your hands.", "Now go to sleep."] },
-  { day: 16, en: "Spit it out.", vn: "Nhổ bọt ra nào", pron: "/spɪt ɪt aʊt/", note: "Nối âm tự nhiên 'it out'. /sp/ đi liền không thêm nguyên âm ở giữa.", struct: "[Động từ] + it + out", structEg: ["Spit it out.", "Take it out.", "Throw it out."], exTask: ["Dịch: Nhổ nó ra.", "Dịch: Lấy nó ra.", "Dịch: Vứt nó đi."], exAns: ["Spit it out.", "Take it out.", "Throw it out."] },
-  { day: 17, en: "Let me see your teeth.", vn: "Cho mẹ xem răng nào", pron: "/let miː siː jər tiːθ/", note: "/iː/ trong 'see', 'teeth' kéo dài. /θ/ thổi hơi rõ.", struct: "Let me see + [Danh từ]", structEg: ["Let me see your teeth.", "Let me see your hands.", "Let me see your toy."], exTask: ["Dịch: Cho mẹ xem răng của con.", "Dịch: Cho mẹ xem tay của con.", "Dịch: Cho mẹ xem đồ chơi của con."], exAns: ["Let me see your teeth.", "Let me see your hands.", "Let me see your toy."] },
-  { day: 18, en: "Your teeth are so clean!", vn: "Răng sạch quá rồi", pron: "/jər tiːθ ər soʊ kliːn/", note: "Nhấn TEETH, CLEAN. /kl/ đi liền, không tách.", struct: "[Danh từ] + are/is + so + [Tính từ]", structEg: ["Your teeth are so clean!", "Your hands are so dirty!", "You are so good!"], exTask: ["Dịch: Răng của con sạch quá!", "Dịch: Tay của con bẩn quá!", "Dịch: Con ngoan quá!"], exAns: ["Your teeth are so clean!", "Your hands are so dirty!", "You are so good!"] },
-  { day: 19, en: "Good job brushing!", vn: "Giỏi lắm", pron: "/ɡʊd dʒɑːb ˈbrʌʃɪŋ/", note: "/dʒ/ trong 'job' rung. đuôi '-ing' đọc bằng âm mũi /ŋ/.", struct: "Good job + [V-ing]", structEg: ["Good job brushing!", "Good job eating!", "Good job reading!"], exTask: ["Dịch: Đánh răng giỏi lắm!", "Dịch: Ăn giỏi lắm!", "Dịch: Đọc giỏi lắm!"], exAns: ["Good job brushing!", "Good job eating!", "Good job reading!"] },
-  { day: 20, en: "Time to go to bed.", vn: "Đến giờ đi ngủ rồi", pron: "/taɪm tə ɡoʊ tə bed/", note: "Cả 2 'to' đọc nhẹ thành /tə/.", struct: "Time to + [Động từ nguyên mẫu]", structEg: ["Time to go to bed.", "Time to eat.", "Time to take a bath."], exTask: ["Dịch: Đến giờ đi ngủ rồi.", "Dịch: Đến giờ ăn rồi.", "Dịch: Đến giờ đi tắm rồi."], exAns: ["Time to go to bed.", "Time to eat.", "Time to take a bath."] }
+  { day: 1, en: "Good morning, sweetie!", vn: "Chào buổi sáng, con yêu!", pron: "/gʊd ˈmɔːrnɪŋ, ˈswiːti/", note: "Flap T /r/ trong 'sweetie' nghe như âm 'd' nhẹ.", struct: "Good + [thời gian trong ngày]", structEg: ["Good morning!", "Good afternoon!", "Good night, sweetie!"], structEgVn: ["Chào buổi sáng!", "Chào buổi chiều!", "Chúc bé ngủ ngon!"], exTask: ["Dịch: Chào buổi sáng, con yêu!", "Dịch: Chào buổi chiều, con yêu!", "Dịch: Chúc bé ngủ ngon!"], exAns: ["Good morning, sweetie!", "Good afternoon, sweetie!", "Good night, sweetie!"] },
+  { day: 2, en: "Time to wake up!", vn: "Đến giờ thức dậy rồi!", pron: "/taɪm tu weɪk ʌp/", note: "Nối âm /k/ với /ʌ/ trong 'wake up'.", struct: "Time to + [Động từ nguyên mẫu]", structEg: ["Time to eat!", "Time to sleep!", "Time to go!"], structEgVn: ["Đến giờ ăn rồi!", "Đến giờ đi ngủ rồi!", "Đến giờ đi rồi!"], exTask: ["Dịch: Đến giờ thức dậy rồi!", "Dịch: Đến giờ ăn rồi!", "Dịch: Đến giờ đi ngủ rồi!"], exAns: ["Time to wake up!", "Time to eat!", "Time to sleep!"] },
+  { day: 3, en: "Rise and shine!", vn: "Dậy đi nào, tỏa sáng thôi!", pron: "/raɪz ænd ʃaɪn/", note: "Giảm 'and' thành /ən/.", struct: "Các cụm từ cố định giục bé thức dậy", structEg: ["Rise and shine!", "Wakey wakey!", "Time to get up!"], structEgVn: ["Dậy đi nào, tỏa sáng thôi!", "Dậy nào dậy nào!", "Đến giờ dậy rồi!"], exTask: ["Dịch: Dậy đi nào, tỏa sáng thôi!", "Dịch: Dậy nào dậy nào!", "Dịch: Đến giờ dậy rồi!"], exAns: ["Rise and shine!", "Wakey wakey!", "Time to get up!"] },
+  { day: 4, en: "Did you sleep well?", vn: "Con ngủ ngon không?", pron: "/dɪd ju sliːp wɛl/", note: "Nối 'did' và 'you' thành /dɪdʒu/.", struct: "Did you + [Động từ] + well?", structEg: ["Did you sleep well?", "Did you eat well?", "Did you play well?"], structEgVn: ["Con ngủ ngon không?", "Con ăn ngon không?", "Con chơi vui không?"], exTask: ["Dịch: Con ngủ ngon không?", "Dịch: Con ăn ngon không?", "Dịch: Con chơi vui không?"], exAns: ["Did you sleep well?", "Did you eat well?", "Did you play well?"] },
+  { day: 5, en: "It's a beautiful day today!", vn: "Hôm nay là một ngày thật đẹp!", pron: "/ɪts ə ˈbjuːtɪfəl deɪ təˈdeɪ/", note: "Nối âm liền mạch.", struct: "It's a + [Tính từ] + day!", structEg: ["It's a beautiful day!", "It's a sunny day!", "It's a rainy day!"], structEgVn: ["Hôm nay là một ngày thật đẹp!", "Hôm nay là một ngày nắng!", "Hôm nay là một ngày mưa!"], exTask: ["Dịch: Hôm nay là một ngày thật đẹp!", "Dịch: Hôm nay là một ngày nắng!", "Dịch: Hôm nay là một ngày mưa!"], exAns: ["It's a beautiful day today!", "It's a sunny day today!", "It's a rainy day today!"] },
+  { day: 6, en: "Come on, open your eyes.", vn: "Nào, mở mắt ra đi.", pron: "/kʌm ɒn, ˈoʊpən jʊər aɪz/", note: "Giảm 'your' thành /jər/.", struct: "Open your + [Bộ phận cơ thể/Vật]", structEg: ["Open your eyes!", "Open your mouth!", "Open your book!"], structEgVn: ["Mở mắt ra đi!", "Mở miệng ra đi!", "Mở sách ra đi!"], exTask: ["Dịch: Nào, mở mắt ra đi.", "Dịch: Mở miệng ra đi.", "Dịch: Mở sách ra đi."], exAns: ["Come on, open your eyes.", "Open your mouth.", "Open your book."] },
+  { day: 7, en: "Don't go back to sleep!", vn: "Đừng ngủ lại nữa mà!", pron: "/doʊnt ɡoʊ bæk tu sliːp/", note: "Âm tắc /k/ trong 'back'.", struct: "Don't + [Động từ nguyên mẫu]", structEg: ["Don't go!", "Don't cry!", "Don't touch that!"], structEgVn: ["Đừng đi!", "Đừng khóc!", "Đừng chạm vào đó!"], exTask: ["Dịch: Đừng ngủ lại nữa mà!", "Dịch: Đừng khóc!", "Dịch: Đừng đi!"], exAns: ["Don't go back to sleep!", "Don't cry!", "Don't go!"] },
+  { day: 8, en: "Let's get out of bed.", vn: "Ra khỏi giường nào.", pron: "/lɛts ɡɛt aʊt əv bɛd/", note: "Nối âm 'get' và 'out' thành /ɡɛtaʊt/.", struct: "Let's + [Động từ nguyên mẫu]", structEg: ["Let's get out of bed.", "Let's eat.", "Let's play."], structEgVn: ["Ra khỏi giường nào.", "Cùng ăn nào.", "Cùng chơi nào."], exTask: ["Dịch: Ra khỏi giường nào.", "Dịch: Cùng ăn nào.", "Dịch: Cùng chơi nào."], exAns: ["Let's get out of bed.", "Let's eat.", "Let's play."] },
+  { day: 9, en: "Stretch your arms up high!", vn: "Vươn tay lên cao nào!", pron: "/strɛtʃ jʊər ɑːrmz ʌp haɪ/", note: "Âm /tʃ/ bật mạnh.", struct: "Stretch your + [Bộ phận] + [hướng]!", structEg: ["Stretch your arms up high!", "Stretch your legs out!", "Stretch your back!"], structEgVn: ["Vươn tay lên cao nào!", "Duỗi chân ra!", "Vươn lưng nào!"], exTask: ["Dịch: Vươn tay lên cao nào!", "Dịch: Duỗi chân ra!", "Dịch: Vươn lưng nào!"], exAns: ["Stretch your arms up high!", "Stretch your legs out!", "Stretch your back!"] },
+  { day: 10, en: "Breakfast is almost ready.", vn: "Bữa sáng sắp xong rồi!", pron: "/ˈbrɛkfəst ɪz ˈɔːlmoʊst ˈrɛdi/", note: "Nối âm /z/ trong 'is' với /ɔː/ trong 'almost' thành /ɪzɔːlmoʊst/.", struct: "[Danh từ] + is almost ready.", structEg: ["Breakfast is almost ready.", "Dinner is almost ready.", "The room is almost ready."], structEgVn: ["Bữa sáng sắp xong rồi.", "Bữa tối sắp xong rồi.", "Căn phòng chuẩn bị xong rồi."], exTask: ["Dịch: Bữa sáng sắp xong rồi!", "Dịch: Bữa tối sắp xong rồi!", "Dịch: Căn phòng chuẩn bị xong rồi!"], exAns: ["Breakfast is almost ready.", "Dinner is almost ready.", "The room is almost ready."] }
 ];
 
 // GLOBALS
-let currentDay = 11;
+let currentDay = 1;
 let submittedGames = {};
 let synth = window.speechSynthesis;
 let preferredVoice = null;
@@ -402,7 +408,7 @@ function openView(viewName) {
   
   if(viewName === 'Daily') {
     document.getElementById('gameCenterCore').style.display = 'block';
-    renderDayTabs(); selectDay(11); loadVoices();
+    renderDayTabs(); selectDay(1); loadVoices();
   } else if(viewName === 'Vocab') {
     renderVocab();
   } else if(viewName === 'Challenge') {
@@ -412,6 +418,7 @@ function openView(viewName) {
 function goBack() {
   document.querySelectorAll('.view-section, .game-center-wrap').forEach(el => el.style.display = 'none');
   document.getElementById('viewMenu').style.display = 'grid';
+  // Quay lại trang Dashboard nếu đang ở ngoài menu chính
   if (document.getElementById('viewMenu').style.display === 'grid' && window.location.href.includes('topic')) {
     window.location.href = 'index.html';
   }
@@ -444,15 +451,21 @@ function selectDay(day) {
   document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`dtab-${day}`).classList.add('active');
   
-  const curr = CURRICULUM.find(c => c.day === currentDay);
+  const curr = CURRICULUM[day - 1];
   document.getElementById('dEn').innerText = curr.en;
   document.getElementById('dPron').innerText = curr.pron;
   document.getElementById('dVn').innerText = curr.vn;
   document.getElementById('dNote').innerText = curr.note;
   document.getElementById('dStruct').innerText = curr.struct;
-  document.getElementById('dStructEg').innerHTML = curr.structEg.map(e => `• ${e}`).join('<br>');
+  
+  // Cập nhật kết xuất song ngữ cho phần Ví dụ
+  document.getElementById('dStructEg').innerHTML = curr.structEg.map((e, i) => 
+    `• <span style="color:var(--text); font-weight:600;">${e}</span> <br><span style="color:var(--text-soft); font-size:14px; margin-left:14px;">(${curr.structEgVn[i]})</span>`
+  ).join('<br><br>');
+  
   document.getElementById('theFC').classList.remove('flipped');
   
+  // Reset submitted stats for the day
   submittedGames = { game1: false, game2: false, game3: false, game4: false, game5: false };
   ['G1','G2','G3','G4','G5'].forEach(id => {
     let btn = document.getElementById(`btnSubmit${id}`);
@@ -481,8 +494,8 @@ function switchGameTab(tabId) {
 let g1Ans = [], g1Pool = [], g1Target = "";
 function loadGame1() {
   document.getElementById('g1Res').innerText = '';
-  const curr = CURRICULUM.find(c => c.day === currentDay);
-  g1Target = curr.en.replace(/[^\w\s\’\']/g, "").trim();
+  const curr = CURRICULUM[currentDay - 1];
+  g1Target = curr.en.replace(/[^\w\s\']/g, "").trim();
   g1Pool = shuffle(g1Target.split(" "));
   g1Ans = [];
   document.getElementById('g1VnText').innerText = curr.vn;
@@ -565,16 +578,16 @@ function submitGame2() {
 let g3AnsIdx = -1, g3TargetWord = "";
 function loadGame3() {
   document.getElementById('g3Res').innerText = ''; g3SelectedVal = null;
-  const curr = CURRICULUM.find(c => c.day === currentDay);
+  const curr = CURRICULUM[currentDay - 1];
   let words = curr.en.split(" ");
   let hideIdx = Math.floor(Math.random() * words.length);
-  g3TargetWord = words[hideIdx].replace(/[^\w\s\’\']/g, "");
+  g3TargetWord = words[hideIdx].replace(/[^\w\s\']/g, "");
   
   let showSentence = [...words];
   showSentence[hideIdx] = "_____";
   document.getElementById('g3Sentence').innerText = showSentence.join(" ");
 
-  let dist = shuffle(CURRICULUM.filter(c => c.day !== currentDay).map(c => c.en.split(" ")[0].replace(/[^\w\s\’\']/g, ""))).slice(0, 2);
+  let dist = shuffle(CURRICULUM.filter(c => c.day !== currentDay).map(c => c.en.split(" ")[0].replace(/[^\w\s\']/g, ""))).slice(0, 2);
   let opts = shuffle([g3TargetWord, ...dist]);
   
   document.getElementById('g3Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG3(this, '${o}')">${o}</button>`).join('');
@@ -609,13 +622,13 @@ function checkGame3(mode) {
 let g4AnsText = "";
 function loadGame4() {
   document.getElementById('g4Res').innerText = ''; g4SelectedVal = null;
-  const curr = CURRICULUM.find(c => c.day === currentDay);
+  const curr = CURRICULUM[currentDay - 1];
   g4AnsText = curr.en;
   
   let dist = shuffle(CURRICULUM.filter(c => c.day !== currentDay)).slice(0, 2);
   let opts = shuffle([curr, ...dist]);
   
-  document.getElementById('g4Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG4(this, '${o.en.replace(/'/g, "\\'").replace(/’/g, "\\'")}')">${o.en}</button>`).join('');
+  document.getElementById('g4Options').innerHTML = opts.map(o => `<button class="option-btn" onclick="selG4(this, '${o.en.replace(/'/g, "\\'")}')">${o.en}</button>`).join('');
 }
 let g4SelectedVal = null;
 window.selG4 = (btn, val) => {
@@ -648,7 +661,7 @@ function checkGame4(mode) {
 let g5AnsStr = "";
 function loadGame5() {
   document.getElementById('g5Res').innerText = ''; document.getElementById('g5Input').value = '';
-  const curr = CURRICULUM.find(c => c.day === currentDay);
+  const curr = CURRICULUM[currentDay - 1];
   let rIdx = Math.floor(Math.random() * curr.exTask.length);
   document.getElementById('g5Task').innerText = curr.exTask[rIdx];
   g5AnsStr = curr.exAns[rIdx];
@@ -657,7 +670,7 @@ function checkGame5(mode) {
   let val = document.getElementById('g5Input').value.trim();
   if(!val) return;
   
-  let isCorrect = val.toLowerCase().replace(/[^\w\s\’\']/g,"") === g5AnsStr.toLowerCase().replace(/[^\w\s\’\']/g,"");
+  let isCorrect = val.toLowerCase().replace(/[^\w\s\']/g,"") === g5AnsStr.toLowerCase().replace(/[^\w\s\']/g,"");
   let res = document.getElementById('g5Res');
   
   if (mode === 'practice') {
@@ -683,7 +696,7 @@ window.submitChallengeRecording = async () => {
     alert("Vui lòng nhập đúng đường link ghi âm hợp lệ! / Please enter a valid recording link!");
     return;
   }
-  const success = await window.submitResult('speaking_challenge_link_topic2', 0, link);
+  const success = await window.submitResult('speaking_challenge_link_topic1', 0, link);
   if (success) {
     document.getElementById('challengeSubmitRes').style.color = 'var(--green)';
     document.getElementById('challengeSubmitRes').innerText = "✅ Nộp bài thành công! Cảm ơn bé và ba mẹ!";
