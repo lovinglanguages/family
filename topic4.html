@@ -165,13 +165,16 @@
 
     .option-btn { width: 100%; background: #fff; border: 2px solid var(--warm); border-radius: 12px; padding: 16px; font-size: 18px; font-family: 'Lora', serif; color: var(--wood); margin-bottom: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
     .option-btn:hover { background: var(--green-pale); border-color: var(--green); }
-    .audio-big-btn { width: 80px; height: 80px; border-radius: 50%; background: var(--drop); color: #fff; border: none; font-size: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;}
+    .audio-big-btn { width: 80px; height: 80px; border-radius: 50%; background: var(--drop); color: #fff; border: none; font-size: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; transition: all 0.2s;}
+    .audio-big-btn:hover { transform: scale(1.05); }
 
     .cute-popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #fff; border: 3px solid var(--drop); color: var(--drop); padding: 14px 28px; border-radius: 50px; font-size: 18px; font-weight: 800; z-index: 9999; display: flex; align-items: center; gap: 10px; animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.5s 3.5s forwards; }
     .flying-drop { position: fixed; bottom: -30px; font-size: 28px; z-index: 9998; animation: flyUp linear forwards; }
+    
     @keyframes bounceIn { 0% { top: -60px; opacity: 0; } 100% { top: 20px; opacity: 1; } }
     @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
     @keyframes flyUp { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5) rotate(20deg); opacity: 0; } }
+    @keyframes pulseRecord { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
   </style>
 </head>
 <body>
@@ -258,6 +261,7 @@
     <div class="d-tab" onclick="switchGameTab(3)" id="tabGame3">3. Điền từ</div>
     <div class="d-tab" onclick="switchGameTab(4)" id="tabGame4">4. Nghe chọn</div>
     <div class="d-tab" onclick="switchGameTab(5)" id="tabGame5">5. Cấu trúc</div>
+    <div class="d-tab" onclick="switchGameTab(6)" id="tabGame6" style="background: var(--drop-light); color: var(--wood); border-color: var(--drop);">6. Luyện nói 🎤</div>
   </div>
 
   <div id="game1Area" class="game-area">
@@ -321,6 +325,30 @@
     </div>
     <div id="g5Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
   </div>
+
+  <div id="game6Area" class="game-area" style="display:none;">
+    <h3 style="color:var(--wood); margin-bottom: 10px;">Luyện nói (Shadowing)</h3>
+    <p style="color:var(--text-soft); font-size:14px; margin-bottom:20px;">Bé hãy nghe câu mẫu, sau đó bấm nút Micro để tự ghi âm giọng của mình nhé!</p>
+    
+    <div id="g6Sentence" style="font-family:'Lora',serif; font-size:26px; font-weight:600; margin-bottom:8px; color:var(--text);"></div>
+    <div id="g6Pron" style="font-size:16px; color:var(--text-soft); margin-bottom:24px;"></div>
+
+    <div style="display:flex; justify-content:center; gap:24px; margin-bottom:20px;">
+      <button class="audio-big-btn" style="width:60px; height:60px; font-size:24px; margin:0;" onclick="playGame6Audio()">🔊</button>
+      <button id="btnRecord" class="audio-big-btn" style="width:60px; height:60px; font-size:24px; margin:0; background: #e74c3c;" onclick="toggleRecording()">🎤</button>
+    </div>
+
+    <div id="g6AudioContainer" style="display:none; margin-bottom:24px;">
+      <p style="font-size:14px; color:var(--green); font-weight:bold; margin-bottom:8px;">Giọng của bé đây rồi:</p>
+      <audio id="g6AudioPlayback" controls style="width: 100%; max-width: 300px; border-radius: 20px;"></audio>
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-action" id="btnSubmitG6" onclick="submitGame6()">📤 Nộp bài luyện nói (1 lần)</button>
+    </div>
+    <div id="g6Res" style="margin-top:16px; font-weight:bold; font-size:16px;"></div>
+  </div>
+
 </div>
 
 <script>
@@ -451,15 +479,15 @@ function selectDay(day) {
   document.getElementById('dNote').innerText = curr.note;
   document.getElementById('dStruct').innerText = curr.struct;
   
-  // Render song ngữ cho phần ví dụ cấu trúc
   document.getElementById('dStructEg').innerHTML = curr.structEg.map((e, i) => 
     `• <span style="color:var(--text); font-weight:600;">${e}</span> <br><span style="color:var(--text-soft); font-size:14px; margin-left:14px;">(${curr.structEgVn[i]})</span>`
   ).join('<br><br>');
   
   document.getElementById('theFC').classList.remove('flipped');
   
-  submittedGames = { game1: false, game2: false, game3: false, game4: false, game5: false };
-  ['G1','G2','G3','G4','G5'].forEach(id => {
+  // Thêm trạng thái game6 (Shadowing)
+  submittedGames = { game1: false, game2: false, game3: false, game4: false, game5: false, game6: false };
+  ['G1','G2','G3','G4','G5', 'G6'].forEach(id => {
     let btn = document.getElementById(`btnSubmit${id}`);
     if(btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerText = "📤 Nộp bài (1 lần)"; }
   });
@@ -468,7 +496,7 @@ function selectDay(day) {
 }
 
 function switchGameTab(tabId) {
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 6; i++) { // Tăng lên 6 vòng lặp
     document.getElementById(`game${i}Area`).style.display = 'none';
     document.getElementById(`tabGame${i}`).classList.remove('active');
   }
@@ -480,6 +508,7 @@ function switchGameTab(tabId) {
   if(tabId===3) loadGame3();
   if(tabId===4) loadGame4();
   if(tabId===5) loadGame5();
+  if(tabId===6) loadGame6(); // Load dữ liệu Shadowing
 }
 
 // ==================== GAME 1: UNSCRAMBLE ====================
@@ -680,6 +709,91 @@ function checkGame5(mode) {
     }
   }
 }
+
+// ==================== GAME 6: SHADOWING (MỚI) ====================
+let mediaRecorder;
+let audioChunks = [];
+let isRecording = false;
+
+function loadGame6() {
+  document.getElementById('g6Res').innerText = '';
+  document.getElementById('g6AudioContainer').style.display = 'none';
+  
+  const btnRecord = document.getElementById('btnRecord');
+  btnRecord.innerText = '🎤';
+  btnRecord.style.animation = 'none';
+  isRecording = false;
+
+  const curr = CURRICULUM.find(c => c.day === currentDay);
+  document.getElementById('g6Sentence').innerText = curr.en;
+  document.getElementById('g6Pron').innerText = curr.pron;
+}
+
+window.playGame6Audio = () => {
+  const curr = CURRICULUM.find(c => c.day === currentDay);
+  playAudio(curr.en);
+};
+
+window.toggleRecording = async () => {
+  const btnRecord = document.getElementById('btnRecord');
+  
+  if (!isRecording) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+      };
+      
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // Trình duyệt tự nhận dạng định dạng tối ưu
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audioPlayback = document.getElementById('g6AudioPlayback');
+        
+        audioPlayback.src = audioUrl;
+        document.getElementById('g6AudioContainer').style.display = 'block';
+        
+        // Tắt micro sau khi thu âm xong để tiết kiệm pin/tránh bị treo đỏ trên trình duyệt
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      mediaRecorder.start();
+      isRecording = true;
+      btnRecord.innerText = '⏹️';
+      btnRecord.style.animation = 'pulseRecord 1.2s infinite';
+    } catch (err) {
+      alert("Trình duyệt không thể truy cập micro. Vui lòng cấp quyền cho trang web nhé!");
+      console.error(err);
+    }
+  } else {
+    // Đang thu âm -> Bấm để Dừng
+    mediaRecorder.stop();
+    isRecording = false;
+    btnRecord.innerText = '🎤';
+    btnRecord.style.animation = 'none';
+  }
+};
+
+window.submitGame6 = () => {
+  if (submittedGames.game6) { alert("Bạn đã nộp bài Luyện nói rồi!"); return; }
+  if (audioChunks.length === 0) {
+    alert("Bé chưa ghi âm! Hãy bấm nút micro màu đỏ để ghi âm giọng của bé trước khi nộp nhé.");
+    return;
+  }
+  
+  submittedGames.game6 = true;
+  let btn = document.getElementById('btnSubmitG6');
+  btn.disabled = true; btn.style.opacity = '0.5'; btn.innerText = "Đã nộp ✓";
+  
+  // Nộp bài dạng record sẽ tự động được +15 giọt nước dựa theo logic bạn đã viết
+  window.submitResult('game6_shadowing_record', currentDay, "Local Audio Recorded");
+  
+  let res = document.getElementById('g6Res');
+  res.style.color = "var(--sunrise)"; 
+  res.innerText = "📤 Đã ghi nhận bài luyện nói (Shadowing)!";
+};
 
 // ==================== CHALLENGE RECORDING ====================
 window.submitChallengeRecording = async () => {
