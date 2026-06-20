@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👗 Dressing Up | Topic 3 Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#fff4e6;
+  --bg2:#ffe8d6;
+  --card:#ffffff;
+  --ink:#3a2e2c;
+  --muted:#8a7b76;
+  --peach:#ffb37c;
+  --peach-d:#ff9a4d;
+  --pink:#ff8fa3;
+  --pink-d:#ff6b85;
+  --blue:#7ec8e3;
+  --blue-d:#4fb1d6;
+  --green:#7fd99a;
+  --green-d:#4cc476;
+  --purple:#b39ddb;
+  --purple-d:#9575cd;
+  --yellow:#ffd166;
+  --shadow: 0 8px 24px rgba(180,120,60,0.15);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Quicksand',sans-serif;
+  background: linear-gradient(160deg, var(--bg1), var(--bg2));
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:60px;
+}
+h1,h2,h3{font-family:'Baloo 2',sans-serif;margin:0;}
+
+/* HEADER */
+.hero{
+  text-align:center;
+  padding:36px 16px 28px;
+  position:relative;
+}
+.hero .emoji-row{font-size:38px;letter-spacing:10px;margin-bottom:6px;}
+.hero h1{font-size:clamp(26px,5vw,40px);color:var(--peach-d);}
+.hero p{color:var(--muted);font-size:16px;margin-top:6px;font-weight:600;}
+.hero .vn{font-size:18px;color:var(--pink-d);font-weight:700;}
+
+/* NAV PILLS */
+.nav-pills{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:10px;
+  padding:0 16px 24px;
+}
+.pill{
+  background:var(--card);
+  border:2px solid transparent;
+  padding:10px 18px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  transition:.2s;
+  color:var(--ink);
+}
+.pill:hover{transform:translateY(-2px);}
+.pill.active{
+  background:var(--peach-d);
+  color:white;
+  border-color:var(--peach-d);
+}
+
+.wrap{max-width:920px;margin:0 auto;padding:0 16px;}
+
+.section{
+  display:none;
+  background:var(--card);
+  border-radius:28px;
+  padding:28px;
+  box-shadow:var(--shadow);
+  margin-bottom:30px;
+  animation:fadeIn .35s ease;
+}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:22px;color:var(--peach-d);margin-bottom:6px;
+}
+.section-sub{color:var(--muted);font-weight:600;margin-bottom:20px;font-size:14px;}
+
+/* ============ ACTIVITY 1: LISTEN & CHOOSE ============ */
+.lc-roundinfo{
+  text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;
+}
+.lc-card{
+  background:linear-gradient(150deg,#fff7ef,#fff);
+  border:3px solid #ffe2c2;
+  border-radius:24px;
+  padding:28px 20px;
+  text-align:center;
+  margin-bottom:16px;
+}
+.lc-icon{
+  font-size:80px;
+  margin-bottom:14px;
+  line-height:1;
+}
+.lc-timer-wrap{
+  position:relative;
+  width:90px;height:90px;
+  margin:18px auto;
+}
+.lc-timer-svg{
+  width:90px;height:90px;
+  transform:rotate(-90deg);
+}
+.lc-timer-bg{
+  fill:none;stroke:#ffe2c2;stroke-width:8;
+}
+.lc-timer-fg{
+  fill:none;stroke:var(--pink-d);stroke-width:8;
+  stroke-linecap:round;
+  stroke-dasharray:276.5;
+  stroke-dashoffset:0;
+  transition:stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.lc-timer-num{
+  position:absolute;top:0;left:0;width:90px;height:90px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;font-weight:800;color:var(--pink-d);
+  font-family:'Baloo 2',sans-serif;
+}
+.lc-choices{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;
+  margin-top:18px;
+}
+.lc-choice-opt{
+  background:white;border:2px solid var(--bg2);border-radius:14px;
+  padding:14px 16px;font-weight:700;cursor:pointer;font-size:15px;
+  transition:.15s;
+}
+.lc-choice-opt:hover{border-color:var(--blue-d);transform:translateY(-2px);}
+.lc-choice-opt.correct{background:#eafff1;border-color:var(--green-d);color:#2f9e52;}
+.lc-choice-opt.wrong{background:#ffeef0;border-color:var(--pink-d);color:#c23b53;}
+.lc-choice-opt.disabled{pointer-events:none;opacity:.6;}
+.lc-feedback{
+  font-weight:800;font-size:17px;margin-top:16px;min-height:28px;
+}
+
+/* ============ ACTIVITY 2: LISTEN & NUMBER ============ */
+.seq-area{display:flex;flex-direction:column;gap:14px;}
+.seq-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;justify-content:center;}
+.btn{
+  font-family:'Quicksand',sans-serif;
+  font-weight:700;
+  border:none;
+  border-radius:999px;
+  padding:12px 22px;
+  cursor:pointer;
+  font-size:15px;
+  color:white;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  transition:.15s;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+.btn-blue{background:var(--blue-d);}
+.btn-pink{background:var(--pink-d);}
+.btn-green{background:var(--green-d);}
+.btn-purple{background:var(--purple-d);}
+.btn-yellow{background:var(--yellow);color:var(--ink);}
+.btn-outline{background:white;color:var(--ink);border:2px solid var(--bg2);}
+
+.dress-steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:12px;
+}
+.step-tile{
+  background:#fff7ef;
+  border:3px dashed #ffd9b3;
+  border-radius:18px;
+  padding:20px 10px;
+  text-align:center;
+  cursor:pointer;
+  position:relative;
+  transition:.2s;
+}
+.step-tile.picked{
+  border-style:solid;
+  border-color:var(--green-d);
+  background:#eafff1;
+}
+.step-tile .num-badge{
+  position:absolute;top:-10px;left:-10px;
+  background:var(--green-d);color:white;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+.step-tile .ico{font-size:48px; line-height:1;}
+.seq-feedback{
+  font-weight:700;text-align:center;padding:10px;border-radius:14px;min-height:24px;margin-top: 10px;
+}
+
+/* ============ ACTIVITY 3: SENTENCE BUILDER ============ */
+.player-tabs{
+  display:flex;justify-content:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;
+}
+.player-tab{
+  background:white;border:2px solid var(--bg2);border-radius:999px;
+  padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  transition:.2s;
+}
+.player-tab.active{background:var(--purple-d);color:white;border-color:var(--purple-d);}
+.player-pts{
+  background:rgba(0,0,0,0.12);border-radius:999px;padding:2px 9px;font-size:12px;font-weight:800;
+}
+.player-tab.active .player-pts{background:rgba(255,255,255,0.25);}
+
+.sb-card{
+  background:linear-gradient(150deg,#f3f0ff,#fff);
+  border-radius:22px;
+  padding:24px;
+  text-align:center;
+  border:3px solid #e4dcff;
+}
+.sb-roundinfo{
+  display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;
+}
+.sb-icon{font-size:44px;}
+.sb-vn{color:var(--muted);font-weight:600;margin-bottom:16px;}
+.sb-built-line{
+  min-height:54px;
+  background:white;border:2px dashed #d9cfff;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;
+  padding:10px;margin-bottom:16px;font-weight:700;font-size:17px;color:var(--purple-d);
+}
+.sb-word-bank{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:10px;
+}
+.sb-chip{
+  background:var(--purple-d);color:white;
+  padding:10px 16px;border-radius:12px;font-weight:700;
+  cursor:pointer;font-size:15px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  transition:.15s;
+}
+.sb-chip:hover{transform:translateY(-2px);}
+.sb-chip.used{opacity:0;pointer-events:none;}
+.sb-built-word{
+  background:#eee6ff;color:var(--purple-d);
+  padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;
+}
+.sb-choices{display:flex;flex-direction:column;gap:10px;}
+.sb-choice-opt{
+  background:white;border:2px solid var(--bg2);border-radius:14px;
+  padding:13px 18px;font-weight:700;cursor:pointer;text-align:left;font-size:15px;
+}
+.sb-choice-opt:hover{border-color:var(--purple);}
+.sb-feedback{font-weight:800;min-height:28px;margin-top:14px;font-size:16px;}
+
+/* name inputs for role-play */
+.name-inputs{
+  display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;
+  background:#fff7ef;border-radius:16px;padding:16px;
+}
+.name-field{display:flex;flex-direction:column;gap:4px;}
+.name-field label{font-size:12px;font-weight:700;color:var(--muted);}
+.name-field input{
+  font-family:'Quicksand',sans-serif;font-weight:700;font-size:14px;
+  border:2px solid var(--bg2);border-radius:10px;padding:8px 12px;width:120px;
+  color:var(--ink);
+}
+.name-field input:focus{outline:none;border-color:var(--peach-d);}
+
+/* ============ ACTIVITY 4: ROLE-PLAY DIALOGUE ============ */
+.dialogue-box{
+  background:#fff7ef;
+  border-radius:20px;
+  padding:20px;
+}
+.dlg-line{
+  display:flex;align-items:flex-start;gap:12px;
+  margin-bottom:14px;
+  opacity:0;
+  animation:slideIn .4s forwards;
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.dlg-avatar{font-size:30px;flex-shrink:0;}
+.dlg-bubble{
+  background:white;border-radius:16px;padding:10px 16px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.06);
+  cursor:pointer;
+  flex:1;
+}
+.dlg-bubble:hover{background:#fff0e0;}
+.dlg-bubble .en{font-weight:700;color:var(--ink);}
+.dlg-bubble .vn{font-size:13px;color:var(--muted);margin-top:2px;}
+.dlg-mommy .dlg-bubble{border-left:4px solid var(--pink-d);}
+.dlg-kid .dlg-bubble{border-left:4px solid var(--blue-d);}
+
+/* ============ ACTIVITY 5: GAME - DRESS THE CHARACTER ============ */
+.game-area{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;justify-content:center;}
+.game-char{
+  width:160px;height:260px;
+  background:#fff7ef;border-radius:20px;
+  border:3px solid #ffd9b3;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  font-size:70px;position:relative;padding-bottom:10px;
+  flex-shrink:0;
+}
+.game-char .slot{font-size:24px;height:30px;}
+.game-options{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+  gap:10px;flex:1;min-width:240px;
+}
+.game-opt{
+  background:white;border:2px solid var(--bg2);border-radius:16px;
+  padding:14px 8px;text-align:center;cursor:pointer;font-weight:700;font-size:13px;
+}
+.game-opt:hover{border-color:var(--peach-d);}
+.game-opt .ico{font-size:30px;display:block;}
+.game-msg{text-align:center;font-weight:800;font-size:18px;margin-top:14px;min-height:28px;}
+
+/* progress dots */
+.score-bar{
+  display:flex;justify-content:center;gap:8px;margin:16px 0;
+}
+.dot{width:12px;height:12px;border-radius:50%;background:#eee;transition:.3s;}
+.dot.done{background:var(--green-d);}
+
+footer{
+  text-align:center;color:var(--muted);font-size:13px;padding:20px;font-weight:600;
+}
+.tip-box{
+  background:#eafaf0;border-radius:16px;padding:14px 18px;font-size:14px;color:#2f7a4f;font-weight:600;margin-bottom:18px;
+}
+.note{font-size:13px;color:var(--muted);margin-top:14px;text-align:center;}
+
+@media (max-width:600px){
+  .section{padding:20px 16px;border-radius:20px;}
+  .hero{padding:26px 12px 18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="emoji-row">👗👕👖👟🧦</div>
+  <h1>Dressing Up</h1>
+  <p class="vn">Mặc Quần Áo — Topic 3 Review</p>
+  <p>Cùng Mommy &amp; các bé luyện <strong>NGHE</strong> và <strong>NÓI</strong> qua 5 hoạt động vui nhé! 🎉</p>
+</div>
+
+<div class="nav-pills" id="navPills">
+  <div class="pill active" data-target="s1">🎧 1. Nghe &amp; Chạm</div>
+  <div class="pill" data-target="s2">👟 2. Thứ Tự Mặc Đồ</div>
+  <div class="pill" data-target="s3">🧩 3. Ghép Câu Tính Điểm</div>
+  <div class="pill" data-target="s4">💬 4. Đóng Vai</div>
+  <div class="pill" data-target="s5">🎮 5. Trò Chơi</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ACTIVITY 1 -->
+  <div class="section active" id="s1">
+    <div class="section-title">🎧 Listen &amp; Choose</div>
+    <div class="section-sub">Bấm 🔊 để nghe câu — chỉ có icon, không có chữ! Đồng hồ đếm ngược 5 giây sẽ bắt đầu, bé phải nhanh tay chọn đúng câu vừa nghe!</div>
+    <div class="tip-box">💡 Nghe kỹ trước khi bấm 🔊, vì đồng hồ chỉ chạy sau khi nghe xong — không nghe lại được trong lúc đếm giờ!</div>
+
+    <div class="lc-roundinfo">
+      <span id="lcRoundCount">Câu 1 / 8</span>
+    </div>
+    <div class="lc-card">
+      <div class="lc-icon" id="lcIcon">👕</div>
+      <button class="btn btn-blue" id="lcListenBtn" onclick="lcPlaySound()">🔊 Nghe câu</button>
+      <div class="lc-timer-wrap" id="lcTimerWrap" style="display:none;">
+        <svg class="lc-timer-svg" viewBox="0 0 100 100">
+          <circle class="lc-timer-bg" cx="50" cy="50" r="44"></circle>
+          <circle class="lc-timer-fg" id="lcTimerFg" cx="50" cy="50" r="44"></circle>
+        </svg>
+        <div class="lc-timer-num" id="lcTimerNum">5</div>
+      </div>
+      <div class="lc-choices" id="lcChoices"></div>
+      <div class="lc-feedback" id="lcFeedback"></div>
+    </div>
+    <div style="text-align:center;">
+      <button class="btn btn-outline" onclick="lcNextRound()">⏭️ Câu khác</button>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 2 -->
+  <div class="section" id="s2">
+    <div class="section-title">👟 Getting Dressed — In Order!</div>
+    <div class="section-sub">Nghe câu chuyện mặc đồ 10 bước rồi chọn đúng các icon theo thứ tự! Thời gian chờ cho mỗi câu thoại thay đổi tùy theo người chơi được chọn.</div>
+    
+    <div class="player-tabs" id="storyTabs">
+      <div class="player-tab" data-story="lucy">👧 Lucy (4s/câu)</div>
+      <div class="player-tab" data-story="leo">👦 Leo (3s/câu)</div>
+      <div class="player-tab active" data-story="anna">👩 Anna (3s/câu)</div>
+    </div>
+
+    <div class="seq-controls">
+      <button class="btn btn-blue" onclick="playStory()">🔊 Nghe câu chuyện</button>
+      <button class="btn btn-outline" onclick="resetSeq()">🔄 Làm lại</button>
+    </div>
+    <div class="dress-steps" id="seqGrid"></div>
+    <div class="seq-feedback" id="seqFeedback"></div>
+  </div>
+
+  <!-- ACTIVITY 3 -->
+  <div class="section" id="s3">
+    <div class="section-title">🧩 Sentence Builder Challenge</div>
+    <div class="section-sub">Mỗi nhân vật lần lượt chơi để ghi điểm cho riêng mình! Có lượt ghép từ thành câu, có lượt chọn câu đúng — đoán xem lượt tới là dạng nào nhé!</div>
+
+    <div class="player-tabs" id="playerTabs">
+      <div class="player-tab active" data-player="anna">👩 Mommy Anna <span class="player-pts" id="ptsAnna">0</span></div>
+      <div class="player-tab" data-player="lucy">👧 Lucy <span class="player-pts" id="ptsLucy">0</span></div>
+      <div class="player-tab" data-player="leo">👦 Leo <span class="player-pts" id="ptsLeo">0</span></div>
+    </div>
+
+    <div class="sb-card">
+      <div class="sb-roundinfo">
+        <span id="sbModeLabel">🧩 Ghép từ thành câu</span>
+        <span id="sbRoundCount">Lượt 1 / 8</span>
+      </div>
+      <div class="sb-icon" id="sbIcon">👕</div>
+      <div class="sb-vn" id="sbVn">Mặc áo vào nào.</div>
+
+      <!-- Build mode -->
+      <div id="buildMode">
+        <div class="sb-built-line" id="sbBuiltLine"></div>
+        <div class="sb-word-bank" id="sbWordBank"></div>
+      </div>
+
+      <!-- Choice mode -->
+      <div id="choiceMode" style="display:none;">
+        <div class="sb-choices" id="sbChoices"></div>
+      </div>
+
+      <div class="sb-feedback" id="sbFeedback"></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="speak(CURRENT_ROUND_SENTENCE)">🔊 Nghe câu mẫu</button>
+        <button class="btn btn-outline" onclick="resetBuild()">🔄 Xóa &amp; làm lại</button>
+      </div>
+    </div>
+    <div class="note">💡 Mommy đổi tab nhân vật trước mỗi lượt để tính điểm đúng người đang chơi.</div>
+  </div>
+
+  <!-- ACTIVITY 4 -->
+  <div class="section" id="s4">
+    <div class="section-title">💬 Family Role-Play</div>
+    <div class="section-sub">Điền tên các thành viên trong nhà, rồi bấm vào từng câu để nghe — sau đó cùng đóng vai đọc lại hội thoại!</div>
+    <div class="name-inputs">
+      <div class="name-field">
+        <label>👩 Mommy</label>
+        <input type="text" id="nameMommy" value="Anna" maxlength="14">
+      </div>
+      <div class="name-field">
+        <label>👧 Em gái</label>
+        <input type="text" id="nameKid1" value="Lucy" maxlength="14">
+      </div>
+      <div class="name-field">
+        <label>👦 Anh trai</label>
+        <input type="text" id="nameKid2" value="Leo" maxlength="14">
+      </div>
+      <button class="btn btn-blue" onclick="renderDialogue()">✏️ Cập nhật tên</button>
+    </div>
+    <div class="dialogue-box" id="dialogueBox"></div>
+    <div style="text-align:center;margin-top:16px;">
+      <button class="btn btn-pink" onclick="playWholeDialogue()">🔊 Nghe toàn bộ hội thoại</button>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 5 -->
+  <div class="section" id="s5">
+    <div class="section-title">🎮 Dress the Character!</div>
+    <div class="section-sub">Nghe yêu cầu rồi bấm đúng món đồ để mặc cho bạn nhỏ trong hình!</div>
+    <div class="seq-controls" style="justify-content:center;">
+      <button class="btn btn-purple" onclick="newGameRound()">🔊 Nghe yêu cầu mới</button>
+    </div>
+    <div class="score-bar" id="gameScoreBar"></div>
+    <div class="game-area">
+      <div class="game-char">
+        <div class="slot" id="slotShirt">👤</div>
+        <div class="slot" id="slotPants"></div>
+        <div class="slot" id="slotShoes"></div>
+      </div>
+      <div class="game-options" id="gameOptions"></div>
+    </div>
+    <div class="game-msg" id="gameMsg"></div>
+  </div>
+
+</div>
+
+<footer>Made with 💛 for Mommy Anna, Lucy &amp; Leo — Loving English Family Time</footer>
+
+<script>
+/* ================= DATA ================= */
+const ITEMS = [
+  {ico:'👕', word:'shirt', en:'Put on your shirt.', vn:'Mặc áo vào nào.'},
+  {ico:'👖', word:'pants', en:'Where are your pants?', vn:'Quần của con đâu rồi?'},
+  {ico:'🧦', word:'socks', en:"Don't forget your socks.", vn:'Đừng quên mang vớ nha.'},
+  {ico:'👟', word:'shoes', en:'Put your shoes on.', vn:'Mang giày vào con.'},
+  {ico:'🤔', word:'backwards', en:'Is it on backwards?', vn:'Mặc bị ngược rồi hả?'},
+  {ico:'😍', word:'handsome', en:'You look so handsome!', vn:'Con đẹp trai quá!'},
+  {ico:'🤐', word:'zip up', en:'Let me zip it up.', vn:'Để mẹ kéo khóa cho.'},
+  {ico:'🎉', word:'ready', en:"You're all ready now!", vn:'Xong rồi, con sẵn sàng rồi đó!'},
+];
+
+const DIALOGUE = [
+  {who:'mommy', nameKey:'mommy', avatar:'👩', en:"Good morning, sweetie! Time to wake up. Let's get dressed.", vn:"Chào buổi sáng con yêu!Đến giờ thức dậy rồi. Mình thay đồ thôi nào."},
+  {who:'kid', nameKey:'kid2', avatar:'👦', en:"I want to wear my green shirt! Lucy, which one do you like? The pink shirt or the yellow one?", vn:"Con muốn mặc áo màu xanh! Lucy, em thích cái nào? Áo màu hồng hay màu vàng?"},
+  {who:'kid', nameKey:'kid1', avatar:'👧', en:"I want the yellow one, Leo! But it's hard to put on.", vn:"Em muốn cái màu vàng cơ, anh Leo! Nhưng mà khó mặc quá."},
+  {who:'mommy', nameKey:'mommy', avatar:'👩', en:"I can help you, Lucy. Put on your shirt first. Leo, where are your pants?", vn:"Mẹ giúp con nhé, Lucy. Mặc áo trước đã. Leo, quần của con đâu rồi?"},
+  {who:'kid', nameKey:'kid2', avatar:'👦', en:"Let me check under the bed... Oh, here they are!", vn:"Để con tìm dưới gầm giường xem... Ồ, đây rồi ạ!"},
+  {who:'kid', nameKey:'kid1', avatar:'👧', en:"Mommy, look at me! I put my pants on too!", vn:"Mẹ ơi, nhìn con này! Con cũng tự mặc quần được rồi!"},
+  {who:'mommy', nameKey:'mommy', avatar:'👩', en:"Is it on backwards? Let me fix it and let me zip it up.", vn:"Con mặc bị ngược rồi hả? Để mẹ sửa lại và kéo khóa cho nhé."},
+  {who:'kid', nameKey:'kid2', avatar:'👦', en:"I put on my shoes.", vn:"Con mang giày vào rồi đây."},
+  {who:'mommy', nameKey:'mommy', avatar:'👩', en:"Good job, Leo! But wait, don't forget your socks. And Lucy, put your shoes on.", vn:"Giỏi lắm Leo! Nhưng khoan đã, đừng quên mang vớ nha. Còn Lucy, mang giày vào đi con."},
+  {who:'mommy', nameKey:'mommy', avatar:'👩', en:"Wow, you look so handsome, Leo, and you look so lovely, Lucy! You're all ready now! Let's go! It's a beautiful day today", vn:"Chà, con đẹp trai quá Leo, và Lucy trông thật dễ thương! Các con đã sẵn sàng hết rồi! Đi thôi nào! Hôm nay là một ngày đẹp trời"}
+];
+
+const GAME_ITEMS = [
+  {slot:'shirt', ico:'👕', word:'shirt'},
+  {slot:'pants', ico:'👖', word:'pants'},
+  {slot:'shoes', ico:'👟', word:'shoes'},
+  {slot:'shirt', ico:'🎽', word:'shirt'},
+  {slot:'pants', ico:'🩳', word:'pants'},
+  {slot:'shoes', ico:'🥿', word:'shoes'},
+];
+
+/* ================= TTS HELPER ================= */
+function speak(text, rate=0.85, pitch=1.1){
+  if(!('speechSynthesis' in window)) { alert('Trình duyệt không hỗ trợ đọc giọng nói.'); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = pitch;
+  window.speechSynthesis.speak(u);
+}
+
+function shuffleArr(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+/* ================= NAV ================= */
+document.querySelectorAll('.pill').forEach(p=>{
+  p.addEventListener('click', ()=>{
+    document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    document.getElementById(p.dataset.target).classList.add('active');
+  });
+});
+
+/* ================= ACTIVITY 1: LISTEN & CHOOSE (countdown) ================= */
+let lcRoundIdx = 0;
+let lcOrder = shuffleArr(ITEMS.map((_, i)=>i));
+let lcTimerInterval = null;
+let lcTimeLeft = 5;
+let lcAnswered = false;
+const LC_CIRC = 2 * Math.PI * 44; // ~276.5
+
+function lcCurrentItem(){ return ITEMS[lcOrder[lcRoundIdx % lcOrder.length]]; }
+
+function lcSetupRound(){
+  lcAnswered = false;
+  clearInterval(lcTimerInterval);
+  const item = lcCurrentItem();
+  document.getElementById('lcIcon').textContent = item.ico;
+  document.getElementById('lcRoundCount').textContent = `Câu ${ (lcRoundIdx % lcOrder.length) + 1 } / ${lcOrder.length}`;
+  document.getElementById('lcFeedback').textContent = '';
+  document.getElementById('lcChoices').innerHTML = '';
+  document.getElementById('lcTimerWrap').style.display = 'none';
+  document.getElementById('lcListenBtn').style.display = 'inline-block';
+  document.getElementById('lcListenBtn').disabled = false;
+}
+
+function lcPlaySound(){
+  const item = lcCurrentItem();
+  document.getElementById('lcListenBtn').disabled = true;
+  speak(item.en);
+  const estMs = Math.max(900, item.en.length * 70);
+  setTimeout(()=>{
+    document.getElementById('lcListenBtn').style.display = 'none';
+    lcShowChoices(item);
+    lcStartTimer();
+  }, estMs);
+}
+
+function lcShowChoices(item){
+  const others = ITEMS.filter(i => i.en !== item.en);
+  const wrongs = shuffleArr(others).slice(0, 3);
+  const opts = shuffleArr([item, ...wrongs]);
+  const wrap = document.getElementById('lcChoices');
+  wrap.innerHTML = '';
+  opts.forEach(opt=>{
+    const div = document.createElement('div');
+    div.className = 'lc-choice-opt';
+    div.textContent = opt.en;
+    div.addEventListener('click', ()=> lcHandleChoice(div, opt, item));
+    wrap.appendChild(div);
+  });
+}
+
+function lcStartTimer(){
+  lcTimeLeft = 5;
+  const wrap = document.getElementById('lcTimerWrap');
+  const fg = document.getElementById('lcTimerFg');
+  const num = document.getElementById('lcTimerNum');
+  wrap.style.display = 'block';
+  fg.style.stroke = 'var(--pink-d)';
+  fg.style.strokeDashoffset = 0;
+  num.textContent = lcTimeLeft;
+
+  lcTimerInterval = setInterval(()=>{
+    lcTimeLeft--;
+    if(lcTimeLeft <= 1) fg.style.stroke = '#ff4d6d';
+    num.textContent = Math.max(lcTimeLeft, 0);
+    fg.style.strokeDashoffset = LC_CIRC * ( (5 - lcTimeLeft) / 5 );
+    if(lcTimeLeft <= 0){
+      clearInterval(lcTimerInterval);
+      if(!lcAnswered) lcTimeUp();
+    }
+  }, 1000);
+}
+
+function lcTimeUp(){
+  lcAnswered = true;
+  document.querySelectorAll('.lc-choice-opt').forEach(el=>{
+    el.classList.add('disabled');
+    if(el.textContent === lcCurrentItem().en) el.classList.add('correct');
+  });
+  const fb = document.getElementById('lcFeedback');
+  fb.innerHTML = `⏰ Hết giờ rồi! Đáp án đúng là: "${lcCurrentItem().en}"`;
+  fb.style.color = '#c23b53';
+}
+
+function lcHandleChoice(el, opt, correctItem){
+  if(lcAnswered) return;
+  lcAnswered = true;
+  clearInterval(lcTimerInterval);
+  const isCorrect = opt.en === correctItem.en;
+  document.querySelectorAll('.lc-choice-opt').forEach(o=> o.classList.add('disabled'));
+  const fb = document.getElementById('lcFeedback');
+  if(isCorrect){
+    el.classList.add('correct');
+    fb.innerHTML = '🎉 Chính xác! Giỏi quá!';
+    fb.style.color = '#2f9e52';
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.lc-choice-opt').forEach(o=>{
+      if(o.textContent === correctItem.en) o.classList.add('correct');
+    });
+    fb.innerHTML = `🤔 Chưa đúng — đáp án đúng là: "${correctItem.en}"`;
+    fb.style.color = '#ff6b85';
+  }
+}
+
+function lcNextRound(){
+  lcRoundIdx++;
+  if(lcRoundIdx % lcOrder.length === 0) lcOrder = shuffleArr(ITEMS.map((_, i)=>i));
+  lcSetupRound();
+}
+
+lcSetupRound();
+
+/* ================= ACTIVITY 2: SEQUENCE GAME ================= */
+const fullStory10 = [
+  "Let's get dressed.",
+  "Which one do you like?",
+  "Put on your shirt first.",
+  "Where are your pants?",
+  "Here they are!",
+  "Is it on backwards?",
+  "Let me zip it up.",
+  "Don't forget your socks.",
+  "Put your shoes on.",
+  "You're all ready now!"
+];
+
+const STORY_DATA = {
+  lucy: fullStory10,
+  leo: fullStory10,
+  anna: fullStory10
+};
+
+const STORY_ICONS = {
+  "Let's get dressed.": "🛏️",
+  "Which one do you like?": "❓",
+  "Put on your shirt first.": "👕",
+  "Where are your pants?": "👖",
+  "Here they are!": "✨",
+  "Is it on backwards?": "🤔",
+  "Let me zip it up.": "🤐",
+  "Don't forget your socks.": "🧦",
+  "Put your shoes on.": "👟",
+  "You're all ready now!": "🎉"
+};
+
+let currentStoryKey = 'anna';
+let seqPicked = [];
+let storyTimeout = null;
+const seqGrid = document.getElementById('seqGrid');
+
+document.querySelectorAll('#storyTabs .player-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#storyTabs .player-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentStoryKey = tab.dataset.story;
+    resetSeq();
+  });
+});
+
+function buildSeq() {
+  seqPicked = [];
+  seqGrid.innerHTML = '';
+  document.getElementById('seqFeedback').textContent = '';
+  clearTimeout(storyTimeout);
+  window.speechSynthesis.cancel();
+  
+  const currentStory = STORY_DATA[currentStoryKey];
+  const shuffled = currentStory.map((s, i) => ({ s, i })).sort(() => Math.random() - 0.5);
+  
+  shuffled.forEach(obj => {
+    const tile = document.createElement('div');
+    tile.className = 'step-tile';
+    tile.dataset.correctIndex = obj.i;
+    // Bỏ text, chỉ hiện icon to
+    tile.innerHTML = `<div class="ico">${STORY_ICONS[obj.s] || '⭐'}</div>`;
+    tile.addEventListener('click', () => {
+      if (tile.classList.contains('picked')) { speak(obj.s); return; }
+      speak(obj.s);
+      handlePick(tile, obj.i, currentStory.length);
+    });
+    seqGrid.appendChild(tile);
+  });
+}
+
+function handlePick(tile, correctIndex, totalSteps) {
+  const nextNeeded = seqPicked.length;
+  if (correctIndex === nextNeeded) {
+    seqPicked.push(correctIndex);
+    tile.classList.add('picked');
+    const badge = document.createElement('div');
+    badge.className = 'num-badge';
+    badge.textContent = seqPicked.length;
+    tile.appendChild(badge);
+    if (seqPicked.length === totalSteps) {
+      document.getElementById('seqFeedback').innerHTML = '🎉 Tuyệt vời! Bạn đã hoàn thành câu chuyện!';
+      document.getElementById('seqFeedback').style.color = '#2f9e52';
+    } else {
+      document.getElementById('seqFeedback').innerHTML = `Đúng rồi! Tiếp theo là icon nào nhỉ? (${seqPicked.length}/${totalSteps})`;
+      document.getElementById('seqFeedback').style.color = '#4fb1d6';
+    }
+  } else {
+    document.getElementById('seqFeedback').innerHTML = '🤔 Chưa đúng thứ tự — hãy nghe thật kỹ nhé!';
+    document.getElementById('seqFeedback').style.color = '#ff6b85';
+  }
+}
+
+function resetSeq() { 
+  buildSeq(); 
+}
+
+function playStory() {
+  clearTimeout(storyTimeout);
+  window.speechSynthesis.cancel();
+  const currentStory = STORY_DATA[currentStoryKey];
+  let i = 0;
+  
+  function next() {
+    if (i >= currentStory.length) return;
+    const u = new SpeechSynthesisUtterance(currentStory[i]);
+    u.lang = 'en-US'; 
+    u.rate = 0.85; 
+    u.pitch = 1.1;
+    
+    u.onend = () => { 
+      i++; 
+      if (i < currentStory.length) {
+        // Lucy = 4s (4000ms), Leo & Anna = 3s (3000ms)
+        const delayMs = (currentStoryKey === 'lucy') ? 4000 : 3000;
+        storyTimeout = setTimeout(next, delayMs); 
+      }
+    };
+    
+    window.speechSynthesis.speak(u);
+  }
+  next();
+}
+
+buildSeq();
+
+/* ================= ACTIVITY 3: SENTENCE BUILDER (scored) ================= */
+const BUILDER_ROUNDS = [
+  {ico:'🛏️', vn:"Mình thay đồ thôi nào.", target:"Let's get dressed", words:["Let's","get","dressed"], distractors:["Where's","tired","clothes"]},
+  {ico:'👕', vn:"Mặc áo vào nào.", target:"Put on your shirt", words:["Put","on","your","shirt"], distractors:["Take","off","pants"]},
+  {ico:'👖', vn:"Quần của con đâu rồi?", target:"Where are your pants", words:["Where","are","your","pants"], distractors:["What","is","socks"]},
+  {ico:'🧦', vn:"Đừng quên mang vớ nha.", target:"Don't forget your socks", words:["Don't","forget","your","socks"], distractors:["Always","remember","shoes"]},
+  {ico:'❓', vn:"Mẹ thích cái nào?", target:"Which one do you like", words:["Which","one","do","you","like"], distractors:["What","color","want"]},
+  {ico:'👟', vn:"Mang giày vào con.", target:"Put your shoes on", words:["Put","your","shoes","on"], distractors:["Take","off","socks"]},
+  {ico:'🤔', vn:"Mặc bị ngược rồi hả?", target:"Is it on backwards", words:["Is","it","on","backwards"], distractors:["Was","that","forwards"]},
+  {ico:'🤐', vn:"Để mẹ kéo khóa cho.", target:"Let me zip it up", words:["Let","me","zip","it","up"], distractors:["You","button","down"]},
+];
+
+const PLAYER_NAMES = {anna:'Mommy Anna', lucy:'Lucy', leo:'Leo'};
+let playerScores = {anna:0, lucy:0, leo:0};
+let currentPlayer = 'anna';
+let sbRoundIdx = 0;
+let sbMode = 'build'; 
+let sbBuiltWords = [];
+let CURRENT_ROUND_SENTENCE = '';
+const TOTAL_SB_ROUNDS = 8;
+
+document.querySelectorAll('#playerTabs .player-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#playerTabs .player-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentPlayer = tab.dataset.player;
+  });
+});
+
+function startSbRound(){
+  if(sbRoundIdx >= TOTAL_SB_ROUNDS){
+    document.getElementById('sbModeLabel').textContent = '🏆 Hoàn thành!';
+    document.getElementById('sbRoundCount').textContent = `${TOTAL_SB_ROUNDS}/${TOTAL_SB_ROUNDS}`;
+    document.getElementById('sbIcon').textContent = '🎉';
+    document.getElementById('sbVn').textContent = 'Xem bảng điểm phía trên — ai là quán quân ghép câu nào!';
+    document.getElementById('buildMode').style.display = 'none';
+    document.getElementById('choiceMode').style.display = 'none';
+    document.getElementById('sbFeedback').textContent = '';
+    return;
+  }
+  const round = BUILDER_ROUNDS[sbRoundIdx % BUILDER_ROUNDS.length];
+  CURRENT_ROUND_SENTENCE = round.target + '.';
+  sbMode = Math.random() < 0.5 ? 'build' : 'choice';
+  document.getElementById('sbIcon').textContent = round.ico;
+  document.getElementById('sbVn').textContent = round.vn;
+  document.getElementById('sbRoundCount').textContent = `Lượt ${sbRoundIdx+1} / ${TOTAL_SB_ROUNDS}`;
+  document.getElementById('sbFeedback').textContent = '';
+
+  if(sbMode === 'build'){
+    document.getElementById('sbModeLabel').textContent = '🧩 Ghép từ thành câu';
+    document.getElementById('buildMode').style.display = 'block';
+    document.getElementById('choiceMode').style.display = 'none';
+    sbBuiltWords = [];
+    renderBuiltLine();
+    const bank = document.getElementById('sbWordBank');
+    bank.innerHTML = '';
+    shuffleArr(round.words).forEach((w, i)=>{
+      const chip = document.createElement('div');
+      chip.className = 'sb-chip';
+      chip.textContent = w;
+      chip.dataset.word = w;
+      chip.addEventListener('click', ()=>{
+        if(chip.classList.contains('used')) return;
+        chip.classList.add('used');
+        sbBuiltWords.push(w);
+        renderBuiltLine();
+        if(sbBuiltWords.length === round.words.length){
+          checkBuildAnswer(round);
+        }
+      });
+      bank.appendChild(chip);
+    });
+  } else {
+    document.getElementById('sbModeLabel').textContent = '✅ Chọn câu đúng';
+    document.getElementById('buildMode').style.display = 'none';
+    document.getElementById('choiceMode').style.display = 'block';
+    const correctSentence = round.target + '.';
+    const wrongOptions = makeWrongSentences(round);
+    const opts = shuffleArr([correctSentence, ...wrongOptions]);
+    const wrap = document.getElementById('sbChoices');
+    wrap.innerHTML = '';
+    opts.forEach(opt=>{
+      const div = document.createElement('div');
+      div.className = 'sb-choice-opt';
+      div.textContent = opt;
+      div.addEventListener('click', ()=>{
+        const isCorrect = opt === correctSentence;
+        handleSbResult(isCorrect);
+      });
+      wrap.appendChild(div);
+    });
+  }
+}
+
+function renderBuiltLine(){
+  const line = document.getElementById('sbBuiltLine');
+  if(sbBuiltWords.length === 0){
+    line.innerHTML = '<span style="color:#bbb;font-weight:600;">Bấm các từ bên dưới theo đúng thứ tự...</span>';
+    return;
+  }
+  line.innerHTML = '';
+  sbBuiltWords.forEach((w, idx)=>{
+    const span = document.createElement('span');
+    span.className = 'sb-built-word';
+    span.textContent = w;
+    span.addEventListener('click', ()=>{
+      sbBuiltWords = sbBuiltWords.slice(0, idx);
+      resyncWordBank();
+      renderBuiltLine();
+    });
+    line.appendChild(span);
+  });
+}
+
+function resyncWordBank(){
+  document.querySelectorAll('.sb-chip').forEach(c=>{
+    c.classList.remove('used');
+  });
+  let used = {};
+  sbBuiltWords.forEach(w=> used[w] = (used[w]||0)+1 );
+  document.querySelectorAll('.sb-chip').forEach(c=>{
+    const w = c.dataset.word;
+    if(used[w] > 0){ c.classList.add('used'); used[w]--; }
+  });
+}
+
+function checkBuildAnswer(round){
+  const said = sbBuiltWords.join(' ');
+  const isCorrect = said.toLowerCase() === round.target.toLowerCase();
+  handleSbResult(isCorrect);
+}
+
+function makeWrongSentences(round){
+  const wrong1 = shuffleArr(round.words).join(' ') + '.';
+  const mixed = [...round.words];
+  if(round.distractors && round.distractors.length){
+    mixed[0] = round.distractors[0];
+  }
+  const wrong2 = mixed.join(' ') + '.';
+  return [wrong1, wrong2].filter(w => w.toLowerCase() !== (round.target+'.').toLowerCase());
+}
+
+function handleSbResult(isCorrect){
+  const fb = document.getElementById('sbFeedback');
+  if(isCorrect){
+    playerScores[currentPlayer] += 10;
+    document.getElementById('pts'+capitalize(currentPlayer)).textContent = playerScores[currentPlayer];
+    fb.innerHTML = `🎉 Chính xác! ${PLAYER_NAMES[currentPlayer]} +10 điểm!`;
+    fb.style.color = '#2f9e52';
+    speak(CURRENT_ROUND_SENTENCE);
+    sbRoundIdx++;
+    setTimeout(startSbRound, 1500);
+  } else {
+    fb.innerHTML = `🤔 Chưa đúng rồi, ${PLAYER_NAMES[currentPlayer]} thử lại nhé!`;
+    fb.style.color = '#ff6b85';
+    if(sbMode === 'build'){
+      setTimeout(()=>{ sbBuiltWords=[]; resyncWordBank(); renderBuiltLine(); }, 900);
+    }
+  }
+}
+
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function resetBuild(){
+  if(sbMode === 'build'){ sbBuiltWords=[]; resyncWordBank(); renderBuiltLine(); document.getElementById('sbFeedback').textContent=''; }
+}
+
+startSbRound();
+
+/* ================= ACTIVITY 4: DIALOGUE ================= */
+const dialogueBox = document.getElementById('dialogueBox');
+function getDisplayName(nameKey){
+  const map = {
+    mommy: document.getElementById('nameMommy').value.trim() || 'Mommy',
+    kid1: document.getElementById('nameKid1').value.trim() || 'Lucy',
+    kid2: document.getElementById('nameKid2').value.trim() || 'Leo'
+  };
+  return map[nameKey];
+}
+
+function renderDialogue(){
+  dialogueBox.innerHTML = '';
+  DIALOGUE.forEach((line, idx)=>{
+    const row = document.createElement('div');
+    row.className = `dlg-line dlg-${line.who}`;
+    row.style.animationDelay = (idx*0.05)+'s';
+    
+    // Cao độ giọng cho từng nhân vật
+    let currentPitch = 1.1;
+    if(line.nameKey === 'kid1') currentPitch = 1.4; // Giọng Lucy em gái cao và trong trẻo
+    if(line.nameKey === 'kid2') currentPitch = 1.15; // Giọng Leo anh trai trầm hơn một chút
+
+    row.innerHTML = `
+      <div class="dlg-avatar">${line.avatar}</div>
+      <div class="dlg-bubble">
+        <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:2px;">${getDisplayName(line.nameKey)}</div>
+        <div class="en">${line.en}</div>
+        <div class="vn">${line.vn}</div>
+      </div>`;
+    row.querySelector('.dlg-bubble').addEventListener('click', ()=> speak(line.en, 0.85, currentPitch));
+    dialogueBox.appendChild(row);
+  });
+}
+renderDialogue();
+
+function playWholeDialogue(){
+  let i = 0;
+  function next(){
+    if(i >= DIALOGUE.length) return;
+    
+    let currentPitch = 1.1;
+    if(DIALOGUE[i].nameKey === 'kid1') currentPitch = 1.4;
+    if(DIALOGUE[i].nameKey === 'kid2') currentPitch = 1.15;
+
+    const u = new SpeechSynthesisUtterance(DIALOGUE[i].en);
+    u.lang = 'en-US'; 
+    u.rate = 0.88; 
+    u.pitch = currentPitch;
+    u.onend = ()=>{ i++; setTimeout(next, 400); };
+    window.speechSynthesis.speak(u);
+  }
+  window.speechSynthesis.cancel();
+  next();
+}
+
+/* ================= ACTIVITY 5: DRESS THE CHARACTER GAME ================= */
+let gameRound = 0;
+let gameScore = [];
+let currentTarget = null;
+const slots = {shirt: document.getElementById('slotShirt'), pants: document.getElementById('slotPants'), shoes: document.getElementById('slotShoes')};
+
+function renderScoreBar(){
+  const bar = document.getElementById('gameScoreBar');
+  bar.innerHTML = '';
+  for(let i=0;i<6;i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (gameScore[i] ? ' done':'');
+    bar.appendChild(d);
+  }
+}
+
+function newGameRound(){
+  if(gameRound >= 6){
+    document.getElementById('gameMsg').textContent = '🏆 Hoàn thành! Bé đã mặc đồ xong cho bạn nhỏ rồi!';
+    return;
+  }
+  document.getElementById('gameMsg').textContent = '';
+  const pool = GAME_ITEMS.filter(g=>!Object.values(slots).some(s=>s.dataset.filled===g.slot));
+  currentTarget = pool[Math.floor(Math.random()*pool.length)] || GAME_ITEMS[Math.floor(Math.random()*GAME_ITEMS.length)];
+  const phrase = {
+    shirt: 'Put on your shirt.',
+    pants: 'Where are your pants?',
+    shoes: 'Put your shoes on.'
+  }[currentTarget.slot];
+  speak(phrase);
+  renderGameOptions();
+}
+
+function renderGameOptions(){
+  const opts = document.getElementById('gameOptions');
+  opts.innerHTML = '';
+  const choices = [...GAME_ITEMS].sort(()=>Math.random()-0.5).slice(0,4);
+  if(!choices.find(c=>c.slot===currentTarget.slot)) choices[0] = currentTarget;
+  choices.forEach(choice=>{
+    const div = document.createElement('div');
+    div.className = 'game-opt';
+    div.innerHTML = `<span class="ico">${choice.ico}</span>${choice.word}`;
+    div.addEventListener('click', ()=>{
+      if(choice.slot === currentTarget.slot){
+        slots[currentTarget.slot].textContent = currentTarget.ico;
+        slots[currentTarget.slot].dataset.filled = currentTarget.slot;
+        document.getElementById('gameMsg').innerHTML = '🎉 You look so handsome! Đúng rồi!';
+        document.getElementById('gameMsg').style.color = '#2f9e52';
+        gameScore[gameRound] = true;
+        gameRound++;
+        renderScoreBar();
+        setTimeout(newGameRound, 1400);
+      } else {
+        document.getElementById('gameMsg').innerHTML = '🤔 Chưa đúng, nghe lại và thử cái khác nhé!';
+        document.getElementById('gameMsg').style.color = '#ff6b85';
+      }
+    });
+    opts.appendChild(div);
+  });
+}
+renderScoreBar();
+newGameRound();
+</script>
+</body>
+</html>
